@@ -3,7 +3,7 @@
 COMMAND LINE CHEAT SHEET
 
 cd	    Change directory.
-ls	    List files and directories in current directory. Flag -l, -a, -h    
+ls	    List files and directories in current directory. Flag -l, -a, -h to get more info, (-lah)   
 pwd	    Display the path of the current directory.
 touch	Create a file.
 mkdir	Create a directory.
@@ -22,7 +22,12 @@ man	    Display documentation about a command. Type q to exit.
 tar: an archival command that can archive, compress, and extract files
     flags: -c (create), -z (zip), -f (file), -czf -a (hidden files)
 
+To get home without a tilde: $HOME represents the path to your home directory. 
 
+Go to the route directory: cd /
+
+The which command in the terminal shows the path of the executable that would have been executed when you type a command. 
+For example, which python will display the path to the Python interpreter that will be used when you run python.
 
 GIT CHEAT SHEET 
 
