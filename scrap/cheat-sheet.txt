@@ -34,11 +34,22 @@ GIT CHEAT SHEET
 # Clone a Repository
 git clone <repository_url>
 
+# Creates a new repository in the current directory. Generates a .git directory.
+git init 
+
+# Add an existing remote repo as a remote of existing local repo.
+git remote add origin <repository_url>
+
+# Sets git configuration settings, such as author email and name.
+git config
+
 # Stage Changes for Commit
 git add <file(s)>
+git add . "Adds all the files in the staging area"
 
 # Commit Changes
 git commit -m "Commit message"
+git commit amend 
 
 # Push Changes to the Remote Repository
 git push
@@ -51,6 +62,7 @@ git reset --hard
 
 # Create a New Branch
 git branch <branch_name>
+    flags: -d deletes the branch 
 
 # Switch to a Different Branch
 git checkout <branch_name>
@@ -65,7 +77,8 @@ git rebase <base_branch>
 git status
 
 # View Commit History
-git log
+git log 
+flags: -- oneline, statq
 
 # Undo Last Commit (use with caution)
 git reset --soft HEAD^
@@ -81,6 +94,42 @@ git rebase --interactive HEAD~3
 
 # Pull changes from remote repo
 git pull <remote_name> <branch_name>
+git pull --ff-only origin main   * if you want to specify exactly from which remote repository 
+(using the alias) and which remote branch you want to pull.
 
 # Fetch changes from remote repo
 git fetch <remote_name>
+
+If you have already issued a git fetch, you can use git merge --ff-only rather than git pull --ff-only. 
+Essentially, git pull --ff-only combines git fetch and git merge --ff-only into one command.
+
+# Ignoring Files (privacy, etc. in this example a database)
+    In command line: touch .gitignore
+    In the file that you are about to open: ~/git_basics/.gitignore
+    In the text editor: 
+        # Ignore all SQLite databases
+        db/*.sqlite3
+        .DS_Store
+
+    Avoid global flags!
+
+
+
+# Git Identity
+    git config --global user.name "name"
+    git config --global user.email "email"
+
+# Changes to a repository  
+git diff 
+
+# If not using codespaces, initialize by 
+    mkdir git_basics
+    cd git_basics
+    echo '# README #' > README.md
+    echo '# LICENSE #' > LICENSE.md
+    git config --global init.defaultBranch main
+    git init
+
+    Do not nest your repositories!
+
+
