@@ -63,3 +63,10 @@ It's usually better to use one of the other continuation techniques.
 
 Removing a full folder:
 rm -R {folder}
+
+
+Suggested links:
+
+https://www.python.org/doc/
+https://docs.python.org/3/reference/index.html
+https://docs.python.org/3/library/index.html

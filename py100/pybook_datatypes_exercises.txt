@@ -1,0 +1,23 @@
+1. Identify the data type or class for each of the following values:
+String
+Bool
+Tuple
+Float
+List
+Integer
+Range
+Set
+None type
+dictionary
+
+2. Create a tuple called names that contains several pet names. 
+pet_names = ('Asta', 'Butterscotch', 'Pudding', 'Neptune', 'Darwin')
+
+3. Create a dictionary named pets that contains a list of pet names and the type of animal.
+pet_dict = {
+    'Asta':	'dog',
+    'Butterscotch': 'cat',
+    'Pudding': 'cat',
+    'Neptune': 'fish',
+    'Darwin': 'lizard' 
+}
