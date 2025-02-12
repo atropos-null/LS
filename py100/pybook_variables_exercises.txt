@@ -1,0 +1,59 @@
+1).  Classify as: idiomatic, non-idiomatic, or illegal.
+
+index : idiomatic 
+CatName: non-idiomatic 
+lazy_dog: idiomatic 
+quick_Fox: non-idiomatic
+1stCharacter: illegal
+operand2: non-idiomatic
+BIG_NUMBER: idiomatic:
+π: non-idiomatic
+
+2.) 
+index : idiomatic 
+CatName: non-idiomatic - no caps
+lazy_dog: idiomatic 
+quick_Fox: non-idiomatic - no caps
+1stCharacter: illegal - no 1st number
+operand2: idiomatic
+BIG_NUMBER: non- idiomatic: - no caps
+π: non-idiomatic - not ascii basics
+
+3) Same but as constants:
+
+index - non idiomatic   
+CatName - non-idiomatic
+snake_case - non-idiomatic
+LAZY_DOG3 - idiomatic
+1ST - illegal
+operand2 -non-idiomatic
+BIG_NUMBER - idiomatic
+Π - illegal
+
+4.) Same but as class:
+
+index - non-idiomatic, lowercase    
+CatName - idiomatic
+Lazy_Dog - idiomatic
+1ST - still illegal
+operand2 - non idiomatic, lowercase
+BigNumber3 - idiomatic
+Πi - non-idiomatic same issue with the pi 
+
+7.) It greets Victor and then greets Nina. While labeled as a constant, 
+name is meaningless here as a constant
+
+10). 
+
+obj = 'ABcd' #reassignment
+obj.upper()  #neither
+obj = obj.lower() #reassignment
+print(len(obj)) #neither
+obj = list(obj) #mutation. wrong, reassignment
+obj.pop() #mutation
+obj[2] = 'X' #reassignment
+obj.sort() #neither. wrong, mutation
+set(obj) #mutation. wrong, neither
+obj = tuple(obj) #reassignment
+
+

@@ -1,0 +1,32 @@
+1.) 
+
+>>> first_name = 'Kel '
+>>> last_name = 'Becker'
+>>> print (first_name + last_name)
+Kel Becker
+
+
+2.)
+
+variable = 4936
+ones = (variable - 4930)
+tens = int((variable - 4906) / 10)
+hundreds = int((variable - 4036) / 100)
+thousands = int((variable - 936) / 1000)
+print(ones, tens, hundreds, thousands)
+
+3). 510
+Because its two strings that are concatenated and not an arithmetic expression.
+
+4). x = int('5')
+    y = int('10')
+    sum = x + y
+    print(sum)
+
+5).  Yes, there will be an error. There's no [3]. The range is 0-2. 
+
+6). False. foo > Foo
+
+7). Value error since its not an int but a float and it wasn't expecting decimals.
+
+8). True. 9 > 1
