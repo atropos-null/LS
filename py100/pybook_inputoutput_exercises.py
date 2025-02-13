@@ -1,0 +1,17 @@
+name = input("What is your name? ")
+print(f"Hello, {name}! ")
+
+first_name = input("What is your first name? ")
+last_name = input("What is your last name? ")
+print(f"Hello, {first_name} {last_name}! ")
+
+age = int(input("What is your age? "))
+ten = int(age + 10)
+twenty = int(age + 20)
+thirty = int(age + 30)
+forty = int(age + 40)
+print(f"You are {age} years old. ")
+print(f"In 10 years, you will be {ten} years old. ")
+print(f"In 20 years, you will be {twenty} years old. ")
+print(f"In 30 years, you will be {thirty} years old. ")
+print(f"In 40 years, you will be {forty} years old. ")
