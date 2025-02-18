@@ -1,0 +1,52 @@
+1) len(people)
+
+2) I personally wanted option 1 as its still less typing than option 3.
+
+stuff = ('hello', 'world', 'goodbye', 'now')
+
+stuff = list(stuff)
+stuff[2] = 'goodbye'
+stuff = tuple(stuff)
+
+3) list vs tuples:
+similarities: heterogenous, idexing available. Order is maintained.
+differences: tuples are immutable, lists are not; 
+
+4) Strings are ordered and individual chars are available through indexing.
+
+5) sets are unordered and sequences are ordered, sets cannot be indexed. 
+
+6) 
+pi = 3.141592
+str_pi = str(pi)
+
+7)
+
+0 1 2 3 4 5 6 
+1 2 3 4 5
+3 7 11 
+[]
+8, 7, 6, 5, 4
+
+8) print(list(range(3, 17, 4)))
+
+9) :
+
+Are the lists assigned to my_list and another_list equal? Yes
+Are the lists assigned to my_list and another_list the same object? No
+Are the nested lists at index 3 of my_list and another_list equal? Yes
+Are the nested lists at index 3 of my_list and another_list the same object? Yes
+
+10) Sets are unordered and thus may not print out the way they went in
+
+11)
+
+people = {
+    "Alice": "USA",
+    "Francois": "Canada",
+    "Inti": "Peru",
+    "Monika": "Germany",
+    "Sanyu": "Uganda",
+    "Yoshitaka": "Japan",
+}
+print(people["Sanyu"])

@@ -1,0 +1,82 @@
+1) print(range(0, 25, 3)[6])
+
+2) text = 'Launch School'
+print(text[4:10])
+
+3) nums = (1, 2, 3, 4, 5)
+result = nums[-2:-5:-1]
+print(result)
+
+4) pets = {
+    'Cat':  'Meow',
+    'Dog':  'Bark',
+    'Bird': 'Tweet',
+}
+print(pets['Dog'])
+print(pets.get('Lizard'))
+print(pets.get('Lizard', '<silence>'))
+
+5) ['a', 'b']
+{'a': 1, 'b': 2}
+{1, 4, 9, 16, 25}
+
+The first value is a list, the second another dict, and the last a set. Since all 3 types 
+are mutable, they can't be used as dict keys. All remaining items are immutable built-in 
+objects; they are acceptable dict keys.
+
+6) False
+False
+False
+False
+True - Wrong, False. 
+True
+True
+False
+False
+False 
+False
+
+7) 
+
+info = 'xyz:*:42:441:Lee Kim:/home/xyz:/bin/zsh'
+parts = info.split(':')
+result = '+'.join(parts)
+print(result)
+
+info = 'xyz:*:42:42:Lee Kim:/home/xyz:/bin/zsh'
+newinfo= info.replace(':', '+')
+print(newinfo)
+
+8) it starts searching from different start points, the first one being what was split off
+
+9)stuff[1][3] = 606
+
+10) print(cats['Pete']['Cocoa']['enjoys'])
+
+11) False
+False  - but it was true?
+True
+False
+True
+False
+False
+True
+False
+True
+
+12) 
+
+print(3 in numbers1)
+print(3 in numbers2)
+print(3 in numbers3)
+print(3 in numbers4)
+print(3 in numbers5)
+
+13) Lines 1 and 3 print
+
+14)
+
+zipped_tuples = (my_str, my_list, my_tuple, my_range)
+print(list(zipped_tuples))
+
+15) Cat, Bird, Snake
