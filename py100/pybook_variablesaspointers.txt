@@ -1,0 +1,27 @@
+1) While the contents of the two objects may be identical, the locations of the two 
+objects are not the same. Therefore, they are not the same.
+
+2) {42, 'Monty Python', ('a', 'b', 'c'), range(5,10)}
+
+3) The Life of Brian
+
+4) [1, 42, 3]
+
+5) 
+
+import copy
+
+dict1 = {
+    'a': [{7, 1}, ['aa', 'aaa']],
+    'b': ({3, 2}, ['bb', 'bbb']),
+}
+dict2 = copy.deepcopy(dict1)
+
+6)
+
+dict1 = {
+    'a': [{7, 1}, ['aa', 'aaa']],
+    'b': ({3, 2}, ['bb', 'bbb']),
+}
+
+dict2 = dict(dict1)
