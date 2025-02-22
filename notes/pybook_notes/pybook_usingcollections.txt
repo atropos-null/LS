@@ -165,7 +165,8 @@ that object. It raises a ValueError if there is no such object.
 
 seq.pop removes and returns an indexed element from a mutable sequence. If no index is 
 given, it removes the last element in the sequence. It raises an error if the index is 
-out of range. pop only works with mutable indexed sequences.
+out of range. pop only works with mutable indexed sequences.Remember, it removes by the index. 
+If you want to use by the value itself, use remove. 
 
 my_list = [2, 4, 6, 8, 10]
 print(my_list.pop(1))         # 4
@@ -217,7 +218,7 @@ print(tuple(reversed(names))) # Requires extra memory
 # ('Trevor', 'Allison', 'Clare', 'Grace')
 print(names)
 
-Do t use list.reverse when you really need to reverse the list's contents, and 
+Don't use list.reverse when you really need to reverse the list's contents, and 
 don't need to preserve the original order. You should use reversed when all you need to do 
 is iterate over the list in reverse. Don't use reversed if you eventually want to convert 
 the result to a non-lazy sequence such as a list or tuple.
@@ -233,14 +234,24 @@ for name in reversed(names):
 # Clare
 # Grace
 
+
+There's no reversing strings, however. Just lists/tuples.
+
+s = 'hello'
+reversed_s = s[::-1]
+print(reversed_s)  # Outputs: 'olleh'
+
 get() method is used to retrieve the value for a given key from a dictionary. If the key is not present in the dictionary, 
 the get() method returns a default value. By default, this value is None
+
 STRING MFING Operations
 
 str.lower: lowers everything
 str.upper: RAISES EVERYTHING 
 str.capitalize: Only first letter capitalized
-str.titlecase: First Letter Of Every Word Is Capitalized
+str.title: First Letter Of Every Word Is Capitalized
+str.rjust: right justification
+
 
 import string
 string.capwords() is more reliable than titlecase
@@ -301,6 +312,9 @@ text = 'abcde'
 for char in text:
     print(char)
 
+alphabet = 'abcdefghijklmnopqrstuvwxyz'
+print(list(alphabet))
+
 str.splitlines returns a list of lines from the string str. splitlines looks for 
 line-ending characters like \n (line feed), \r (carriage return), \n\r (new lines), and a 
 variety of other line boundaries.
@@ -345,7 +359,17 @@ For sets, each set has the same members (order doesn't matter).
 For mappings, each key/value pair must be present and identical in both mappings (order doesn't matter).
 
 
+String comparison, lower vs casefold:
 
+When comparing strings in a case-insensitive manner, one might initially try to use the 
+str.lower method, which converts all characters in a string to lowercase. While this 
+method works for many use cases, there are some scenarios in which it doesn't account 
+for all variations in character case.
 
+The str.casefold method offers a more comprehensive approach to normalizing case than 
+str.lower. It's primarily designed to facilitate case-insensitive string comparisons, 
+especially in languages where conventional methods of converting to lowercase may fall 
+short.
 
-
+The isinstance function checks whether the first argument references an instance of the 
+type given by the second argument.

@@ -12,7 +12,7 @@ Operator	Operation
 The // operator returns the largest whole number less than or equal 
 to the floating point result. That is, it rounds the result down to 
 the nearest whole number. The // operator doesn't work with the built-in 
-complex numbers.
+complex numbers. A single / always returns a floating point number.
 
 The % operator is usually used to calculate the remainder of dividing two integers. 
 The result has the same sign as the divisor.

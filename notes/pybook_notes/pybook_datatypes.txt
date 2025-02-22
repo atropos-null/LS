@@ -48,6 +48,8 @@ the { and } characters you want to use as literal characters:
 >>> print(f"{number:,}")
 123,456,789
 
+You can also write large integers like this: 1_987_654_321
+c
 None: a way to express the absence of a value.  It can also indicate missing, unset, 
 or unavailable data and may sometimes be an error indication. None is a literal whose 
 value is the lone representative of the NoneType class.

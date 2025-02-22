@@ -75,3 +75,23 @@ change which object the variable refers to. Instead, it changes the object itsel
 mutating an object assigned to a specific variable, the variable continues to refer to the 
 same object (albeit altered) at the same memory location. Reassigning an element of a mutable 
 collection doesn't reassign the variable; it mutates the collection.
+
+
+In Python, variables initialized inside an if, match, while, for, with, or try statement 
+are accessible outside of that block of code.  Variables initialized in the same scope where 
+a block begins can be accessed inside the block.
+
+In this code:
+
+a = 1
+
+def my_function():
+    global a
+    a = 2
+
+my_function()
+print(a)
+
+In this code, the global keyword tells the function to assume that a refers to the 
+global variable a. This means that any operation on the variable a inside this function 
+will affect the global variable a, not a local one.
