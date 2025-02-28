@@ -29,6 +29,13 @@ Go to the route directory: cd /
 The which command in the terminal shows the path of the executable that would have been executed when you type a command. 
 For example, which python will display the path to the Python interpreter that will be used when you run python.
 
+To start altering the command line environment:
+cd
+$ PS1="\u@\w$ "
+
+Note that if you are using Zsh, you may need to substitute the command on line 2 above 
+with PROMPT='%n:%m: '
+
 GIT CHEAT SHEET 
 
 # Clone a Repository
@@ -133,3 +140,50 @@ git diff
     Do not nest your repositories!
 
 
+Directory access: ls -lah:
+
+# +-------- Directory or not
+# |  +------- User Read, Write, Execute
+# |  |   +------- Group Read, Write, Execute
+# |  |   |   +----- Other Read, Write, Execute
+# |  |   |   |   +--- The name of the user
+# |  |   |   |   |     +--- The name of the group
+# |  |   |   |   |     |
+# d|rwx|rwx|rwx user group
+
+Changing Permissions:
+
+chmod +
+
+The +w means "add write access." If you want to get more granular in how you set 
+permissions on a file or directory, you can prefix the permission with u, g, o, or a, 
+which stand for "user (owner)", "group", "other", and "all", respectively:
+
+$ chmod u-w test.txt # Remove write access for user
+$ chmod g+x test.txt # Add execute access for group
+
+Number	Permission
+0	No permission granted.
+1	Can execute.
+2	Can write.
+3	Can write and execute (2 + 1 = 3).
+4	Can read.
+5	Can read and execute (4 +1 = 5).
+6	Can read and write (4 + 2 = 6).
+7	Can read and write and execute (4 + 2 + 1 = 7).
+
+chmod 777 test.sh #All permissions
+chmod 000 test.sh # No permissions
+
+If you are logged in as a non-root user and know the root user's password, you can switch 
+to the root user account at any time with the following command:
+
+$ su -
+Password:
+
+sudo: doing something as a super user
+
+ls -l / : Which user and group are assigned to the /etc folder on your computer
+ls -la $HOME: a list of all the files and directories in your home folder
+
+top: refreshes and takes over screen

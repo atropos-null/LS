@@ -26,3 +26,11 @@
 
 6)  Suppose you have two directories called xyz/ and abc/. How do you move all the files in abc/ that end with ".txt" into xyz/?
 mv abc/*.txt xyz
+
+Permissions:
+
+3) Mary does not have any permissions.
+
+4) Mary and acemair have read and write permissions.
+
+5) Mary has execute and read, acemair has all permissions.
