@@ -157,6 +157,12 @@ comparison operations, string operations, function calls.
 What types can be called a statement? Assignment, control flow (if, else, elif, while, for etc), return statements, 
 import statements.
 
+my_number = 3
+
+my_number = 3 is a statement that assigns the value 3 to the variable my_number.
+The value 3 itself is an expression. (Code appearing to the right of an = in an assignment 
+or reassignment is an expression.)
+
 Expression Evaluation:
 
 Parenthesized sub-expressions are usually evaluated before any non-parenthesized sub-expressions. Nested parenthesized 
