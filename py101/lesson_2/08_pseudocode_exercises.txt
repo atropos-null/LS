@@ -1,0 +1,60 @@
+1) a function that returns the sum of two numbers
+
+START
+
+SET FUNCTION NAME
+GET variable X, INT 
+GET variable Y, INT
+x operator Y
+RETURN result
+
+END
+
+2) a function that takes a list of strings, and returns a string that is all those strings 
+concatenated together
+
+START
+SET FUNCTION NAME
+SET list of strings
+SET new string variable = list position 0, list position 1, etc etc
+RETURN new string variable
+END
+
+3)a function that takes a list of integers, and returns a new list with every other element 
+from the original list, starting with the first element. For instance:
+every_other([1,4,7,2,5]) # => [1,7,5]
+
+START
+set name FUNCTION
+GET list INT
+RETURN LIST INT positions 0 2 4
+END
+
+4) a function that determines the index of the 3rd occurrence of a given character in a 
+string. For instance, if the given character is 'x' and the string is 'axbxcdxex', the 
+function should return 6 (the index of the 3rd 'x'). If the given character does not occur 
+at least 3 times, return None.
+
+START
+SET NAME FUNCTION
+GET string
+GET character
+IF character > 2 times in a string, 
+RETURN string[index]
+ELSE RETURN None
+END
+
+5) a function that takes two lists of numbers and returns the result of merging the lists. 
+The elements of the first list should become the elements at the even indexes of the 
+returned list, while the elements of the second list should become the elements at the odd 
+indexes. For instance: merge([1, 2, 3], [4, 5, 6]) # => [1, 4, 2, 5, 3, 6]
+
+START
+SET NAME FUNCTION
+GET list 1
+GET list 2
+SET list 3: 
+    ZIP list 1, list 2
+    WHILE list 1 = index[0, 2, 4] AND list 2 index [1, 3, 5]
+RETURN list 3
+END
