@@ -1,46 +1,67 @@
-def prompt(message):
-    print(f"==> {message}")
+import sys
+import json
+
+with open('calculator_messages.json', 'r') as file:
+    MESSAGES = json.load(file)
+
+def main():
+
+    print(MESSAGES['welcome'])
+
+    while True:
+        number_1 = get_number_1()
+        number_2 = get_number_2()
+        operator = get_operator()
+        output = calculate(number_1, number_2, operator)
+        print(f"The result is {output}.")
+        reprompting = input(MESSAGES['reprompt']).lower()
+        if reprompting != 'y':
+            sys.exit()
 
 def invalid_number(number_str):
+
     try:
-        int(number_str)
+        float(number_str)
     except ValueError:
         return True
 
     return False
 
-prompt('Welcome to Calculator!')
+def get_number_1():
+    number_1 = input(MESSAGES['number_prompt_1'])
+    while invalid_number(number_1):
+        number_1 = input("Please enter a valid number. ")
+    return number_1
 
-prompt("What's the first number?")
-number1 = input()
+def get_number_2():
+    number_2 = input(MESSAGES['number_prompt_2'])
+    while invalid_number(number_2):
+        number_2 = input("Please enter a valid number. ")
+    return number_2
 
-while invalid_number(number1):
-    prompt("Please enter a valid number.")
-    number1 = input()
+def get_operator():
+    operator = input(MESSAGES['operation_prompt'])
+    while operator not in ["1", "2", "3", "4"]:
+        operator = input("You must choose 1, 2, 3, or 4")
+    return operator
 
-prompt("What's the second number?")
-number2 = input()
+def calculate(number_1, number_2, operator):
 
-while invalid_number(number2):
-    prompt("Please enter a valid number.")
-    number2 = input()
+    number_1 = float(number_1)
+    number_2 = float(number_2)
 
-prompt("""What operation would you like to perform?
-       1) Add 2) Subtract 3) Multiply 4) Divide""")
-operation = input()
+    match operator:
+        case "1":
+            output = number_1 + number_2
+            return output
+        case "2":
+            output = number_1 - number_2
+            return output
+        case "3":
+            output = number_1 * number_2
+            return output
+        case "4":
+            output = number_1 / number_2
+            return output
 
-while operation not in ["1", "2", "3", "4"]:
-    prompt("You must choose 1, 2, 3, or 4")
-    operation = input()
-
-match operation:
-    case "1":
-        output = int(number1) + int(number2)
-    case "2":
-        output = int(number1) - int(number2)
-    case "3":
-        output = int(number1) * int(number2)
-    case "4":
-        output = int(number1) / int(number2)
-
-prompt(f"The result is {output}")
+main()

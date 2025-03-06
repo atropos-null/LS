@@ -1,0 +1,9 @@
+{
+
+    "welcome": "Welcome to Calculator!",
+    "invalid_number": "Please enter a valid number. ",
+    "number_prompt_1": "What's the first number? ",
+    "number_prompt_2": "What's the second number? ",
+    "operation_prompt": "What operation would you like to perform?\n1) Add 2) Subtract 3) Multiply 4) Divide ",
+    "reprompt": "Would you like to make another calculation? (y/n) "
+}
