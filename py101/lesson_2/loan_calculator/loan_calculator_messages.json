@@ -1,0 +1,9 @@
+{
+
+    "welcome": "Welcome to the Loan Calculator!",
+    "error": "Please enter a valid amount. ",
+    "loan_amount": "How much is the amount of your loan? Numbers only, no '.' or ','. ",
+    "apr": "What is your APR? ",
+    "duration": "How long is your loan duration in months? ",
+    "reprompt": "Would you like to make another calculation? (y/n) "
+}
