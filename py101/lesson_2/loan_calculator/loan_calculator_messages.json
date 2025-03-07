@@ -1,9 +1,10 @@
 {
 
     "welcome": "Welcome to the Loan Calculator!",
+    "zero": "Do you have a zero interest loan? (y/n) ",
     "error": "Please enter a valid amount. ",
-    "loan_amount": "How much is the amount of your loan? Numbers only, no '.' or ','. ",
-    "apr": "What is your APR? ",
-    "duration": "How long is your loan duration in months? ",
+    "loan_amount": "How much is the amount of your loan? ",
+    "apr": "What is your interest rate? ",
+    "duration": "How long is your loan duration in years? ",
     "reprompt": "Would you like to make another calculation? (y/n) "
 }
