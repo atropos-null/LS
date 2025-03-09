@@ -37,7 +37,7 @@ def get_numbersonly(number_str):
 
     numbers_only = ''
     for character in number_str:
-        if character.isdigit() or character == '.':
+        if character.isdigit() or character in ['.', '-']:
             numbers_only += character
     return numbers_only
 
