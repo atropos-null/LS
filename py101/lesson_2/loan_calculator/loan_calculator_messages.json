@@ -1,10 +1,13 @@
 {
 
     "welcome": "Welcome to the Loan Calculator!",
-    "zero": "Do you have a zero interest loan? (y/n) ",
-    "error": "Please enter a valid amount. ",
-    "loan_amount": "How much is the amount of your loan? ",
-    "apr": "What is your interest rate? ",
-    "duration": "How long is your loan duration in years? ",
-    "reprompt": "Would you like to make another calculation? (y/n) "
+    "loan_amount": "Please enter the loan amount: ",
+    "apr": "Please enter the APR (annual percentage rate) or 0 for no interest: ",
+    "duration_years": "Please enter the duration of the loan in years: ",
+    "duration_months": "Please enter additional months for the loan duration: ",
+    "reprompt": "Would you like to calculate another loan? (y/n): ",
+    "invalid_amount": "Invalid amount. Please enter a positive number.",
+    "invalid_apr": "Invalid APR. Please enter a positive number or 0.",
+    "invalid_duration": "Invalid duration. Please enter a positive number."
 }
+
