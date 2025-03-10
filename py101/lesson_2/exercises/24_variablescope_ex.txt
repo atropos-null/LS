@@ -1,0 +1,13 @@
+1) Prints '5' once.
+
+2) Prints '5' because the second variable isn't displayed. 
+
+3) Prints '10'. 10 was set as the global within the function which reassigns
+away from 5.
+
+4) Prints 'Hello World'. While outer() is called, it doesn't actually display anything.
+
+5) Error because its only a local variable.
+
+6) Inner 1 takes the local variable but inner 2 doesn't have a new variable assigned
+it takes the outer variable.
