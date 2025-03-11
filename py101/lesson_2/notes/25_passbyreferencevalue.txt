@@ -21,3 +21,21 @@ then dictates whether you can modify the original object through that reference.
 
 When an operation within the function mutates the argument, it will affect the original 
 object.
+
+Restated via LSBOT:
+
+These are two different parameter passing mechanisms that can cause confusion because 
+they sound similar but behave differently.
+
+Pass-by-Reference
+In true pass-by-reference (found in languages like C++), the function parameter becomes 
+an alias for the original variable. This means:
+•   Any operation on the parameter (including reassignment) affects the original variable
+•   You're passing a reference to the variable itself, not just to the value it contains
+
+Pass-by-Object-Reference (Python's model)
+In Python's pass-by-object-reference:
+•   Python passes a reference to the object that a variable points to
+•   The parameter becomes a new variable that references the same object
+•   Reassigning the parameter will not affect the original variable
+•   Mutating the object (if mutable) will affect all variables that reference it
