@@ -163,7 +163,7 @@ How do you determine lengths? `len()`
 
 ### Using [] to Update Elements: 
 
-Since they are mutable, lists and dictionaries let you use the `[]` operator to replace collection elements. As you might expect, lists use indexes to update elements, while dictionaries use keys. You cannot use `[]` to create new list elements, but you can do so with dictionaries. (Append is what you use with lists, which adds a single element to the end of a list.)
+Since they are mutable, lists and dictionaries let you use the `[]` operator to replace collection elements. As you might expect, lists use indexes to update elements, while dictionaries use keys. You cannot use `[]` to create new list elements, but you can do so with dictionaries. (`append` is what you use with lists, which adds a single element to the end of a list.)
 
 ### Expressions vs Statements:
 
