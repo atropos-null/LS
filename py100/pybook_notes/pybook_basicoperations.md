@@ -173,7 +173,7 @@ Statements often represent bigger chunks of functionality like loops or conditio
 
 **What types can be called an expression?** Literals, Variable references (when previously defined), arithmetic operations, comparison operations, string operations, function calls.
 
-**What types can be called a statement?** Assignment, control flow (if, else, elif, while, for etc), return statements, import statements.
+**What types can be called a statement?** Assignment, control flow (`if`, `else`, `elif`, `while`, `for` etc), return statements, import statements.
 
 ```python
 my_number = 3
