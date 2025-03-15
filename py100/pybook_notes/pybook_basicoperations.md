@@ -41,10 +41,10 @@ If a and b have different data types, `a == b` usually returns False while `a !=
 ### Ordered Comparison:
 
 ```
- < : less than 
- <= : less than or equal to 
- > : greater than
- >= : greater than or equal to
+< : less than 
+<= : less than or equal to 
+> : greater than
+>= : greater than or equal to
 ```
 
 Strings are compared lexicographically, which means they are compared character-by-character from left-to-right. Only the first character of each string gets compared. When Python compares two strings that are equal up to the length of the shorter string, then the shorter string is deemed to be less than the longer string. When comparing strings, Python stops as soon as it makes a decision, so not all of the length may be checked. Every uppercase letter is less than every lowercase letter; numeric characters in a string are less than alphabetic characters. Strings with numbers in them are compared character by character.
