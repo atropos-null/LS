@@ -1,8 +1,6 @@
 # Data Types
 
-What are the four primitive data types? Floats, Integers, Bools, and Strings.
-
-What four types of data sets are mutable? Lists, Dictionaries, Sets, and Functions.
+What are the four primitive data types? Floats, Integers, Bools, and Strings. What four types of data sets are mutable? Lists, Dictionaries, Sets, and Functions.
 
 A literal is any syntactic notation that lets you directly represent an object in source code. 
 
@@ -25,7 +23,7 @@ What is the difference between text sequence and ordinary sequence?  Ordinary se
 Triple quotes are often used for multi-line strings and a special kind of comment 
 The backslash, or escape character `\`, tells the computer that the next character isn't syntactic but is part of the string. Escaping a quote prevents Python from seeing it as the string's end.
 
-#### Raw string literals
+### Raw string literals
 
 String literals with an r prefix are raw string literals. Raw string literals don't recognize escapes, so you can use literal `\` characters freely.
 
@@ -73,7 +71,7 @@ goes from 1 through 9 with a step of 2 between the numbers. On the other hand,
 `range(0, -5, -1)` goes from 0 through -4 with a step of -1. This results in a range 
 that goes from the highest value to the lowest.
 
-#### Mappings, Dictionaries
+### Mappings, Dictionaries
 
 Mappings represent an unordered collection of objects stored as key-value 
 pairs. Each key (usually a string) provides a unique identifier for a specific object 
@@ -81,7 +79,7 @@ in the mapping. The value is the object associated with that key. Essentially, a
 dictionary is a collection of key-value pairs. Dictionaries, in particular, are unordered 
 collections in which insertion order is preserved.
 
-###Sets
+### Sets
 
 Sets represent an unordered collection of unique objects; the objects are sometimes called 
 the members of the set. Sets are similar to mappings, except instead of using keys and 

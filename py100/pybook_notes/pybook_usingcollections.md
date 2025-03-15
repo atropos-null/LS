@@ -59,7 +59,7 @@ print(my_dict['xyz'])
 
 ### Common Collection Operations, Non-Mutating Operations for Collections
 
-```in/not in``: Returns True or False
+`in/not in`: Returns True or False
 
 ```python
 seq = [4, 'abcdef', (True, False, None)]

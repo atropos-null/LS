@@ -2,7 +2,7 @@
 
 The simplest conditionals use a combination of if statements with comparison and logical operators(`<`, `>`, `<=`, `>=`, `==`, `!=`, `and`, `or`, and `not`) to direct traffic. They use the keywords `if`, `elif`, and `else`.
 
-We recommend avoiding nested if statements when possible. They quickly become difficult to read with multiple levels of nesting or longish code blocks. However, don't get twisted up trying to avoid them entirely. Keep the nesting to a modest 2 or 3 levels deep and use functions to isolate some of the more complex code.
+Avoid nested if statements when possible. They quickly become difficult to read with multiple levels of nesting or longish code blocks. However, don't get twisted up trying to avoid them entirely. Keep the nesting to a modest 2 or 3 levels deep and use functions to isolate some of the more complex code.
 
 You can have as many `elif` blocks as you need, but they all need to be after the if block and, if the code has one, before the `else` block. The elif conditionals are evaluated in the order they appear in the code.
 
