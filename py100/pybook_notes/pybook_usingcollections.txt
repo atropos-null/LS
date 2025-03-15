@@ -141,6 +141,17 @@ print(keys)    # dict_keys(['Pete', 'Clare', 'Max'])
 print(values)
 # dict_values(['345-6789', '555-6666', '123-4567'])
 
+To add a dictionary to another dictionary:
+
+The update() method in Python is used with dictionaries and sets to update the content 
+of the dictionary or set with elements from another dictionary, set, or an iterable of 
+key-value pairs or elements.
+
+ages = {'Herman': 32, 'Lily': 30, 'Grandpa': 5843, 'Eddie': 10}
+additional_ages = {'Marilyn': 22, 'Spot': 237}
+ages.update(additional_ages)
+print(ages)
+
 Useful for lists:
 
 Adding to a list: append(), insert(), extend()
@@ -158,6 +169,13 @@ numbers.insert(-3, 33)  # Insert 33 before the 3rd element from the end.
 
 seq.extend appends the contents of an iterable sequence to the calling iterable sequence.
 
+One can also use the + operator to concatenate two lists. This operation merges 
+the second list into the first one, producing a new combined list.
+
+print([1, 2, 3] + [4, 5])
+[1, 2, 3, 4, 5]
+
+
 Deleting from list: remove(), pop(), clear()
 
 seq.remove searches a sequence for a specific object and removes the first occurrence of 
@@ -173,6 +191,17 @@ print(my_list.pop(1))         # 4
 print(my_list.pop())          # 10
 
 seq.clear removes all elements from a sequence, leaving it empty.
+
+del and pop() in Python are not equivalent, but they can be used to achieve similar 
+results in some cases. del is a statement used to delete an item from a list or a 
+variable entirely. For example, del my_list[2] would remove the item at index 2 from 
+my_list. 
+
+pop() is a method that removes an item from a list and returns it. For example, 
+my_list.pop(2) would remove the item at index 2 from my_list and return it.
+
+So, if you need to remove an item and use it later, pop() is the way to go. If you just 
+want to remove an item and don’t need to use it, del is a good choice.
 
 Sorting: both mutable and immutable
 
@@ -241,8 +270,9 @@ s = 'hello'
 reversed_s = s[::-1]
 print(reversed_s)  # Outputs: 'olleh'
 
-get() method is used to retrieve the value for a given key from a dictionary. If the key is not present in the dictionary, 
-the get() method returns a default value. By default, this value is None
+get() method is used to retrieve the value for a given key from a dictionary. If the key 
+is not present in the dictionary, the get() method returns a default value. By default, 
+this value is None
 
 STRING MFING Operations
 

@@ -75,6 +75,7 @@ Shallow vs Deep Copies:
 Most copies created by Python programs are shallow copies. Deep copies just aren't 
 needed all that often. The copy.copy and copy.deepcopy functions from the built-in 
 copy module are Python's primary ways to create shallow and deep copies, respectively.
+Therefore, using a changing an element in a shallow results in changing the original.
 
 [[1, 2], 3, 4] #this mfer
 As we discussed earlier, this object gets created in the heap. However, we assumed that 
@@ -109,3 +110,29 @@ you don't care if the mutable components of an object are shared.
 
 You should use deep copies when shallow copies are not okay. In particular, they work best 
 when working with collections that have mutable elements, e.g., nested lists.
+
+To reiterate on deep vs shallow copy:
+
+Referencing this code:
+
+my_list1 = [{"first": "value1"}, {"second": "value2"}, 3, 4, 5]
+my_list2 = my_list1.copy()
+my_list2[0]['first'] = 42
+print(my_list1)
+
+A deep copy makes a duplicate of every item in an existing list. In particular, it creates 
+completely new instances of any nested objects in the source. If we performed a deep copy 
+on my_list1, using a deepcopy() function we would have two different lists and four 
+separate dictionaries.
+
+We'll only have 3 integers, however, due to optimizations performed by Python with 
+immutable values. We'll talk about what that is in a later course.
+
+A shallow copy only makes a duplicate of the outermost values in an object. If we perform 
+a shallow copy on my_list1, we end up with two different lists, but we still only have 
+one occurrence each of { first: 42 } and { second: 'value2' }. In this case, both 
+my_list1[0] and my_list2[0] point to the same dictionary in memory. Likewise, 
+my_list1[1] and my_list2[1] point to the { second: 'value2' } dictionary.
+
+The copy() function performs shallow copies. 
+
