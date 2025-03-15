@@ -1,21 +1,22 @@
-##### Basic Operations
+#### Basic Operations
 
-### Arithmetic operations:
+## Arithmetic operations:
 
-**Operator**    **Operation**
-`+`            Addition
-`-`            Subtraction
-`*`            Multiplication
-`/`            Division
-`//`           Integer division
-`%`            Modulo
-`**`           Exponentiation
+```
++            Addition
+-            Subtraction
+*            Multiplication
+/            Division
+//           Integer division
+%            Modulo
+**           Exponentiation
+```
 
 The `//` operator returns the largest whole number less than or equal to the floating point result. That is, it rounds the result down to the nearest whole number. The `//` operator doesn't work with the built-in complex numbers. A single `/` always returns a floating point number.
 
 The `%` operator is usually used to calculate the remainder of dividing two integers. The result has the same sign as the divisor.
 
-Floating point, early thoughts: Note that you should always use strings with decimal.Decimal
+Floating point, early thoughts: Note that you should always use strings with decimal.
 
 ```python
 import math
@@ -30,8 +31,8 @@ Decimal('0.1') + Decimal('0.2') == Decimal('0.3')
 
 ## Equality Comparison: == and !=
 
-> `==` compares two operands for equality and returns True or False as appropriate. 
-> `!=` returns True if they are not equal, False otherwise.
+ `==` compares two operands for equality and returns True or False as appropriate. 
+ `!=` returns True if they are not equal, False otherwise.
 
 _The operators `==` and `!=` work with almost all data types._
 
@@ -39,16 +40,18 @@ If a and b have different data types, `a == b` usually returns False while `a !=
 
 ## Ordered Comparison:
 
-> `<` : less than 
-> `<=` : less than or equal to 
-> `>` : greater than
-> `>=` : greater than or equal to
+```
+ `<` : less than 
+ `<=` : less than or equal to 
+ `>` : greater than
+ `>=` : greater than or equal to
+```
 
 Strings are compared lexicographically, which means they are compared character-by-character from left-to-right. Only the first character of each string gets compared. When Python compares two strings that are equal up to the length of the shorter string, then the shorter string is deemed to be less than the longer string. When comparing strings, Python stops as soon as it makes a decision, so not all of the length may be checked. Every uppercase letter is less than every lowercase letter; numeric characters in a string are less than alphabetic characters. Strings with numbers in them are compared character by character.
 
 Comparison can be used to evaluate sets and subsets as well as lists and tuples.
 
-### String Concatenation:
+## String Concatenation:
 
 _Because it's strings and not numbers_
 
@@ -66,7 +69,7 @@ print(3 * 'abc')              # 'abcabcabc'
 
 ### Coercion: Making a variable switch types
 
-#### Explicit Coercion:
+## Explicit Coercion:
 
 ```python
 int('5')             # 5
@@ -75,17 +78,19 @@ str(5)
 str(3.141592)
 ```
 
-#### Implicit Coercion:
+## Implicit Coercion:
 
 For instance, when you use `print()` to print an object -- any object -- print will _implicitly coerce_ it to a string before printing it.
 
 **Type A    Type B       Result type**
+```
 int         float        float
 int         Decimal      Decimal
 int         Fraction     Fraction
 float       Decimal      --error--
 float       Fraction     float
 Decimal     Fraction     --error--
+```
 
 #### (Unnecessary) Explicit coercion
 
@@ -162,9 +167,7 @@ Since they are mutable, lists and dictionaries let you use the `[]` operator to 
 
 ## Expressions vs Statements:
 
-Expressions always return a value; statements do not.
-
-Expressions are often part of statements. For example, in the statement `y = x + 5`, `x + 5` is an expression.
+Expressions always return a value; statements do not. Expressions are often part of statements. For example, in the statement `y = x + 5`, `x + 5` is an expression.
 
 Statements often represent bigger chunks of functionality like loops or conditionals; expressions deal with determining values.
 
