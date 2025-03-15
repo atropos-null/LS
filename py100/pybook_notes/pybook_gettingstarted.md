@@ -78,7 +78,8 @@ That said, you should use backslash continuations sparingly, and only where they
 rm -R {folder}
 
 ### Suggested links:
-
+```
 [Python Documentation, main](https://www.python.org/doc/)
 [Python Documentation, reference](https://docs.python.org/3/reference/index.html)
 [Python Documentation, libraries](https://docs.python.org/3/library/index.html)
+```
