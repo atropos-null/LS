@@ -1,6 +1,6 @@
 # Basic Operations
 
-## Arithmetic operations:
+### Arithmetic operations:
 
 ```
 +            Addition
@@ -29,7 +29,7 @@ Decimal('0.1') + Decimal('0.2') == Decimal('0.3')
 # True
 ```
 
-## Equality Comparison: == and !=
+### Equality Comparison: == and !=
 
  `==` compares two operands for equality and returns True or False as appropriate. 
  `!=` returns True if they are not equal, False otherwise.
@@ -38,7 +38,7 @@ _The operators `==` and `!=` work with almost all data types._
 
 If a and b have different data types, `a == b` usually returns False while `a != b` returns True. However, numbers are an exception: all built-in and standard number types can be compared for equality without regard to their specific types. Thus, `1 == 1.0` is True.
 
-## Ordered Comparison:
+### Ordered Comparison:
 
 ```
  `<` : less than 
@@ -51,7 +51,7 @@ Strings are compared lexicographically, which means they are compared character-
 
 Comparison can be used to evaluate sets and subsets as well as lists and tuples.
 
-## String Concatenation:
+### String Concatenation:
 
 _Because it's strings and not numbers_
 
@@ -69,7 +69,7 @@ print(3 * 'abc')              # 'abcabcabc'
 
 ### Coercion: Making a variable switch types
 
-## Explicit Coercion:
+#### Explicit Coercion:
 
 ```python
 int('5')             # 5
@@ -78,7 +78,7 @@ str(5)
 str(3.141592)
 ```
 
-## Implicit Coercion:
+#### Implicit Coercion:
 
 For instance, when you use `print()` to print an object -- any object -- print will _implicitly coerce_ it to a string before printing it.
 
@@ -156,16 +156,16 @@ print(isinstance([], set))       # False
 `str()` is used for creating a human-readable representation of an object.
 `repr()` is used for creating a more detailed and unambiguous representation of an object, useful for debugging.
 
-## Collection and String Lengths:
+#### Collection and String Lengths:
 
 What collection types have lengths? strings, sequences, mappings, and sets
 How do you determine lengths? `len()`
 
-### Using [] to Update Elements: 
+#### Using [] to Update Elements: 
 
 Since they are mutable, lists and dictionaries let you use the `[]` operator to replace collection elements. As you might expect, lists use indexes to update elements, while dictionaries use keys. You cannot use `[]` to create new list elements, but you can do so with dictionaries. (Append is what you use with lists, which adds a single element to the end of a list.)
 
-## Expressions vs Statements:
+#### Expressions vs Statements:
 
 Expressions always return a value; statements do not. Expressions are often part of statements. For example, in the statement `y = x + 5`, `x + 5` is an expression.
 
