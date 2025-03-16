@@ -1,8 +1,10 @@
+# Introduction to Collecions
+
 Collections are objects that contain zero or more member objects, often called elements. 
 There are 3 main categories of collection: sequences, mappings, and sets.
 
 Lists and tuples differ only in that lists are mutable; tuples are not. 
-List literals use []; tuple literals use (). The set collections differ similarly: 
+List literals use `[]`; tuple literals use `()`. The set collections differ similarly: 
 sets are mutable; frozen sets are not.
 
 Sequences are types that maintain an ordered collection of objects (also: elements 
@@ -23,8 +25,8 @@ Strings are not actual collections since the characters inside the string aren't
 
 Sets are types that maintain an unordered collection of unique objects (also called 
 elements or members). Unlike sequences, sets cannot be indexed. Unordered means no 
-well-defined order exists for the objects in a set. In fact, the sets {1, 2, 3} and
-{3, 1, 2} are equal since the order doesn't matter. By unique, we mean a set can not 
+well-defined order exists for the objects in a set. In fact, the sets `{1, 2, 3}` and
+`{3, 1, 2}` are equal since the order doesn't matter. By unique, we mean a set can not 
 have duplicate members.
 
 Python has two main built-in set types: sets and frozen sets. Regular sets are mutable; 
@@ -32,6 +34,7 @@ frozen sets are immutable. This is the only significant difference between the t
 
 Frozen sets and tuples are both immutable data structures in Python, meaning their 
 contents cannot be changed after creation. However, they have some key differences:
+
 1.  Order:
    •   Tuples maintain a specific order of elements and can be accessed by index.
    •   Frozen sets, like regular sets, are unordered collections. They don't support indexing.
@@ -48,10 +51,10 @@ contents cannot be changed after creation. However, they have some key differenc
    •   Both tuples and frozen sets are hashable, meaning they can be used as dictionary 
    keys or elements in other sets.
 
-   the choice between a frozen set and a tuple depends on your specific use case. If 
-   you need an ordered, immutable sequence that can contain duplicates, use a tuple. 
-   If you need an immutable collection of unique elements where order doesn't matter, 
-   use a frozen set.
+The choice between a frozen set and a tuple depends on your specific use case. If 
+you need an ordered, immutable sequence that can contain duplicates, use a tuple. 
+If you need an immutable collection of unique elements where order doesn't matter, 
+use a frozen set.
 
 Mappings are types that maintain an unordered collection of key/value pairs (also called 
 elements or members). Unlike sequences, mappings are accessed by their keys, which usually 
@@ -74,14 +77,15 @@ They are unordered collections, however Python processes them in an ordered fash
 
 Sequence Constructors:
 
-str(): Regardless of what you pass to str, it returns a string.
+`str()`: Regardless of what you pass to `str`, it returns a string.
 
-range(start, stop, step)
+`range(start, stop, step)`
 
 This constructor generates a sequence of integers between start and stop - 1 with an 
 increment of step between each consecutive integer. You can use a negative step to 
 generate a sequence in reverse order.
 
+```python
 r = range(5, 12, 2)
 print(list(r))            # [5, 7, 9, 11]
 
@@ -90,20 +94,16 @@ print(list(r))            # [12, 11, 10, 9]
 
 r = range(12, 5, -2)
 print(list(r))            # [12, 10, 8, 6]
+```
 
-The most important thing to observe here is that ranges never include the "stop" value, so the one 
-before the stop value is the one printed. Furthermore, a negative step value counts downwards from 
-the start to the stop value. Thus, the start value should typically be larger than the stop value 
-when the step value is negative.You can create empty ranges by giving values where 
-start >= stop when step is positive or start <= stop when step is negative. Empty ranges are often 
-bugs.
+The most important thing to observe here is that ranges never include the "stop" value, so the one before the stop value is the one printed. Furthermore, a negative step value counts downwards from the start to the stop value. Thus, the start value should typically be larger than the stop value when the step value is negative.You can create empty ranges by giving values where start >= stop when step is positive or start <= stop when step is negative. Empty ranges are often bugs.
 
-range(start, stop)
+`range(start, stop)`
 
 When you omit the step argument, Python uses a default value of 1. Hence, 
 range(start, stop) is identical to range(start, stop, 1).
 
-range(stop)
+`range(stop)`
 
 When you omit the start argument, Python uses a default value of 0 for start. Hence, 
 range(stop) is identical to range(0, stop, 1).
