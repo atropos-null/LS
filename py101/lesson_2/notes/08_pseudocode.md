@@ -1,4 +1,6 @@
-Pseudocode, on the other hand, is for humans.
+## Pseudocode
+
+Pseudocode is for humans.
 
 By using Pseudocode, we don't start writing code from the beginning, but instead try to 
 load the problem into our brain first.
@@ -8,6 +10,8 @@ When coding, there are two fundamental things going on:
 2) The syntactical programming language layer. <- The actual programming language.
 
 The problem with pseudocode, however, is that we cannot verify its logic. 
+
+##### Useful Words to use in pseudocode
 
 Keyword	        Meaning
 START	        start of the program

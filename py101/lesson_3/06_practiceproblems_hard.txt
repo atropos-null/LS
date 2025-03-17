@@ -1,0 +1,28 @@
+1) Will it return the same results?
+
+def first():
+    return {
+        'prop1': "hi there",
+    }
+
+def second():
+    return
+    {
+        'prop1': "hi there",
+    }
+print(first())
+print(second())
+
+My answer: Yes
+
+Actual Answer: In Python, the return statement ends the execution of a function and 
+sends a value back to the caller. In the second function, the return statement is 
+followed by a newline, so the function returns None before reaching the dictionary. 
+Therefore, the two functions will not return the same results. 
+
+return {
+
+!=
+
+return 
+{

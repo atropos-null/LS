@@ -1,3 +1,5 @@
+## More Coding Tips
+
 Making your code readable is of paramount importance, not only for others but for your 
 future self. 
 

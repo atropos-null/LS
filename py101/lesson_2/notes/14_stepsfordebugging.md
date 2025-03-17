@@ -1,3 +1,5 @@
+## Steps for Debugging
+
 1) Reproduce the error.
 
 Programmers need a deterministic way to reproduce the problem consistently, and only then 

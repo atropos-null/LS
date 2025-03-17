@@ -1,10 +1,12 @@
+## Flow Charts
+
 Flow Chart Symbols:
 
-Oval: Start/Stop
-Rectangle: Processing Step
-Parallelogram: Input/output
-Diamond: Decision
-Circle: Connector
+**Oval**: Start/Stop
+**Rectangle**: Processing Step
+**Parallelogram**: Input/output
+**Diamond**: Decision
+**Circle**: Connector
 
 Note that the decision (the diamond) components should only have two branches. If you have 
 a decision with 3 (or more) branches, use separate diamonds for each branch.
