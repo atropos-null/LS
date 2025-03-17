@@ -83,4 +83,5 @@ main()
 My answer: "I don't think its going to do shit" Which wasn't _wrong_ but wasn't specific.
 
 Actual answer: In Python, referencing an uninitialized variable will result in a NameError
-being raised. This is because the if block is not executed due to the False condition, and hence, the greeting variable is never initialized.
+being raised. This is because the if block is not executed due to the False condition, and 
+hence, the greeting variable is never initialized.
