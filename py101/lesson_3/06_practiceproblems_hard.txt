@@ -26,3 +26,61 @@ return {
 
 return 
 {
+
+Question 2:
+
+What does the last line in the following code output?
+
+dictionary = {'first': [1]}
+num_list = dictionary['first']
+num_list.append(2)
+
+print(num_list)
+print(dictionary)
+
+Answer: 
+
+[1, 2]
+{'first': [1, 2]}
+
+Question 3a:
+
+My answer: three, two, one
+Actual Answer: one, two, three
+
+3b: 
+My answer: two, three, one
+Actual Answer: one, two, three
+
+3c:
+Answer: two, three, one
+
+4)
+
+def main():
+    input_string = input("What's your ip address? ")
+    result = is_dot_separated_ip_address(input_string)
+    print(result)
+
+def is_dot_separated_ip_address(input_string):
+    dot_separated_words = input_string.split(".")
+    while len(dot_separated_words) > 0 and len(dot_separated_words) < 5: #!= 4 is better
+        word = dot_separated_words.pop()
+        if not is_an_ip_number(word):
+            return False
+    return True
+
+def is_an_ip_number(str):
+    if str.isdigit():
+        number = int(str)
+        return 0 <= number <= 255
+    return False
+
+main()
+
+5)
+
+My answer: "I don't think its going to do shit" Which wasn't _wrong_ but wasn't specific.
+
+Actual answer: In Python, referencing an uninitialized variable will result in a NameError
+being raised. This is because the if block is not executed due to the False condition, and hence, the greeting variable is never initialized.
