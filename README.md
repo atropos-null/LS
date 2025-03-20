@@ -1,6 +1,9 @@
 # LS
-Launch School repository
+Launch School Repository
 
-Working: PY101
+Working: PY109
 
-Completed: PY100 - 2025-02-22
+Completed:  
+
+PY100 - 2025-02-22
+PY101 - 2025-03-17
