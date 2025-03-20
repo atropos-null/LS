@@ -727,7 +727,7 @@ Python" in "Hello, World!"  # False
 
 ***
 
-## Booleans, Booleeans vs. Truthiness and None
+## Booleans, Booleans vs. Truthiness and None
 
 ### Boolean vs. Truthiness
 
@@ -863,18 +863,21 @@ print("hello" and "world") # Returns "world" (the last value since both are trut
 print("" and "world")      # Returns "" (the first falsy value)
 ```
 
-##### How `and` works 
+#### How `and` works 
 
-**First Result	Second Result	Total Result**
-True	        True	        True
-True	        False	        False
-False	        N/A (not run)	False
+|First Result|Second Result|Total Result|
+|------------|-------------|------------|
+|True        |True         |True        |
+|True        |False        |False       |
+|False       |N/A (not run)|False       |
 
-##### How `or` works 
-**First Result	Second Result	Total Result**
-True	        N/A (not run)	True
-False	        True	        True
-False	        False	        False
+#### How `or` works 
+
+|First Result|Second Result|Total Result|
+|------------|-------------|------------|
+|True	     |N/A (not run)|True        |
+|False	     |True	       |True        |
+|False	     |False	       |False       |
 
 credit for [table](https://www.pythonmorsels.com/short-circuit-evaluation/)
 
@@ -2007,7 +2010,7 @@ How to Differentiate Between Collections:
 | Set        | No       | Yes      | No                 | No             | {1, 2, 3}        |
 | Range      | Yes      | No       | No                 | Yes            | range(1, 4)      |
 
-When to Use Each Collection
+**When to Use Each Collection**
 * ​Lists​: When you need a mutable, ordered collection that can contain duplicate items
 * ​Dictionaries​: When you need key-value pairs for quick lookups
 * Tuples​: When you want an immutable ordered collection
