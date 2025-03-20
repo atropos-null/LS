@@ -136,7 +136,7 @@ message = f"Name: {name}, Age: {age}"  # Values converted to strings
 
 Boolean values are implicitly converted to integers (1 for True, 0 for False) in arithmetic operations. When using f-strings, Python implicitly converts values to strings.
 
-**Important Non-Coercion Cases**
+#### Important Non-Coercion Cases**
 
 Some operations that look like implicit coercion aren't actually considered coercion:
 
@@ -196,11 +196,9 @@ my_dict = dict(enumerate(my_list))  # Explicit conversion needed
 * Any non-zero number to boolean: `bool(42`), `bool(-1)` convert to `True` ✓
 * None to boolean: `bool(None)` converts to `False` ✓
 
-#### Special Cases
+#### Special Numeric Conversions
 
 Special Cases are a doozy and there's a lot of them.
-
-**Special Numeric Conversions**
 
 1.  ​NaN (Not a Number)
    * Created with `float('nan')`
@@ -576,7 +574,7 @@ print("Hello, {name}. You are {age} years old.".format(name="Bob", age=25))
 print("Pi rounded to 3 decimal places: {pi:.3f}".format(pi=3.14159))
 ```
 
-**When to Use Each**:
+#### When to Use Each**:
 
 * F-strings are generally preferred in modern Python code due to their readability and performance
 * The `.format()` method is still widely used, especially in older code
@@ -585,7 +583,7 @@ print("Pi rounded to 3 decimal places: {pi:.3f}".format(pi=3.14159))
 
 ### String Methods
 
-**Case Modification Methods**
+#### Case Modification Methods**
 
 Case Modification Methods are: 
     * ​`.capitalize()`, `.upper()`, `.lower()`, `.swapcase()`, `.title()`
@@ -608,7 +606,7 @@ Case Modification Methods are:
 `​.title()`​: Capitalizes the first letter of each word 
 `'launch school tech & talk'.title()  # 'Launch School Tech & Talk'`
 
-**Character Testing Methods**
+#### Character Testing Methods**
 
 Character Testing Methods are:
     * `​.isalpha()`, `.isdigit()`, `.isalnum()`, `.islower()`, `.isupper()`, `.isspace()`
@@ -654,7 +652,7 @@ Character Testing Methods are:
 'hello'.isspace()  # False
 ```
 
-**String Modification Methods**
+#### String Modification Methods
 
 String modification methods are:
     * `.strip()`, `.rstrip()`, `.lstrip()`
@@ -680,7 +678,7 @@ String modification methods are:
     * Replaces all occurrences unless limited by the count parameter
     * Returns the original string if the substring to replace isn't found
 
-**Search and Split Methods**
+#### Search and Split Methods
 
 `​.split()`​: Splits string into a list of substrings based on a delimiter
 ```python
@@ -881,7 +879,7 @@ print("" and "world")      # Returns "" (the first falsy value)
 
 credit for [table](https://www.pythonmorsels.com/short-circuit-evaluation/)
 
-**Logical Operator Precedence**:
+#### Logical Operator Precedence**:
 
 In Python, the logical operators have different precedence levels:
 
@@ -1022,7 +1020,7 @@ print(list1)  # [1, 2, 3, 4, 5, 6]
 
 ### Comparison Operators: `==`, `!=`, `<`, `>`, `<=`, `>=`
 
-**Basic Comparison Operators**
+#### Basic Comparison Operators**
 
 * ​Equal (`==`)​: Tests if two values are equal
 * Not Equal (`!=`)​: Tests if two values are not equal
@@ -1031,7 +1029,7 @@ print(list1)  # [1, 2, 3, 4, 5, 6]
 * Less Than or Equal (`<=`)​: Tests if left value is less than or equal to right value
 * Greater Than or Equal (`>=`)​: Tests if left value is greater than or equal to right value
 
-**Comparing Different Types**
+#### Comparing Different Types**
 
 * Numbers of different types (int, float) can be compared directly
 * Strings are compared lexicographically (dictionary order)
@@ -1049,7 +1047,7 @@ print(list1)  # [1, 2, 3, 4, 5, 6]
 # Different types
 "5" == 5      # False (string vs int)
 ```
-**Truthiness vs. Boolean Values**
+#### Truthiness vs. Boolean Values**
 Remember the distinction between truthiness and actual boolean values:
 ```python
 
@@ -1061,7 +1059,7 @@ bool("") == False   # True (empty string converts to False)
 "" == False         # False (empty string and False are different values)
 ```
 
-**Chained Comparisons**
+#### Chained Comparisons**
 
 Python allows comparison chaining:
 ```python
@@ -1072,7 +1070,7 @@ x > y > z
 x > y and y > z
 ```
 
-**Identity vs. Equality**
+#### Identity vs. Equality**
 
 Don't confuse `==` (equality) with `is` (identity):
 * `==` checks if values are equal
@@ -1110,7 +1108,7 @@ print(empty_list_1 == empty_list_2)  # True - same values
 print(empty_list_1 is empty_list_2)  # False - different objects
 ```
 
-**Object Interning**
+#### Object Interning**
 
 Python might reuse memory addresses for certain immutable objects like small integers or short strings. This is called "interning" and is an implementation detail of Python for optimization.
 
@@ -1292,7 +1290,7 @@ range(1, 5)  # Incorrect: missing 5
 `range(10, 0, -1)  # 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 (no 0)`
 
 
-**Understanding the Difference Between range(5) and list(range(5))**
+#### Understanding the Difference Between range(5) and list(range(5))
 
 The key differencesare in their type, memory usage, and behavior:
 
@@ -1551,8 +1549,7 @@ print(my_list[2:])     # ['c', 'd', 'e'] (omitting end means to the end)
 print(my_list[::2])    # ['a', 'c', 'e'] (step of 2)
 print(my_list[::-1])   # ['e', 'd', 'c', 'b', 'a'] (negative step reverses)
 ```
-
-**List Methods**
+#### List Methods
 
 **Adding Elements**
 * `append(item)`: Adds a single element to the end of the list. This method modifies the list in-place and returns `None`.
@@ -1937,7 +1934,7 @@ if 'model' not in car.keys():  # or simply: if 'model' not in car:
     car['model'] = 'standard'
 ```
 
-Here's a quick syntax review:
+#### Here's a quick syntax review:
 
 ```python
 
@@ -1998,19 +1995,49 @@ These objects CANNOT be included in sets:
 * Dictionaries: {{1: 'a'}, {2: 'b'}} 
 * Sets: {{1, 2}, {3, 4}} 
 
+But wait! There's more! There are frozen sets!
+
+A **frozen set** is an immutable version of a regular set. Once created, you cannot modify its contents - no adding, removing, or changing elements. Frozen sets are significant because their immutability makes them hashable, which means:
+
+Key Characteristics​:
+* Immutable (cannot be changed after creation)
+* Unordered collection of unique elements
+* Can only contain immutable (hashable) objects
+    * making them useful as dictionary keys
+    * make them useful as elements in other sets
+* Created using the frozenset() constructor function
+* Supports all set operations that don't modify the set (intersection, union, etc.)
+
+```python
+# Creating a frozen set
+frozen_colors = frozenset(["red", "blue", "green"])
+
+# Attempting to modify will cause errors
+frozen_colors.add("yellow")  # AttributeError!
+```
+Keep in mind:
+* frozen sets are  useful when you need an immutable collection of unique items
+* They support methods like isdisjoint(), issubset(), and issuperset()
+* They can be created from any iterable (lists, tuples, regular sets, etc.)
+* They cannot be modified after creation
+
+The key difference between sets and frozensets is their mutability. While **both are unordered collections of unique** elements, **regular sets can be modified **after creation, whereas **frozensets are immutable**. This immutability makes frozensets hashable, so they can be used as dictionary keys or as elements in other sets.
+
 3. Ranges (See Above)
 
 How to Differentiate Between Collections:
 
-| Collection | Ordered? | Mutable? | Allows Duplicates? | Indexable?     | Syntax             |
-| ---------- | -------- | -------- | ------------------ | -------------- | ------------------ |
-| List       | Yes      | Yes      | Yes                | Yes            | [1, 2, 3]        |
-| Dictionary | Yes*     | Yes      | No (keys)          | No (uses keys) | {'a': 1, 'b': 2} |
-| Tuple      | Yes      | No       | Yes                | Yes            | (1, 2, 3)        |
-| Set        | No       | Yes      | No                 | No             | {1, 2, 3}        |
-| Range      | Yes      | No       | No                 | Yes            | range(1, 4)      |
+| Collection | Ordered? | Mutable? | Allows Duplicates? | Indexable?     | Syntax                 |
+| ---------- | -------- | -------- | ------------------ | -------------- | ---------------------- |
+| List       | Yes      | Yes      | Yes                | Yes            | [1, 2, 3]            |
+| Dictionary | Yes*     | Yes      | No (keys)          | No (uses keys) | {'a': 1, 'b': 2}     |
+| Tuple      | Yes      | No       | Yes                | Yes            | (1, 2, 3)            |
+| Set        | No       | Yes      | No                 | No             | {1, 2, 3}            |
+| Range      | Yes      | No       | No                 | Yes            | range(1, 4)          |
+| Frozenset  | No       | No       | No                 | No             | frozenset([1, 2, 3]) |
 
-**When to Use Each Collection**
+#### When to Use Each Collection
+
 * ​Lists​: When you need a mutable, ordered collection that can contain duplicate items
 * ​Dictionaries​: When you need key-value pairs for quick lookups
 * Tuples​: When you want an immutable ordered collection
@@ -2061,3 +2088,7 @@ mutability and immutability
 
 ***
 pass by object reference
+
+*** 
+hashability
+
