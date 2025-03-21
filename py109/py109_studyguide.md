@@ -9,18 +9,17 @@
 - [Expressions and Statements](#expressions-and-statements)
 - [Functions](#functions)
 - [Numbers](#numbers)
-- [Strings!](#strings!)
-- [Booleans, Booleans vs. Truthiness and None](#booleans,-booleans-vs.-truthiness-and-None)
-- [Boolean Logic Gates, Logical Operators, and Short Circuit Evaluation](#boolean-logic-gates,-logical-operators,-and -short-circuit-evaluation)
+- [Strings](#strings)
+- [Booleans, Booleans vs. Truthiness and None](#booleans-booleans-vs-truthiness-and-none)
+- [Boolean Logic Gates, Logical Operators, and Short Circuit Evaluation](#boolean-logic-gates-logical-operators-and-short-circuit-evaluation)
 - [Operators](#operators)
-- [Type Coercions: explicit (e.g., using int(), str()) and implicit](#type-coercions:-explicit-(e.g.,-using-int(),-str())-and-implicit)
+- [Type Coercions: explicit (e.g., using int(), str()) and implicit](#type-coercions-explicit-eg-using-int-str-and-implicit)
 - [Ranges](#ranges)
 - [Conditionals and Loops](#conditionals-and-loops)
 - [Lists and Dictionaries](#lists-and-dictionaries)
-- [Slicing: Strings, Lists, and Tuples](#slicing:-strings,-lists,-and-tuples)
-- [I/O Functions](#i/o-functions)
-- [Python's Memory Model](#python's-memory-model)
-
+- [Slicing: Strings, Lists, and Tuples](#slicing-strings-lists-and-tuples)
+- [I/O Functions](#io-functions)
+- [Python's Memory Model](#pythons-memory-model)
 
 ***
 
