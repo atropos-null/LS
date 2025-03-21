@@ -118,7 +118,7 @@ greeting = 'Hi'     # Reassignment - greeting now points to a new string object
 
 After reassignment, the variable points to the new object, and if there are no other references to the original object, Python's garbage collector may reclaim that memory.
 
-### Variable Scope**
+### Variable Scope
 
 Variable scope determines where in your code a variable can be accessed:
 
