@@ -248,10 +248,6 @@ Important types:
 
 ### Functions
 
-parameters vs. arguments
-nested functions
-output vs. return values, side effects
-
 **Function Definitions and Calls**
 
 **Function Definition**: A function definition starts with the `def` keyword, followed by the function name, parameters in parentheses, and a colon. The function body is indented below. Functions in Python create a new local scope.
