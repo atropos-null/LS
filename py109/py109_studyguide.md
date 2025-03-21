@@ -2,6 +2,26 @@
 
 [Page Link for the study guide](https://launchschool.com/lessons/1318de4f/assignments/ff1c7aa8)
 
+## Table of Contents
+
+- [Naming Conventions: legal vs. idiomatic, illegal vs. non-idiomatic](#naming-conventions-legal-vs-idiomatic-illegal-vs-non-idiomatic)
+- [Variables](#variables)
+- [Expressions and Statements](#expressions-and-statements)
+- [Functions](#functions)
+- [Numbers](#numbers)
+- [Strings!](#strings!)
+- [Booleans, Booleans vs. Truthiness and None](#booleans,-booleans-vs.-truthiness-and-None)
+- [Boolean Logic Gates, Logical Operators, and Short Circuit Evaluation](#boolean-logic-gates,-logical-operators,-and -short-circuit-evaluation)
+- [Operators](#operators)
+- [Type Coercions: explicit (e.g., using int(), str()) and implicit](#type-coercions:-explicit-(e.g.,-using-int(),-str())-and-implicit)
+- [Ranges](#ranges)
+- [Conditionals and Loops](#conditionals-and-loops)
+- [Lists and Dictionaries](#lists-and-dictionaries)
+- [Slicing: Strings, Lists, and Tuples](#slicing:-strings,-lists,-and-tuples)
+- [I/O Functions](#i/o-functions)
+- [Python's Memory Model](#python's-memory-model)
+
+
 ***
 
 ### Naming Conventions: legal vs. idiomatic, illegal vs. non-idiomatic
@@ -306,7 +326,7 @@ Function names should be in the language of the problem domain (verbs that make 
 
 ***
 
-### Numbers
+## Numbers
 
 **Integers `(int)`**
 
@@ -1034,7 +1054,7 @@ Python first evaluates the function calls left-to-right, then applies operator p
 
 ***
 
-### Type Coercions: explicit (e.g., using int(), str()) and implicit
+## Type Coercions: explicit (e.g., using int(), str()) and implicit
 
 There are two main types of type coercion in Python:
 
@@ -2398,10 +2418,7 @@ Common Mistakes and Pitfalls
 2.  **​IndexError vs. Slicing**​: While `list[6] = 5` would raise an `IndexError` if the list doesn't have 7 elements, slicing like `list[2:6]` will not raise an error even if the list is shorter.
 3.  **​Modifying Slices​**: Modifying a slice of a mutable object doesn't modify the original.
 
-
 ***
-
-
 
 ## I/O Functions
 
