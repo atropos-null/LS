@@ -2179,7 +2179,9 @@ car = {
 car = {k: v for k, v in car.items() if not isinstance(v, int)}
 print(car)  # {'type': 'sedan', 'color': 'blue'}
 ```
+
 Be sure not to remove while iterating through it, instead create a copy or collect keys to remove first.
+
 ```python
 # This will cause unexpected behavior and probably unwanted 
 words = ['scooby', 'do', 'on', 'channel', 'two']
@@ -2227,6 +2229,7 @@ if 88 in grades.values():
 ```
 
 **`dict.items()`**: returns a dict_items object containing all key-value pairs as tuples, and is especially useful for iteration, especially over both keys and values.
+
 ```python
 
 items = car.items()  # dict_items([('type', 'sedan'), ('color', 'blue'), ('year', 2003)])
@@ -2234,7 +2237,8 @@ items = car.items()  # dict_items([('type', 'sedan'), ('color', 'blue'), ('year'
 # Printing each key-value pair
 for key, value in car.items():
     print(f"The car's {key} is {value}.")
-umbers = {
+
+numbers = {
     'high':   100,
     'medium': 50,
     'low':    10,
@@ -2242,7 +2246,9 @@ umbers = {
 
 for key, value in numbers.items():
     print(f"A {key} number is {value}.")
+
 ```
+
 **`dict.get()`**: retrieves a value associated with a key. It is safer than bracket notation because it doesn't raise `KeyError` for missing keys. It provides a clean way to handle missing keys with default values. Can be chained for nested dictionaries: `data.get('user', {}).get('address', {})`
 
 These usually work together!
@@ -2500,7 +2506,6 @@ Common Mistakes and Pitfalls
 
 The `print()` function is used to output data to the console.
 ```python
-# python
 
 # Python 3 (correct)
 print("Hello, Python!")
@@ -2650,6 +2655,7 @@ modified = try_modify_string(user_input)
 print(user_input)  # Original input is unchanged
 print(modified)    # Shows the modified version
 ```
+
 **Global Variables and I/O Functions**
 
 When using `input()` and `print()` inside functions, be aware of scope issues
@@ -2666,6 +2672,7 @@ print(f"Outside function: {name}")  # Still "Default" unless you use 'global nam
 **None and Input Handling**
 
 Understanding how None (a falsy value) interacts with I/O is important:
+
 ```python
 def get_valid_input():
     user_input = input("Enter a number: ")
@@ -2680,10 +2687,6 @@ if result is not None:  # Check for None specifically
 else:
     print("Invalid input")
 ```
-
-***
-exceptions (when they will occur and how to handle them)
-
 
 ***
 
@@ -2995,8 +2998,10 @@ Sometimes different objects can produce the same hash value:
 # These might have the same hash (though unlikely)
 str1 = "ab"
 str2 = "ba"
-When this happens, Python's hash tables handle it through techniques like chaining (storing multiple items in the same bucket).
+
 ```
+
+When this happens, Python's hash tables handle it through techniques like chaining (storing multiple items in the same bucket).
 
 >"A hashable type is a type from which consistent hash values can be computed. A hash function takes an object and returns a hash value, which is used internally in a dictionary to store and retrieve values. Given two identical objects, the hash function must return the same value for both objects."
 
