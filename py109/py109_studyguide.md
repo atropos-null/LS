@@ -117,7 +117,7 @@ greeting = 'Hello'  # Initial assignment
 greeting = 'Hi'     # Reassignment - greeting now points to a new string object
 ```
 
-After reassignment, the variable points to the new object, and if there are no other references to the original object, Python's garbage collector may reclaim that memory.
+After reassignment, the variable points to the new object, and if there are no other references to the original object, Python's garbage collector may reclaim that memory. Stated alternatively: reassignment of a variable never mutates the value it contains, it just pointing to a new, different object.
 
 ### Variable Scope
 
