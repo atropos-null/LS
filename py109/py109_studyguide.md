@@ -20,6 +20,7 @@
 - [Slicing: Strings, Lists, and Tuples](#slicing-strings-lists-and-tuples)
 - [I/O Functions](#io-functions)
 - [Python's Memory Model](#pythons-memory-model)
+- [Exceptions and Exception Handling](#exceptions-and-exception-handling)
 
 ***
 
@@ -43,7 +44,7 @@ Illegal names​ violate these rules, such as:
 Idiomatic naming refers to Python's style guide [PEP8](https://peps.python.org/pep-0008/), while non-idiomatic naming doesn't. According to the ["PY101 - Coding Tips" lesson](https://launchschool.com/lessons/a29e9831/assignments/73146c1c), idiomatic names depend on what you're naming:
 
 * Variables and functions​: Use snake_case (lowercase with underscores)
-* ​Constants​: Use UPPER_SNAKE_CASE (all uppercase with underscores)
+* ​Constants​: Use SCREAMING_SNAKE_CASE (all uppercase with underscores)
 * ​Classes​: Use PascalCase (also called CamelCase or upper CamelCase)
 
 ```python
@@ -95,7 +96,7 @@ Based on the PY109 Study Guide, you might be asked to:
 
 ## Variables
 
-In Python, **variables are names that refer to objects stored in memory**. They work like labels that point to data rather than containers that hold data. 
+In Python, variables are names that refer to objects stored in memory. They work like labels that point to data rather than containers that hold data. 
 
 **Initialization and Assignment**
 
@@ -126,8 +127,10 @@ Variable scope determines where in your code a variable can be accessed:
 
 Variables defined outside any function have global scope and can be accessed throughout your program.
 
-message = 'Global variable'  # Global variable
 ```python
+
+message = 'Global variable'  # Global variable
+
 def some_function():
     print(message)  # Can access the global variable
 
@@ -165,7 +168,9 @@ print(count)  # Prints: 20
 ### Variables as References
 
 In Python, **variables are references to objects, not containers for values**. This distinction is crucial.
-`x = 5  # Creates an integer object with value 5 and points x to it`
+```python
+x = 5  # Creates an integer object with value 5 and points x to it
+```
 
 In memory, this looks something like: Variable x → points to → Integer object with value 5. When you "change" an immutable object, you're actually creating a new object and redirecting the pointer. With mutable objects, you can modify the object itself, affecting all variables that point to it. However, reassignment creates a new pointer.
 
@@ -189,6 +194,7 @@ Key Behaviors of Shadowing
 1.  **​Separate Variables**​: The shadowing variable and the shadowed variable are completely separate - they exist in different scopes and refer to different objects in memory.
 2. **No Modification**​: Shadowing does not modify the original variable - it simply hides it within the local scope.
 3. **​Contrast with `global`**​: Shadowing is different from using the global keyword, which allows you to modify the global variable
+
 
 **Nested Functions and Multiple Levels of Shadowing**
 With nested functions, you can have multiple levels of shadowing
@@ -225,12 +231,12 @@ print(f"global x: {x}")
 An expression is any code that evaluates to a value. 
 
 Key points to understand:
-* ​Simple expressions​: Literals like 5, 'hello', or True
+* ​Simple expressions​: Literals like 5, 'hello', or `True`
 * Variables​: Variable names like my_var evaluate to their current value
-* ​Operators​: Arithmetic (+, -, *, /, //, %, **), comparison (==, !=, <, >, <=, >=), logical (and, or, not), identity (is, is not), and membership (in, not in)
-* ​Function calls​: Calls like len([1, 2, 3]) are expressions
-* ​Method calls​: Things like "hello".upper()
-* ​Compound expressions​: Combinations like (x + y) * z
+* ​Operators​: Arithmetic (`+`, `-`, `*`, `/`, `//`, `%`, `**`), comparison (`==`, `!=`, `<`, `>`, `<=`, `>=`), logical (`and`, `or`, `not`), identity (`is`, `is not`), and membership (`in`, `not in`)
+* ​Function calls​: Calls like `len([1, 2, 3])` are expressions
+* ​Method calls​: Things like `string.upper()`
+* ​Compound expressions​: Combinations like `(x + y) * z`
 
 #### Statements
 
@@ -259,7 +265,9 @@ def function_name(parameter1, parameter2):
 ```
 
 **Function Call**: When you call a function, you use its name followed by parentheses containing any argument.
-`result = function_name(argument1, argument2)`
+```python
+result = function_name(argument1, argument2)
+```
 
 **Return Values**
 Functions in Python can return values using the return statement:
@@ -280,9 +288,12 @@ def multiply(x, y):  # x and y are parameters
     return x * y
 ```
 
-**Arguments** are the actual values that get passed to the function. `product = multiply(4, 5)  # 4 and 5 are arguments`
+**Arguments** are the actual values that get passed to the function. 
+```python
+product = multiply(4, 5)  # 4 and 5 are arguments
+```
 
-**_Variables are not passed to or returned by functions: only references to objects are passed_**.
+Variables are not passed to or returned by functions: only references to objects are passed.
 
 
 **Nested functions** are functions defined inside other functions.
@@ -299,7 +310,9 @@ Key points about nested functions:
 **Output** refers to displaying information (usually via `print()`), which is a _side effect_ - an action that affects something outside the function.
 
 It's generally best practice to separate functions that return values from functions that have side effects:
+
 >"You should avoid functions that print things and return a useful value... Those are two distinct actions that you may not always want to do together."
+
 
 Additionally, function names should reflect whether they return values or produce side effects:
 * Use names like `display_total`, `print_info`, or `show_results` for functions that output information
@@ -340,6 +353,7 @@ Key points:
 * You can use underscores to make large integers more readable (may cause)
 * Integer division (//) produces another integer, rounding down
 
+
 **Floating-Point Numbers `(float)`**
 
 Floats represent real numbers with decimal points:
@@ -358,6 +372,7 @@ Important considerations:
 
 Standard arithmetic operations may produce unexpected results due to binary floating-point representation:
 ` 0.1 + 0.2  # 0.30000000000000004, not exactly 0.3`
+
 
 **Complex Numbers `(complex)`**
 Complex numbers have a real and imaginary part, where the imaginary part is written with a j suffix:
@@ -413,10 +428,10 @@ profession = "programmer"
 message = f"Hello, {name}. You are a {profession}."
 ```
 Key Features:
-    * Start with f or F prefix before the quotation marks
-    * Expressions in curly braces {} are evaluated at runtime
-    * Can include any valid Python expression inside the braces
-    * More readable and typically faster than other formatting methods
+* Start with `f` before the quotation marks
+* Expressions in curly braces `{}` are evaluated at runtime
+* Can include any valid Python expression inside the braces
+* More readable and typically faster than other formatting methods
 
 **Advanced F-string Techniques**:
 ```python
@@ -448,6 +463,7 @@ Key Features:
 * Values are passed as arguments to the .format() method
 * Arguments fill placeholders in order (unless specified otherwise)
 
+
 **Advanced .format() Techniques**:
 ```python
 
@@ -461,22 +477,22 @@ print("Hello, {name}. You are {age} years old.".format(name="Bob", age=25))
 print("Pi rounded to 3 decimal places: {pi:.3f}".format(pi=3.14159))
 ```
 
-#### When to Use Each**:
+#### When to Use Each:
 
 * F-strings are generally preferred in modern Python code due to their readability and performance
 * The `.format()` method is still widely used, especially in older code
 * Both methods support the same formatting options (precision, alignment, etc.)
-* F-strings can directly use variables from the current scope, while `.format()` requires passing values explicitly.
+* F-strings can directly use variables from the current scope, while `.format()` requires passing values explicitly
 
 ### String Methods
 
-#### Case Modification Methods**
+#### Case Modification Methods
 
 Case Modification Methods are: 
-    * ​`.capitalize()`, `.upper()`, `.lower()`, `.swapcase()`, `.title()`
-    * Work on empty strings without errors (return empty strings)
-    * Handle special characters by leaving them unchanged
-    * With non-alphabetic characters, they focus only on the letters 
+* ​`.capitalize()`, `.upper()`, `.lower()`, `.swapcase()`, `.title()`
+* Work on empty strings without errors (return empty strings)
+* Handle special characters by leaving them unchanged
+* With non-alphabetic characters, they focus only on the letters 
 
 `​.capitalize()​`: Converts the first character to uppercase and the rest to lowercase
 `'hello world'.capitalize()  # 'Hello world'`
@@ -493,15 +509,15 @@ Case Modification Methods are:
 `​.title()`​: Capitalizes the first letter of each word 
 `'launch school tech & talk'.title()  # 'Launch School Tech & Talk'`
 
-#### Character Testing Methods**
+#### Character Testing Methods
 
 Character Testing Methods are:
-    * `​.isalpha()`, `.isdigit()`, `.isalnum()`, `.islower()`, `.isupper()`, `.isspace()`
-    * Return `False` for empty strings
-    * Particularly useful for input validation
-    * Be aware of Unicode characters:
-       * '²'.isdigit() returns `True` (superscript is a digit)
-       * 'héllò'.isalpha() returns `True` (accented characters are alphabetic)
+* `​.isalpha()`, `.isdigit()`, `.isalnum()`, `.islower()`, `.isupper()`, `.isspace()`
+* Return `False` for empty strings
+* Particularly useful for input validation
+* Be aware of Unicode characters:
+    * '²'.isdigit() returns `True` (superscript is a digit)
+    * 'héllò'.isalpha() returns `True` (accented characters are alphabetic)
 
 `​.isalpha()`​: Returns `True` if all characters are alphabetic (letters)
 ```python
@@ -542,10 +558,10 @@ Character Testing Methods are:
 #### String Modification Methods
 
 String modification methods are:
-    * `.strip()`, `.rstrip()`, `.lstrip()`
-    * Safe with empty strings (return empty strings)
-    * Without arguments, remove whitespace only
-    * With arguments, remove any character in the argument string
+* `.strip()`, `.rstrip()`, `.lstrip()`
+* Safe with empty strings (return empty strings)
+* Without arguments, remove whitespace only
+* With arguments, remove any character in the argument string
 
 `​.strip()`​: Removes leading and trailing whitespace (or specified characters)
 ```python
@@ -561,17 +577,19 @@ String modification methods are:
 
 `​.replace()`​: Replaces occurrences of a substring with another
 `'Captain Ruby'.replace('Ruby', 'Python')  # 'Captain Python'`
-    * Works on empty strings without errors
-    * Replaces all occurrences unless limited by the count parameter
-    * Returns the original string if the substring to replace isn't found
+
+* Works on empty strings without errors
+* Replaces all occurrences unless limited by the count parameter
+* Returns the original string if the substring to replace isn't found
 
 #### Search and Split Methods
 
 `​.split()`​: Splits string into a list of substrings based on a delimiter
 ```python
-  'hello world'.split()  # ['hello', 'world']
-  'hello,world,python'.split(',')  # ['hello', 'world', 'python']
+'hello world'.split()  # ['hello', 'world']
+'hello,world,python'.split(',')  # ['hello', 'world', 'python']
 ```
+
 * With no arguments, splits on whitespace and returns empty list for empty string
 * Consecutive delimiters are treated as one delimiter by default
 * Can specify maxsplit to limit number of splits
@@ -581,6 +599,7 @@ String modification methods are:
 'hello world'.find('world')  # 6
 'hello world'.find('python')  # -1
 ```
+
 `​.rfind()`​: Like find but searches from the right (returns highest index)
 `'hello world hello'.rfind('hello')  # 12`
 
@@ -616,13 +635,13 @@ Python" in "Hello, World!"  # False
 
 ### Boolean vs. Truthiness
 
-Boolean Values:
+#### Boolean Values:
 
 * Python has two boolean values: True and False (note the capitalization)
 * These are specific data types in Python that represent logical truth values
 * Boolean values are the direct result of comparison operations (like `==`, `!=`, `>`, `<`)
 
-Truthiness:
+#### Truthiness:
 
 **Truthiness** refers to how Python evaluates values in a boolean context (like in an if statement).
 
@@ -630,7 +649,7 @@ Falsy values in Python include:
 
 *   `False`
 *   `None`
-*   Zero values: 0, 0.0, 0j
+*   Zero values: `0`, `0.0`, `0j`
 *   Empty strings: `''`
 *   Empty collections: `[]` (empty list), `{}` (empty dict), `()` (empty tuple)
 *   `set()` (empty set)
@@ -640,8 +659,8 @@ Falsy values in Python include:
 
 Verbalizing the following distinctions are very important!
 
-*   When a _value evaluates as true_ in a boolean context, say that it **"evaluates to true"** or **"is truthy"**
-*   When a _value evaluates as false_ in a boolean context, say that it **"evaluates to false"** or **"is falsy"**.
+*   When a _value evaluates as true_ in a boolean context, say that it "**evaluates to true**" or "**is truthy**"
+*   When a _value evaluates as false_ in a boolean context, say that it "**evaluates to false**" or "**is falsy**".
 *   Do NOT say a value "is True" or "is equal to True" unless it's literally the boolean value True.
 *   Do NOT say a value "is False" or "is equal to False" unless it's literally False.
 
@@ -660,9 +679,9 @@ else:
 
 Key Characteristics of `None`:
 
-1.  ​*It's a singleton object*​: There's only one `None` object in Python.
-2.  ​*Data type*​: `None` has its own data type called `NoneType`.
-3.  *​Falsy value*​: `None` is considered falsy in boolean contexts.
+1.  ​**It's a singleton object**​: There's only one `None` object in Python.
+2.  ​**Data type**​: `None` has its own data type called `NoneType`.
+3.  **​Falsy value**​: `None` is considered falsy in boolean contexts.
 
 ```python
    if None:
@@ -671,7 +690,7 @@ Key Characteristics of `None`:
        print("None is falsy")  # This will print
 ```
 
-4. *Default return value*​: Functions without an explicit return statement, return `None` by default.
+4. **Default return value**​: Functions without an explicit return statement, return `None` by default.
 
 ```python
    def no_return():
@@ -687,24 +706,24 @@ Boolean logic gates are fundamental components in digital electronics and comput
 
 **Basic Logic Gates**
 
-1.  `​AND Gate
-   *    Returns `True` only when **both** inputs are `True`.
-   *    In Python, this is represented by the `and` operator
+1.  ​AND Gate
+* Returns `True` only when **both** inputs are `True`.
+* In Python, this is represented by the `and` operator
 ```python
    result = True and True  # True
    result = True and False  # False
 ```
 
-2. ​OR Gate
-   *    Returns `True` if at least one input is `True`
-   *    In Python, this is the `or `operator
+2. ​ OR Gate
+* Returns `True` if at least one input is `True`
+* In Python, this is the `or `operator
 ```python
    result = True or False  # True
    result = False or False  # False
 ```
 3.  ​XOR Gate (Exclusive OR)
-   •   Returns True when inputs are different
-   •   Python doesn't have a built-in XOR operator, but you can create one:
+* Returns True when inputs are different
+* Python doesn't have a built-in XOR operator, but you can create one:
 ```python
 python
    def xor(value1, value2):
@@ -723,7 +742,7 @@ Python's logical operators use short-circuit evaluation. Short-circuiting occurs
 
 Unlike `and` and `or`, the `xor` function can't use short-circuit evaluation since it needs to evaluate both operands to determine the result.
 
-Commit this to memory: `and` and `or` don't return `True` or `False` - **they return the actual values that determine the result**:
+**Commit this to memory**: `and` and `or` don't return `True` or `False` - **they return the actual values that determine the result**:
 
 ```python
 print(5 and 7)      # Outputs: 7 (last value since both are truthy)
@@ -766,7 +785,7 @@ print("" and "world")      # Returns "" (the first falsy value)
 
 credit for [table](https://www.pythonmorsels.com/short-circuit-evaluation/)
 
-#### Logical Operator Precedence**:
+#### Logical Operator Precedence:
 
 In Python, the logical operators have different precedence levels:
 
@@ -782,7 +801,8 @@ We've already covered Logical Operators right above. Now for the rest.
 
 ### Arithmetic: +, -, *, /, //, %, **
 
-Basic Arithmetic Operators
+Basic Arithmetic Operators:
+
 *   ​Addition (`+`)​: Adds two values
 *   Subtraction (`-`)​: Subtracts the right operand from the left
 *   Multiplication (`*`)​: Multiplies two values
@@ -791,30 +811,35 @@ Basic Arithmetic Operators
 *   Modulo (`%`)​: Returns the remainder of division
 *   Exponentiation (`**`)​: Raises left operand to the power of right operand
 
-Operator Precedence in Arithmetic Expressions:
 
-Precedence order from high to low:
-1.  Parentheses ()
-2.  Exponentiation **
-3.  Multiplication *, Division /, Floor Division //, Modulo %
-4.  Addition +, Subtraction -
+Operator Precedence in Arithmetic Expressions,  order from high to low:
+1.  Parentheses `()`
+2.  Exponentiation `**`
+3.  Multiplication `*`, Division `/`, Floor Division `//`, Modulo `%`
+4.  Addition `+`, Subtraction `-`
 
 According to the Python documentation on operator precedence, expressions like `4 * 5 + 3**2 / 10` are evaluated in this order:
 1.  `3**2 = 9` (exponentiation first)
 2.  `4 * 5 = 20` (multiplication)
 3.  `9 / 10 = 0.9` (division)
 4.  `20 + 0.9 = 20.9` (addition last)
-`
+
 For clarity, you can use parentheses: `(4 * 5) + ((3**2) / 10)`
 
-Float vs Integer Division
+**Float vs Integer Division**
+
+
 In Python 3, the division operator / always performs floating-point division.
 ` 7 / 2  # Result: 3.5`
 
 To get integer division (truncating decimal part), use floor division //:
-`7 // 2  # Result: 3`. Note that it rounds down!
+`7 // 2  # Result: 3`. **_Note that it rounds down!_**
 
-Floating Point Arithmetic*
+Whenever we mix integers and floating point numbers, we'll get a floating point number back. For most operations we might perform between two integers, we'll get an integer back. But if we divide two integers, we'll always get a floating point number back.
+
+
+**Floating Point Arithmetic**
+
 Be aware that floating-point calculations may have precision issues:
 ` 3.141529 - 2.718282  # Result: 0.42324699999999993`
 
@@ -834,8 +859,7 @@ result = 3.141529 - 2.718282
 print(f"{result:.6f}")  # "0.423247"
 ```
 
-4. Consider using the decimal module
-For financial calculations or when precision is critical:
+4. Consider using the decimal module, for use in financial calculations or when precision is critical:
 ```python
 
 from decimal import Decimal, getcontext
@@ -848,14 +872,15 @@ result = Decimal('0.3') + Decimal('0.6')
 print(result)  # Exactly 0.9
 ```
 
-5. Be aware of special floating point values: Python has special floating point values like nan (Not a Number). Note that nan values have unique behavior.
-```python
+5. Be aware of special floating point values: Python has special floating point values, `nan` (Not a Number). Note that `nan` values have unique behavior.
 
+```python
 nan_value = float("nan")
 print(nan_value == float("nan"))  # Returns False!
 ```
 
-To check for nan values, `use math.isnan()`:
+To check for `nan` values, `use math.isnan()`:
+
 ``` python
 import math
 nan_value = float("nan")
@@ -907,7 +932,7 @@ print(list1)  # [1, 2, 3, 4, 5, 6]
 
 ### Comparison Operators: `==`, `!=`, `<`, `>`, `<=`, `>=`
 
-#### Basic Comparison Operators**
+#### Basic Comparison Operators
 
 * ​Equal (`==`)​: Tests if two values are equal
 * Not Equal (`!=`)​: Tests if two values are not equal
@@ -916,13 +941,12 @@ print(list1)  # [1, 2, 3, 4, 5, 6]
 * Less Than or Equal (`<=`)​: Tests if left value is less than or equal to right value
 * Greater Than or Equal (`>=`)​: Tests if left value is greater than or equal to right value
 
-#### Comparing Different Types**
+#### Comparing Different Types
 
 * Numbers of different types (int, float) can be compared directly
 * Strings are compared lexicographically (dictionary order)
 * Different types (like strings and numbers) follow specific comparison rules
 ```python
-# python
 
 # Comparing different numeric types
 3 == 3.0      # True
@@ -934,7 +958,8 @@ print(list1)  # [1, 2, 3, 4, 5, 6]
 # Different types
 "5" == 5      # False (string vs int)
 ```
-#### Truthiness vs. Boolean Values**
+#### Truthiness vs. Boolean Values
+
 Remember the distinction between truthiness and actual boolean values:
 ```python
 
@@ -946,9 +971,10 @@ bool("") == False   # True (empty string converts to False)
 "" == False         # False (empty string and False are different values)
 ```
 
-#### Chained Comparisons**
+#### Chained Comparisons
 
 Python allows comparison chaining:
+
 ```python
 # This:
 x > y > z
@@ -957,7 +983,7 @@ x > y > z
 x > y and y > z
 ```
 
-#### Identity vs. Equality**
+#### Identity vs. Equality
 
 Don't confuse `==` (equality) with `is` (identity):
 * `==` checks if values are equal
@@ -986,6 +1012,7 @@ if x is None:  # Preferred over x == None
     print("x is None")
 ```
 
+
 2. Distinguishing Between Identity and Equality: This example demonstrates the difference between `is` and `==`:
 ```python
 
@@ -995,13 +1022,14 @@ print(empty_list_1 == empty_list_2)  # True - same values
 print(empty_list_1 is empty_list_2)  # False - different objects
 ```
 
-#### Object Interning**
+#### Object Interning
 
 Python might reuse memory addresses for certain immutable objects like small integers or short strings. This is called "interning" and is an implementation detail of Python for optimization.
 
 What Objects Get Interned?
-1.  ​Small Integers​: Integers in the range -5 to 256 are interned by default.
-2.  ​Short Strings​: String literals without spaces or special characters may be interned.
+
+1.  **​Small Integers**​: Integers in the range -5 to 256 are interned by default.
+2.  **​Short Strings**​: String literals without spaces or special characters may be interned.
 
 ```python 
 s1 = "hello"
@@ -1015,13 +1043,15 @@ print(s1 is s3)  # Could be False
 3.  ​Empty Immutable Collections​: Empty tuples and frozensets are typically interned.
 
 Don't use `is` for value comparison:
+
 ```python
 a = 1000
 b = 1000
 print(a is b)  # Could be False, despite what you might expect
 print(a == b)  # Always True - correct way to compare values
 ```
-** Why is it important?**
+**Why is it important?**
+
 1.  **​Behavior of Identity Comparisons**​: When using the is operator, interned objects will return `True` even if they were created separately. However, with non-interned objects, the same comparison would return `False`. If a = b and both = 42, they will be the same object when evaluated with `is`. However, if a = b and both = 1000, they will not. This distinction is crucial when debugging or when you're relying on identit comparisons in your code.
 
 2. **Memory Optimization**
@@ -1104,14 +1134,14 @@ value = 5 * False   # 0 (False is treated as 0)
 difference = 10 - False  # 10 (False is treated as 0)
 
 #String Interpolation
-name = "Kelley"
-age = 30 #LOL
+name = "Nancy"
+age = 30 
 message = f"Name: {name}, Age: {age}"  # Values converted to strings
 ```
 
 Boolean values are implicitly converted to integers (1 for True, 0 for False) in arithmetic operations. When using f-strings, Python implicitly converts values to strings.
 
-#### Important Non-Coercion Cases**
+#### Important Non-Coercion Cases
 
 Some operations that look like implicit coercion aren't actually considered coercion:
 
@@ -1147,7 +1177,7 @@ my_dict = my_list  # This assigns, doesn't convert
 my_dict = dict(enumerate(my_list))  # Explicit conversion needed
 ```
 
-#### Allowed Conversions
+### Allowed Conversions
 
 **String Conversions**
 * String to int: `int("42")` ✓
@@ -1193,36 +1223,36 @@ Special Cases are a doozy and there's a lot of them.
 **String Conversion Special Cases**
 
 1.  ​Number Base Conversions
-    * `int('101', 2)` converts binary '101' to decimal 5
-    * `int('FF', 16)` converts hex 'FF' to decimal 255
-    *  Base must be between 0 and 36
+* `int('101', 2)` converts binary '101' to decimal 5
+* `int('FF', 16)` converts hex 'FF' to decimal 255
+*  Base must be between 0 and 36
 
 2.  ​Whitespace in Strings
-    * `int(' 42 ')` works (strips whitespace)
-    * `int('42 59')` raises `ValueError` (no spaces allowed between digits)
+* `int(' 42 ')` works (strips whitespace)
+* `int('42 59')` raises `ValueError` (no spaces allowed between digits)
 
 **Boolean Conversion Details**
 
 1.  ​Complex Boolean Conversions
-   * Empty collections are falsy: `bool([])`, `bool({})`, `bool(())`, `bool(set())` are all `False`
-   * Non-empty collections are truthy, even with falsy elements: `bool([0, ''])` is `True`
-   * Custom classes are truthy by default unless `__bool__` or `__len__` is defined
+* Empty collections are falsy: `bool([])`, `bool({})`, `bool(())`, `bool(set())` are all `False`
+* Non-empty collections are truthy, even with falsy elements: `bool([0, ''])` is `True`
+* Custom classes are truthy by default unless `__bool__` or `__len__` is defined
 
 2.  ​Boolean to Number
-   * `True == 1` and `False == 0` in arithmetic contexts
-   * `3 + True` equals `4`
-   * `True * 7` equals `7`
+* `True == 1` and `False == 0` in arithmetic contexts
+* `3 + True` equals `4`
+* `True * 7` equals `7`
 
 **Container Type Conversions**
 
 1.  ​Dictionary Conversions
-   * `dict([('a', 1), ('b', 2)])` creates a dictionary from pairs
-   * `dict(a=1, b=2)` uses keyword arguments
-   * `dict(zip(['a', 'b'], [1, 2]))` combines two iterables
+* `dict([('a', 1), ('b', 2)])` creates a dictionary from pairs
+* `dict(a=1, b=2)` uses keyword arguments
+* `dict(zip(['a', 'b'], [1, 2]))` combines two iterables
 
 2.  ​Set Conversions
-   * `set('hello')` creates a set with unique letters: `{'h', 'e', 'l', 'o'}`
-   * `set()` creates an empty set (not {}, which creates an empty dict)
+* `set('hello')` creates a set with unique letters: `{'h', 'e', 'l', 'o'}`
+* `set()` creates an empty set (not {}, which creates an empty dict)
 
 #### More on Booleans are treated in arithmetic
 
@@ -1317,11 +1347,12 @@ def invalid_number(number_str):
     return False
 ```
 
-#### Practical Applications of Type Coercion in Python
+### Practical Applications of Type Coercion in Python
 
-Here are real programming scenarios you'll encounter:
+The folowing are real programming scenarios you'll encounter:
 
 **User Input Processing** 
+
 One of the most common applications is handling user input.
 
 ```python
@@ -1337,6 +1368,7 @@ except ValueError:
 ```
 
 **Arithmetic Operations**
+
 Type coercion is essential when performing calculations:
 
 ```python
@@ -1365,6 +1397,7 @@ message = f"Congratulations {name}! Your score is {score}"
 ```
 
 **Validation Logic**
+
 Type coercion is key in validation functions:
 
 ```python
@@ -1377,6 +1410,7 @@ def is_valid_number(number_str):
 ```
 
 **Truthiness in Conditional Statements**
+
 Using type coercion to boolean in if statements:
 
 ```python
@@ -1394,6 +1428,7 @@ else:
 ```
 
 **Data Processing**
+
 When working with data in different formats:
 
 ```python
@@ -1408,7 +1443,7 @@ temperatures_str = [f"{temp:.1f}°C" for temp in temperatures]
 
 ***
 
-### Ranges
+## Ranges
 
 A range is a built-in sequence type in Python that represents an immutable sequence of numbers, typically used for looping a specific number of times in for loops.
 
@@ -1487,7 +1522,7 @@ Beyond ranges, Python uses lazy evaluation in other contexts:
 1.  ​Generators​: Similar to ranges, generators produce items only when needed.
 2.  ​Short-circuit evaluation​: With logical operators and and or, Python only evaluates as much as necessary to determine the result.
 
-**Range Boundaries Explained**
+### Range Boundaries Explained
 
 When you create a range with `range(start, stop)`, it includes:
 * The `start` value (inclusive)
@@ -1501,6 +1536,7 @@ range(1, 10, 2)  # 1, 3, 5, 7, 9 (no 10)
 ```
 
 **Why This Design Choice?**
+
 This "up to but not including" behavior may seem odd at first, but it offers several advantages:
 1.  **​Zero-indexing compatibility**​: Since Python uses zero-indexing for sequences, ranges align well with list indices.
 2.  **​Length calculation**​: The length of a range is simply `stop - start` (when step is 1).
@@ -1541,17 +1577,20 @@ range(1, 5)  # Incorrect: missing 5
 The key differencesare in their type, memory usage, and behavior:
 
 **Type Difference**
-•   `range(5)` creates a range object, which is a specific sequence type in Python
-•   `list(range(5))` converts the range object into a list type, creating `[0, 1, 2, 3, 4]`
+* `range(5)` creates a range object, which is a specific sequence type in Python
+* `list(range(5))` converts the range object into a list type, creating `[0, 1, 2, 3, 4]`
+
 **Memory Usage**
-•   `range(5)` is memory-efficient because it only stores the start (0), stop (5), and step (1) values
-•   `list(range(5))` stores all elements [0, 1, 2, 3, 4] in memory at once
+* `range(5)` is memory-efficient because it only stores the start (0), stop (5), and step (1) values
+* `list(range(5))` stores all elements [0, 1, 2, 3, 4] in memory at once
+
 **Lazy Evaluation**
-•   `range(5)` is lazily evaluated - it generates values on demand when you iterate through it
-•   `list(range(5))` eagerly evaluates all values immediately when created
+* `range(5)` is lazily evaluated - it generates values on demand when you iterate through it
+* `list(range(5))` eagerly evaluates all values immediately when created
+
 **Mutability**
-•   `range(5)` is immutable - you cannot modify it after creation
-•   `list(range(5))` is mutable - you can add, remove, or change elements
+* `range(5)` is immutable - you cannot modify it after creation
+* `list(range(5))` is mutable - you can add, remove, or change elements
 
 ```python
 r = range(5)
@@ -1595,7 +1634,7 @@ else:
 
 For multiple `if/elif/else` conditions, they are evaluated in order, and only the first truthy condition's block will execute. If no condition is truthy, the `else` block executes.
 
-Truthiness in Python: This means you can use expressions directly in conditions without explicitly comparing them to `True` or `False`:
+Truthiness ALERT! This means you can use expressions directly in conditions without explicitly comparing them to `True` or `False`:
 ```python
 name = "John"
 if name:  # name is truthy because it's a non-empty string
@@ -1643,7 +1682,7 @@ for i in range(5):  # Generates numbers 0 through 4
 
 **`for` Loops Best Practices**
 1.  ​Use descriptive variable names in your loop​.
-2.  ​Prefer for loops when the number of iterations is known.
+2.  ​Prefer `for` loops when the number of iterations is known.
 3.  ​Use `enumerate()` when you need both index and value​.
 4.  ​Use list comprehensions for simple transformations
 ```python
@@ -1651,16 +1690,16 @@ numbers = [1, 2, 3, 4, 5]
 squares = [num**2 for num in numbers]
 ```
 
-`while` loops continue executing as long as a condition remains True. There are two main ways to use while loops:
+`while` loops continue executing as long as a condition remains True. There are two main ways to use `while` loops:
 
-1.  ​Standard while loop​ - Tests a condition before each iteration:
+1.  ​Standard `while` loop​ - Tests a condition before each iteration:
 ```python
 count = 0
 while count < 5:
     print(count)
     count += 1  # Don't forget this or you'll have an infinite loop!
 ```
-2. `​while True` with break​ - A more flexible approach when you need more complex exit conditions:
+2. `​while True` with `break`​ - A more flexible approach when you need more complex exit conditions:
 ```python
 while True:
     print('Continue? (y/n)')
@@ -1691,7 +1730,8 @@ for i in range(3):
             break  # This only breaks out of the inner loop
         print(f"i={i}, j={j}")
 ```
-When to Use Each Control Statement
+When to Use Each Control Statement:
+
 * Use `break` when you want to exit a loop completely (example: found what you're looking for)
 * Use `continue` when you want to skip specific iterations but continue the loop
 * Use `pass` when you need a placeholder or an empty block syntactically
@@ -1716,9 +1756,10 @@ while index < len(fish):
 
 ### Ternary Operator
 
-Python's conditional expression (often called the ternary operator) provides a concise way to write simple if-else statements in a single line. It follows this syntax: `true_value if condition else false_value`.
+Python's conditional expression (often called the ternary operator) provides a concise way to write simple `if-else` statements in a single line. It follows this syntax: **`true_value if condition else false_value`**.
 
 **Basic Usage**
+
 The ternary operator evaluates the condition and returns either the first value (if the condition is truthy) or the second value (if the condition is falsy):
 
 ```python
@@ -1779,6 +1820,7 @@ nested_list = [1, [2, 3], 4]
 ```
 
 **List Indexing and Slicing**
+
 Python uses zero-based indexing, which means the first element is at index `0`.
 
 ```python
@@ -1834,7 +1876,7 @@ print(words)  # ["kiwi", "pear", "apple", "banana"]
 **Copying**
 * copy():  Creates a shallow copy of the list. Note that nested objects are not deeply copied, just referenced.
 
-**Other _built-in functions_ that work with lists **
+**Other _built-in functions_ that work with lists**
 * `len(list)`: Returns the number of items in the list.
 * `sum()`: returns the sum of all items in a list (numbers only)
 * `max()`:  returns the largest item in a list
@@ -1862,7 +1904,8 @@ print(5 in list1)         # False
 print(len(combined))      # 4
 ```
 
-**List Comprehensions**
+### List Comprehensions
+
 List comprehensions provide a concise way to create lists.
 
 ```python
@@ -1872,24 +1915,31 @@ squares = [x**2 for x in range(1, 6)]  # [1, 4, 9, 16, 25]
 # With conditional
 even_squares = [x**2 for x in range(1, 11) if x % 2 == 0]  # [4, 16, 36, 64, 100]
 ```
+
 ***
 
 ### Dictionaries
 
 Dictionaries in Python are **unordered collections of key-value pairs**. They're defined using curly braces `{}` with key-value pairs separated by colons. 
 
-**Dictionary Characteristics**
+#### Dictionary Characteristics
 
 1. **​Keys must be immutable**​:
-    * Allowed keys: strings, numbers, tuples (containing only immutable elements), and frozensets
-    * Not allowed: lists, sets, dictionaries (mutable objects)
+
+* Allowed keys: strings, numbers, tuples (containing only immutable elements), and frozensets
+* Not allowed: lists, sets, dictionaries (mutable objects)
+
 2. **​Values can be any type**​: Strings, numbers, lists, other dictionaries, functions, etc.
+
 3.  **Order**:
-    * ​Unordered​ before Python 3.7. Now: dictionaries maintain insertion order
-    * Don't rely on order for the assessment
+
+* ​Unordered​ before Python 3.7. Now: dictionaries maintain insertion order
+* Don't rely on order for the assessment
+
 4. You can add, modify, or delete key-value pairs after creation.
 
-**Methods of creating a dictionary**
+#### Methods of creating a dictionary
+
 1. Using Curly Braces (Dictionary Literal). Standard!
 ```python
 # Dictionary with initial key-value pairs
@@ -1927,11 +1977,13 @@ letter_dict = {k: v for k, v in zip(keys, values)}
 # Result: {'a': 1, 'b': 2, 'c': 3}
 ```
 
-**Accessing values in dictionaries**
+#### Accessing values in dictionaries
 
 1. **Using Square Bracket Notation**: The most common way to access dictionary values is using square brackets with the key
-    * If the key doesn't exist, Python will raise a `KeyError`.
-    * Case sensitivity matters - keys must match exactly.
+
+* If the key doesn't exist, Python will raise a `KeyError`.
+* Case sensitivity matters - keys must match exactly.
+
 ```python
 car = {
     'type': 'sedan',
@@ -1971,7 +2023,10 @@ else:
     print("Unknown")
 ```
 
-4. Accessing Values in Nested Dictionaries: for nested dictionaries, chain the square brackets. Additionally, the get() with nested dictionaries approach is particularly useful as it won't raise an error if any level of the nested structure is missing.
+4. Accessing Values in Nested Dictionaries: for nested dictionaries, chain the square brackets.
+
+Additionally, `get()` with nested dictionaries approach is particularly useful as it won't raise an error if any level of the nested structure is missing.
+
 ```python
 vehicles = {
     'car': {
@@ -1993,7 +2048,7 @@ print(vehicles['car']['color'])  # blue
 print(vehicles.get('car', {}).get('color', 'Unknown'))  # blue
 ```
 
-**Modifying Dictionaries**
+#### Modifying Dictionaries
 
 1. **Adding or Updating Key-Value Pairs**: The simplest way to modify a dictionary is by assigning a value to a key. If the key doesn't exist, Python adds a new key-value pair; if it does exist, Python updates the value.
 ```python
@@ -2027,7 +2082,8 @@ car.update({'year': 2003, 'mileage': 80_000, 'color': 'green'})
 print(car)  # {'type': 'sedan', 'color': 'green', 'year': 2003, 'mileage': 80_000}
 ```
 
-**Removing from dictionaries**:
+#### Removing from dictionaries
+
 1.  The `del` Statement: directly removes a key-value pair from a dictionary, mutating the dictionary object. It raises a `KeyError` if a key doesn't exist. No value is returned.
 ```python
 car = {
@@ -2118,11 +2174,10 @@ for key in keys_to_remove:
     del car[key]
 ```
 
-**Dictionary Methods**
+#### Dictionary Methods
 
 * `dict.keys()`: returns a `dict_keys` object containing all the keys in the dictionary, not a list. It is dynamic however, and will update if the dictionary changes. Can be converted to a list using list(car.keys()). Useful for iterating through all keys in a dictionary
 ```python
-python
 
 car = {
     'type': 'sedan',
@@ -2217,6 +2272,7 @@ rgb_color = (255, 0, 127)
 * When you need to ensure uniqueness of elements
 * Set operations (union, intersection, difference)
 * Membership testing for large collections (faster than list)
+
 ```python
 # Creating a set
 unique_numbers = {1, 2, 3, 4, 5}
@@ -2224,28 +2280,29 @@ tags = {"python", "programming", "tutorial"}
 ```
 
 Sets in Python are mutable, meaning you can modify them after creation by:
-* Adding elements using add() or update()
-* Removing elements using remove(), discard(), or pop()
-* Clearing all elements with clear()
+* Adding elements using `add()` or `update()`
+* Removing elements using `remove()`, `discard()`, or `pop()`
+* Clearing all elements with `clear()`
 
 While sets themselves are mutable, they can only contain hashable objects, which in Python are typically immutable objects. This is because sets use a hash table implementation internally for fast lookups.
 
 These objects can be included in sets:
-* Integers: {1, 2, 3}
-* Floats: {1.1, 2.2, 3.3}
-* Strings: {"apple", "banana"}
-* Tuples (if they contain only immutable objects): {(1, 2), (3, 4)}
+* Integers: `{1, 2, 3}`
+* Floats: `{1.1, 2.2, 3.3}`
+* Strings: `{"apple", "banana"}`
+* Tuples (if they contain only immutable objects): `{(1, 2), (3, 4)}`
 
 These objects CANNOT be included in sets:
-* Lists: {[1, 2], [3, 4]} 
-* Dictionaries: {{1: 'a'}, {2: 'b'}} 
-* Sets: {{1, 2}, {3, 4}} 
+* Lists: `{[1, 2], [3, 4]}` 
+* Dictionaries: `{{1: 'a'}, {2: 'b'}} `
+* Sets: `{{1, 2}, {3, 4}}` 
 
 But wait! There's more! There are frozen sets!
 
 A **frozen set** is an immutable version of a regular set. Once created, you cannot modify its contents - no adding, removing, or changing elements. Frozen sets are significant because their immutability makes them hashable, which means:
 
 Key Characteristics​:
+
 * Immutable (cannot be changed after creation)
 * Unordered collection of unique elements
 * Can only contain immutable (hashable) objects
@@ -2267,7 +2324,7 @@ Keep in mind:
 * They can be created from any iterable (lists, tuples, regular sets, etc.)
 * They cannot be modified after creation
 
-The key difference between sets and frozensets is their mutability. While **both are unordered collections of unique** elements, **regular sets can be modified **after creation, whereas **frozensets are immutable**. This immutability makes frozensets hashable, so they can be used as dictionary keys or as elements in other sets.
+The key difference between sets and frozensets is their mutability. While **both are unordered collections of unique** elements, **regular sets can be modified** after creation, whereas **frozensets are immutable**. This immutability makes frozensets hashable, so they can be used as dictionary keys or as elements in other sets.
 
 3. Ranges (See Above)
 
@@ -2358,9 +2415,9 @@ print(coordinates[::-1])  # (6, 5, 4, 3, 2, 1)
 ```
 
 **Important Properties of Slicing**
-1. ** ​Returns a New Object**​: Slicing creates a new object, it doesn't modify the original sequence.
-2.  **​Immutability Preserved**​: If the original is immutable (like strings or tuples), the slice will also be immutable.
-3.  **​Handling Out-of-Range Indices**​: Slicing gracefully handles out-of-range indices
+1. **​Returns a New Object**​: Slicing creates a new object, it doesn't modify the original sequence.
+2. **​Immutability Preserved**​: If the original is immutable (like strings or tuples), the slice will also be immutable.
+3. **​Handling Out-of-Range Indices**​: Slicing gracefully handles out-of-range indices
 
 ```python
 text = "Python"
@@ -2376,6 +2433,7 @@ print(text[start:end])
 ```
 
 5. **Finding Elements with a Step**​: The exercise "Odd Lists" demonstrates using a step value of 2 to get every second element:
+
 ```python
  # Getting every second element
    my_list = [1, 2, 3, 4, 5]
@@ -2389,7 +2447,6 @@ Frequent applications:
 
 1.  ​Getting Middle Characters​:
 ```python
-python
 
    # For strings with odd length
    def middle_character(string):
@@ -2402,7 +2459,7 @@ python
 ```
 2. Creating a copy:
 ```python
- original = [1, 2, 3]
+original = [1, 2, 3]
 copy = original[:]  # Creates a shallow copy
 ```
 
@@ -2690,7 +2747,7 @@ print(id(my_list) == original_id)  # True - same object
 ### Python's Parameter Passing Mechanism: Pass by Object Reference
 
 Python uses what's commonly called "pass by object reference" (some also call it "pass by assignment"). This means:
-1.  When you pass a variable to a function, _**Python passes a reference to the object the variable points to, not the variable itself.*
+1.  When you pass a variable to a function, **_Python passes a reference to the object the variable points to, not the variable itself_**.
 2.  Parameter variables inside the function become new references to the same objects.
 
 This explains some seemingly contradictory behaviors: 
@@ -2756,6 +2813,7 @@ print(x)       # Output: [1, 2, 3, 4] - x sees the change too!
 Avoiding Unwanted Aliasing: when you want to create a separate copy instead of an alias, you need to explicitly copy the object.
 
 **Aliasing and Function Arguments**
+
 This concept is directly related to how Python passes arguments to functions. Since Python passes object references, function parameters become aliases to the objects passed as arguments.
 
 
@@ -2774,7 +2832,9 @@ result = create_list()
 Python uses reference counting as its primary garbage collection mechanism, with a cycle-detecting collector to handle reference cycles, which helps manage memory efficiently by tracking how many references point to each object.
 
 **How Reference Counting Works**
-In Python, every object maintains a count of how many references point to it. The Python interpreter tracks these references by:
+
+Every object maintains a count of how many references point to it. The Python interpreter tracks these references by:
+
 1.  Incrementing the reference count when a new reference to the object is created
 2.  Decrementing the reference count when a reference goes out of scope or is explicitly deleted
 ```python
@@ -2834,14 +2894,15 @@ Since dictionaries rely on hash values staying consistent, only immutable object
 **What Makes an Object Hashable**
 
 An object is hashable if:
-1.  It has a __hash__() method that returns the same integer value throughout its lifetime
-2.  It can be compared to other objects via an __eq__() method
-3.  If a == b is True, then hash(a) == hash(b) must also be True
+1.  It has a `__hash__()` method that returns the same integer value throughout its lifetime
+2.  It can be compared to other objects via an `__eq__()` method
+3.  If `a == b` is True, then `hash(a) == hash(b)` must also be True
 
 This means the hash value must remain constant for the object's entire lifetime, which is why hashable objects are typically immutable.
 
 **The Hash Function**
-The hash() built-in function:
+
+The `hash()` built-in function:
 
 ```python
 number = 42
@@ -2906,6 +2967,7 @@ Internally, dictionaries and sets use hash tables:
 2. This allows for O(1) average-case complexity for lookups, rather than O(n) with lists, This makes lookups extremely fast because Python can jump directly to the right location rather than searching through everything.
 
 **Hash Collisions**
+
 Sometimes different objects can produce the same hash value:
 ```python
 # These might have the same hash (though unlikely)
@@ -2915,3 +2977,155 @@ When this happens, Python's hash tables handle it through techniques like chaini
 ```
 
 >"A hashable type is a type from which consistent hash values can be computed. A hash function takes an object and returns a hash value, which is used internally in a dictionary to store and retrieve values. Given two identical objects, the hash function must return the same value for both objects."
+
+***
+
+## Exceptions and Exception Handling
+
+Exceptions in Python occur when the normal flow of a program is disrupted due to an error or unexpected condition. 
+
+### Common Situations That Trigger Exceptions
+
+#### Syntax Errors
+
+These occur before your program even runs
+```python
+print('hello)  # SyntaxError: unterminated string
+def (  # SyntaxError: unexpected EOF while parsing
+```
+
+#### User Input and External Resources
+
+Exceptions commonly occur when dealing with:
+
+1. **​User input**​: Users often provide input in unexpected formats
+2. **​File operations​**: Files might be missing, permissions might be wrong, etc
+3. **Network operations**​: Network connections can fail, servers can be down, etc.
+
+Unlike other exceptions, syntax errors are detected by the Python parser when loading your program, before execution begins, as noted in the [PY101 - Errors](https://launchschool.com/lessons/a29e9831/assignments/378f8121) lesson.
+
+### Exception Handling
+
+Exception handling is an important aspect of Python programming that allows you to gracefully manage errors that occur during program execution.
+
+#### Basic Exception Handling Structure
+
+Python uses a `try`/`except` block structure for exception handling:
+
+```python
+
+try:
+    # Code that might raise an exception
+    result = 10 / 0
+except ZeroDivisionError:
+    # Code to handle the specific exception
+    print("Cannot divide by zero!")
+```
+
+Python has many built-in exceptions, also known as **Run Time Errors**:
+
+* `ZeroDivisionError`: Raised when division by zero occurs
+* `TypeError`: Raised when an operation is performed on an inappropriate type
+* `ValueError`: Raised when a function receives an argument of the correct type but inappropriate value
+* `NameError`: Raised when a local or global name is not found or doesn't exist. 
+* `IndexError`: Raised when a sequence subscript is out of range
+* `KeyError`: Raised when a dictionary key is not found
+* `FileNotFoundError`: Raised when a file or directory is requested but doesn't exist
+
+#### Multiple Exception Handlers
+
+You can handle different exceptions differently:
+
+```python
+try:
+    num_str = input("Enter a number: ")
+    num = int(num_str)
+    result = 10 / num
+except ValueError:
+    print("Invalid input. Please enter a valid number.")
+except ZeroDivisionError:
+    print("Cannot divide by zero.")
+else:
+    print(f"Result: {result}")
+finally:
+    print("Exception handling complete.")
+    
+```
+
+#### Catching Multiple Exceptions
+
+You can catch multiple exceptions with the same handler
+
+```python
+try:
+    # Some code
+    pass
+except (ValueError, TypeError):
+    # Handle both exceptions the same way
+    print("Invalid input")
+```
+
+#### The `else` Clause
+
+The `else` clause executes if the try block doesn't raise an exception
+
+```python
+try:
+    value = int(input("Enter a number: "))
+except ValueError:
+    print("That's not a valid number!")
+else:
+    print(f"You entered {value}")
+```
+
+### The finally Clause
+
+The finally clause always executes, whether an exception occurred or not:
+
+```python
+try:
+    file = open('data.txt')
+    data = file.read()
+except FileNotFoundError:
+    print("The file was not found!")
+finally:
+    if 'file' in locals() and not file.closed:
+        file.close()
+    print("Cleanup complete")
+
+```
+
+#### Raising Exceptions
+
+You can raise exceptions with the raise statement
+
+```python 
+
+def validate_age(age):
+    if age < 0:
+        raise ValueError("Age cannot be negative")
+    if age > 120:
+        raise ValueError("Age is unrealistic")
+    return age
+```
+
+#### Creating Custom Exceptions
+
+You can create your own exception types by inheriting from Exception
+
+```python
+class CustomError(Exception):
+    """Custom exception for specific situations"""
+    pass
+
+# Usage
+if something_went_wrong:
+    raise CustomError("Something went wrong!")
+```
+
+#### Exception Handling Best Practices
+
+1. Be specific with your exception handling - avoid catching all exceptions with a bare `except:` clause.
+2. Keep the `try` block as small as possible
+3. Use `finally` for cleanup code
+4. Document which exceptions your functions might raise
