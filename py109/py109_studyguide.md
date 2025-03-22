@@ -188,7 +188,7 @@ def greet():
 greet()
 print(message)  # Prints "Global message" - global variable remains unchanged
 ```
-In this example, the local message variable inside the greet() function shadows the global message variable. They are entirely separate variables that happen to share the same name.
+In this example, the local message variable inside the greet() function shadows the global message variable. They are entirely separate variables that happen to share the same name. Further, this code demonstrates Python's variable scope rules, specifically highlighting how variables defined in the global scope cannot be reassigned within a function's local scope without using the global keyword.
 
 Key Behaviors of Shadowing
 1.  **​Separate Variables**​: The shadowing variable and the shadowed variable are completely separate - they exist in different scopes and refer to different objects in memory.
@@ -224,6 +224,13 @@ print(f"global x: {x}")
 #global x: global
 ```
 
+Unless mentioned specifically, the term variable in the broadest sense possible. On this exam, that means that all of the following should be treated as variables:
+
+* Variables and constants
+* Function names
+* Function parameters
+* Note in particular that dictionary key names are not variables, nor are the elements of a collection.
+
 ### Expressions and Statements
 
 #### Expressions
@@ -254,7 +261,7 @@ Important types:
 
 ### Functions
 
-**Function Definitions and Calls**
+#### Function Definitions and Calls
 
 **Function Definition**: A function definition starts with the `def` keyword, followed by the function name, parameters in parentheses, and a colon. The function body is indented below. Functions in Python create a new local scope.
 
@@ -264,20 +271,39 @@ def function_name(parameter1, parameter2):
     return something
 ```
 
-**Function Call**: When you call a function, you use its name followed by parentheses containing any argument.
+**Function Call**: To use a function, we "call" that function. When you call a function, you use its name followed by parentheses containing any argument.  If the function accepts arguments, pass the arguments inside the parentheses as you call the function.
+
 ```python
 result = function_name(argument1, argument2)
 ```
 
-**Return Values**
-Functions in Python can return values using the return statement:
+#### Return Values
+
+If a function has a return value, you can capture that return value into a variable or pass that return value straight into another function call. Functions in Python return values using the `return` statement. 
+
 ```python
 def add(a, b):
     return a + b
 
 sum = add(5, 3)  # sum will be 8
 ```
-If a function doesn't have a return statement or has return without a value, it returns `None` by default
+If a function doesn't have a return statement or has return without a value, it returns `None` by default.
+
+The function outputs Hello, world!, which it obtains from the global variable hello, then returns None. Functions in Python have access to variables defined in the outer scope.
+
+An example for how to describe the following code on the exam:
+
+```python
+
+hello = "Hello, world!"
+
+def my_func():
+    print(hello)
+
+my_func()
+```
+
+>The function outputs Hello, world!, which it obtains from the global variable hello, then returns None. Functions in Python have access to variables defined in the outer scope.
 
 #### Parameters vs. Arguments
 
@@ -293,7 +319,9 @@ def multiply(x, y):  # x and y are parameters
 product = multiply(4, 5)  # 4 and 5 are arguments
 ```
 
-Variables are not passed to or returned by functions: only references to objects are passed.
+Remember: 
+* Parameters are the names assigned to a function's arguments; arguments are the values that get passed to the function.
+* Variables are not passed to or returned by functions -- only references to objects are passed.
 
 
 **Nested functions** are functions defined inside other functions.
