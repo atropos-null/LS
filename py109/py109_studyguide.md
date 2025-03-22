@@ -459,6 +459,7 @@ name = "Victor"
 profession = "programmer"
 message = f"Hello, {name}. You are a {profession}."
 ```
+
 Key Features:
 * Start with `f` before the quotation marks
 * Expressions in curly braces `{}` are evaluated at runtime
@@ -728,6 +729,7 @@ Key Characteristics of `None`:
    
    result = no_return()
    print(result)  # None
+
 ```
 
 ## Boolean Logic Gates, Logical Operators, and Short Circuit Evaluation
@@ -751,6 +753,7 @@ Boolean logic gates are fundamental components in digital electronics and comput
    result = True or False  # True
    result = False or False  # False
 ```
+
 3.  ​XOR Gate (Exclusive OR)
 * Returns True when inputs are different
 * Python doesn't have a built-in XOR operator, but you can create one:
