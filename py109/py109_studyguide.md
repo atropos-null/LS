@@ -206,7 +206,6 @@ Key Behaviors of Shadowing
 With nested functions, you can have multiple levels of shadowing
 
 ```python
-# python
 
 x = "global"
 
