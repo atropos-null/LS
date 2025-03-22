@@ -193,7 +193,7 @@ In this example, the local message variable inside the greet() function shadows 
 Key Behaviors of Shadowing
 1.  **​Separate Variables**​: The shadowing variable and the shadowed variable are completely separate - they exist in different scopes and refer to different objects in memory.
 2. **No Modification**​: Shadowing does not modify the original variable - it simply hides it within the local scope.
-3. **​Contrast with `global`**​: Shadowing is different from using the global keyword, which allows you to modify the global variable
+3. **​Contrast with** `global`​: Shadowing is different from using the global keyword, which allows you to modify the global variable
 
 
 **Nested Functions and Multiple Levels of Shadowing**
@@ -398,25 +398,25 @@ type(1+2j)       # <class 'complex'>
 
 ### Basics on Strings
 
-1.  **​Definition and Creation**​: Strings are sequences of Unicode characters, created using single quotes (`'text'`), double quotes (`"text"`), or triple quotes for multi-line strings ('`''text'''` or `"""text"""`).
+1. **​Definition and Creation**​: Strings are sequences of Unicode characters, created using single quotes (`'text'`), double quotes (`"text"`), or triple quotes for multi-line strings ('`''text'''` or `"""text"""`).
 
-2.  **​Immutability**​: Strings are immutable - once created, one cannot change individual characters. Any operation that appears to modify a string actually creates a new string.
+2. **​Immutability**​: Strings are immutable - once created, one cannot change individual characters. Any operation that appears to modify a string actually creates a new string.
 
-3.  **​Sequence Type**​: Strings are sequence types, meaning they:
-    * Have ordered elements (characters)
-    * Can be accessed by index
-    * Can be iterated over
-    * Support operations like membership testing with in
+3. **​Sequence Type**​: Strings are sequence types, meaning they:
+* Have ordered elements (characters)
+* Can be accessed by index
+* Can be iterated over
+* Support operations like membership testing with in
 
-4.  **​String Representation**​: Strings have literal representation in code and different display formats when printed (e.g., escape sequences like \n are interpreted when displayed).
+4. **​String Representation**​: Strings have literal representation in code and different display formats when printed (e.g., escape sequences like `\n` are interpreted when displayed).
 
-5.  **​Empty Strings**​: An empty string `''` or `""` is a valid string with length `0`, which evaluates to `False` in boolean contexts.
+5. **​Empty Strings**​: An empty string `''` or `""` is a valid string with length `0`, which evaluates to `False` in boolean contexts.
 
-6.  **​Memory Management**​: Due to immutability, Python can optimize memory by having multiple variables reference the same string object (especially for string literals).
+6. **​Memory Management**​: Due to immutability, Python can optimize memory by having multiple variables reference the same string object (especially for string literals).
 
-7.  **​Type Conversion**​: Other data types can be converted to strings using the `str() `function.
+7. **​Type Conversion**​: Other data types can be converted to strings using the `str() `function.
 
-8.  **​Concatenation and Repetition​:** Strings can be joined with `+` and repeated with `*` operators.
+8. **​Concatenation and Repetition​:** Strings can be joined with `+` and repeated with `*` operators.
 
 ### f-strings and the `.format()` method
 
@@ -487,8 +487,7 @@ print("Pi rounded to 3 decimal places: {pi:.3f}".format(pi=3.14159))
 ### String Methods
 
 #### Case Modification Methods
-
-Case Modification Methods are: 
+ 
 * ​`.capitalize()`, `.upper()`, `.lower()`, `.swapcase()`, `.title()`
 * Work on empty strings without errors (return empty strings)
 * Handle special characters by leaving them unchanged
@@ -511,7 +510,6 @@ Case Modification Methods are:
 
 #### Character Testing Methods
 
-Character Testing Methods are:
 * `​.isalpha()`, `.isdigit()`, `.isalnum()`, `.islower()`, `.isupper()`, `.isspace()`
 * Return `False` for empty strings
 * Particularly useful for input validation
@@ -557,7 +555,6 @@ Character Testing Methods are:
 
 #### String Modification Methods
 
-String modification methods are:
 * `.strip()`, `.rstrip()`, `.lstrip()`
 * Safe with empty strings (return empty strings)
 * Without arguments, remove whitespace only
@@ -604,6 +601,7 @@ String modification methods are:
 `'hello world hello'.rfind('hello')  # 12`
 
 Both `.find()` and `.rfind()`:
+
 * Return -1 if substring not found (rather than raising an error)
 * Empty string is always found at position 0 in non-empty strings
 * Always return -1 when searching in empty strings*
@@ -643,7 +641,7 @@ Python" in "Hello, World!"  # False
 
 #### Truthiness:
 
-**Truthiness** refers to how Python evaluates values in a boolean context (like in an if statement).
+**Truthiness** refers to how Python evaluates values in a boolean context (like in an `if` statement).
 
 Falsy values in Python include:
 
@@ -661,8 +659,8 @@ Verbalizing the following distinctions are very important!
 
 *   When a _value evaluates as true_ in a boolean context, say that it "**evaluates to true**" or "**is truthy**"
 *   When a _value evaluates as false_ in a boolean context, say that it "**evaluates to false**" or "**is falsy**".
-*   Do NOT say a value "is True" or "is equal to True" unless it's literally the boolean value True.
-*   Do NOT say a value "is False" or "is equal to False" unless it's literally False.
+*   Do NOT say a value "is True" or "is equal to True" unless it's literally the boolean value `True`.
+*   Do NOT say a value "is False" or "is equal to False" unless it's literally `False`.
 
 ```python
 
@@ -675,7 +673,7 @@ else:
 
 ### `None`
 
-`None` is a special object in Python that represents the absence of a value or a null value. It's an important concept to understand for your upcoming assessment.
+`None` is a special object in Python that represents the absence of a value or a null value. 
 
 Key Characteristics of `None`:
 
@@ -1335,17 +1333,6 @@ finally:
     print("Exception handling complete.")
 ```
 
-From Rock Paper Scissors:
-
-```python
-
-def invalid_number(number_str):
-    try:
-        int(number_str)
-    except ValueError:
-        return True
-    return False
-```
 
 ### Practical Applications of Type Coercion in Python
 
@@ -3022,6 +3009,18 @@ except ZeroDivisionError:
     print("Cannot divide by zero!")
 ```
 
+From Rock Paper Scissors:
+
+```python
+
+def invalid_number(number_str):
+    try:
+        int(number_str)
+    except ValueError:
+        return True
+    return False
+```
+
 Python has many built-in exceptions, also known as **Run Time Errors**:
 
 * `ZeroDivisionError`: Raised when division by zero occurs
@@ -3049,7 +3048,7 @@ else:
     print(f"Result: {result}")
 finally:
     print("Exception handling complete.")
-    
+
 ```
 
 #### Catching Multiple Exceptions
