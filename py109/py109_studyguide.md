@@ -101,6 +101,7 @@ In Python, variables are names that refer to objects stored in memory. They work
 **Initialization and Assignment**
 
 When you first create a variable, you're initializing it. This happens through an assignment operation:
+
 `greeting = 'Hello'  # Initialization of the greeting variable`
 
 This statement does two things:
@@ -138,6 +139,7 @@ some_function()  # Prints: Global variable
 ```
 
 **Local Scope**
+
 Variables defined inside a function have local scope and can only be accessed within that function
 
 ```python
@@ -152,6 +154,7 @@ print(local_var)    # Error! local_var is not defined in this scope
 **Important Scope Rule**
 
 You can access global variables from inside functions, but you cannot reassign them without using the global keyword:
+
 ```python
 count = 10  # Global variable
 
@@ -168,6 +171,7 @@ print(count)  # Prints: 20
 ### Variables as References
 
 In Python, **variables are references to objects, not containers for values**. This distinction is crucial.
+
 ```python
 x = 5  # Creates an integer object with value 5 and points x to it
 ```
@@ -188,6 +192,7 @@ def greet():
 greet()
 print(message)  # Prints "Global message" - global variable remains unchanged
 ```
+
 In this example, the local message variable inside the greet() function shadows the global message variable. They are entirely separate variables that happen to share the same name. Further, this code demonstrates Python's variable scope rules, specifically highlighting how variables defined in the global scope cannot be reassigned within a function's local scope without using the global keyword.
 
 Key Behaviors of Shadowing
@@ -197,6 +202,7 @@ Key Behaviors of Shadowing
 
 
 **Nested Functions and Multiple Levels of Shadowing**
+
 With nested functions, you can have multiple levels of shadowing
 
 ```python
@@ -288,8 +294,6 @@ def add(a, b):
 sum = add(5, 3)  # sum will be 8
 ```
 If a function doesn't have a return statement or has return without a value, it returns `None` by default.
-
-The function outputs Hello, world!, which it obtains from the global variable hello, then returns None. Functions in Python have access to variables defined in the outer scope.
 
 An example for how to describe the following code on the exam:
 
