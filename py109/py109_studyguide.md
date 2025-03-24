@@ -4,12 +4,14 @@
 
 ## Table of Contents
 
+- [Python's Memory Model](#pythons-memory-model)
 - [Naming Conventions: legal vs. idiomatic, illegal vs. non-idiomatic](#naming-conventions-legal-vs-idiomatic-illegal-vs-non-idiomatic)
 - [Variables](#variables)
 - [Expressions and Statements](#expressions-and-statements)
 - [Functions](#functions)
 - [Numbers](#numbers)
 - [Strings](#strings)
+- [Hashability](#hashability)
 - [Booleans, Booleans vs. Truthiness and None](#booleans-booleans-vs-truthiness-and-none)
 - [Boolean Logic Gates, Logical Operators, and Short Circuit Evaluation](#boolean-logic-gates-logical-operators-and-short-circuit-evaluation)
 - [Operators](#operators)
@@ -19,12 +21,412 @@
 - [Lists and Dictionaries](#lists-and-dictionaries)
 - [Slicing: Strings, Lists, and Tuples](#slicing-strings-lists-and-tuples)
 - [I/O Functions](#io-functions)
-- [Python's Memory Model](#pythons-memory-model)
 - [Exceptions and Exception Handling](#exceptions-and-exception-handling)
 
 ***
 
+## Python's Memory Model
+
+Python's design elegantly handles many complex memory management tasks behind the scenes, making it much more accessible but also more abstract to the user. Python handles memory management automatically through a private heap space. 
+
+#### What is Heap Space?
+
+The heap is a memory area that stores objects whose lifetime is not determined by their scope - unlike stack memory, which manages function calls and local variables. Here are the key characteristics of heap space:
+
+* **Dynamic Allocation**​: Memory is allocated and deallocated at runtime, not at compile time
+* **​Flexible Size**​: The size of objects can be determined during execution
+* **​Persistence**​: Objects can exist beyond the scope in which they were created
+* **​Manual/Automatic Management**​: Depending on the language, heap memory may be managed manually or automatically
+
+In Python, virtually all objects are stored on the heap. The Python memory manager controls memory allocation and deallocation behind the scenes, through a system called **​reference counting**​ combined with **​garbage collection**​:
+
+1. **Object Model**​: Everthing is an object and it is on the heap. When you create a variable, you're creating a reference to an object, not the object itself. 
+
+2. **​Reference Counting**​: Python keeps track of how many references point to each object. When the count drops to zero, the memory is typically freed immediately.
+  
+3. **​Garbage Collection**​: For handling circular references (objects referencing each other), Python has a cycle-detecting garbage collector that runs periodically.
+  
+4. **Object Reuse and Memory Pools**: Python uses object pools for small immutable objects like small integers and short strings. This means that multiple variables may point to the same object in memory, optimizing memory usage.
+
+#### Heap vs Stack
+
+To understand heap better, it helps to contrast it with stack memory:
+
+| Heap                                  | Stack                                                |
+| ------------------------------------- | ---------------------------------------------------- |
+| Stores objects with dynamic lifetime  | Stores function call information and local variables |
+| Slower access                         | Faster access                                        |
+| Manual or automatic management        | Automatic management based on scope                  |
+| Can grow until physical memory limits | Limited size, can cause stack overflow               |
+| Used for objects with variable size   | Used for fixed-size data     
+
+#### Object Creation and Storage
+
+When you create an object in Python, several things happen: 
+
+`x = 42  # Creates an integer object with value 42`
+
+1. Python allocates memory for the integer object
+2. The value 42 is stored in that memory location
+3. The variable x becomes a reference (pointer) to that memory location
+4. Increments the object's reference count to 1. 
+
+`my_list = [1, 2, 3]`
+
+1.  Allocates memory on the heap for the list object
+2.  Initializes the object with the provided values
+3.  Creates a reference variable (my_list) that points to this object
+4.  Increments the object's reference count to 1
+
+#### Reference Counting
+
+Every time you create a new reference to an object, its reference count increases. This includes:
+
+* Variable assignments
+* Passing objects to functions
+* Storing objects in containers (lists, dictionaries, etc.)
+* Creating closures that reference objects
+
+Every object maintains a count of how many references point to it. The Python interpreter tracks these references by:
+
+1.  Incrementing the reference count when a new reference to the object is created
+2.  Decrementing the reference count when a reference goes out of scope or is explicitly deleted
+
+```python
+x = [1, 2, 3]  # Reference count: 1
+y = x          # Reference count: 2
+del x          # Reference count: 1
+# When y goes out of scope, reference count becomes 0
+```
+
+Behind the scenes:
+
+* Each Python object has a header containing its type, reference count, and other metadata
+* The `sys.getrefcount()` function can show an object's reference count (though it adds one temporarily)
+
+```python
+import sys
+x = [1, 2, 3]
+print(sys.getrefcount(x))  # Shows count + 1 (due to the temporary reference as an argument)
+```
+
+#### Object Lifetime
+
+Objects remain alive as long as at least one reference to them exists. Several operations affect an object's lifetime:
+
+```python
+def demonstrate_lifetime():
+    x = [1, 2, 3]  # Object created, reference count: 1
+    y = x          # Reference count: 2
+    
+    # Local functions can extend object lifetime
+    def inner():
+        print(x)
+    
+    return inner   # x's reference count stays at least 1 due to closure
+
+func = demonstrate_lifetime()
+# Even though demonstrate_lifetime has finished executing,
+# the list [1, 2, 3] is still alive because func (inner) references it
+```
+
+References are removed when:
+* Variables go out of scope
+* Variables are reassigned
+* Objects are removed from containers
+* del statement is used
+
+```python
+
+a = [1, 2, 3]  # Reference count: 1
+b = a          # Reference count: 2
+del a          # Reference count: 1
+b = None       # Reference count: 0 -> object becomes eligible for garbage collection
+```
+
+#### Memory Management and Garbage Collection
+
+When an object's reference count drops to zero, Python's garbage collector reclaims that memory. 
+
+```python
+def create_list():
+    temp_list = [1, 2, 3]
+    return temp_list
+
+result = create_list()
+# temp_list is no longer accessible, its memory can be reclaimed
+```
+
+#### Everything is _actually_ an Object
+
+1. Primitive Types are Objects: Unlike languages like C or Java where primitive types (`int`, `float`) are distinct from objects, in Python even these basic types are full-fledged objects:
+
+```python
+# Integers are objects
+num = 5
+print(dir(num))  # Shows all attributes and methods of the integer
+
+# Even booleans are objects
+truth = True
+print(type(truth))  # <class 'bool'>
+```
+
+2. Functions are Objects too! Functions can be:
+* Assigned to variables
+* Passed as arguments
+* Returned from other functions
+* Have attributes added to them
+
+3. Classes and Types are Objects: Even classes and types themselves are objects:
+```python
+print(type(int))  # <class 'type'>
+```
+
+#### Object Identity
+
+Every object has a unique identifier, accessed using the `id()` function. This function returns the identity of an object, which is guaranteed to be unique for the object's lifetime.
+
+```python
+a = 42
+b = 42
+print(id(a))  # Returns the memory address of a
+print(id(a) == id(b))  # Might be True due to interning
+```
+
+To review, we know now that an object is a chunk of data that contains the following:
+
+1.  ​An identity​: A unique identifier (accessible via the id() function)
+2.  ​A type​: Determines what operations can be performed on it (accessible via type())
+3.  ​A value​: The actual data it contains
+
+
+#### Practical Implications
+
+1. References vs. Values: In Python, variables are references to objects, not containers for values.
+
+2. Everything Has Methods and Attributes: Since everything is an object, you can call methods on any value.
+
+3. Mutability vs. Immutability: Objects can be either mutable (can be changed) or immutable (cannot be changed):
+    * Immutable: int, float, str, tuple, frozenset
+    * Mutable: list, dict, set
+
+
+#### Value Interning
+
+Python optimizes memory use by interning (reusing) certain immutable objects:
+
+```python
+
+a = 5
+b = 5
+print(a is b)  # True, because integers -5 to 256 are interned
+```
+
+In Python, there's a predefined range of integers, specifically from -5 to 256, for which memory locations are pre-assigned. When you reference an integer within this span, Python consistently points to the same memory spot."
+
+What Python Interns:
+
+1. **​Small integers**​: Integers in the range [-5, 256] are pre-allocated when Python starts.
+2. **​Short strings**​: String literals that look like identifiers are interned.
+3. **​Empty immutable containers**​: Empty tuples and frozensets are interned.
+
+### Mutable vs. Immutable Objects
+
+Mutability & Immutability is directly related to how Python manages memory:
+
+#### Immutable Objects
+
+**Strings, tuples, and numbers are immutable and cannot be changed after creation**. Any operation that appears to modify them actually creates a new object.
+
+```python
+s = "hello"
+print(id(s))
+s = s + " world"  # Creates a new string object
+print(id(s))  # Different ID - new object
+```
+
+#### Mutable Objects
+
+Lists, dictionaries, sets, custom classes can be changed after the fact, and in its place. Operations that change them affect the same memory location.
+
+```python
+my_list = [1, 2, 3]
+original_id = id(my_list)
+my_list.append(4)  # Modifies the existing list
+print(id(my_list) == original_id)  # True - same object
+```
+
+### Python's Parameter Passing Mechanism: Pass by Object Reference
+
+Python uses what's commonly called "pass by object reference" (some also call it "pass by assignment"). This means:
+1. When you pass a variable to a function, the function parameter becomes a new reference to the same object that the argument variable points to, not the variable itself. 
+2. Since the parameter variables inside the function become new references to the same objects, the reference count goes up.
+3. Whether modifications inside the function affect the original object depends on whether the object is mutable or immutable
+
+This explains some seemingly contradictory behaviors: 
+
+```python
+
+# Example with immutable object (string)
+def change_name(name):
+    name = 'bob'  # Reassignment creates new reference, doesn't affect original
+
+name = 'jim'
+change_name(name)
+print(name)  # Still prints 'jim'
+
+# Example with mutable object (list)
+def add_element(my_list):
+    my_list.append([4])  # Modifies the original object
+
+my_list = [1, 2, 3]
+add_element(my_list)
+print(my_list)  # Prints [1, 2, 3, [4]] - original was modified!
+```
+
+Key Rules to Remember:
+
+1. ​Reassignment​ creates a new reference and doesn't affect the original.
+2. ​Mutation​ changes the object and affects all references.
+3. This behavior applies to ​all data types​ but has different practical implications based on mutability:
+
+### The Connection Between Mutability and Parameter Passing 
+
+Here's how these concepts are connected:
+
+1. **​For immutable objects**​: Since the object can't be modified, any operation that seems to modify it actually creates a new object. When a parameter is reassigned inside a function, what changes is what the object the local variable refers to. What is not affected is the not the original variable outside the function.
+
+2.  **​For mutable objects**​: Since the object can be modified, operations that change the object's internal state affect the original object. Both the parameter and the original variable outside still point to the same object, so both "see" the changes.
+
+3.  **​Reassignment vs. Modification**​:
+    * Reassignment (`my_var = something_new`) never affects the original variable outside the function
+    * Modification methods (e.g.,`.append()`, `.update()`) affect the original object if it's mutable
+
+Remember:
+
+* Variables are not passed to functions; references to objects are passed
+* Parameters are the names in function definitions; arguments are the values passed
+
+
+#### Memory Aliasing
+
+As we can now conclude, multiple variables can reference the same object. 
+
+Memory aliasing occurs when multiple variables refer to the same object in memory. This is a fundamental concept in Python that's directly connected to its object reference model and has important implications for how your code behaves.
+
+**How Memory Aliasing Works**
+
+When you assign a variable to another variable in Python, you're creating a new reference (or alias) to the same object
+```python
+x = [1, 2, 3]  # Creates a list object in memory
+y = x          # y now references the same list object
+```
+In this example, both x and y point to the same list object in memory. They are aliases of each other. This means:
+```python
+y.append(4)    # Modifies the list through y
+print(x)       # Output: [1, 2, 3, 4] - x sees the change too!
+```
+
+**Consequences of Memory Aliasing**
+
+1. **​Modification Effects**​: When using mutable objects, changes through one alias will be visible through all aliases.
+2. **​Performance Implications**​: Aliasing can be memory-efficient since multiple variables share the same memory space instead of duplicating data.
+3. **​Potential Bugs**​: Unwanted aliasing can lead to subtle bugs when you modify an object without realizing other parts of your code are referencing the same object.
+
+Avoiding Unwanted Aliasing: when you want to create a separate copy instead of an alias, you need to explicitly copy the object.
+
+**Aliasing and Function Arguments**
+
+This concept is directly related to how Python passes arguments to functions. Since Python passes object references, function parameters become aliases to the objects passed as arguments.
+
+
+### Differences from Other Languages
+
+1. Dynamic vs. Static Typing: Unlike statically typed languages like Java or C++, Python uses dynamic typing:
+* Variable types are determined at runtime
+* Variables can be reassigned to different types
+* No type declarations are required
+
+What is typing, however? In programming, "typing" refers to the system that assigns and enforces data types for variables, expressions, and function returns.
+
+Typing determines:
+* What operations can be performed on a value
+* How values can be stored in memory
+* How the language handles type compatibility
+* What errors may occur during program execution
+
+#### Dynamic Typing
+
+In dynamically typed languages like Python, type checking primarily happens at runtime:
+* Variables don't have declared types - they can reference values of any type
+* The type is associated with the value, not the variable
+* Type errors are discovered when the code runs (during execution)
+* Variables can change types throughout program execution
+
+For example, in Python:
+```python
+x = 5         # x references an integer
+x = "hello"   # x now references a string
+x = [1, 2, 3] # x now references a list
+```
+
+Python evaluates the type of x at runtime based on the value it currently holds.
+
+#### Static Typing
+
+In statically typed languages (like Java, C++, or TypeScript):
+* Variables have explicit type declarations
+* Type checking happens at compile time, before the program runs
+* Once a variable is declared with a type, it generally cannot reference values of other types
+* Type errors are caught earlier in the development process
+
+For example, in a statically typed language:
+
+```
+int x = 5;         // x can only hold integers
+x = "hello";       // Error! Can't assign a string to an integer variable
+```
+
+2. Interpreted vs. Compiled: Python is generally considered an interpreted language, though it technically compiles to bytecode first:
+* Python code is compiled to bytecode (.pyc files)
+* The Python Virtual Machine (PVM) interprets this bytecode
+
+This differs from languages like C/C++ that compile directly to machine code.
+
+You may be wondering about Python's execution process. Python actually follows a hybrid approach:
+
+1.  **​Compilation Step​**: When you run a Python program, the source code (.py files) is first compiled into bytecode (.pyc files), which is a lower-level, platform-independent representation of your code.
+2.  **​Interpretation Step**​: This bytecode is then executed by the Python Virtual Machine (PVM), which interprets the instructions at runtime.
+
+Why Python Is Still Considered "Interpreted"? Python is classified as interpreted for several key reasons:
+
+* **​Runtime Execution**​: The compilation to bytecode happens automatically and transparently at runtime, rather than as a separate explicit step performed before execution.
+* **​No Separate Compilation Phase**​: Unlike languages like C or Java, you don't typically run a separate compiler that produces an executable or class file before running your program.
+* **​Dynamic Nature**​: Python's highly dynamic features (like dynamic typing, runtime code generation, and dynamic binding) align more with interpreted languages.
+* **​Historical Context**​: Languages have traditionally been categorized as either compiled or interpreted, even though many modern languages use hybrid approaches.
+
+In reality, language implementation exists on a spectrum:
+* ​Pure Compiled​: Languages like C and C++ compile directly to machine code
+* ​Hybrid​: Languages like Java and C# compile to bytecode, then use a JIT (Just-In-Time) compiler
+* ​Python's Approach​: Compile to bytecode, then interpret that bytecode (with some JIT capabilities in implementations like PyPy)
+
+This hybrid nature gives Python some benefits of both worlds - the portability of bytecode across different platforms while maintaining the flexibility and dynamic features of interpreted languages.
+
+
+3. Global Interpreter Lock (GIL): One significant difference is Python's Global Interpreter Lock:
+* The GIL allows only one thread to execute Python bytecode at a time
+* This simplifies memory management but can limit multi-threading performance
+* This is a major difference from languages like Java or C# that support true concurrency
+
+4. Pass by Object Reference: Python uses a "pass by object reference" model:
+* When you assign variables or pass arguments, you're working with references to objects
+* When you modify mutable objects (like lists), changes affect all references to that object
+* When you reassign variables, you're creating new references. This behavior is sometimes described as "pass by assignment" and differs from strictly "pass by value" or "pass by reference" languages.
+
+
 ### Naming Conventions: legal vs. idiomatic, illegal vs. non-idiomatic
+
+Readability of code is the core tenant of Python. Thus what and how naming occurs is of utmost importance.
 
 Legal names​ in Python:
 
@@ -40,6 +442,7 @@ Illegal names​ violate these rules, such as:
 * Names that are Python keywords (if, class, for)
 
 #### Idiomatic vs. Non-idiomatic Naming Conventions
+
 
 Idiomatic naming refers to Python's style guide [PEP8](https://peps.python.org/pep-0008/), while non-idiomatic naming doesn't. According to the ["PY101 - Coding Tips" lesson](https://launchschool.com/lessons/a29e9831/assignments/73146c1c), idiomatic names depend on what you're naming:
 
@@ -83,15 +486,6 @@ Remember:
 * Constants use SCREAMING_SNAKE_CASE
 * Classes use PascalCase (also called CamelCase or upper CamelCase)
 
-#### How This Is Tested
-
-Based on the PY109 Study Guide, you might be asked to:
-
-1.  Identify whether names follow legal Python syntax
-2.  Determine if names follow Python's style conventions (idiomatic)
-3.  Explain why certain names are or aren't idiomatic
-4.  Correct non-idiomatic names to make them idiomatic
-
 ***
 
 ## Variables
@@ -108,11 +502,14 @@ This statement does two things:
 1.  Creates an object (the string 'Hello')
 2.  Associates the name 'greeting' with this object
 
-The variable becomes a reference (or pointer) to the object in memory.
+The variable becomes a reference (or pointer) to the object in memory. The variable (on the left of the `=`) becomes a reference or pointer to the object in memory. The expression to the right of the `=` evaluates to an object, which is stored on the heap.
+
+A helpful analogy: "imagine objects as balloons, and variables as strings tied to those balloons. When you assign a value to a variable, you're tying a string (the variable) to a balloon (the object)"
 
 **Reassignment**
 
 When you reassign a variable, you're simply making it point to a different object:
+
 ```python
 greeting = 'Hello'  # Initial assignment
 greeting = 'Hi'     # Reassignment - greeting now points to a new string object
@@ -153,7 +550,7 @@ print(local_var)    # Error! local_var is not defined in this scope
 
 **Important Scope Rule**
 
-You can access global variables from inside functions, but you cannot reassign them without using the global keyword:
+You can access global variables from inside functions, but you cannot reassign them without using the `global` keyword:
 
 ```python
 count = 10  # Global variable
@@ -274,10 +671,29 @@ Python's optimization for immutable values means that even with deep copies, you
 
 #### Why it Matters
 
-Shallow and deep copying directly builds on the fundamental concept that variables in Python are references to objects in memory. When you make a copy, you're really creating new references (pointers) to either the same objects (shallow copy) or brand new duplicate objects (deep copy). The copying mechanism isfundamentally about how variables reference objects in memory.
+Shallow and deep copying directly builds on the fundamental concept that variables in Python are references to objects in memory. When you make a copy, you're really creating new references (pointers) to either the same objects (shallow copy) or brand new duplicate objects (deep copy). The copying mechanism is fundamentally about how variables reference objects in memory.
 
 Understanding shallow vs. deep copying is also important for '**Pass by Object Reference**' because when you pass mutable objects to functions, you're passing a reference, not a copy. This has similar implications to using shallow copies.​
 
+#### Connecting Copy Operations to Parameter Passing in Python
+
+
+Implications for Mutable vs. Immutable Objects
+
+Mutable Objects (lists, dictionaries, sets)
+1.  ​When passed to functions​: Changes to the object within the function will affect the original object
+2.  ​With shallow copy​: The new container can be modified independently, but nested mutable objects are shared
+3.  ​With deep copy​: Complete independence - changes to the copy won't affect the original at any level
+
+Immutable Objects (integers, strings, tuples)
+1.  ​When passed to functions​: Since they can't be modified, operations create new objects
+2.  ​With both shallow and deep copy​: Practically identical for simple immutable objects due to Python's optimization
+
+Key Takeaways
+1.  ​Pass by object reference​ means you're passing a reference to the object, similar to a shallow copy
+2.  ​Shallow copy​ creates a new container but shares references to the inner objects
+3.  ​Deep copy​ creates new copies of all nested objects, ensuring complete independence
+4.  Mutability is the key factor​ that determines whether modifications will affect the original object
 
 ### Variable Shadowing
 
@@ -419,11 +835,13 @@ def multiply(x, y):  # x and y are parameters
 ```
 
 **Arguments** are the actual values that get passed to the function. 
+
 ```python
 product = multiply(4, 5)  # 4 and 5 are arguments
 ```
 
 Remember: 
+
 * Parameters are the names assigned to a function's arguments; arguments are the values that get passed to the function.
 * Variables are not passed to or returned by functions -- only references to objects are passed.
 
@@ -431,6 +849,7 @@ Remember:
 **Nested functions** are functions defined inside other functions.
 
 Key points about nested functions:
+
 * Inner functions can access variables from the outer function's scope
 * Inner functions are only accessible within the scope of the outer function
 * They help with code organization and encapsulation
@@ -447,6 +866,7 @@ It's generally best practice to separate functions that return values from funct
 
 
 Additionally, function names should reflect whether they return values or produce side effects:
+
 * Use names like `display_total`, `print_info`, or `show_results` for functions that output information
 * Use names like `calculate_total`, `compute_sum`, or `get_average` for functions that return values
 
@@ -457,6 +877,7 @@ Exceptions to the Rule: there are valid exceptions to the "_don't mix return val
 * Functions that read/write from files
 
 Make sure the functions are at consistent abstraction levels, where:
+
 1.  Your code becomes more readable
 2.  You can use functions without thinking about their implementation
 3.  Your mental focus stays compartmentalized
@@ -524,6 +945,7 @@ type(42)         # <class 'int'>
 type(3.14)       # <class 'float'>
 type(1+2j)       # <class 'complex'>
 ```
+
 ***
 
 ## Strings!
@@ -739,11 +1161,12 @@ Both `.find()` and `.rfind()`:
 * Empty string is always found at position 0 in non-empty strings
 * Always return -1 when searching in empty strings*
 
-**Important to Remember**
+#### Important to Remember
 
-1.  Strings in Python are ​immutable​. Methods like .capitalize() and .replace() don't modify the original string - they return a new string.
+1.  Strings in Python are ​immutable​. Methods like `.capitalize(`) and `.replace(`) don't modify the original string - they return a new string.
 
 2.  A common bug is forgetting to capture the return value:
+
 ``` python
 word = "hello"
 word.capitalize()  # This doesn't change 'word'
@@ -755,10 +1178,141 @@ print(word)  # Now 'Hello'
 ```
 
 3.  For searching substrings, you can also use the `in` operator:
+
 ``` python
 "World" in "Hello, World!"  # True
 Python" in "Hello, World!"  # False
 ```
+
+***
+
+## Hashability
+
+A **hash value** is essentially a numeric "fingerprint" of data. When Python needs to store or look up objects in dictionaries or sets, it uses this fingerprint instead of comparing entire objects.
+
+```python
+print(hash("hello"))  # Might output: 8768730738463847
+print(hash("hello"))  # Will always output the same number for "hello"
+```
+
+#### How Hash Values Are Derived
+
+1.  Python applies a mathematical algorithm to convert data of any size into a fixed-size number
+2.  The algorithm ensures that:
+    * The same input always produces the same hash value
+    * Different inputs (usually) produce different hash values
+    * The calculation is fast
+
+Python's exact hashing algorithm is implementation-specific, but it's designed to distribute values evenly across the numeric range.
+
+#### Practical Use Cases
+
+The main reason hash values matter is for dictionary and set operations:
+```python
+
+# When you do this:
+student_grades = {}
+student_grades["Alice"] = 95
+```
+
+The, Python internally does the following:
+1. Calculates hash("Alice")
+2. Uses that number to determine where to store 95
+3. When retrieving, calculates hash("Alice") again to find the location
+
+#### Why Some Objects Can't Be Dictionary Keys
+
+Since dictionaries rely on hash values staying consistent, only immutable objects can be used as keys.
+
+#### What Makes an Object Hashable
+
+An object is hashable if:
+
+1.  It has a `__hash__()` method that returns the same integer value throughout its lifetime
+2.  It can be compared to other objects via an `__eq__()` method
+3.  If `a == b` is True, then `hash(a) == hash(b)` must also be True
+
+This means the hash value must remain constant for the object's entire lifetime, which is why hashable objects are typically immutable.
+
+#### The Hash Function
+
+The `hash()` built-in function:
+
+```python
+number = 42
+print(hash(number))  # Returns an integer hash value
+```
+
+This function computes a fixed-size integer from an object of arbitrary size.
+
+```python
+# Same value always produces the same hash
+print(hash("hello") == hash("hello"))  # True
+
+# Different values produce different hashes (with rare collisions)
+print(hash("hello") == hash("world"))  # False
+```
+
+### Immutability and Hashability
+
+Immutability is closely tied to hashability because:
+
+```python
+This tuple is immutable and hashable
+t = (1, 2, 3)
+print(hash(t))  # Works fine
+
+# This list is mutable and not hashable
+l = [1, 2, 3]
+try:
+    print(hash(l))
+except TypeError as e:
+    print(e)  # "unhashable type: 'list'"
+
+```
+
+If objects could change their values while maintaining the same hash, it would break hash table data structures. 
+
+#### Hashable vs. Non-hashable Types
+
+**Hashable Types (Immutable)**:
+* Numbers (int, float, complex)
+* Strings
+* Bytes
+* Tuples (if all elements are hashable)
+* Frozen sets
+* None
+* Boolean values
+
+**Non-hashable Types (Mutable)**:
+* Lists
+* Dictionaries
+* Sets
+* Byte arrays
+* User-defined classes (by default are hashable, but become non-hashable if you implement __eq__ without __hash__)
+
+#### Hash Tables in Python
+
+Internally, dictionaries and sets use hash tables:
+1.  When you add a key to a dictionary, Python:
+    * Computes the key's hash value
+    * Uses that value to determine where to store the key-value pair
+    * When retrieving, it calculates the hash again to find the location
+2. This allows for O(1) average-case complexity for lookups, rather than O(n) with lists, This makes lookups extremely fast because Python can jump directly to the right location rather than searching through everything.
+
+#### Hash Collisions
+
+Sometimes different objects can produce the same hash value:
+```python
+# These might have the same hash (though unlikely)
+str1 = "ab"
+str2 = "ba"
+
+```
+
+When this happens, Python's hash tables handle it through techniques like chaining (storing multiple items in the same bucket).
+
+>"A hashable type is a type from which consistent hash values can be computed. A hash function takes an object and returns a hash value, which is used internally in a dictionary to store and retrieve values. Given two identical objects, the hash function must return the same value for both objects."
 
 ***
 
@@ -772,7 +1326,7 @@ Python" in "Hello, World!"  # False
 * These are specific data types in Python that represent logical truth values
 * Boolean values are the direct result of comparison operations (like `==`, `!=`, `>`, `<`)
 
-#### Truthiness:
+#### Truthiness
 
 **Truthiness** refers to how Python evaluates values in a boolean context (like in an `if` statement).
 
@@ -946,12 +1500,14 @@ Basic Arithmetic Operators:
 
 
 Operator Precedence in Arithmetic Expressions,  order from high to low:
+
 1.  Parentheses `()`
 2.  Exponentiation `**`
 3.  Multiplication `*`, Division `/`, Floor Division `//`, Modulo `%`
 4.  Addition `+`, Subtraction `-`
 
 According to the Python documentation on operator precedence, expressions like `4 * 5 + 3**2 / 10` are evaluated in this order:
+
 1.  `3**2 = 9` (exponentiation first)
 2.  `4 * 5 = 20` (multiplication)
 3.  `9 / 10 = 0.9` (division)
@@ -959,8 +1515,7 @@ According to the Python documentation on operator precedence, expressions like `
 
 For clarity, you can use parentheses: `(4 * 5) + ((3**2) / 10)`
 
-**Float vs Integer Division**
-
+#### Float vs Integer Division
 
 In Python 3, the division operator / always performs floating-point division.
 ` 7 / 2  # Result: 3.5`
@@ -993,6 +1548,7 @@ print(f"{result:.6f}")  # "0.423247"
 ```
 
 4. Consider using the decimal module, for use in financial calculations or when precision is critical:
+
 ```python
 
 from decimal import Decimal, getcontext
@@ -1021,6 +1577,7 @@ print(math.isnan(nan_value))  # Returns True
 ```
 
 6. Handle division by zero: When performing division, be aware of potential `ZeroDivisionError`.
+
 ``` python
 try:
     result = 10 / 0
@@ -1031,6 +1588,7 @@ except ZeroDivisionError:
 ### String Concatenation with `+`
 
 In Python, the `+` operator performs string concatenation when used with strings:
+
 ```python
 str1 = "Hello, "
 str2 = "world!"
@@ -1038,19 +1596,24 @@ result = str1 + str2  # "Hello, world!"
 ```
 
 Key points about string concatenation:
+
 1. The `+ `operator **creates a new string** when combining two strings
 2. Both operands must be strings; otherwise, you'll get a `TypeError`.
 3. String concatenation is inefficient for multiple operations. For better performance with multiple strings, use `.join()` or f-strings.
 
+
 ### List Concatenation with `+`
 
 The `+` operator also works with lists, merging two lists to create a new one:
+
 ```python
 list1 = [1, 2, 3]
 list2 = [4, 5, 6]
 combined = list1 + list2  # [1, 2, 3, 4, 5, 6]
 ```
+
 Important characteristics of list concatenation:
+
 1. Like string concatenation, the + operator **creates a new list**
 2. The original lists remain unchanged.
 3. Both operands must be lists (or other sequence types). You can't combine different types, resulting in a `TypeError`.
@@ -1094,14 +1657,15 @@ print(list1)  # [1, 2, 3, 4, 5, 6]
 #### Truthiness vs. Boolean Values
 
 Remember the distinction between truthiness and actual boolean values:
+
 ```python
 
 # These are not the same:
 bool(0) == False    # True (0 converts to False)
-0 == False          # False (0 and False are different values)
+0 == False          # False (0 is falsy and False is False, thus are different values)
 
 bool("") == False   # True (empty string converts to False)
-"" == False         # False (empty string and False are different values)
+"" == False         # False (empty string is falsy and False are different values)
 ```
 
 #### Chained Comparisons
@@ -1119,6 +1683,7 @@ x > y and y > z
 #### Identity vs. Equality
 
 Don't confuse `==` (equality) with `is` (identity):
+
 * `==` checks if values are equal
 * `is` checks if two variables reference the same object
 
@@ -1144,7 +1709,6 @@ x = None
 if x is None:  # Preferred over x == None
     print("x is None")
 ```
-
 
 2. Distinguishing Between Identity and Equality: This example demonstrates the difference between `is` and `==`:
 ```python
@@ -1173,6 +1737,7 @@ print(s1 is s2)  # True
 s3 = "".join(["h", "e", "l", "l", "o"])
 print(s1 is s3)  # Could be False
 ```
+
 3.  ​Empty Immutable Collections​: Empty tuples and frozensets are typically interned.
 
 Don't use `is` for value comparison:
@@ -1183,13 +1748,15 @@ b = 1000
 print(a is b)  # Could be False, despite what you might expect
 print(a == b)  # Always True - correct way to compare values
 ```
-**Why is it important?**
 
-1.  **​Behavior of Identity Comparisons**​: When using the is operator, interned objects will return `True` even if they were created separately. However, with non-interned objects, the same comparison would return `False`. If a = b and both = 42, they will be the same object when evaluated with `is`. However, if a = b and both = 1000, they will not. This distinction is crucial when debugging or when you're relying on identit comparisons in your code.
+#### Why is it important?
+
+1.  **​Behavior of Identity Comparisons**​: When using the is operator, interned objects will return `True` even if they were created separately. However, with non-interned objects, the same comparison would return `False`. If `a = b` and both equal 42, they will be the same object when evaluated with `is`. However, if `a = b` and both `= 1000` they will not. This distinction is crucial when debugging or when you're relying on identit comparisons in your code.
 
 2. **Memory Optimization**
 
 To avoid later problems:
+
 * Use == for value comparison
 * Reserve `is` for identity checks, primarily with `None`
 * Never rely on interning behavior for critical program logic
@@ -1256,6 +1823,7 @@ Common explicit conversion functions:
 #### Implicit Type Coercion
 
 Python performs some automatic conversions:
+
 ```python
 
 # Integer + Float = Float
@@ -1273,6 +1841,7 @@ message = f"Name: {name}, Age: {age}"  # Values converted to strings
 ```
 
 Boolean values are implicitly converted to integers (1 for True, 0 for False) in arithmetic operations. When using f-strings, Python implicitly converts values to strings.
+
 
 #### Important Non-Coercion Cases
 
@@ -1387,13 +1956,16 @@ Special Cases are a doozy and there's a lot of them.
 * `set('hello')` creates a set with unique letters: `{'h', 'e', 'l', 'o'}`
 * `set()` creates an empty set (not {}, which creates an empty dict)
 
+
 #### More on Booleans are treated in arithmetic
 
 In Python, boolean values undergo implicit type coercion in arithmetic operations:
+
 * True is treated as the integer 1
 * False is treated as the integer 0
 
 Also:
+
 * Boolean arithmetic is different from boolean equality
 * True == 1 evaluates to True but True is 1 evaluates to False
 
@@ -1436,6 +2008,7 @@ except ValueError:
        print("Please enter a valid number.")
 ```
 
+
 `TypeError`: When passing the wrong type to a conversion function.
 
 ```python
@@ -1448,7 +2021,7 @@ except TypeError:
     print("Invalid input type for conversion.")
 ```
 
-#### Try/Except Error Handling 
+#### Try/Except Error Handling, briefly
 
 A robust example:
 
@@ -1473,7 +2046,7 @@ finally:
 
 The folowing are real programming scenarios you'll encounter:
 
-**User Input Processing** 
+#### User Input Processing
 
 One of the most common applications is handling user input.
 
@@ -1489,7 +2062,7 @@ except ValueError:
     print("Please enter a valid number")
 ```
 
-**Arithmetic Operations**
+#### Arithmetic Operations
 
 Type coercion is essential when performing calculations:
 
@@ -1505,7 +2078,7 @@ num_people = 3
 items_per_person = num_items // num_people  # Integer division
 ```
 
-**Building Strings for Output**
+#### Building Strings for Output
 
 When creating output for users:
 
@@ -1518,7 +2091,7 @@ message = "Congratulations " + name + "! Your score is " + str(score)
 message = f"Congratulations {name}! Your score is {score}"
 ```
 
-**Validation Logic**
+#### Validation Logic
 
 Type coercion is key in validation functions:
 
@@ -1531,7 +2104,7 @@ def is_valid_number(number_str):
         return False
 ```
 
-**Truthiness in Conditional Statements**
+#### Truthiness in Conditional Statements
 
 Using type coercion to boolean in if statements:
 
@@ -1549,7 +2122,7 @@ else:
     print("No items to process")
 ```
 
-**Data Processing**
+#### Data Processing
 
 When working with data in different formats:
 
@@ -1569,7 +2142,8 @@ temperatures_str = [f"{temp:.1f}°C" for temp in temperatures]
 
 A range is a built-in sequence type in Python that represents an immutable sequence of numbers, typically used for looping a specific number of times in for loops.
 
-**Creating Ranges**
+#### Creating Ranges
+
 The `range()` function can be called in three different ways:
 1.  `​range(stop)`​: Creates a sequence from 0 to stop-1
     `range(5)  # Represents the sequence 0, 1, 2, 3, 4`
@@ -1587,7 +2161,7 @@ Key properties of ranges:
 * **Ranges are ​memory efficient**​: they don't store all values in memory, just start, stop, and step.
 * **Ranges are ​lazy evaluated**​: values are generated on demand
 
-Common Operations with Ranges
+#### Common Operations with Ranges
 
 1.  ​Iterating with a for loop​:
 ```python
@@ -1618,7 +2192,7 @@ r[-1]  # 9
 r[2:5]  # range(2, 5)
 ```
 
-Common use cases:
+#### Common use cases
 
 1. Counting loops:
 ```python
@@ -1636,6 +2210,7 @@ for i in range(len(my_list)):
 3. Generating number sequences​:
 ```even_numbers = list(range(0, 11, 2))  # [0, 2, 4, 6, 8, 10]```
 
+
 Lazy evaluation is an evaluation strategy where expressions are not evaluated until their values are actually needed. In Python, this concept appears in several contexts, particularly with ranges. When you create a range in Python, it doesn't immediately compute all the values in that sequence. Instead, it stores only the start, stop, and step parameters and generates values on-demand when you iterate through it or access specific elements.
 
 For example: `r = range(1, 1000000)`. This line doesn't create a list with 999,999 numbers. It just creates a range object that knows how to generate those numbers when needed. This is memory-efficient compared to creating the equivalent list: `huge_list = list(range(1, 1000000))`.
@@ -1643,6 +2218,7 @@ For example: `r = range(1, 1000000)`. This line doesn't create a list with 999,9
 Beyond ranges, Python uses lazy evaluation in other contexts:
 1.  ​Generators​: Similar to ranges, generators produce items only when needed.
 2.  ​Short-circuit evaluation​: With logical operators and and or, Python only evaluates as much as necessary to determine the result.
+
 
 ### Range Boundaries Explained
 
@@ -1657,12 +2233,14 @@ range(2, 7)      # 2, 3, 4, 5, 6 (no 7)
 range(1, 10, 2)  # 1, 3, 5, 7, 9 (no 10)
 ```
 
-**Why This Design Choice?**
+#### Why This Design Choice?
 
 This "up to but not including" behavior may seem odd at first, but it offers several advantages:
+
 1.  **​Zero-indexing compatibility**​: Since Python uses zero-indexing for sequences, ranges align well with list indices.
 2.  **​Length calculation**​: The length of a range is simply `stop - start` (when step is 1).
 3.  **​Consecutive ranges**​: Ranges can be concatenated without overlapping
+
 ```python
  # These two ranges connect perfectly:
 range(0, 5)  # 0, 1, 2, 3, 4
@@ -1672,9 +2250,11 @@ range(5, 10) # 5, 6, 7, 8, 9
 4. **Empty ranges**​: Easy to represent an empty range by setting start equal to stop.
 ` range(5, 5)  # Empty range`
 
-**Common Mistakes to Avoid**:
+
+#### Common Mistakes to Avoid
 
 When working with ranges, watch out for these common errors:
+
 1.  ​Assuming the stop value is included​:
 ```python
 # If you need numbers 1-5 inclusive:
@@ -1732,7 +2312,9 @@ print(l)                # [0, 1, 2, 3, 4, 5]
 ## Conditionals and Loops
 
 ### Conditionals
+
 Conditionals allow your code to make decisions based on whether certain conditions are true or false. In Python, the main conditional statements are:
+
 ```python
 # Basic if statement
 if condition:
@@ -1765,7 +2347,8 @@ if name:  # name is truthy because it's a non-empty string
 
 As always 'truthy' does not mean 'equal to `True`.
 
-As of 3.10 there's also match case statements.
+As of 3.10 there's also **match case statements**.
+
 ```python
 
 animal = 'horse'
@@ -1779,12 +2362,16 @@ match animal:
     case _:  # Default case. #Always use a default case!
         print('unknown animal')
 ```
+
 Use match-case when:
+
 1.  You're comparing a single value against multiple possible patterns
 2.  Your code has multiple if-elif-else statements checking the same variable
 3.  You want to improve readability for value-based branching logic
 
 Remember that once a matching case is found, the associated block executes and then the program exits the match statement entirely. Only one case block will execute per match statement. Therefore, always have a default case (`case _:`) ready to catch unmatched pairs. Also, place more specific patterns before more general ones. This is especially important when using pattern matching with more complex structures.
+
+*** 
 
 ### Loops
 
@@ -1802,7 +2389,8 @@ for i in range(5):  # Generates numbers 0 through 4
     print(i)
 ```
 
-**`for` Loops Best Practices**
+#### `for` Loops Best Practices
+
 1.  ​Use descriptive variable names in your loop​.
 2.  ​Prefer `for` loops when the number of iterations is known.
 3.  ​Use `enumerate()` when you need both index and value​.
@@ -1830,18 +2418,20 @@ while True:
         break
 ```
 
-**`while` loop best practices**:
+#### `while` loop best practices
+
 1. ​Choose between regular while and while True appropriately​.
 2. ​Always include a way to exit the loop​, so as to avoid infinite loops.
 3. Use `break` to exit early when appropriate.
 
 
-**Loop control statements**
+#### Loop control statements
+
 * `break`: Exits the loop immediately, regardless of the loop condition. Useful in a `while` loop. 
 * `continue`: Skips the rest of the current iteration and moves to the next one
 * `pass`: Does nothing, acts as a placeholder. It does nothing but can be useful when you need a statement syntactically but don't want any action.
 
-**Nested Loops and Loop Control**
+#### Nested Loops and Loop Control
 
 Loop control statements affect only the innermost loop they are placed in:
 ```python
@@ -1852,13 +2442,15 @@ for i in range(3):
             break  # This only breaks out of the inner loop
         print(f"i={i}, j={j}")
 ```
-When to Use Each Control Statement:
+
+#### When to Use Each Control Statement
 
 * Use `break` when you want to exit a loop completely (example: found what you're looking for)
 * Use `continue` when you want to skip specific iterations but continue the loop
 * Use `pass` when you need a placeholder or an empty block syntactically
 
 Lots of times either loop will do, but it requires careful syntaxing:
+
 ```python
 # Using a for loop
 fish = ['Dory', 'Marlin', 'Gill', 'Nemo', 'Bruce']
@@ -1880,7 +2472,7 @@ while index < len(fish):
 
 Python's conditional expression (often called the ternary operator) provides a concise way to write simple `if-else` statements in a single line. It follows this syntax: **`true_value if condition else false_value`**.
 
-**Basic Usage**
+#### Basic Usage
 
 The ternary operator evaluates the condition and returns either the first value (if the condition is truthy) or the second value (if the condition is falsy):
 
@@ -1941,7 +2533,7 @@ mixed_list = [1, "hello", True, 3.14]
 nested_list = [1, [2, 3], 4]
 ```
 
-**List Indexing and Slicing**
+#### List Indexing and Slicing
 
 Python uses zero-based indexing, which means the first element is at index `0`.
 
@@ -2087,6 +2679,7 @@ car = dict(items)
 ```
 
 3.  Dictionary Comprehensions: For creating dictionaries based on existing data.
+
 ```python
 # Create a dictionary of numbers and their squares
 squares = {x: x**2 for x in range(1, 6)}
@@ -2100,6 +2693,7 @@ letter_dict = {k: v for k, v in zip(keys, values)}
 ```
 
 #### Accessing values in dictionaries
+
 
 1. **Using Square Bracket Notation**: The most common way to access dictionary values is using square brackets with the key
 
@@ -2239,6 +2833,7 @@ model = car.pop('model', 'not specified')  # model = 'not specified'
 3. **The `popitem()` method**: removes and returns a key-value pair from the dictionary. This creates a way to process items one by one while simultaneously removing them from the dictionary. It's "destructive" because it permanently modifies the dictionary by removing items as you iterate.
 
 This approach is useful when:
+
 * You need to process each item exactly once
 * You want to ensure items are removed as you go (to free memory or prevent duplicate processing)
 * You don't need to preserve the original dictionary
@@ -2265,6 +2860,7 @@ car = {
 car.clear()
 print(car)  # {}
 ```
+
 5. Dictionary Comprehension for Selective Removal: To remove multiple items based on a condition, you can use dictionary comprehension.  
 ```python
 car = {
@@ -2352,6 +2948,7 @@ for key, value in numbers.items():
 **`dict.get()`**: retrieves a value associated with a key. It is safer than bracket notation because it doesn't raise `KeyError` for missing keys. It provides a clean way to handle missing keys with default values. Can be chained for nested dictionaries: `data.get('user', {}).get('address', {})`
 
 These usually work together!
+
 ```python
 
 # Check if a specific value exists in the dictionary
@@ -2384,6 +2981,7 @@ items = car.items()  # dict_items([('type', 'sedan'), ('color', 'blue'), ('year'
 1. **Tuples**: Immutable, ordered sequence. Uses `()`.
 ​
 Use Cases​:
+
 * When you need data that shouldn't change (like coordinates, RGB values)
 * Dictionary keys (since they must be immutable)
 * Returning multiple values from a function
@@ -2397,6 +2995,7 @@ rgb_color = (255, 0, 127)
 2. **Sets**: Unordered collection, no duplicates, mutable but contains only immutable objects. Uses `{}`
 
 ​Use Cases​:
+
 * When you need to ensure uniqueness of elements
 * Set operations (union, intersection, difference)
 * Membership testing for large collections (faster than list)
@@ -2408,6 +3007,7 @@ tags = {"python", "programming", "tutorial"}
 ```
 
 Sets in Python are mutable, meaning you can modify them after creation by:
+
 * Adding elements using `add()` or `update()`
 * Removing elements using `remove()`, `discard()`, or `pop()`
 * Clearing all elements with `clear()`
@@ -2415,12 +3015,14 @@ Sets in Python are mutable, meaning you can modify them after creation by:
 While sets themselves are mutable, they can only contain hashable objects, which in Python are typically immutable objects. This is because sets use a hash table implementation internally for fast lookups.
 
 These objects can be included in sets:
+
 * Integers: `{1, 2, 3}`
 * Floats: `{1.1, 2.2, 3.3}`
 * Strings: `{"apple", "banana"}`
 * Tuples (if they contain only immutable objects): `{(1, 2), (3, 4)}`
 
 These objects CANNOT be included in sets:
+
 * Lists: `{[1, 2], [3, 4]}` 
 * Dictionaries: `{{1: 'a'}, {2: 'b'}} `
 * Sets: `{{1, 2}, {3, 4}}` 
@@ -2446,15 +3048,16 @@ frozen_colors = frozenset(["red", "blue", "green"])
 # Attempting to modify will cause errors
 frozen_colors.add("yellow")  # AttributeError!
 ```
+
 Keep in mind:
-* frozen sets are  useful when you need an immutable collection of unique items
+
+* frozen sets are useful when you need an immutable collection of unique items
 * They support methods like isdisjoint(), issubset(), and issuperset()
 * They can be created from any iterable (lists, tuples, regular sets, etc.)
 * They cannot be modified after creation
 
 The key difference between sets and frozensets is their mutability. While **both are unordered collections of unique** elements, **regular sets can be modified** after creation, whereas **frozensets are immutable**. This immutability makes frozensets hashable, so they can be used as dictionary keys or as elements in other sets.
 
-3. Ranges (See Above)
 
 How to Differentiate Between Collections:
 
@@ -2518,6 +3121,7 @@ sequence[-5:-2]   # Elements from 5th last to 3rd last (not including 3rd last)
 ### Slicing Examples with Different Data Types
 
 #### String Slicing
+
 ```python
 text = "Python Programming"
 print(text[0:6])      # "Python"
@@ -2526,6 +3130,7 @@ print(text[::-1])     # "gnimmargorP nohtyP" (reversed)
 print(text[::2])      # "Pto rgamn" (every second character)
 ```
 #### List Slicing
+
 ```python 
 numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 print(numbers[2:5])   # [2, 3, 4]
@@ -2535,6 +3140,7 @@ print(numbers[::2])   # [0, 2, 4, 6, 8] (every second element)
 ```
 
 #### Tuple Slicing
+
 ```python
 coordinates = (1, 2, 3, 4, 5, 6)
 print(coordinates[0:2])   # (1, 2)
@@ -2542,7 +3148,8 @@ print(coordinates[3:])    # (4, 5, 6)
 print(coordinates[::-1])  # (6, 5, 4, 3, 2, 1)
 ```
 
-**Important Properties of Slicing**
+#### Important Properties of Slicing
+
 1. **​Returns a New Object**​: Slicing creates a new object, it doesn't modify the original sequence.
 2. **​Immutability Preserved**​: If the original is immutable (like strings or tuples), the slice will also be immutable.
 3. **​Handling Out-of-Range Indices**​: Slicing gracefully handles out-of-range indices
@@ -2593,7 +3200,8 @@ copy = original[:]  # Creates a shallow copy
 
 3. ​Reversing a Sequence​: `reversed_sequence = sequence[::-1]`
 
-Common Mistakes and Pitfalls
+#### Common Mistakes and Pitfalls
+
 1.  **​Confusing stop Index**​: Remember that the stop index is exclusive (not included in the slice).
 2.  **​IndexError vs. Slicing**​: While `list[6] = 5` would raise an `IndexError` if the list doesn't have 7 elements, slicing like `list[2:6]` will not raise an error even if the list is shorter.
 3.  **​Modifying Slices​**: Modifying a slice of a mutable object doesn't modify the original.
@@ -2615,6 +3223,7 @@ print "Hello, Python!"  # SyntaxError: Missing parentheses in call to 'print'
 ```
 
 Basic Usage:
+
 ```python
 
 # python, basic
@@ -2702,6 +3311,7 @@ while not name:  # Loop continues until a non-empty string is entered
 ```
 
 Input processing loop:
+
 ```python
 
    while True:
@@ -2712,6 +3322,7 @@ Input processing loop:
 ```
 
 Getting yes/no input:
+
 ```python
 while True:
        response = input("Continue? (y/n): ").lower()
@@ -2733,7 +3344,8 @@ modified = user_input.upper()  # Creates a new string object
 print(user_input is modified)  # False - different objects
 ```
 
-### Pass by Object Reference
+#### Pass by Object Reference
+
 When you pass variables to `print()` or store results from `input()`, Python uses its "**pass by object reference**" model
 
 ```python
@@ -2756,7 +3368,7 @@ print(user_input)  # Original input is unchanged
 print(modified)    # Shows the modified version
 ```
 
-**Global Variables and I/O Functions**
+#### Global Variables and I/O Functions
 
 When using `input()` and `print()` inside functions, be aware of scope issues
 ```python
@@ -2769,7 +3381,8 @@ def get_user_info():
 get_user_info()
 print(f"Outside function: {name}")  # Still "Default" unless you use 'global name'
 ```
-**None and Input Handling**
+
+#### None and Input Handling
 
 Understanding how None (a falsy value) interacts with I/O is important:
 
@@ -2787,426 +3400,6 @@ if result is not None:  # Check for None specifically
 else:
     print("Invalid input")
 ```
-
-***
-
-## Python's Memory Model
-
-Python's design elegantly handles many complex memory management tasks behind the scenes, which makes it accessible but also more mysterious to the user as much more is  "under the hood." 
-
-Python handles memory management automatically through a private heap space. The Python memory manager controls memory allocation and deallocation behind the scenes, through a system called **​reference counting**​ combined with **​garbage collection**​:
-
-1. ​Object Model​: Everything in Python is an object, stored on the heap. When you create a variable, you're creating a reference to an object, not the object itself. 
-
-2. ​Reference Counting​: Python keeps track of how many references point to each object. When the count drops to zero, the memory is typically freed immediately.
-  
-3. ​Garbage Collection​: For handling circular references (objects referencing each other), Python has a cycle-detecting garbage collector that runs periodically.
-  
-4. Object Reuse and Memory Pools: Python uses object pools for small immutable objects like small integers and short strings. This means that multiple variables may point to the same object in memory, optimizing memory usage.
-
-
-#### Object Creation and Storage
-
-When you create an object in Python, several things happen: 
-
-`x = 42  # Creates an integer object with value 42`
-
-1.  Python allocates memory for the integer object
-2.  The value 42 is stored in that memory location
-3.  The variable x becomes a reference (pointer) to that memory location
-
-#### Everything is actually an Object
-
-1. Primitive Types are Objects: Unlike languages like C or Java where primitive types (int, float) are distinct from objects, in Python even these basic types are full-fledged objects:
-
-```python
-# Integers are objects
-num = 5
-print(dir(num))  # Shows all attributes and methods of the integer
-
-# Even booleans are objects
-truth = True
-print(type(truth))  # <class 'bool'>
-```
-
-2. Functions are Objects too! Functions can be:
-* Assigned to variables
-* Passed as arguments
-* Returned from other functions
-* Have attributes added to them
-
-3. Classes and Types are Objects: Even classes and types themselves are objects:
-```python
-print(type(int))  # <class 'type'>
-```
-
-#### Object Identity
-
-Every object has a unique identifier, accessed using the `id()` function:
-
-```python
-a = 42
-b = 42
-print(id(a))  # Returns the memory address of a
-print(id(a) == id(b))  # Might be True due to interning
-```
-
-Every object has a unique identifier that can be accessed using the `id()` function. This function returns the identity of an object, which is guaranteed to be unique for the object's lifetime.
-
-
-### Everything IS an Object
-
-We know now that an object is a chunk of data that contains the following:
-1.  ​An identity​: A unique identifier (accessible via the id() function)
-2.  ​A type​: Determines what operations can be performed on it (accessible via type())
-3.  ​A value​: The actual data it contains
-
-
-#### Practical Implications
-
-1. Object Identity and Memory Management: Python's `id()` function returns the memory address of an object. This becomes important when understanding object interning.
-
-2. Everything Has Methods and Attributes: Since everything is an object, you can call methods on any value.
-
-3. References vs. Values: In Python, variables are references to objects, not containers for values.
-
-4. Mutability vs. Immutability: Objects can be either mutable (can be changed) or immutable (cannot be changed):
-* Immutable: int, float, str, tuple, frozenset
-* Mutable: list, dict, set
-
-
-#### Value Interning
-
-Python optimizes memory use by interning (reusing) certain immutable objects:
-
-```python
-
-a = 5
-b = 5
-print(a is b)  # True, because integers -5 to 256 are interned
-```
-
-In Python, there's a predefined range of integers, specifically from -5 to 256, for which memory locations are pre-assigned. When you reference an integer within this span, Python consistently points to the same memory spot."
-
-What Python Interns:
-
-1. **​Small integers**​: Integers in the range [-5, 256] are pre-allocated when Python starts.
-2. **​Short strings**​: String literals that look like identifiers are interned.
-3. **​Empty immutable containers**​: Empty tuples and frozensets are interned.
-
-**Forcing Interning**
-You can explicitly intern strings using the sys.intern() function:
-
-### Mutable vs. Immutable Objects
-
-Mutability & Immutability is directly related to how Python manages memory:
-
-#### Immutable Objects
-
-**Strings, tuples, and numbers cannot be changed after creation**. Any operation that appears to modify them actually creates a new object.
-
-```python
-s = "hello"
-print(id(s))
-s = s + " world"  # Creates a new string object
-print(id(s))  # Different ID - new object
-```
-
-#### Mutable Objects
-
-Mutable objects​ (lists, dictionaries, sets, custom classes) can be modified in place. Operations that change them affect the same memory location.
-
-```python
-my_list = [1, 2, 3]
-original_id = id(my_list)
-my_list.append(4)  # Modifies the existing list
-print(id(my_list) == original_id)  # True - same object
-```
-
-### Python's Parameter Passing Mechanism: Pass by Object Reference
-
-Python uses what's commonly called "pass by object reference" (some also call it "pass by assignment"). This means:
-1.  When you pass a variable to a function, **_Python passes a reference to the object the variable points to, not the variable itself_**.
-2.  Parameter variables inside the function become new references to the same objects.
-
-This explains some seemingly contradictory behaviors: 
-
-```python
-
-# Example with immutable object (string)
-def change_name(name):
-    name = 'bob'  # Reassignment creates new reference, doesn't affect original
-
-name = 'jim'
-change_name(name)
-print(name)  # Still prints 'jim'
-
-# Example with mutable object (list)
-def add_element(my_list):
-    my_list.append([4])  # Modifies the original object
-
-my_list = [1, 2, 3]
-add_element(my_list)
-print(my_list)  # Prints [1, 2, 3, [4]] - original was modified!
-```
-
-### The Connection Between Mutability and Parameter Passing 
-
-Here's how these concepts are connected:
-
-1.  **​For immutable objects**​: Since the object can't be modified, any operation that seems to modify it actually creates a new object. When you reassign a parameter inside a function, you're just changing what object the local variable refers to, not affecting the original variable outside the function.
-2.  **​For mutable objects**​: Since the object can be modified, operations that change the object's internal state affect the original object. Both the parameter and the original variable outside still point to the same object, so both "see" the changes.
-3.  **​Reassignment vs.Modification**​:
-    * Reassignment (`my_var = something_new`) never affects the original variable outside the function
-    * Modification methods (like `.append()`, `.update()`) affect the original object if it's mutable
-
-Remember:
-
-* Variables are not passed to functions; references to objects are passed
-* Parameters are the names in function definitions; arguments are the values passed
-
-
-#### Connecting Copy Operations to Parameter Passing in Python
-
-The concepts of shallow copy/deep copy and pass by reference/pass by value are closely related because they both deal with how Python manages object references in memory.
-
-Implications for Mutable vs. Immutable Objects
-
-Mutable Objects (lists, dictionaries, sets)
-1.  ​When passed to functions​: Changes to the object within the function will affect the original object
-2.  ​With shallow copy​: The new container can be modified independently, but nested mutable objects are shared
-3.  ​With deep copy​: Complete independence - changes to the copy won't affect the original at any level
-
-Immutable Objects (integers, strings, tuples)
-1.  ​When passed to functions​: Since they can't be modified, operations create new objects
-2.  ​With both shallow and deep copy​: Practically identical for simple immutable objects due to Python's optimization
-
-Key Takeaways
-1.  ​Pass by object reference​ means you're passing a reference to the object, similar to a shallow copy
-2.  ​Shallow copy​ creates a new container but shares references to the inner objects
-3.  ​Deep copy​ creates new copies of all nested objects, ensuring complete independence
-4.  Mutability is the key factor​ that determines whether modifications will affect the original object
-
-#### Memory Aliasing
-
-Thus, multiple variables can reference the same object. 
-
-Memory aliasing occurs when multiple variables refer to the same object in memory. This is a fundamental concept in Python that's directly connected to its object reference model and has important implications for how your code behaves.
-
-**How Memory Aliasing Works**
-
-When you assign a variable to another variable in Python, you're creating a new reference (or alias) to the same object
-```python
-x = [1, 2, 3]  # Creates a list object in memory
-y = x          # y now references the same list object
-```
-In this example, both x and y point to the same list object in memory. They are aliases of each other. This means:
-```python
-y.append(4)    # Modifies the list through y
-print(x)       # Output: [1, 2, 3, 4] - x sees the change too!
-```
-
-**Consequences of Memory Aliasing**
-
-1. **​Modification Effects**​: When using mutable objects, changes through one alias will be visible through all aliases.
-2. **​Performance Implications**​: Aliasing can be memory-efficient since multiple variables share the same memory space instead of duplicating data.
-3. **​Potential Bugs**​: Unwanted aliasing can lead to subtle bugs when you modify an object without realizing other parts of your code are referencing the same object.
-
-Avoiding Unwanted Aliasing: when you want to create a separate copy instead of an alias, you need to explicitly copy the object.
-
-**Aliasing and Function Arguments**
-
-This concept is directly related to how Python passes arguments to functions. Since Python passes object references, function parameters become aliases to the objects passed as arguments.
-
-
-#### Memory Management and Garbage Collection
-
-Python automatically reclaims memory when objects are no longer referenced:
-
-```python
-def create_list():
-    temp_list = [1, 2, 3]
-    return temp_list
-
-result = create_list()
-# temp_list is no longer accessible, its memory can be reclaimed
-```
-
-Python uses reference counting as its primary garbage collection mechanism, with a cycle-detecting collector to handle reference cycles, which helps manage memory efficiently by tracking how many references point to each object.
-
-### How Reference Counting Works**
-
-Every object maintains a count of how many references point to it. The Python interpreter tracks these references by:
-
-1.  Incrementing the reference count when a new reference to the object is created
-2.  Decrementing the reference count when a reference goes out of scope or is explicitly deleted
-
-```python
-x = [1, 2, 3]  # Reference count: 1
-y = x          # Reference count: 2
-del x          # Reference count: 1
-# When y goes out of scope, reference count becomes 0
-```
-
-When an object's reference count drops to zero, Python immediately reclaims its memory.
-
-Behind the scenes:
-* Each Python object has a header containing its type, reference count, and other metadata
-* The `sys.getrefcount()` function can show an object's reference count (though it adds one temporarily)
-
-```python
-import sys
-x = [1, 2, 3]
-print(sys.getrefcount(x))  # Shows count + 1 (due to the temporary reference as an argument)
-```
-
-### Differences from Other Languages
-
-1. Dynamic vs. Static Typing: Unlike statically typed languages like Java or C++, Python uses dynamic typing:
-* Variable types are determined at runtime
-* Variables can be reassigned to different types
-* No type declarations are required
-
-2. Interpreted vs. Compiled: Python is generally considered an interpreted language, though it technically compiles to bytecode first:
-* Python code is compiled to bytecode (.pyc files)
-* The Python Virtual Machine (PVM) interprets this bytecode
-
-This differs from languages like C/C++ that compile directly to machine code.
-
-3. Global Interpreter Lock (GIL): One significant difference is Python's Global Interpreter Lock:
-* The GIL allows only one thread to execute Python bytecode at a time
-* This simplifies memory management but can limit multi-threading performance
-* This is a major difference from languages like Java or C# that support true concurrency
-
-4. Pass by Object Reference: Python uses a "pass by object reference" model:
-* When you assign variables or pass arguments, you're working with references to objects
-*  When you modify mutable objects (like lists), changes affect all references to that object
-*  When you reassign variables, you're creating new references. This behavior is sometimes described as "pass by assignment" and differs from strictly "pass by value" or "pass by reference" languages.
-
-### Hashability
-
-A **hash value** is essentially a numeric "fingerprint" of data. When Python needs to store or look up objects in dictionaries or sets, it uses this fingerprint instead of comparing entire objects.
-
-```python
-print(hash("hello"))  # Might output: 8768730738463847
-print(hash("hello"))  # Will always output the same number for "hello"
-```
-
-**How Hash Values Are Derived**
-1.  Python applies a mathematical algorithm to convert data of any size into a fixed-size number
-2.  The algorithm ensures that:
-    * The same input always produces the same hash value
-    * Different inputs (usually) produce different hash values
-    * The calculation is fast
-
-Python's exact hashing algorithm is implementation-specific, but it's designed to distribute values evenly across the numeric range.
-
-**Practical Use Cases**
-The main reason hash values matter is for dictionary and set operations:
-```python
-
-# When you do this:
-student_grades = {}
-student_grades["Alice"] = 95
-```
-
-The, Python internally does the following:
-1. Calculates hash("Alice")
-2. Uses that number to determine where to store 95
-3. When retrieving, calculates hash("Alice") again to find the location
-
-**Why Some Objects Can't Be Dictionary Keys**
-
-Since dictionaries rely on hash values staying consistent, only immutable objects can be used as keys.
-
-**What Makes an Object Hashable**
-
-An object is hashable if:
-1.  It has a `__hash__()` method that returns the same integer value throughout its lifetime
-2.  It can be compared to other objects via an `__eq__()` method
-3.  If `a == b` is True, then `hash(a) == hash(b)` must also be True
-
-This means the hash value must remain constant for the object's entire lifetime, which is why hashable objects are typically immutable.
-
-**The Hash Function**
-
-The `hash()` built-in function:
-
-```python
-number = 42
-print(hash(number))  # Returns an integer hash value
-```
-
-This function computes a fixed-size integer from an object of arbitrary size.
-
-```python
-# Same value always produces the same hash
-print(hash("hello") == hash("hello"))  # True
-
-# Different values produce different hashes (with rare collisions)
-print(hash("hello") == hash("world"))  # False
-```
-
-### Immutability and Hashability
-
-Immutability is closely tied to hashability because:
-
-```python
-This tuple is immutable and hashable
-t = (1, 2, 3)
-print(hash(t))  # Works fine
-
-# This list is mutable and not hashable
-l = [1, 2, 3]
-try:
-    print(hash(l))
-except TypeError as e:
-    print(e)  # "unhashable type: 'list'"
-
-```
-
-If objects could change their values while maintaining the same hash, it would break hash table data structures. 
-
-#### Hashable vs. Non-hashable Types
-
-**Hashable Types (Immutable)**:
-* Numbers (int, float, complex)
-* Strings
-* Bytes
-* Tuples (if all elements are hashable)
-* Frozen sets
-* None
-* Boolean values
-
-**Non-hashable Types (Mutable)**:
-* Lists
-* Dictionaries
-* Sets
-* Byte arrays
-* User-defined classes (by default are hashable, but become non-hashable if you implement __eq__ without __hash__)
-
-**Hash Tables in Python**
-
-Internally, dictionaries and sets use hash tables:
-1.  When you add a key to a dictionary, Python:
-    * Computes the key's hash value
-    * Uses that value to determine where to store the key-value pair
-    * When retrieving, it calculates the hash again to find the location
-2. This allows for O(1) average-case complexity for lookups, rather than O(n) with lists, This makes lookups extremely fast because Python can jump directly to the right location rather than searching through everything.
-
-**Hash Collisions**
-
-Sometimes different objects can produce the same hash value:
-```python
-# These might have the same hash (though unlikely)
-str1 = "ab"
-str2 = "ba"
-
-```
-
-When this happens, Python's hash tables handle it through techniques like chaining (storing multiple items in the same bucket).
-
->"A hashable type is a type from which consistent hash values can be computed. A hash function takes an object and returns a hash value, which is used internally in a dictionary to store and retrieve values. Given two identical objects, the hash function must return the same value for both objects."
 
 ***
 
@@ -3371,3 +3564,4 @@ if something_went_wrong:
 2. Keep the `try` block as small as possible
 3. Use `finally` for cleanup code
 4. Document which exceptions your functions might raise
+
