@@ -159,7 +159,7 @@ result = create_list()
 
 #### Everything is _actually_ an Object
 
-1. Primitive Types are Objects: Unlike languages like C or Java where primitive types (`int`, `float`) are distinct from objects, in Python even these basic types are full-fledged objects:
+1. **Primitive Types are Objects**: Unlike languages like C or Java where primitive types (`int`, `float`) are distinct from objects, in Python even these basic types are full-fledged objects:
 
 ```python
 # Integers are objects
@@ -171,13 +171,15 @@ truth = True
 print(type(truth))  # <class 'bool'>
 ```
 
-2. Functions are Objects too! Functions can be:
+2. **Functions are Objects too**! Functions can be:
+
 * Assigned to variables
 * Passed as arguments
 * Returned from other functions
 * Have attributes added to them
 
 3. Classes and Types are Objects: Even classes and types themselves are objects:
+
 ```python
 print(type(int))  # <class 'type'>
 ```
@@ -195,16 +197,16 @@ print(id(a) == id(b))  # Might be True due to interning
 
 To review, we know now that an object is a chunk of data that contains the following:
 
-1.  ​An identity​: A unique identifier (accessible via the id() function)
-2.  ​A type​: Determines what operations can be performed on it (accessible via type())
-3.  ​A value​: The actual data it contains
+1.  **​An identity**​: A unique identifier (accessible via the id() function)
+2.  **​A type**​: Determines what operations can be performed on it (accessible via type())
+3.  **​A value**​: The actual data it contains
 
 
 #### Practical Implications
 
-1. References vs. Values: In Python, variables are references to objects, not containers for values.
+1. **References vs. Values**: In Python, variables are references to objects, not containers for values.
 
-2. Everything Has Methods and Attributes: Since everything is an object, you can call methods on any value.
+2. **Everything Has Methods and Attributes**: Since everything is an object, you can call methods on any value.
 
 3. Mutability vs. Immutability: Objects can be either mutable (can be changed) or immutable (cannot be changed):
     * Immutable: int, float, str, tuple, frozenset
