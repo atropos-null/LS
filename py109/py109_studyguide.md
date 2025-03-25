@@ -1241,6 +1241,18 @@ print(word)  # Now 'Hello'
 Python" in "Hello, World!"  # False
 ```
 
+Python's `in` operator is typically the most idiomatic way to check whether one string contains another string in Python.
+Keep in mind that the `in` operator is very literal about it's containment checking. That means, case is significant with substring checks. [Substring Checking - Python morsels](https://www.pythonmorsels.com/courses/jumpstart/conditions/jumpstart-substrings-in-python/) 
+
+```python
+# Demonstrating case sensitivity.
+
+part = "python"
+whole = "I enjoy writing Python code."
+print(part in whole) # False
+print(part.casefold() in whole.casefold()) #True
+
+```
 ***
 
 ## Hashability
