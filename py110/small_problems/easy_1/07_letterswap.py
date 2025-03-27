@@ -13,7 +13,6 @@ def swap(string):
             together = last_letter + middle + first_letter
             flipped_words.append(together)
     sentence = " ".join(flipped_words)
-    print(sentence)
     return sentence
 
 
