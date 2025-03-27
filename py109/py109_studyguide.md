@@ -2470,6 +2470,11 @@ numbers = [1, 2, 3, 4, 5]
 squares = [num**2 for num in numbers]
 ```
 
+A note of syntax from [Python Morsels](https://www.pythonmorsels.com/courses/jumpstart/tuple-unpacking-and-slicing/tuple-unpacking/):
+
+>Every iteration of a for loop does an implicit assignment. The thing _between _ the **for** and the **in** in a `for` loop, is very similar to the thing on the left-hand side of an equal sign in an assignment statement.
+
+
 `while` loops continue executing as long as a condition remains True. There are two main ways to use `while` loops:
 
 1.  ​Standard `while` loop​ - Tests a condition before each iteration:
@@ -2621,6 +2626,15 @@ print(my_list[2:])     # ['c', 'd', 'e'] (omitting end means to the end)
 print(my_list[::2])    # ['a', 'c', 'e'] (step of 2)
 print(my_list[::-1])   # ['e', 'd', 'c', 'b', 'a'] (negative step reverses)
 ```
+
+With Python's slicing syntax, the first item is the start index, and the second item is the stop index. The start index is inclusive, but the stop index is exclusive, meaning Python stops just before the stop index. You may be wondering, why is the start index included, but the stop index is excluded? The exclusivity of the stop index actually has a nice side effect: if you slice up to index 3 and then start slicing again from 3 onward, those two slices won't overlap.
+
+Additionally: Indexing out-of-bounds will raise an exception. But slicing past the end of a list doesn't raise an exception.
+
+If an object is indexable, its sliceable.
+
+-- from [Python Morsels](https://www.pythonmorsels.com/courses/jumpstart/tuple-unpacking-and-slicing/slicing/)
+
 #### List Methods
 
 **Adding Elements**
