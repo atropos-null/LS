@@ -1527,7 +1527,11 @@ Boolean logic gates are fundamental components in digital electronics and comput
 
 Python's logical operators use short-circuit evaluation. Short-circuiting occurs when Python stops evaluating an expression as soon as it knows what the final result will be. This is a performance optimization that also enables some useful programming patterns.
 
-`and`: If the first operand is `False`, Python **doesn't evaluate the second operand** because the result **must be `False`**. Stated otherwise: `and` stops evaluating when it encounters the first falsy value. **It returns the first falsy value it finds (or the last value if all are truthy)**.
+`and`: Different ways to verbalize `and`:
+* If the first operand is `False`, Python **doesn't evaluate the second operand** because the result **must be `False`**. 
+* It returns the first falsy value it finds (or the last value if all are truthy). 
+
+_Note that `and` returns the value of the operand, not that its `True` or `False`_. 
 
 ```python
 # AND operator returns the first falsy value, or the last value if all are truthy
@@ -1537,7 +1541,12 @@ print(5 and 10)       # 10 (all truthy, so returns last value)
 print("" and "hello") # "" (returns first falsy value - empty string)
 ```
 
-`or`: If the first operand is `True`, Python **doesn't evaluate the second operand** because the result must be `True`. `or` stops evaluating when it encounters the first truthy value. Stated another way: If the first operand is truthy, it returns that value without evaluating the second. If the first operand is falsy, it returns the second operand (regardless of whether it's truthy or falsy). Note that it returns the value of the operand, not that its `True` or `False`. 
+`or`: Different ways to verbalize `or:
+* If the first operand is `True`, Python **doesn't evaluate the second operand** because the result must be `True`. 
+* `or` stops evaluating when it encounters the first truthy value. 
+* If the first operand is truthy, it returns that value without evaluating the second. If the first operand is falsy, it returns the second operand (regardless of whether it's truthy or falsy). 
+
+_Note that `or` returns the value of the operand, not that its `True` or `False`_.
 
 ```python
 # OR operator returns the first truthy value, or the last value if all are falsy
@@ -1549,7 +1558,7 @@ print(5 or 10)        # 5 (returns first truthy value)
 
 Unlike `and` and `or`, the `xor` function can't use short-circuit evaluation since it needs to evaluate both operands to determine the result.
 
-`not`: The `not` operator in Python is a logical negation operator that inverts the truth value of an expression. However, unlike `and` and `or`, the `not` operator doesn't participate in short-circuit evaluation.  The not operator simply takes a single operand and returns the opposite boolean value. Stated officially: the `not` operator is a unary operator that takes a single operand and inverts its truth value. **It simply negates whatever value it's applied to**.
+`not`: The `not` operator in Python is a logical negation operator that inverts the truth value of an expression. However, unlike `and` and `or`, the `not` operator doesn't participate in short-circuit evaluation.  The not operator simply takes a single operand and returns the opposite boolean value. Stated officially: the `not` operator is a unary operator that takes a single operand and inverts its truth value, returning either `True` or `False`. **It negates whatever value it's applied to**. 
 
 ```python
 
