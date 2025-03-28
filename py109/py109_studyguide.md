@@ -2652,7 +2652,7 @@ If an object is indexable, its sliceable.
 * `count(item)`: Returns the number of occurrences of the specified item.
 
 **Ordering Elements**
-*   `reverse()`: Reverses the elements in-place, mutating the object, returning `None`. Use when you want to modify the modify the list. 
+*   `reverse()`: Reverses the elements in-place, mutating the object, returning `None`. Use when you want to modify the list. Only works on lists!!!
 *   `sort([key=None, reverse=False])`: Sorts the list in-place, optionally using a key function and/or in reverse order.
 
 ```python
