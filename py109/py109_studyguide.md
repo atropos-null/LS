@@ -1511,8 +1511,10 @@ Boolean logic gates are fundamental components in digital electronics and comput
 ```
 
 3.  ​XOR Gate (Exclusive OR)
-* Returns True when inputs are different
-* Python doesn't have a built-in XOR operator, but you can create one:
+* XOR (exclusive or) is a binary operation that takes two operands and returns True if exactly one of the operands is truthy, but not both
+* Python doesn't have a built-in XOR operator, but you can create one with a combination of other logical operators like `and` and `or`.
+
+
 ```python
 python
    def xor(value1, value2):
@@ -1530,6 +1532,37 @@ Python's logical operators use short-circuit evaluation. Short-circuiting occurs
 `or`: If the first operand is `True`, Python **doesn't evaluate the second operand** because the result must be `True`. `or` stops evaluating when it encounters the first truthy value. Stated another way: If the first operand is truthy, it returns that value without evaluating the second. If the first operand is falsy, it returns the second operand (regardless of whether it's truthy or falsy). Note that it returns the value of the operand, not that its `True` or `False`. 
 
 Unlike `and` and `or`, the `xor` function can't use short-circuit evaluation since it needs to evaluate both operands to determine the result.
+
+`not`: The `not` operator in Python is a logical negation operator that inverts the truth value of an expression. However, unlike `and` and `or`, the `not` operator doesn't participate in short-circuit evaluation.  The not operator simply takes a single operand and returns the opposite boolean value. Stated officially: the `not` operator is a unary operator that takes a single operand and inverts its truth value. **It simply negates whatever value it's applied to**.
+
+```python
+
+print(not True)  # False
+print(not False)  # True
+
+value = 3
+is_even = (value % 2 == 0)
+print(is_even)     # False
+print(not is_even) # True
+```
+
+**Why not Doesn't Short-Circuit**
+
+Short-circuit evaluation occurs when an operator can determine the final result without evaluating all operands. Since the `not` operator only works with a single operand, there's nothing to short-circuit - it must always evaluate that one operand to determine the result.
+
+**Contrast with `and` and `or`**
+Unlike not, the `and` and `or` operators do perform short-circuit evaluation:
+* `and` short-circuits when it encounters the first `False` value (left to right)
+* `or` short-circuits when it encounters the first `True` value (left to right)
+
+```python
+print(False and len(None))  # False (doesn't raise TypeError)
+print(True or len(None))    # True (doesn't raise TypeError)
+```
+
+In both cases, Python doesn't evaluate `len(None)` (which would cause an error) because it already knows the final result based on the first operand.
+
+
 
 **Commit this to memory**: `and` and `or` don't return `True` or `False` - **they return the actual values that determine the result**:
 
