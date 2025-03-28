@@ -1527,7 +1527,8 @@ Boolean logic gates are fundamental components in digital electronics and comput
 
 Python's logical operators use short-circuit evaluation. Short-circuiting occurs when Python stops evaluating an expression as soon as it knows what the final result will be. This is a performance optimization that also enables some useful programming patterns.
 
-`and`: Different ways to verbalize `and`:
+`and`: Different ways to verbalize `and`
+
 * If the first operand is `False`, Python **doesn't evaluate the second operand** because the result **must be `False`**. 
 * It returns the first falsy value it finds (or the last value if all are truthy). 
 
@@ -1541,7 +1542,8 @@ print(5 and 10)       # 10 (all truthy, so returns last value)
 print("" and "hello") # "" (returns first falsy value - empty string)
 ```
 
-`or`: Different ways to verbalize `or:
+`or`: Different ways to verbalize `or
+
 * If the first operand is `True`, Python **doesn't evaluate the second operand** because the result must be `True`. 
 * `or` stops evaluating when it encounters the first truthy value. 
 * If the first operand is truthy, it returns that value without evaluating the second. If the first operand is falsy, it returns the second operand (regardless of whether it's truthy or falsy). 
