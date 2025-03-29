@@ -302,7 +302,7 @@ print(id(my_list) == original_id)  # True - same object
 
 Python uses what's commonly called "**pass by object reference**" (some also call it "pass by assignment"). This means:
 
-1. When you pass a variable to a function, the function parameter becomes a new reference to the same object that the argument variable points to, not the variable itself. 
+1. When you pass a variable to a function, the function parameter becomes a new reference to the same object that the argument variable points to, not the variable itself. An independent copy of that variable is not created. 
 2. Since the parameter variables inside the function become new references to the same objects, the reference count goes up.
 3. Whether modifications inside the function affect the original object depends on whether the object is mutable or immutable
 
@@ -332,6 +332,15 @@ Key Rules to Remember:
 1. ​Reassignment​ creates a new reference and doesn't affect the original.
 2. ​Mutation​ changes the object and affects all references.
 3. This behavior applies to ​all data types​ but has different practical implications based on mutability.
+
+Further references:
+
+[Chong, C. (2025, February 3). Why variable scoping can make or break your data science workflow. Towards Data Science.]( https://towardsdatascience.com/why-variable-scoping-can-make-or-break-your-data-science-workflow-5b449291ac73/)
+
+[Gruppetta, S. (2024, August 20). If You Haven’t Got A Clue What “Pass By Value” or “Pass By Reference” mean, read on. . .. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/python-pass-by-value-reference-assignment)
+
+[Mogyorosi, M. (2023, October 21). Pass by reference in Python: Background and best practices.](https://realpython.com/python-pass-by-reference/)
+
 
 ### The Connection Between Mutability and Parameter Passing 
 
@@ -588,6 +597,18 @@ def some_function():
 some_function()  # Prints: Global variable
 ```
 
+The use of globals are generally considered to be bad form and should be avoided. 
+
+>Using the global statement generally takes away from the clarity of your code. It can create a number of issues, including the following:
+
+>*Free variables, seemingly unrelated to anything
+>*Functions without explicit arguments for said variables
+>*Functions that can’t be used generically with other variables or arguments since they rely on a single global variable
+>*Lack of thread safety when using global variables
+
+(Chong, 2025)
+
+
 **Local Scope**
 
 Variables defined inside a function have local scope and can only be accessed within that function
@@ -601,9 +622,11 @@ another_function()  # Prints: Local variable
 print(local_var)    # Error! local_var is not defined in this scope
 ```
 
+Assignment statements in the local function cannot change variables defined outside the function.
+
 **Important Scope Rule**
 
-You can access global variables from inside functions, but you cannot reassign them without using the `global` keyword:
+While you can access global variables from inside functions, you cannot reassign them without using the `global` keyword:
 
 ```python
 count = 10  # Global variable
@@ -617,6 +640,8 @@ def update_count():
 update_count()
 print(count)  # Prints: 20
 ```
+
+A hands on look at global variables and their problems can be found here: [Runestone Academy, 12.10 Global Variables](https://runestone.academy/ns/books/published/fopp/Functions/GlobalVariables.html)
 
 ### Variables as References
 
@@ -880,7 +905,7 @@ The function outputs Hello, world!, which it obtains from the global variable he
 
 #### Parameters vs. Arguments
 
-**Parameters** are the names assigned to a function's arguments. They are the variables listed in the function definition.
+**Parameters** are the names assigned to a function's arguments. They are the variables listed in the function definition. They are essentially placeholders or variables that will receive values when the function is called.
 
 ```python
 def multiply(x, y):  # x and y are parameters
@@ -1542,7 +1567,7 @@ print(5 and 10)       # 10 (all truthy, so returns last value)
 print("" and "hello") # "" (returns first falsy value - empty string)
 ```
 
-`or`: Different ways to verbalize `or
+`or`: Different ways to verbalize `or`
 
 * If the first operand is `True`, Python **doesn't evaluate the second operand** because the result must be `True`. 
 * `or` stops evaluating when it encounters the first truthy value. 
@@ -1633,6 +1658,14 @@ print("" and "world")      # Returns "" (the first falsy value)
 |False	     |False	       |False       |
 
 credit for [table](https://www.pythonmorsels.com/short-circuit-evaluation/)
+
+Additional references for short-circuitng: [
+    
+[Serrão, R. G. (n.d.). Boolean short-circuiting | Pydon’t Mathspp.](https://mathspp.com/blog/pydonts/boolean-short-circuiting)
+
+[Ricciardi, A. S. (2024, December 10). Short-Circuit in Python’s compound conditional expressions. Medium.](https://levelup.gitconnected.com/short-circuit-in-pythons-compound-conditional-expressions-e266d2a05b7f)
+
+[Hunner, T. (2024, September 11). Short-circuit evaluation. Python Morsels.](https://www.pythonmorsels.com/short-circuit-evaluation/)
 
 #### Logical Operator Precedence:
 
@@ -2123,8 +2156,8 @@ Special Cases are a doozy and there's a lot of them.
 
 In Python, boolean values undergo implicit type coercion in arithmetic operations:
 
-* True is treated as the integer 1
-* False is treated as the integer 0
+* `True` is treated as the integer `1`
+* `False `is treated as the integer `0`
 
 Also:
 
@@ -2501,6 +2534,7 @@ else:
 For multiple `if/elif/else` conditions, they are evaluated in order, and only the first truthy condition's block will execute. If no condition is truthy, the `else` block executes.
 
 Truthiness ALERT! This means you can use expressions directly in conditions without explicitly comparing them to `True` or `False`:
+
 ```python
 name = "John"
 if name:  # name is truthy because it's a non-empty string
@@ -2540,6 +2574,7 @@ Remember that once a matching case is found, the associated block executes and t
 Loops allow you to execute the same block of code multiple times. Python has two main types of loops: `for` and `while`.
 
 `for` loops are used to iterate over a sequence (like a list, tuple, string) or other iterable objects:
+
 ```python
 # Iterating over a list
 colors = ['red', 'green', 'blue']
@@ -2557,6 +2592,7 @@ for i in range(5):  # Generates numbers 0 through 4
 2.  ​Prefer `for` loops when the number of iterations is known.
 3.  ​Use `enumerate()` when you need both index and value​.
 4.  ​Use list comprehensions for simple transformations
+
 ```python
 numbers = [1, 2, 3, 4, 5]
 squares = [num**2 for num in numbers]
@@ -2576,6 +2612,7 @@ while count < 5:
     print(count)
     count += 1  # Don't forget this or you'll have an infinite loop!
 ```
+
 2. `​while True` with `break`​ - A more flexible approach when you need more complex exit conditions:
 ```python
 while True:
@@ -2598,9 +2635,11 @@ while True:
 * `continue`: Skips the rest of the current iteration and moves to the next one
 * `pass`: Does nothing, acts as a placeholder. It does nothing but can be useful when you need a statement syntactically but don't want any action.
 
+
 #### Nested Loops and Loop Control
 
 Loop control statements affect only the innermost loop they are placed in:
+
 ```python
 
 for i in range(3):
