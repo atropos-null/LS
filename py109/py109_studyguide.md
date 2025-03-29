@@ -2979,6 +2979,18 @@ print(vehicles['car']['color'])  # blue
 print(vehicles.get('car', {}).get('color', 'Unknown'))  # blue
 ```
 
+**A table for easier viewing, with extra defaults**
+
+| Option                                 | Use case                                             |
+|----------------------------------------|------------------------------------------------------|
+| `key in my_dict`                       | Check whether a key is in the dictionary             |
+| `my_dict.get(key, default)`            | Get the value or a default just once                 |
+| `my_dict.setdefault(key, default)`     | Set the value if it's not yet set                    |
+| `my_dict = dict.fromkeys(keys, default)`| Construct dictionary with known keys, defaulting values|
+| `my_dict = {key: [] for key in keys}`  | Construct dictionary with mutable values for defaults|
+| `my_dict = Counter(items)`             | Create mapping meant just for counting occurrences   |
+| `my_dict = defaultdict(list)`          | Create mapping with a default for all key lookups    |
+
 #### Modifying Dictionaries
 
 1. **Adding or Updating Key-Value Pairs**: The simplest way to modify a dictionary is by assigning a value to a key. If the key doesn't exist, Python adds a new key-value pair; if it does exist, Python updates the value.
