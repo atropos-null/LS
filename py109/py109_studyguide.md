@@ -1,6 +1,8 @@
 # Study Guide for PY109 Exam
 
 [Page Link for the study guide](https://launchschool.com/lessons/1318de4f/assignments/ff1c7aa8)
+<a name="top"></a>
+
 
 ## Table of Contents
 
@@ -60,6 +62,7 @@ To understand heap better, it helps to contrast it with stack memory:
 | Can grow until physical memory limits | Limited size, can cause stack overflow               |
 | Used for objects with variable size   | Used for fixed-size data     
 
+[Back to the top](#top)
 
 #### Object Creation and Storage
 
@@ -147,6 +150,7 @@ del a          # Reference count: 1
 b = None       # Reference count: 0 -> object becomes eligible for garbage collection
 ```
 
+
 #### Memory Management and Garbage Collection
 
 When an object's reference count drops to zero, Python's garbage collector reclaims that memory. 
@@ -159,6 +163,7 @@ def create_list():
 result = create_list()
 # temp_list is no longer accessible, its memory can be reclaimed
 ```
+
 
 #### Everything is _actually_ an Object
 
@@ -187,6 +192,8 @@ print(type(truth))  # <class 'bool'>
 ```python
 print(type(int))  # <class 'type'>
 ```
+
+[Back to the top](#top)
 
 #### Object Identity
 
@@ -217,6 +224,7 @@ To review, we know now that an object is a chunk of data that contains the follo
 * Immutable: int, float, str, tuple, frozenset
 * Mutable: list, dict, set
 
+[Back to the top](#top)
 
 #### Value Interning
 
@@ -271,6 +279,8 @@ print(x is z)  # False (different objects)
 However, it's important to note that you shouldn't rely on this behavior for equality testing. Always use the `==` operator to compare string values rather than `is`, which compares object identity. More on `is` in [Operators])(#operators).
 
 
+[Back to the top](#top)
+
 ### Mutable vs. Immutable Objects
 
 
@@ -297,6 +307,8 @@ original_id = id(my_list)
 my_list.append(4)  # Modifies the existing list
 print(id(my_list) == original_id)  # True - same object
 ```
+
+[Back to the top](#top)
 
 ### Python's Parameter Passing Mechanism: Pass by Object Reference
 
@@ -341,6 +353,7 @@ Further references:
 
 [Mogyorosi, M. (2023, October 21). Pass by reference in Python: Background and best practices.](https://realpython.com/python-pass-by-reference/)
 
+[Back to the top](#top)
 
 ### The Connection Between Mutability and Parameter Passing 
 
@@ -391,6 +404,9 @@ print(x)       # Output: [1, 2, 3, 4] - x sees the change too!
 **Aliasing and Function Arguments**
 
 This concept is directly related to how Python passes arguments to functions. Since Python passes object references, function parameters become aliases to the objects passed as arguments.
+
+
+[Back to the top](#top)
 
 
 ### Differences from Other Languages
@@ -483,6 +499,7 @@ This hybrid nature gives Python some benefits of both worlds - the portability o
 * When you modify mutable objects (like lists), changes affect all references to that object
 * When you reassign variables, you're creating new references. This behavior is sometimes described as "pass by assignment" and differs from strictly "pass by value" or "pass by reference" languages.
 
+[Back to the top](#top)
 
 ### Naming Conventions: legal vs. idiomatic, illegal vs. non-idiomatic
 
@@ -551,6 +568,10 @@ Remember:
 Further References:
 
 [Gruppetta, S. (2024a, February 16). What’s in a name? The Python Coding Stack.](https://www.thepythoncodingstack.com/p/whats-in-a-name-python-namespace-objects-names)
+
+
+[Back to the top](#top)
+
 ***
 
 ## Variables
@@ -581,6 +602,7 @@ greeting = 'Hi'     # Reassignment - greeting now points to a new string object
 ```
 
 After reassignment, the variable points to the new object, and if there are no other references to the original object, Python's garbage collector may reclaim that memory. Stated alternatively: reassignment of a variable never mutates the value it contains, it just pointing to a new, different object.
+
 
 ### Variable Scope
 
@@ -652,6 +674,9 @@ A hands on look at global variables and their problems can be found here: [Runes
 
 [Gruppetta, S. (2023a, August 1). The mayor of Py Town’s local experiment: A global disaster. The Python Coding Stack](https://www.thepythoncodingstack.com/p/mayor-of-py-town-local-variables-python-function)
 
+[Back to the top](#top)
+
+
 ### Variables as References
 
 In Python, **variables are references to objects, not containers for values**. This distinction is crucial.
@@ -665,6 +690,8 @@ In memory, this looks something like:
 `Variable x → points to → Integer object with value 5.`
 
  When you "change" an immutable object, you're actually creating a new object and redirecting the pointer. With mutable objects, you can modify the object itself, affecting all variables that point to it. However, reassignment creates a new pointer.
+
+ [Back to the top](#top)
 
 ### Shallow Copy vs Deep Copy
 
@@ -782,6 +809,9 @@ Key Takeaways
 3.  ​Deep copy​ creates new copies of all nested objects, ensuring complete independence
 4.  Mutability is the key factor​ that determines whether modifications will affect the original object
 
+[Back to the top](#top)
+
+
 ### Variable Shadowing
 
 Variable shadowing occurs when a variable in an inner scope has the same name as a variable in an outer scope, effectively "hiding" the outer variable.
@@ -840,6 +870,9 @@ Unless mentioned specifically, the term variable in the broadest sense possible.
 * Function parameters
 * Note in particular that dictionary key names are not variables, nor are the elements of a collection.
 
+[Back to the top](#top)
+
+
 ### Expressions and Statements
 
 #### Expressions
@@ -865,6 +898,8 @@ Important types:
 * ​Control flow statements​: `if`, `elif`, `else`, `while`, `for`
 * ​Import statements​: `import math`
 * ​Return statements​: `return x`
+
+[Back to the top](#top)
 
 ***
 
@@ -943,6 +978,9 @@ Key points about nested functions:
 * They help with code organization and encapsulation
 
 
+[Back to the top](#top)
+
+
 ### Output vs Return Values & Side Effects
 
 
@@ -977,6 +1015,8 @@ Function names should be in the language of the problem domain (verbs that make 
 
 Further References:
 [Gruppetta, S. (2024b, September 28). What can a coffee machine teach you about Python’s functions? The Python Coding Stack.](https://www.thepythoncodingstack.com/p/coffee-machine-python-function-analogy)
+
+[Back to the top](#top)
 
 ***
 
@@ -1039,6 +1079,8 @@ type(3.14)       # <class 'float'>
 type(1+2j)       # <class 'complex'>
 ```
 
+[Back to the top](#top)
+
 ***
 
 ## Strings!
@@ -1064,6 +1106,8 @@ type(1+2j)       # <class 'complex'>
 7. **​Type Conversion**​: Other data types can be converted to strings using the `str() `function.
 
 8. **​Concatenation and Repetition​:** Strings can be joined with `+` and repeated with `*` operators.
+
+[Back to the top](#top)
 
 ### f-strings and the `.format()` method
 
@@ -1136,6 +1180,8 @@ Further References:
 
 [Gruppetta, S. (2023, November 5). The Curious Little Shop at The End of My Street • Python’s f-strings. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/python-f-strings-curious-little-shop-sign)
 
+
+[Back to the top](#top)
 
 ### String Methods
 
@@ -1327,6 +1373,10 @@ print(part in whole) # False
 print(part.casefold() in whole.casefold()) #True
 
 ```
+
+[Back to the top](#top)
+
+
 ***
 
 ## Hashability
@@ -1396,6 +1446,9 @@ print(hash("hello") == hash("hello"))  # True
 print(hash("hello") == hash("world"))  # False
 ```
 
+[Back to the top](#top)
+
+
 ### Immutability and Hashability
 
 Immutability is closely tied to hashability because:
@@ -1461,6 +1514,8 @@ Further References:
 
 [Gruppetta, S. (2024a, May 11). Where’s William? How quickly can you find him? • What’s a Python hashable object? The Python Coding Stack.](https://www.thepythoncodingstack.com/p/wheres-william-python-hash-hashable)
 
+[Back to the top](#top)
+
 ***
 
 ## Booleans, Booleans vs. Truthiness and None
@@ -1505,6 +1560,8 @@ else:
     print("you must enter your name!")
 ```
 
+[Back to the top](#top)
+
 ### `None`
 
 `None` is a special object in Python that represents the absence of a value or a null value. 
@@ -1538,6 +1595,10 @@ Further References:
 [Gruppetta, S. (2024a, January 24). Telling the truthy. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/telling-the-truthy-python-truthiness-falsiness)
 
 [Gruppetta, S. (2023a, October 20). This page is intentionally left blank • The story of `None`. The Python Coding Stack](https://www.thepythoncodingstack.com/p/this-page-is-intentionally-left-blank)
+
+
+[Back to the top](#top)
+
 
 ## Boolean Logic Gates, Logical Operators, and Short Circuit Evaluation
 
@@ -1573,6 +1634,9 @@ Boolean logic gates are fundamental components in digital electronics and comput
         return True
     return False
 ```
+
+[Back to the top](#top)
+
 
 ### Short-Circuit Evaluation
 
@@ -1657,6 +1721,7 @@ Python's logical operators (`and`, `or`, `not`) are designed to return the actua
 2.  **​It preserves information**​: By returning the actual value instead of just a boolean, you retain the specific value that determined the result.
 3.  **​It aligns with Python's truthiness concept**​: Any value in Python can be evaluated in a boolean context.
 
+
 ```python
 # For the 'or' operator:
 print("hello" or "world")  # Returns "hello" (the first truthy value)
@@ -1693,6 +1758,7 @@ Additional references for short-circuitng: [
 
 [Hunner, T. (2024, September 11). Short-circuit evaluation. Python Morsels.](https://www.pythonmorsels.com/short-circuit-evaluation/)
 
+
 #### Logical Operator Precedence:
 
 In Python, the logical operators have different precedence levels:
@@ -1700,6 +1766,8 @@ In Python, the logical operators have different precedence levels:
 1.  not (highest)
 2.  and
 3.  or (lowest)
+
+[Back to the top](#top)
 
 ***
 
@@ -1806,6 +1874,8 @@ except ZeroDivisionError:
     result = "Error: Division by zero"
 ```
 
+[Back to the top](#top)
+
 ### String Concatenation with `+`
 
 In Python, the `+` operator performs string concatenation when used with strings:
@@ -1821,6 +1891,8 @@ Key points about string concatenation:
 1. The `+ `operator **creates a new string** when combining two strings
 2. Both operands must be strings; otherwise, you'll get a `TypeError`.
 3. String concatenation is inefficient for multiple operations. For better performance with multiple strings, use `.join()` or f-strings.
+
+[Back to the top](#top)
 
 
 ### List Concatenation with `+`
@@ -1846,6 +1918,9 @@ list2 = [4, 5, 6]
 list1.extend(list2)  # Modifies list1 in-place
 print(list1)  # [1, 2, 3, 4, 5, 6]
 ```
+
+[Back to the top](#top)
+
 
 ### Comparison Operators: `==`, `!=`, `<`, `>`, `<=`, `>=`
 
@@ -1918,6 +1993,9 @@ a is b  # False (different objects)
 a is c  # True (same object)
 ```
 
+[Back to the top](#top)
+
+
 ### Identity Operators: `is` and `is not`
 
 As stated above, the `is` and `is not` operators in Python are identity operators that compare memory locations, rather than the values themselves. The `is` operator checks if two variables point to the exact same object in memory. Similarly, `is not` checks if two variables do NOT point to the same object.
@@ -1988,6 +2066,10 @@ Further References:
 
 [Gruppetta, S. (2024a, July 4). After you. No, I insist, you go first • Python’s operator precedence. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/python-operator-precedence-after-you-no-i-insist)
 
+
+[Back to the top](#top)
+
+
 ### Operator Precedence
 
 As mentioned above, there's a hierarchy. Here's the final boss hierarchy, from highest precedence to lowest:
@@ -2004,7 +2086,10 @@ As mentioned above, there's a hierarchy. Here's the final boss hierarchy, from h
 
 Python first evaluates the function calls left-to-right, then applies operator precedence rules. All values are determined before any operations are performed.
 
+[Back to the top](#top)
+
 ***
+
 
 ## Type Coercions: explicit (e.g., using int(), str()) and implicit
 
@@ -2105,6 +2190,9 @@ my_dict = my_list  # This assigns, doesn't convert
 # Correct approach:
 my_dict = dict(enumerate(my_list))  # Explicit conversion needed
 ```
+
+[Back to the top](#top)
+
 
 ### Allowed Conversions
 
@@ -2268,6 +2356,8 @@ finally:
     print("Exception handling complete.")
 ```
 
+[Back to the top](#top)
+
 
 ### Practical Applications of Type Coercion in Python
 
@@ -2363,6 +2453,8 @@ temperatures = [22.5, 19.8, 25.1, 23.4]
 temperatures_str = [f"{temp:.1f}°C" for temp in temperatures]
 ```
 
+[Back to the top](#top)
+
 ***
 
 ## Ranges
@@ -2445,6 +2537,9 @@ For example: `r = range(1, 1000000)`. This line doesn't create a list with 999,9
 Beyond ranges, Python uses lazy evaluation in other contexts:
 1.  ​Generators​: Similar to ranges, generators produce items only when needed.
 2.  ​Short-circuit evaluation​: With logical operators and and or, Python only evaluates as much as necessary to determine the result.
+
+
+[Back to the top](#top)
 
 
 ### Range Boundaries Explained
@@ -2534,6 +2629,9 @@ l.append(5)             # Can modify lists
 print(l)                # [0, 1, 2, 3, 4, 5]
 ```
 
+[Back to the top](#top)
+
+
 *** 
 
 ## Conditionals and Loops
@@ -2599,7 +2697,11 @@ Use match-case when:
 
 Remember that once a matching case is found, the associated block executes and then the program exits the match statement entirely. Only one case block will execute per match statement. Therefore, always have a default case (`case _:`) ready to catch unmatched pairs. Also, place more specific patterns before more general ones. This is especially important when using pattern matching with more complex structures.
 
+
+[Back to the top](#top)
+
 *** 
+
 
 ### Loops
 
@@ -2706,6 +2808,9 @@ while index < len(fish):
     index += 1
 ```
 
+[Back to the top](#top)
+
+
 ### Ternary Operator
 
 Python's conditional expression (often called the ternary operator) provides a concise way to write simple `if-else` statements in a single line. It follows this syntax: **`true_value if condition else false_value`**.
@@ -2762,6 +2867,10 @@ Further References:
 [Gruppetta, S. (2024a, March 16). If you find if..else in list comprehensions confusing, read this, else. . . The Python Coding Stack.](https://www.thepythoncodingstack.com/p/conditional-expression-ternary-operator-list-com)
 
 [Gruppetta, S. (2023a, June 27). The anatomy of a for loop. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/the-anatomy-of-a-for-loop)
+
+
+
+[Back to the top](#top)
 
 
 ***
@@ -2874,6 +2983,7 @@ print(5 in list1)         # False
 print(len(combined))      # 4
 ```
 
+
 ### List Comprehensions
 
 List comprehensions provide a concise way to create lists.
@@ -2885,6 +2995,9 @@ squares = [x**2 for x in range(1, 6)]  # [1, 4, 9, 16, 25]
 # With conditional
 even_squares = [x**2 for x in range(1, 11) if x % 2 == 0]  # [4, 16, 36, 64, 100]
 ```
+
+[Back to the top](#top)
+
 
 ***
 
@@ -3250,6 +3363,10 @@ Further References:
 
 [Gruppetta, S. (2024b, May 27). `dict()` is More Versatile Than You May Think. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/python-dict-is-more-versatile-than-you-may-think)
 
+
+[Back to the top](#top)
+
+
 *** 
 
 ### Other Python Collections
@@ -3360,6 +3477,10 @@ Further References:
 
 [Gruppetta, S. (2023a, September 8). Butter berries, an elusive delicacy. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/butter-berries-an-elusive-delicacy)
 
+
+[Back to the top](#top)
+
+
 ***
 
 ## Slicing: Strings, Lists, and Tuples
@@ -3399,6 +3520,9 @@ sequence[-3:]     # Last 3 elements
 sequence[:-3]     # Everything except the last 3 elements
 sequence[-5:-2]   # Elements from 5th last to 3rd last (not including 3rd last)
 ```
+
+[Back to the top](#top)
+
 
 ### Slicing Examples with Different Data Types
 
@@ -3474,6 +3598,7 @@ Frequent applications:
        middle = len(string) // 2
        return string[middle-1:middle+1]
 ```
+
 2. Creating a copy:
 ```python
 original = [1, 2, 3]
@@ -3492,6 +3617,8 @@ Further References:
 
 [Gruppetta, S. (2023a, September 24). A slicing story. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/a-python-slicing-story)
 
+
+[Back to the top](#top)
 
 ***
 
@@ -3551,6 +3678,8 @@ print("Hello, {}!".format(name))  # .format() method
 ```
 
 Using `print()` doesn't create new references to objects.
+
+[Back to the top](#top)
 
 
 ### The `input()` Function
@@ -3691,6 +3820,9 @@ if result is not None:  # Check for None specifically
 else:
     print("Invalid input")
 ```
+
+[Back to the top](#top)
+
 
 ***
 
@@ -3866,3 +3998,4 @@ if something_went_wrong:
 3. Use `finally` for cleanup code
 4. Document which exceptions your functions might raise
 
+[Back to the top](#top)
