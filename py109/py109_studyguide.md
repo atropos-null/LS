@@ -548,6 +548,9 @@ Remember:
 * Constants use SCREAMING_SNAKE_CASE
 * Classes use PascalCase (also called CamelCase or upper CamelCase)
 
+Further References:
+
+[Gruppetta, S. (2024a, February 16). What’s in a name? The Python Coding Stack.](https://www.thepythoncodingstack.com/p/whats-in-a-name-python-namespace-objects-names)
 ***
 
 ## Variables
@@ -641,7 +644,13 @@ update_count()
 print(count)  # Prints: 20
 ```
 
+Further References:
+
 A hands on look at global variables and their problems can be found here: [Runestone Academy, 12.10 Global Variables](https://runestone.academy/ns/books/published/fopp/Functions/GlobalVariables.html)
+
+[Gruppetta, S. (2024b, October 27). Let’s eliminate general bewilderment • Python’s LEGB rule, scope, and namespaces. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/python-legb-rule-scope-namespace)
+
+[Gruppetta, S. (2023a, August 1). The mayor of Py Town’s local experiment: A global disaster. The Python Coding Stack](https://www.thepythoncodingstack.com/p/mayor-of-py-town-local-variables-python-function)
 
 ### Variables as References
 
@@ -966,6 +975,9 @@ Make sure the functions are at consistent abstraction levels, where:
 
 Function names should be in the language of the problem domain (verbs that make sense in the context).  They should specify "what" to do, not "how" to do it
 
+Further References:
+[Gruppetta, S. (2024b, September 28). What can a coffee machine teach you about Python’s functions? The Python Coding Stack.](https://www.thepythoncodingstack.com/p/coffee-machine-python-function-analogy)
+
 ***
 
 ## Numbers
@@ -1119,6 +1131,11 @@ print("Pi rounded to 3 decimal places: {pi:.3f}".format(pi=3.14159))
 * The `.format()` method is still widely used, especially in older code
 * Both methods support the same formatting options (precision, alignment, etc.)
 * F-strings can directly use variables from the current scope, while `.format()` requires passing values explicitly
+
+Further References:
+
+[Gruppetta, S. (2023, November 5). The Curious Little Shop at The End of My Street • Python’s f-strings. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/python-f-strings-curious-little-shop-sign)
+
 
 ### String Methods
 
@@ -1440,6 +1457,9 @@ When this happens, Python's hash tables handle it through techniques like chaini
 
 >"A hashable type is a type from which consistent hash values can be computed. A hash function takes an object and returns a hash value, which is used internally in a dictionary to store and retrieve values. Given two identical objects, the hash function must return the same value for both objects."
 
+Further References:
+
+[Gruppetta, S. (2024a, May 11). Where’s William? How quickly can you find him? • What’s a Python hashable object? The Python Coding Stack.](https://www.thepythoncodingstack.com/p/wheres-william-python-hash-hashable)
 
 ***
 
@@ -1512,6 +1532,12 @@ Key Characteristics of `None`:
    print(result)  # None
 
 ```
+
+Further References:
+
+[Gruppetta, S. (2024a, January 24). Telling the truthy. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/telling-the-truthy-python-truthiness-falsiness)
+
+[Gruppetta, S. (2023a, October 20). This page is intentionally left blank • The story of `None`. The Python Coding Stack](https://www.thepythoncodingstack.com/p/this-page-is-intentionally-left-blank)
 
 ## Boolean Logic Gates, Logical Operators, and Short Circuit Evaluation
 
@@ -1955,6 +1981,12 @@ To avoid later problems:
 * Use `==` for value comparison
 * Reserve `is` for identity checks, primarily with `None`
 * Never rely on interning behavior for critical program logic
+
+Further References:
+
+[Gruppetta, S. (2025, February 9). The One About the £5 Note and the Trip to the Coffee Shop • The Difference Between `is` and `==` in Python. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/python-is-and-equals-equals-understanding-them-using-a-5-pound-note])
+
+[Gruppetta, S. (2024a, July 4). After you. No, I insist, you go first • Python’s operator precedence. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/python-operator-precedence-after-you-no-i-insist)
 
 ### Operator Precedence
 
@@ -2723,6 +2755,15 @@ The ternary operator is best used when:
 * Both outcomes are simple expressions (not complex blocks of code)
 * You need to assign a value based on a condition
 
+Further References:
+
+[Gruppetta, S. (2024a, March 7). To infinity and beyond • The infinite `for` loop. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/infinite-for-loop-infinite-iterator-python)
+
+[Gruppetta, S. (2024a, March 16). If you find if..else in list comprehensions confusing, read this, else. . . The Python Coding Stack.](https://www.thepythoncodingstack.com/p/conditional-expression-ternary-operator-list-com)
+
+[Gruppetta, S. (2023a, June 27). The anatomy of a for loop. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/the-anatomy-of-a-for-loop)
+
+
 ***
 
 ## Lists and Dictionaries
@@ -2850,6 +2891,9 @@ even_squares = [x**2 for x in range(1, 11) if x % 2 == 0]  # [4, 16, 36, 64, 100
 ### Dictionaries
 
 Dictionaries in Python are **unordered collections of key-value pairs**. They're defined using curly braces `{}` with key-value pairs separated by colons. 
+
+Further References:
+[Gruppetta, S. (2024b, October 13). What’s in a List—Yes, but what’s *Really* in a Python list. The Python Coding Stack.] (https://www.thepythoncodingstack.com/p/whats-really-in-a-python-list)
 
 #### Dictionary Characteristics
 
@@ -3202,6 +3246,10 @@ values = car.values()  # dict_values(['sedan', 'blue', 2003])
 items = car.items()  # dict_items([('type', 'sedan'), ('color', 'blue'), ('year', 2003)])
 ```
 
+Further References:
+
+[Gruppetta, S. (2024b, May 27). `dict()` is More Versatile Than You May Think. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/python-dict-is-more-versatile-than-you-may-think)
+
 *** 
 
 ### Other Python Collections
@@ -3305,6 +3353,12 @@ How to Differentiate Between Collections:
 * Tuples​: When you want an immutable ordered collection
 * Sets​: When you need to ensure uniqueness or perform set operations
 * ​Ranges​: When you need a sequence of numbers without storing them all
+
+Further References:
+
+[Gruppetta, S. (2024a, January 18). My neighbours are moving house • Mutating the immutable tuple (Sort of). The Python Coding Stack.](https://www.thepythoncodingstack.com/p/mutating-the-immutable-python-tuples)
+
+[Gruppetta, S. (2023a, September 8). Butter berries, an elusive delicacy. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/butter-berries-an-elusive-delicacy)
 
 ***
 
@@ -3433,6 +3487,11 @@ copy = original[:]  # Creates a shallow copy
 1.  **​Confusing stop Index**​: Remember that the stop index is exclusive (not included in the slice).
 2.  **​IndexError vs. Slicing**​: While `list[6] = 5` would raise an `IndexError` if the list doesn't have 7 elements, slicing like `list[2:6]` will not raise an error even if the list is shorter.
 3.  **​Modifying Slices​**: Modifying a slice of a mutable object doesn't modify the original.
+
+Further References:
+
+[Gruppetta, S. (2023a, September 24). A slicing story. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/a-python-slicing-story)
+
 
 ***
 
