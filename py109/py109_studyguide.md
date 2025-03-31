@@ -386,6 +386,7 @@ When you assign a variable to another variable in Python, you're creating a new 
 x = [1, 2, 3]  # Creates a list object in memory
 y = x          # y now references the same list object
 ```
+
 In this example, both `x` and `y` point to the same list object in memory. They are aliases of each other. This means the following can occur:
 
 ```python
@@ -458,8 +459,8 @@ int x = 5;         // x can only hold integers
 x = "hello";       // Error! Can't assign a string to an integer variable
 ```
 
-\* Runtime Runtime refers to the phase when your program is actually executing
-\* Compile time refers to the phase when your source code is translated into machine-readable code before the program is executed.
+* Runtime refers to the phase when your program is actually executing
+* Compile time refers to the phase when your source code is translated into machine-readable code before the program is executed.
 
 
 2. Interpreted vs. Compiled: Python is generally considered an interpreted language, although it technically compiles to bytecode first:
@@ -689,9 +690,9 @@ In memory, this looks something like:
 
 `Variable x → points to → Integer object with value 5.`
 
- When you "change" an immutable object, you're actually creating a new object and redirecting the pointer. With mutable objects, you can modify the object itself, affecting all variables that point to it. However, reassignment creates a new pointer.
+When you "change" an immutable object, you're actually creating a new object and redirecting the pointer. With mutable objects, you can modify the object itself, affecting all variables that point to it. However, reassignment creates a new pointer.
 
- [Back to the top](#top)
+[Back to the top](#top)
 
 ### Shallow Copy vs Deep Copy
 
@@ -1014,6 +1015,7 @@ Make sure the functions are at consistent abstraction levels, where:
 Function names should be in the language of the problem domain (verbs that make sense in the context).  They should specify "what" to do, not "how" to do it
 
 Further References:
+
 [Gruppetta, S. (2024b, September 28). What can a coffee machine teach you about Python’s functions? The Python Coding Stack.](https://www.thepythoncodingstack.com/p/coffee-machine-python-function-analogy)
 
 [Back to the top](#top)
@@ -1037,7 +1039,7 @@ Key points:
 
 * Python 3 has no size limit for integers (unlike some other languages)
 * You can use underscores to make large integers more readable (may cause)
-* Integer division (//) produces another integer, rounding down
+* Integer division (`//`) produces another integer, rounding down
 
 
 **Floating-Point Numbers `(float)`**
@@ -1688,7 +1690,7 @@ print(is_even)     # False
 print(not is_even) # True
 ```
 
-**Why not Doesn't Short-Circuit**
+**Why `not` Doesn't Short-Circuit**
 
 Short-circuit evaluation occurs when an operator can determine the final result without evaluating all operands. Since the `not` operator only works with a single operand, there's nothing to short-circuit - it must always evaluate that one operand to determine the result.
 
@@ -1750,7 +1752,7 @@ print("" and "world")      # Returns "" (the first falsy value)
 
 credit for [table](https://www.pythonmorsels.com/short-circuit-evaluation/)
 
-Additional references for short-circuitng: [
+Additional references for short-circuitng: 
     
 [Serrão, R. G. (n.d.). Boolean short-circuiting | Pydon’t Mathspp.](https://mathspp.com/blog/pydonts/boolean-short-circuiting)
 
@@ -1763,9 +1765,15 @@ Additional references for short-circuitng: [
 
 In Python, the logical operators have different precedence levels:
 
-1.  not (highest)
-2.  and
-3.  or (lowest)
+1.  `not` (highest)
+2.  `and`
+3.  `or` (lowest)
+
+For example, in the expression `not a and b or c`, Python would evaluate:
+* First: `not a`
+* Then: `(not a) and b`
+* Finally: `((not a) and b) or c` #prints out `c`
+
 
 [Back to the top](#top)
 
