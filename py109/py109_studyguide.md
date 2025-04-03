@@ -24,6 +24,7 @@
 - [Slicing: Strings, Lists, and Tuples](#slicing-strings-lists-and-tuples)
 - [I/O Functions](#io-functions)
 - [Exceptions and Exception Handling](#exceptions-and-exception-handling)
+- [That's How They Get Ya](#thats-how-they-get-ya)
 
 ***
 
@@ -4005,5 +4006,45 @@ if something_went_wrong:
 2. Keep the `try` block as small as possible
 3. Use `finally` for cleanup code
 4. Document which exceptions your functions might raise
+
+[Back to the top](#top)
+
+***
+
+## That's How They Get Ya
+
+The following are tricky bits of code tried in TA led sessions.
+
+#### What's wrong with this code?
+
+```python
+lst = [1, 2, 3]
+
+def empty_list(lst):
+    for idx in range(len(lst)):
+        lst.pop(idx)
+    return lst
+
+print(empty_list(lst))
+print(lst)
+```
+
+The issue with the code is that modifying a list while iterating over it using its indices can lead to unexpected behavior. When you remove an element from the list using pop(idx), the indices of the subsequent elements are shifted, which can cause elements to be skipped or lead to an `IndexError`.
+
+A better approach is to clear the list directly or iterate over a copy of the list, using `lst.clear()` or a `while` loop. But if you need to preserve the for loop, then its this:
+
+```python
+lst = [1, 2, 3]
+
+def empty_list(lst):
+    for idx in range(len(lst) - 1, -1, -1):
+        lst.pop(idx)
+    return lst
+
+print(empty_list(lst))  # Output: []
+print(lst)  # Output: []
+```
+
+By iterating over the copied list in reverse order: Using range(len(lst) - 1, -1, -1), we generate the indices from the last element to the first. This allows us to remove elements from the end to the beginning without affecting the indices of the remaining elements.
 
 [Back to the top](#top)
