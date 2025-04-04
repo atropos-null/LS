@@ -4047,4 +4047,23 @@ print(lst)  # Output: []
 
 By iterating over the copied list in reverse order: Using range(len(lst) - 1, -1, -1), we generate the indices from the last element to the first. This allows us to remove elements from the end to the beginning without affecting the indices of the remaining elements.
 
+#### What's wrong with this code?
+
+```python
+lst1 = [0, 1, 2, 3]
+lst2 = lst1.reverse() and lst1.reverse()
+if lst2:
+    print(lst2)
+else:
+    print(lst1)
+```
+
+1. First, `lst1 `is initialized as the list `[0, 1, 2, 3]`.
+2.  The second line is where things get interesting:
+   * `lst1.reverse()` reverses the list in place. This means it modifies `lst1` directly and returns `None`.
+   * The `and` operator evaluates the left expression first, which is `lst1.reverse()`. Since this returns `None`, and `None` is falsy in Python, the right side of the and (`lst1.reverse()`) is not executed due to short-circuit evaluation.
+   * Therefore, `lst2` is assigned the value `None`.
+3.  In the if statement, `None` is considered falsy, so the code enters the `else` block.
+4.  Inside the `else `block, it prints lst1. Since `lst1.reverse()` was called once, `lst1` is now `[3, 2, 1, 0]`.
+
 [Back to the top](#top)
