@@ -3530,6 +3530,18 @@ sequence[:-3]     # Everything except the last 3 elements
 sequence[-5:-2]   # Elements from 5th last to 3rd last (not including 3rd last)
 ```
 
+Comparing characters in a string sequentially:
+
+```python
+def compare_characters_sequentially(s):
+    for i in range(len(s) - 1):
+        if s[i] == s[i + 1]:
+            print(f"Characters at position {i} and {i + 1} are the same: {s[i]}")
+        else:
+            print(f"Characters at position {i} and {i + 1} are different: {s[i]} and {s[i + 1]}")
+
+```
+
 [Back to the top](#top)
 
 
