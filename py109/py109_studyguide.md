@@ -366,6 +366,8 @@ Further references:
 
 [Mogyorosi, M. (2023, October 21). Pass by reference in Python: Background and best practices.](https://realpython.com/python-pass-by-reference/)
 
+[Serrão, R. G. (n.d.-b). Pass-by-value, reference, and assignment | Pydon’t 🐍. Mathspp.](https://mathspp.com/blog/pydonts/pass-by-value-reference-and-assignment)
+
 [Back to the top](#top)
 
 ### The Connection Between Mutability and Parameter Passing 
@@ -1769,6 +1771,8 @@ Additional references for short-circuitng:
     
 [Serrão, R. G. (n.d.). Boolean short-circuiting | Pydon’t Mathspp.](https://mathspp.com/blog/pydonts/boolean-short-circuiting)
 
+[Serrão, R. G. (n.d.-j). Truthy, Falsy, and bool | Pydon’t 🐍. Mathspp.](https://mathspp.com/blog/pydonts/truthy-falsy-and-bool)
+
 [Ricciardi, A. S. (2024, December 10). Short-Circuit in Python’s compound conditional expressions. Medium.](https://levelup.gitconnected.com/short-circuit-in-pythons-compound-conditional-expressions-e266d2a05b7f)
 
 [Hunner, T. (2024, September 11). Short-circuit evaluation. Python Morsels.](https://www.pythonmorsels.com/short-circuit-evaluation/)
@@ -2889,6 +2893,7 @@ Further References:
 
 [Gruppetta, S. (2023a, June 27). The anatomy of a for loop. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/the-anatomy-of-a-for-loop)
 
+[Serrão, R. G. (n.d.-b). Conditional expressions | Pydon’t 🐍. Mathspp.](https://mathspp.com/blog/pydonts/conditional-expressions)
 
 
 [Back to the top](#top)
@@ -3022,6 +3027,8 @@ Further References:
 [Gruppetta, S. (2024b, October 13). What’s in a List—Yes, but what’s *Really* in a Python list. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/whats-really-in-a-python-list)
 
 [Gruppetta, S. (2024f, March 16). If you find if..else in list comprehensions confusing, read this, else. . . The Python Coding Stack.](https://www.thepythoncodingstack.com/p/conditional-expression-ternary-operator-list-com?utm_source=publication-search)
+
+[Serrão, R. G. (n.d.-b). List comprehensions 101 | Pydon’t 🐍. Mathspp.](https://mathspp.com/blog/pydonts/list-comprehensions-101)
 
 [Back to the top](#top)
 
@@ -3503,6 +3510,7 @@ Further References:
 
 [Gruppetta, S. (2023a, September 8). Butter berries, an elusive delicacy. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/butter-berries-an-elusive-delicacy)
 
+[Serrão, R. G. (n.d.-e). set and frozenset | Pydon’t 🐍. Mathspp.](https://mathspp.com/blog/pydonts/set-and-frozenset)
 
 [Back to the top](#top)
 
@@ -3655,6 +3663,9 @@ Further References:
 
 [Gruppetta, S. (2023a, September 24). A slicing story. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/a-python-slicing-story)
 
+[Serrão, R. G. (n.d.-g). Sequence indexing | Pydon’t 🐍. Mathspp.](https://mathspp.com/blog/pydonts/sequence-indexing)
+
+[Serrão, R. G. (n.d.-c). Idiomatic sequence slicing | Pydon’t 🐍. Mathspp.](https://mathspp.com/blog/pydonts/idiomatic-sequence-slicing)
 
 [Back to the top](#top)
 
