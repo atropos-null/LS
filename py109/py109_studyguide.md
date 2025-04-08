@@ -319,7 +319,6 @@ Python's distinction between mutable and immutable objects wasn't arbitrary - it
 Immutable objects like integers, strings, and tuples allow Python to optimize memory usage. Since immutable objects can't change, Python can safely reuse them rather than creating new copies for every occurrence.
 
 2. **Predictable Behavior**
-
 The distinction helps create predictable behavior, especially when using objects as dictionary keys or in sets. ​Dictionary keys and set elements must be immutable​. This ensures that once an object is used as a key, its hash value won't change during the dictionary's lifetime.
 
 [Back to the top](#top)
