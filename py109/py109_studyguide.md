@@ -309,6 +309,19 @@ my_list.append(4)  # Modifies the existing list
 print(id(my_list) == original_id)  # True - same object
 ```
 
+#### Mutability vs Immutability: Why its important
+
+**Why the Distinction Exists**
+
+Python's distinction between mutable and immutable objects wasn't arbitrary - it serves several important purposes:
+
+1. **Memory Efficiency**
+Immutable objects like integers, strings, and tuples allow Python to optimize memory usage. Since immutable objects can't change, Python can safely reuse them rather than creating new copies for every occurrence.
+
+2. **Predictable Behavior**
+
+The distinction helps create predictable behavior, especially when using objects as dictionary keys or in sets. ​Dictionary keys and set elements must be immutable​. This ensures that once an object is used as a key, its hash value won't change during the dictionary's lifetime.
+
 [Back to the top](#top)
 
 ### Python's Parameter Passing Mechanism: Pass by Object Reference
@@ -3005,6 +3018,12 @@ squares = [x**2 for x in range(1, 6)]  # [1, 4, 9, 16, 25]
 even_squares = [x**2 for x in range(1, 11) if x % 2 == 0]  # [4, 16, 36, 64, 100]
 ```
 
+Further References:
+
+[Gruppetta, S. (2024b, October 13). What’s in a List—Yes, but what’s *Really* in a Python list. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/whats-really-in-a-python-list)
+
+[Gruppetta, S. (2024f, March 16). If you find if..else in list comprehensions confusing, read this, else. . . The Python Coding Stack.](https://www.thepythoncodingstack.com/p/conditional-expression-ternary-operator-list-com?utm_source=publication-search)
+
 [Back to the top](#top)
 
 
@@ -3014,8 +3033,7 @@ even_squares = [x**2 for x in range(1, 11) if x % 2 == 0]  # [4, 16, 36, 64, 100
 
 Dictionaries in Python are **unordered collections of key-value pairs**. They're defined using curly braces `{}` with key-value pairs separated by colons. 
 
-Further References:
-[Gruppetta, S. (2024b, October 13). What’s in a List—Yes, but what’s *Really* in a Python list. The Python Coding Stack.] (https://www.thepythoncodingstack.com/p/whats-really-in-a-python-list)
+
 
 #### Dictionary Characteristics
 
