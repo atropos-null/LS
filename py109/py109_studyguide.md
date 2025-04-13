@@ -682,6 +682,30 @@ update_count()
 print(count)  # Prints: 20
 ```
 
+To review...
+
+>Scope in Python is all about assignment statements. Assignment statements that update which object a variable points to. Scope is about variables and assignments; it's not about objects and mutation.
+
+- Hunner (2025)
+
+Scope in Python is fundamentally about variable names and where they can be accessed or assigned to. The statement by Hunner above, correctly emphasizes that scope concerns the ability to assign new values to variables (updating which object a variable points to) rather than the ability to mutate objects.
+
+Variable scope determines where in your code a variable name can be accessed or reassigned. As explained in the Variable Scope assignment, Python has primarily global and local scopes that determine where variables can be accessed by name.When you create an assignment statement like `x = 5`, you're binding the name x to point to the object `5` in memory. The scope rules determine where this binding is valid. Scope restrictions apply specifically to reassignment operations. For example, if you try to reassign a global variable inside a function without using the global keyword, Python will create a new local variable instead.
+
+In contrast, object mutation is not restricted by scope. You can mutate a global object from within a function without using the global keyword. This distinction is critical because it explains why we can modify global mutable objects from inside functions without the global keyword, but need global when we want to reassign those variables.
+
+```python
+a = [1, 2, 3]
+b = a
+b.pop()  # Mutation
+
+print(a)  # [1, 2]
+print(b)  # [1, 2]
+```
+
+This mutation affects both variables because they point to the same object, but scope isn't involved here at all - it's about object identity and mutation, not variable assignment.
+
+
 Further References:
 
 A hands on look at global variables and their problems can be found here: [Runestone Academy, 12.10 Global Variables](https://runestone.academy/ns/books/published/fopp/Functions/GlobalVariables.html)
@@ -689,6 +713,8 @@ A hands on look at global variables and their problems can be found here: [Runes
 [Gruppetta, S. (2024b, October 27). Let’s eliminate general bewilderment • Python’s LEGB rule, scope, and namespaces. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/python-legb-rule-scope-namespace)
 
 [Gruppetta, S. (2023a, August 1). The mayor of Py Town’s local experiment: A global disaster. The Python Coding Stack](https://www.thepythoncodingstack.com/p/mayor-of-py-town-local-variables-python-function)
+
+[Hunner, T. (2025, January 4). Scope is about assignment, not mutation. Python Morsels.](https://www.pythonmorsels.com/scope-about-assignment-not-mutation/)
 
 [Back to the top](#top)
 
@@ -2905,7 +2931,8 @@ Further References:
 
 ### Lists 
 
-Lists in Python are **ordered**, **mutable** collections that can store elements of different data types. They are defined using square brackets `[]`. Because lists are mutable,  you can change their content without creating a new list.
+Lists in Python are **ordered**, **mutable** collections that can store elements of different data types. They are defined using square brackets `[]`. Because lists are mutable, you can change their content without creating a new list. Lists in Python don't actually contain objects, but references to objects.
+
 
 ```python
 # Creating a list
@@ -3037,8 +3064,7 @@ Further References:
 
 ### Dictionaries
 
-Dictionaries in Python are **unordered collections of key-value pairs**. They're defined using curly braces `{}` with key-value pairs separated by colons. 
-
+Dictionaries in Python are **unordered collections of key-value pairs**, they map keys to values.  They're defined using curly braces `{}` with key-value pairs separated by colons. Dictionaries are meant to make it easy to look up the value that corresponds to a particular key.
 
 
 #### Dictionary Characteristics
@@ -3363,6 +3389,16 @@ for key, value in numbers.items():
 
 ```
 
+```python
+def new_dictionary(old_dictionary):   #creating a new dictionary from an old dictionary
+    
+    new_dict = {} 
+    for key, values in old_dictionary.items() :
+        new_dict[key] = values
+    return new_dict
+
+```
+
 **`dict.get()`**: retrieves a value associated with a key. It is safer than bracket notation because it doesn't raise `KeyError` for missing keys. It provides a clean way to handle missing keys with default values. Can be chained for nested dictionaries: `data.get('user', {}).get('address', {})`
 
 These usually work together!
@@ -3399,6 +3435,21 @@ Further References:
 
 [Back to the top](#top)
 
+### Lists vs. Dictionaries
+
+* Lists in Python are typically used for storing items in a particular order.
+
+* The most common action you'll see performed on a dictionary is to look up the value for a particular key.
+
+* Use Dictionaries when you need to look up one value based on another in Python.
+
+* If you care about looping, but you don't care about key lookups, you probably don't need a dictionary. If looping is all you need, a list of tuples might be a better way.
+
+* When you loop over a dictionary, you'll get keys. If you'd like to get keys and values, you can use the dictionary items method.
+
+But remember to ask yourself, why am I looping here and do I need a dictionary or would a list be a better way to store my data?
+
+[Back to the top](#top)
 
 *** 
 
