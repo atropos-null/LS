@@ -4157,4 +4157,41 @@ else:
 3.  In the if statement, `None` is considered falsy, so the code enters the `else` block.
 4.  Inside the `else `block, it prints lst1. Since `lst1.reverse()` was called once, `lst1` is now `[3, 2, 1, 0]`.
 
+
+#### What will this code do?
+
+```python
+   def outer():
+       x = "local"
+       def inner():
+           nonlocal x
+           x = "nonlocal"
+       inner()
+       return x
+   
+   print(outer())
+
+```
+
+<details>
+<summary>Solution</summary>
+
+It prints out `nonlocal`.
+
+```python
+def outer():
+    x = "local"  # `x` is defined in the scope of the `outer` function.
+    
+    def inner():
+        nonlocal x  # Refers to the `x` defined in the enclosing `outer` function.
+        x = "nonlocal"  # Modifies the `x` variable in the `outer` function's scope.
+    
+    inner()  # Calls `inner`, which modifies `x` in the `outer` scope.
+    return x  # Returns the modified value of `x`.
+
+print(outer())  # Prints the value returned by `outer`.
+```
+
+</details>
+
 [Back to the top](#top)
