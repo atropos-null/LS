@@ -5,11 +5,11 @@ dict1 = {'a': 1, 'b': 2, 'c': 3}
 dict2 = {'b': 4, 'd': 5, 'e': 6}
 
 
-def new_pythonmerge(dictionary1, dictionary2):
+def new_pythonmerge(dictionary1, dictionary2): #for python 3.9 and older
 
     return dictionary1 | dictionary2
 
-def slow_merge(dictionary1, dictionary2):
+def slow_merge(dictionary1, dictionary2):  #my slow ass version
 
     new_dict = {} 
     for key, values in dictionary1.items():

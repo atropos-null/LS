@@ -3428,6 +3428,38 @@ values = car.values()  # dict_values(['sedan', 'blue', 2003])
 items = car.items()  # dict_items([('type', 'sedan'), ('color', 'blue'), ('year', 2003)])
 ```
 
+#### Nested Dictionaries
+
+These happen alot:
+
+Creating a nested dictionary
+
+```python
+ 
+nested_dict = {
+    'person1': {
+        'name': 'John',
+        'age': 30,
+        'hobbies': ['reading', 'hiking']
+    },
+    'person2': {
+        'name': 'Lisa',
+        'age': 25,
+        'hobbies': ['painting', 'running']
+    }
+}
+
+# Accessing nested elements
+john_age = nested_dict['person1']['age']  # Gets 30
+lisa_hobby = nested_dict['person2']['hobbies'][1]  # Gets 'running'
+
+# Adding new nested data
+nested_dict['person3'] = {'name': 'Mike', 'age': 35, 'hobbies': ['swimming']}
+
+# Modifying nested data
+nested_dict['person1']['hobbies'].append('cooking')
+```
+
 Further References:
 
 [Gruppetta, S. (2024b, May 27). `dict()` is More Versatile Than You May Think. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/python-dict-is-more-versatile-than-you-may-think)
@@ -3448,6 +3480,62 @@ Further References:
 * When you loop over a dictionary, you'll get keys. If you'd like to get keys and values, you can use the dictionary items method.
 
 But remember to ask yourself, why am I looping here and do I need a dictionary or would a list be a better way to store my data?
+
+[Back to the top](#top)
+
+#### List to Dictionary Conversion
+
+There are several ways to convert a list to a dictionary:
+
+1. ​Using a list of key-value pairs:
+```python
+# List of key-value pairs (tuples)
+key_value_pairs = [('a', 1), ('b', 2), ('c', 3)]
+
+# Convert to dictionary using dict() constructor
+my_dict = dict(key_value_pairs)
+# Result: {'a': 1, 'b': 2, 'c': 3}
+```
+
+2. Using Dictionary Comprehension:
+
+```python
+python
+
+# From two separate lists
+keys = ['a', 'b', 'c']
+values = [1, 2, 3]
+
+# Create dictionary via comprehension
+my_dict = {keys[i]: values[i] for i in range(len(keys))}
+# Result: {'a': 1, 'b': 2, 'c': 3}
+```
+
+3. Using `zip()` function
+
+```python
+eys = ['a', 'b', 'c']
+values = [1, 2, 3]
+
+# Zip the lists together and convert to dictionary
+my_dict = dict(zip(keys, values))
+# Result: {'a': 1, 'b': 2, 'c': 3}
+```
+
+Further examples:
+
+```python
+# Iterate through a list to build a dictionary
+my_list = ['apple', 'banana', 'cherry', 'date']
+# Create a dictionary with the items as keys and their lengths as values
+fruit_lengths = {}
+for fruit in my_list:
+    fruit_lengths[fruit] = len(fruit)
+
+# Alternatively, using dictionary comprehension
+fruit_lengths = {fruit: len(fruit) for fruit in my_list}
+# Result: {'apple': 5, 'banana': 6, 'cherry': 6, 'date': 4}
+```
 
 [Back to the top](#top)
 
@@ -3535,6 +3623,8 @@ Keep in mind:
 
 The key difference between sets and frozensets is their mutability. While **both are unordered collections of unique** elements, **regular sets can be modified** after creation, whereas **frozensets are immutable**. This immutability makes frozensets hashable, so they can be used as dictionary keys or as elements in other sets.
 
+[Back to the top](#top)
+
 
 How to Differentiate Between Collections:
 
@@ -3554,6 +3644,74 @@ How to Differentiate Between Collections:
 * Tuples​: When you want an immutable ordered collection
 * Sets​: When you need to ensure uniqueness or perform set operations
 * ​Ranges​: When you need a sequence of numbers without storing them all
+
+[Back to the top](#top)
+
+
+### Not gonna lie, there's a lot of tuples
+
+Converting a tuple of lists to a dictionary:
+
+```python
+# Creating a tuple that contains lists
+tuple_with_lists = ([1, 2, 3], [4, 5, 6], [7, 8, 9])
+
+# Accessing elements
+first_list = tuple_with_lists[0]  # Gets [1, 2, 3]
+specific_element = my_tuple[1][1]  # Gets 5
+element = tuple_with_lists[1][2]  # Gets 6 (second list, third element)
+
+# Modifying a list inside the tuple (tuples are immutable, but their contents may be mutable)
+tuple_with_lists[0].append(4)  # tuple_with_lists becomes ([1, 2, 3, 4], [4, 5, 6], [7, 8, 9])
+```
+
+#### Mutability Characteristics with Tuples
+
+This is where it gets interesting:
+
+1.  The tuple itself is ​immutable​ - you cannot add, remove, or replace elements in the tuple
+2.  The lists inside the tuple are ​mutable​ - you can modify their contents
+
+What you CAN'T do:
+```python
+my_tuple = ([1, 2, 3], [4, 5, 6])
+my_tuple[0] = [10, 11, 12]  # TypeError: 'tuple' object does not support item assignment
+my_tuple += ([7, 8, 9],)  # Creates a new tuple, doesn't modify the original
+```
+
+What you CAN do:
+
+```python
+my_tuple = ([1, 2, 3], [4, 5, 6])
+my_tuple[0].append(4)  # Valid! The tuple now contains ([1, 2, 3, 4], [4, 5, 6])
+my_tuple[1][0] = 10    # Valid! The tuple now contains ([1, 2, 3, 4], [10, 5, 6])
+```
+
+Real World Applications:
+
+Tuples containing lists are useful when you need:
+1.  A fixed structure with specific positions (the tuple part)
+2.  With elements that need to be modified (the list part)
+
+For example, you might use this structure to represent:
+* A game board with rows that can change
+* Configuration data with changeable subsections
+* Coordinates with history tracking
+
+An example of a complex nested structure:
+
+```python
+
+# Tuple containing dictionaries
+records = (
+    {"name": "Alice", "scores": [85, 90, 95]},
+    {"name": "Bob", "scores": [75, 80, 85]}
+)
+
+# You can modify the dictionaries or lists inside
+records[0]["scores"].append(100)  # Adding a score for Alice
+```
+
 
 Further References:
 
