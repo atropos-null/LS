@@ -11,9 +11,9 @@ Here are 12 practice questions involving dictionaries at varying difficulty leve
 7.  ​Advanced​: Write a function that takes a nested dictionary and flattens it into a single-level dictionary. The keys in the flattened dictionary should be joined with a dot (e.g., {'a': {'b': 1}} becomes {'a.b': 1}).
 8.  ​Basic​: Create a function that filters a dictionary to only include key-value pairs where the value meets a certain condition (e.g., is a string, is greater than 10, etc.).
 9.  ​Intermediate​: Write a function that groups a list of dictionaries by a specified key and returns a dictionary of lists.
-10. ​Advanced​: Create a function that performs a deep copy of a dictionary (including nested dictionaries).
+10. Basic: Write a function named filter_by_value that takes a dictionary and a value as arguments. The function should return a new dictionary that only contains the key-value pairs where the value is equal to the given value.
 11. ​Intermediate​: Write a function that takes a dictionary and returns a new dictionary with the same keys but with all string values converted to uppercase.
-12. ​Advanced​: Implement a function that takes a list of words and returns a dictionary where keys are the first letter of each word and values are lists of words starting with that letter.
+
 
 
 #### Sample Dictionaries

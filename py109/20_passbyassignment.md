@@ -17,6 +17,15 @@ print(num)
 ```
 **What is printed? What happens to `num`?**
 
+<details>
+<summary>Solution</summary>
+
+### Answer 1
+**Printed:** `5`  
+**Explanation:** Integers are immutable. Reassigning `x` inside `modify()` creates a new local variable but leaves `num` unchanged.
+
+</details>
+
 ---
 
 ### Problem 2: Mutable List (Append)
@@ -30,6 +39,15 @@ print(my_list)
 ```
 **What is printed? What happens to `my_list`?**
 
+<details>
+<summary>Solution</summary>
+
+### Answer 2
+**Printed:** `[1, 2, 3, 4]`  
+**Explanation:** Lists are mutable. `append()` modifies the original list in-place.
+
+</details>
+
 ---
 
 ### Problem 3: String Concatenation
@@ -42,6 +60,14 @@ add_greeting(text)
 print(text)
 ```
 **What is printed? What happens to `text`?**
+<details>
+<summary>Solution</summary>
+
+### Answer 3
+**Printed:** `Hello`  
+**Explanation:** Strings are immutable. `s += ...` creates a new string object that isn’t returned or saved.
+
+</details>
 
 ---
 
@@ -56,6 +82,15 @@ print(numbers)
 ```
 **What is printed? What happens to `numbers`?**
 
+<details>
+<summary>Solution</summary>
+
+### Answer 4
+**Printed:** `[5, 6, 7]`  
+**Explanation:** Reassigning `lst` inside the function creates a new local list. The original `numbers` remains unchanged.
+
+</details>
+
 ---
 
 ### Problem 5: Tuple Modification Attempt
@@ -69,6 +104,15 @@ print(my_tuple)
 ```
 **What happens? What is printed?**
 
+<details>
+<summary>Solution</summary>
+
+
+### Answer 5
+**Printed:** `(1, 2, 3)`  
+**Explanation:** Tuples are immutable. Attempting to modify `t[0]` raises a `TypeError`, but the error is caught and ignored.
+
+</details>
 ---
 
 ### Problem 6: Dictionary Update
@@ -81,6 +125,15 @@ update_dict(data)
 print(data)
 ```
 **What is printed? What happens to `data`?**
+
+<details>
+<summary>Solution</summary>
+
+### Answer 6
+**Printed:** `{'key': 'new_value'}`  
+**Explanation:** Dictionaries are mutable. The `update_dict` function modifies the original dictionary in-place.
+
+</details>
 
 ---
 
@@ -97,6 +150,15 @@ print(x, y)
 ```
 **What is printed? What happens to `x` and `y`?**
 
+<details>
+<summary>Solution</summary>
+
+### Answer 7
+**Printed:** `1 [2, 5]`  
+**Explanation:** `x` (immutable) remains `1`, but `y` (mutable list) is modified in-place with `append(5)`.
+
+</details>
+
 ---
 
 ### Problem 8: Nested List Modification
@@ -110,6 +172,14 @@ print(matrix)
 ```
 **What is printed? What happens to `matrix`?**
 
+<details>
+<summary>Solution</summary>
+
+### Answer 8
+**Printed:** `[[1, 2], ['modified', 4]]`  
+**Explanation:** Nested lists are mutable. The inner list `[3, 4]` is modified in-place.
+
+</details>
 ---
 
 ### Problem 9: Reassign vs Modify
@@ -124,6 +194,16 @@ print(original)
 ```
 **What is printed? What happens to `original`?**
 
+
+<details>
+<summary>Solution</summary>
+
+### Answer 9
+**Printed:** `[1, 2, 3]`  
+**Explanation:** `lst + [4]` creates a new list, leaving `original` unchanged. If `lst += [4]` were used, it would modify the original list in-place.
+
+</details>
+
 ---
 
 ### Problem 10: Default Mutable Argument
@@ -136,6 +216,15 @@ print(add_item(1))
 print(add_item(2))
 ```
 **What is printed? Why?**
+
+<details>
+<summary>Solution</summary>
+
+### Answer 10
+**Printed:** `[1]` then `[1, 2]`  
+**Explanation:** Default mutable arguments (like `lst=[]`) retain changes between function calls. The same list is reused!
+
+</details>
 
 ---
 
@@ -150,6 +239,15 @@ print(value)
 ```
 **What is printed? What happens to `value`?**
 
+<details>
+<summary>Solution</summary>
+
+### Answer 11
+**Printed:** `5`  
+**Explanation:** Integers are immutable. `n += 1` creates a new integer object that isn’t returned or saved.
+
+</details>
+
 ---
 
 ### Problem 12: Set Modification
@@ -163,6 +261,14 @@ print(my_set)
 ```
 **What is printed? What happens to `my_set`?**
 
+<details>
+<summary>Solution</summary>
+
+### Answer 12
+**Printed:** `{1, 2, 3, 4}`  
+**Explanation:** Sets are mutable. `add(4)` modifies the original set in-place.
+
+</details>
 ---
 
 ### Problem 13: Return and Modify
@@ -176,6 +282,15 @@ result = manipulate(original)
 print(original, result)
 ```
 **What is printed? Are `original` and `result` the same object?**
+
+<details>
+<summary>Solution</summary>
+
+### Answer 13
+**Printed:** `[1, 2, 3, 4] [1, 2, 3, 4]`  
+**Explanation:** Both `original` and `result` point to the same list object. Modifying one affects both.
+
+</details>
 
 ---
 
@@ -191,6 +306,15 @@ print(lst)
 ```
 **What is printed? What happens to `lst`?**
 
+<details>
+<summary>Solution</summary>
+
+### Answer 14
+**Printed:** `[0, 1]`  
+**Explanation:** Each call to `add_element()` appends the current length of the list (which grows after each append).
+
+</details>
+
 ---
 
 ### Problem 15: Immutable in Mutable
@@ -203,6 +327,15 @@ change_element(data)
 print(data)
 ```
 **What is printed? What happens to `data`?**
+
+<details>
+<summary>Solution</summary>
+
+### Answer 15
+**Printed:** `[100, 2, 3]`  
+**Explanation:** Lists are mutable. The first element is reassigned in-place.
+
+</details>
 
 ---
 
@@ -217,6 +350,14 @@ print(numbers)
 ```
 **What is printed? What happens to `numbers`?**
 
+<details>
+<summary>Solution</summary>
+
+### Answer 16
+**Printed:** `[7, 8, 9]`  
+**Explanation:** Slice assignment (`lst[:] = ...`) modifies the original list in-place.
+
+</details>
 ---
 
 ### Problem 17: Global Variable Shadowing
@@ -231,6 +372,14 @@ print(x)
 ```
 **What is printed? What happens to the global `x`?**
 
+<details>
+<summary>Solution</summary>
+
+### Answer 17
+**Printed:** `10`  
+**Explanation:** `x = 20` inside `func()` creates a local variable. The global `x` remains unchanged.
+
+</details>
 ---
 
 ### Problem 18: Reassigning a String
@@ -243,6 +392,15 @@ reassign_str(text)
 print(text)
 ```
 **What is printed? What happens to `text`?**
+
+<details>
+<summary>Solution</summary>
+
+### Answer 18
+**Printed:** `old string`  
+**Explanation:** Strings are immutable. Reassigning `s` inside the function doesn’t affect the original `text`.
+
+</details>
 
 ---
 
@@ -258,6 +416,17 @@ print(lst1, lst2)
 ```
 **What is printed? Are `lst1` and `lst2` the same object?**
 
+<details>
+<summary>Solution</summary>
+
+### Answer 19
+**Printed:** `[1, 2, 3, 4] [1, 2, 3]`  
+**Explanation:** `create_list()` returns a new list each time. `lst1` and `lst2` are separate objects.
+
+</details>
+
+
+
 ---
 
 ### Problem 20: Exception Handling with Immutable
@@ -272,129 +441,18 @@ my_tuple = (1, 2, 3)
 modify_tuple(my_tuple)
 print(my_tuple)
 ```
+
 **What is printed? What happens to `my_tuple`?**
 
----
-
-## Answers
-
-### Answer 1
-**Printed:** `5`  
-**Explanation:** Integers are immutable. Reassigning `x` inside `modify()` creates a new local variable but leaves `num` unchanged.
-
----
-
-### Answer 2
-**Printed:** `[1, 2, 3, 4]`  
-**Explanation:** Lists are mutable. `append()` modifies the original list in-place.
-
----
-
-### Answer 3
-**Printed:** `Hello`  
-**Explanation:** Strings are immutable. `s += ...` creates a new string object that isn’t returned or saved.
-
----
-
-### Answer 4
-**Printed:** `[5, 6, 7]`  
-**Explanation:** Reassigning `lst` inside the function creates a new local list. The original `numbers` remains unchanged.
-
----
-
-### Answer 5
-**Printed:** `(1, 2, 3)`  
-**Explanation:** Tuples are immutable. Attempting to modify `t[0]` raises a `TypeError`, but the error is caught and ignored.
-
----
-
-### Answer 6
-**Printed:** `{'key': 'new_value'}`  
-**Explanation:** Dictionaries are mutable. The `update_dict` function modifies the original dictionary in-place.
-
----
-
-### Answer 7
-**Printed:** `1 [2, 5]`  
-**Explanation:** `x` (immutable) remains `1`, but `y` (mutable list) is modified in-place with `append(5)`.
-
----
-
-### Answer 8
-**Printed:** `[[1, 2], ['modified', 4]]`  
-**Explanation:** Nested lists are mutable. The inner list `[3, 4]` is modified in-place.
-
----
-
-### Answer 9
-**Printed:** `[1, 2, 3]`  
-**Explanation:** `lst + [4]` creates a new list, leaving `original` unchanged. If `lst += [4]` were used, it would modify the original list in-place.
-
----
-
-### Answer 10
-**Printed:** `[1]` then `[1, 2]`  
-**Explanation:** Default mutable arguments (like `lst=[]`) retain changes between function calls. The same list is reused!
-
----
-
-### Answer 11
-**Printed:** `5`  
-**Explanation:** Integers are immutable. `n += 1` creates a new integer object that isn’t returned or saved.
-
----
-
-### Answer 12
-**Printed:** `{1, 2, 3, 4}`  
-**Explanation:** Sets are mutable. `add(4)` modifies the original set in-place.
-
----
-
-### Answer 13
-**Printed:** `[1, 2, 3, 4] [1, 2, 3, 4]`  
-**Explanation:** Both `original` and `result` point to the same list object. Modifying one affects both.
-
----
-
-### Answer 14
-**Printed:** `[0, 1]`  
-**Explanation:** Each call to `add_element()` appends the current length of the list (which grows after each append).
-
----
-
-### Answer 15
-**Printed:** `[100, 2, 3]`  
-**Explanation:** Lists are mutable. The first element is reassigned in-place.
-
----
-
-### Answer 16
-**Printed:** `[7, 8, 9]`  
-**Explanation:** Slice assignment (`lst[:] = ...`) modifies the original list in-place.
-
----
-
-### Answer 17
-**Printed:** `10`  
-**Explanation:** `x = 20` inside `func()` creates a local variable. The global `x` remains unchanged.
-
----
-
-### Answer 18
-**Printed:** `old string`  
-**Explanation:** Strings are immutable. Reassigning `s` inside the function doesn’t affect the original `text`.
-
----
-
-### Answer 19
-**Printed:** `[1, 2, 3, 4] [1, 2, 3]`  
-**Explanation:** `create_list()` returns a new list each time. `lst1` and `lst2` are separate objects.
-
----
+<details>
+<summary>Solution</summary>
 
 ### Answer 20
 **Printed:** `(1, 2, 3)`  
 **Explanation:** Tuples are immutable. The modification attempt fails silently due to the `try-except` block.
+
+</details>
+
 
 ---
 
