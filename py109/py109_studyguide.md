@@ -4385,4 +4385,10 @@ print(outer())  # Prints the value returned by `outer`.
 
 </details>
 
+#### Flow Charts and Pseudocode
+
+Apparently, they might ask about it.
+
+Find flow charts [here](https://launchschool.com/lessons/a29e9831/assignments/bb698e7d).
+Find pseudocode [here](https://launchschool.com/lessons/a29e9831/assignments/b3aaf50f). 
 [Back to the top](#top)
