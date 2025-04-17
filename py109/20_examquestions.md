@@ -2,7 +2,9 @@
 
 
 1. Explain the difference between mutable and immutable data types in Python. Provide examples of each.
+
 2. What is the difference between `==` and `is` operators in Python? Provide an example where they give different results.
+
 3.  ​Intermediate​: What will the following code print and why?
 
 ```python
