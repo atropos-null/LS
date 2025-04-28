@@ -238,7 +238,7 @@ b = 5
 print(a is b)  # True, because integers -5 to 256 are interned
 ```
 
-In Python, there's a predefined range of integers, specifically from -5 to 256, for which memory locations are pre-assigned. When you reference an integer within this span, Python consistently points to the same memory spot."
+In Python, there's a predefined range of integers, specifically from -5 to 256, for which memory locations are pre-assigned. When you reference an integer within this span, Python consistently points to the same memory spot.
 
 What Python Interns:
 
@@ -265,7 +265,7 @@ print(id(a) == id(b))  # True - same memory location
 print(id(a) == id(c))  # Likely False - different memory locations
 ```
 
-This behavior has a practical implication: you can use the is operator to check if two variables reference the exactly same object in memory, but for strings, the behavior might be confusing due to interning:
+This behavior has a practical implication: you can use the `is` operator to check if two variables reference the exactly same object in memory, but for strings, the behavior might be confusing due to interning:
 
 ```python
 
@@ -281,6 +281,7 @@ However, it's important to note that you shouldn't rely on this behavior for equ
 
 
 [Back to the top](#top)
+
 
 ### Mutable vs. Immutable Objects
 
@@ -370,29 +371,30 @@ Further references:
 
 [Back to the top](#top)
 
+
 ### The Connection Between Mutability and Parameter Passing 
 
 Here's how these concepts are connected:
 
-1. **​For immutable objects**​: Since the object can't be modified, any operation that seems to modify it actually creates a new object. When a parameter is reassigned inside a function, what changes is what the object the local variable refers to. What is not affected is the not the original variable outside the function.
+1. **​For immutable objects**​: Since the object can't be modified, any operation that seems to modify it actually creates a new object. When a parameter is reassigned inside a function, what changes is what the object the local variable refers to. What is not affected is the original variable outside the function.
 
 2.  **​For mutable objects**​: Since the object can be modified, operations that change the object's internal state affect the original object. Both the parameter and the original variable outside still point to the same object, so both "see" the changes.
 
 3.  **​Reassignment vs. Modification**​:
-* Reassignment (`my_var = something_new`) never affects the original variable outside the function.
+* Reassignment never affects the original variable outside the function.
 * Modification methods (e.g.,`.append()`, `.update()`) affect the original object if it's mutable.
 
 Remember:
 
-* Variables are not passed to functions; references to objects are passed
-* Parameters are the names in function definitions; arguments are the values passed
+* Variables are not passed to functions; references to objects are passed.
+* Parameters are the names in function definitions; arguments are the values passed.
 
 
 #### Memory Aliasing
 
 As we can now conclude, multiple variables can reference the same object. 
 
-Memory aliasing occurs when multiple variables refer to the same object in memory. This is a fundamental concept in Python that's directly connected to its object reference model and has important implications for how your code behaves.
+Memory aliasing occurs when multiple variables refer to the same object in memory. This is a fundamental concept in Python that's directly connected to its object reference model and has important implications for how code behaves.
 
 **How Memory Aliasing Works**
 
@@ -428,7 +430,7 @@ This concept is directly related to how Python passes arguments to functions. Si
 ### Differences from Other Languages
 
 1. **Dynamic vs. Static Typing**: Unlike statically typed languages like Java or C++, Python uses dynamic typing:
-* Variable types are determined at runtime*
+* Variable types are determined at runtime
 * Variables can be reassigned to different types
 * No type declarations are required
 
@@ -463,7 +465,7 @@ Python evaluates the type of x at runtime based on the value it currently holds.
 
 1. In statically typed languages (like Java, C++, or TypeScript):
 * Variables have explicit type declarations
-* Type checking happens at compile time*, before the program runs
+* Type checking happens at compile time, before the program runs
 * Once a variable is declared with a type, it generally cannot reference values of other types
 * Type errors are caught earlier in the development process
 
