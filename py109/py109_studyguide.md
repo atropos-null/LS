@@ -279,6 +279,13 @@ print(x is z)  # False (different objects)
 
 However, it's important to note that you shouldn't rely on this behavior for equality testing. Always use the `==` operator to compare string values rather than `is`, which compares object identity. More on `is` in [Operators])(#operators).
 
+Further references:
+
+[Upadhyay, A. (2023, August 16). Memory management & reference counting internals of Python. Confessions of a Code Addict](https://blog.codingconfessions.com/p/cpython-reference-counting-internals?utm_source=substack&utm_campaign=post_embed&utm_medium=web)
+
+
+[Upadhyay, A. (2023b, August 25). Immortalization in Python 3.12: A Dive into Python Internals. Confessions of a Code Addict](https://blog.codingconfessions.com/p/understanding-immortal-objects-in?utm_source=substack&utm_campaign=post_embed&utm_medium=web)
+
 
 [Back to the top](#top)
 
@@ -644,10 +651,10 @@ The use of globals are generally considered to be bad form and should be avoided
 
 >Using the global statement generally takes away from the clarity of your code. It can create a number of issues, including the following:
 
->*Free variables, seemingly unrelated to anything
->*Functions without explicit arguments for said variables
->*Functions that can’t be used generically with other variables or arguments since they rely on a single global variable
->*Lack of thread safety when using global variables
+> * Free variables, seemingly unrelated to anything
+> * Functions without explicit arguments for said variables
+> * Functions that can’t be used generically with other variables or arguments since they rely on a single global variable
+> * Lack of thread safety when using global variables
 
 (Chong, 2025)
 
@@ -692,7 +699,7 @@ To review...
 
 Scope in Python is fundamentally about variable names and where they can be accessed or assigned to. The statement by Hunner above, correctly emphasizes that scope concerns the ability to assign new values to variables (updating which object a variable points to) rather than the ability to mutate objects.
 
-Variable scope determines where in your code a variable name can be accessed or reassigned. As explained in the Variable Scope assignment, Python has primarily global and local scopes that determine where variables can be accessed by name.When you create an assignment statement like `x = 5`, you're binding the name x to point to the object `5` in memory. The scope rules determine where this binding is valid. Scope restrictions apply specifically to reassignment operations. For example, if you try to reassign a global variable inside a function without using the global keyword, Python will create a new local variable instead.
+Variable scope determines where in your code a variable name can be accessed or reassigned. As explained in the Variable Scope assignment, Python has primarily global and local scopes that determine where variables can be accessed by name. When you create an assignment statement like `x = 5`, you're binding the name x to point to the object `5` in memory. The scope rules determine where this binding is valid. Scope restrictions apply specifically to reassignment operations. For example, if you try to reassign a global variable inside a function without using the global keyword, Python will create a new local variable instead.
 
 In contrast, object mutation is not restricted by scope. You can mutate a global object from within a function without using the global keyword. This distinction is critical because it explains why we can modify global mutable objects from inside functions without the global keyword, but need global when we want to reassign those variables.
 
