@@ -2982,21 +2982,21 @@ If an object is indexable, its sliceable.
 
 **Adding Elements**
 * `append(item)`: Adds a single element to the end of the list. This method modifies the list in-place and returns `None`.
-* `extend(iterable)`: Adds multiple elements from an iterable (like another list) to the end.
-* `insert(index, item)`: Inserts an item at a specific index position. If the index is out of range, it simply appends to the end.
+* `extend(iterable)`: Adds multiple elements from an iterable (like another list) to the end. Returns `None`.
+* `insert(index, item)`: Inserts an item at a specific index position. If the index is out of range, it simply appends to the end. Returns `None`
 
 **Removing Elements**
 * `pop([index])`: Removes and returns the item at the given index. If no index, it removes the last item.
-* `remove(item)`: Removes the **first occurrence** of the specified value, raising a `ValueError` if the item isn't found.
-* `clear()`: removes all items from the list.
+* `remove(item)`: Removes the **first occurrence** of the specified value, raising a `ValueError` if the item isn't found. Returns `None`.
+* `clear()`: removes all items from the list. Returns `None`.
 
 **Finding Elements**
 * `index(item[, start[, end]])`: Returns the index of the **first occurrence** of the given item, raising a `ValueError` if the item isn't found.
 * `count(item)`: Returns the number of occurrences of the specified item.
 
 **Ordering Elements**
-*   `reverse()`: Reverses the elements in-place, mutating the object, returning `None`. Use when you want to modify the list. Only works on lists!!!
-*   `sort([key=None, reverse=False])`: Sorts the list in-place, optionally using a key function and/or in reverse order.
+*   `reverse()`: Reverses the elements in-place, mutating the object. Returns `None`.  Use when you want to modify the list. Only works on lists!!!
+*   `sort([key=None, reverse=False])`: Sorts the list in-place, optionally using a key function and/or in reverse order. Returns `None`
 
 ```python
 
@@ -3015,7 +3015,7 @@ print(words)  # ["kiwi", "pear", "apple", "banana"]
 ```
 
 **Copying**
-* `copy()`:  Creates a shallow copy of the list. Note that nested objects are not deeply copied, just referenced.
+* `copy()`:  Creates a shallow copy of the list. Note that nested objects are not deeply copied, just referenced. Returns the shallow copy!
 
 **Other _built-in functions_ that work with lists**
 * `len(list)`: Returns the number of items in the list.
@@ -3581,7 +3581,221 @@ print(index_dict)
 
 [Back to the top](#top)
 
+### A List of Dictionaries!
+
+Lists of dictionaries are a common data structure in Python that allows you to store multiple records, each with named fields. Let's explore how to work with them effectively.
+
+#### Basic Structure
+
+```python
+students = [
+    {'name': 'Alex', 'grade': 85, 'subjects': ['Math', 'Science']},
+    {'name': 'Jamie', 'grade': 92, 'subjects': ['History', 'English']},
+    {'name': 'Casey', 'grade': 78, 'subjects': ['Art', 'Music']}
+]
+```
+
+#### Common Operations with Lists of Dictionaries
+
+1. **Accessing Elements**
+
+You can access individual dictionaries using list indexing, and then access dictionary values using keys:
+
+```python
+first_student = students[0]  # Gets the first dictionary
+name = students[0]['name']   # Gets 'Alex
+```
+
+2. **Iterating Through the List**
+
+```python
+for student in students:
+    print(f"{student['name']} has a grade of {student['grade']}")
+```
+
+3. **Filtering the List**
+
+You can filter a list of dictionaries using list comprehensions:
+
+```python
+# Get students with grades above 80
+high_performers = [student for student in students if student['grade'] > 80]
+```
+
+4. **Sorting the List**
+To sort a list of dictionaries, you can use the sorted() function with a key parameter:
+
+```python
+# Sort by grade (ascending)
+sorted_by_grade = sorted(students, key=lambda x: x['grade'])
+
+# Sort by name (alphabetically)
+sorted_by_name = sorted(students, key=lambda x: x['name'])
+
+# Sort by grade (descending)
+sorted_by_grade_desc = sorted(students, key=lambda x: x['grade'], reverse=True)
+```
+
+5. **Converting Lists of Dictionaries to Other Formats**
+
+You can extract specific information from a list of dictionaries:
+
+```python
+# Get all names in a list
+names = [student['name'] for student in students]
+
+# Create a dictionary mapping names to grades
+name_to_grade = {student['name']: student['grade'] for student in students}
+```
+
+6. **Finding a Specific Dictionary**
+
+```python
+# Find a student by name
+def find_student(name):
+    for student in students:
+        if student['name'] == name:
+            return student
+    return None
+
+jamie = find_student('Jamie')
+```
+
+#### Working with Nested Data
+
+When you have nested data in your dictionaries, like the 'subjects' list in our example:
+
+```python
+# Get all subjects across all students (flattened)
+all_subjects = []
+for student in students:
+    all_subjects.extend(student['subjects'])
+
+# Get unique subjects
+unique_subjects = list(set(all_subjects))
+```
+
+#### Dictionary View Methods with Lists of Dictionaries
+
+You can use dictionary view methods like `keys()`, `values()`, `and items()` on each dictionary:
+
+```python
+# Get all keys from the first student
+first_student_keys = list(students[0].keys())  # ['name', 'grade', 'subjects']
+
+# Get all values from the first student
+first_student_values = list(students[0].values())  # ['Alex', 85, ['Math', 'Science']]
+```
+#### Working with Dictionaries in Lists: `Update`, `Append`, `Remove` Operations
+
+Working with lists of dictionaries requires understanding how to manipulate both the list structure and the dictionary objects within it. Here are the key operations you might need:
+
+**Updating a Dictionary in a List**
+
+When you want to update a dictionary that's an element in a list, you first need to access that dictionary, then modify it:
+
+```python
+# Sample list of dictionaries
+students = [
+    {'name': 'Alex', 'grade': 85},
+    {'name': 'Jamie', 'grade': 92},
+    {'name': 'Casey', 'grade': 78}
+]
+
+# Update Jamie's grade
+students[1]['grade'] = 95
+
+# Add a new key-value pair to Alex's record
+students[0]['attendance'] = 98
+
+print(students)
+# [{'name': 'Alex', 'grade': 85, 'attendance': 98}, 
+#  {'name': 'Jamie', 'grade': 95}, 
+#  {'name': 'Casey', 'grade': 78}]
+```
+
+You can also find and update a dictionary using a loop:
+```python
+for student in students:
+    if student['name'] == 'Casey':
+        student['grade'] = 80
+```
+
+**Appending to a List Within a Dictionary**
+If a dictionary contains a list value, you can append to it:
+
+```python
+students = [
+    {'name': 'Alex', 'courses': ['Math', 'Science']},
+    {'name': 'Jamie', 'courses': ['History']}
+]
+
+# Append a course to Jamie's courses
+students[1]['courses'].append('English')
+
+print(students)
+# [{'name': 'Alex', 'courses': ['Math', 'Science']}, 
+#  {'name': 'Jamie', 'courses': ['History', 'English']}]
+```
+
+It's important to understand that when you modify nested data structures like this, you're working with references.
+
+**Removing Items**
+
+*Remove a Key-Value Pair from a Dictionary*
+```python
+students = [
+    {'name': 'Alex', 'grade': 85, 'id': 1001},
+    {'name': 'Jamie', 'grade': 92, 'id': 1002}
+]
+
+# Remove the 'id' from Jamie's record
+del students[1]['id']
+
+# Alternative: using pop() to remove and return the value
+id_value = students[0].pop('id')
+print(f"Removed ID: {id_value}")
+```
+
+*Remove a Dictionary from the List*
+```python
+students = [
+    {'name': 'Alex', 'grade': 85},
+    {'name': 'Jamie', 'grade': 92},
+    {'name': 'Casey', 'grade': 78}
+]
+
+# Remove by index
+del students[1]  # Removes Jamie's record
+
+# Alternative: using pop() to remove by index
+removed_student = students.pop(0)  # Removes Alex's record
+print(f"Removed student: {removed_student}")
+
+# Remove by value using list comprehension
+students = [student for student in students if student['name'] != 'Casey']
+
+# Or using remove() with a loop
+students = [
+    {'name': 'Alex', 'grade': 85},
+    {'name': 'Jamie', 'grade': 92}
+]
+for student in students[:]:  # Make a copy of the list for iteration
+    if student['name'] == 'Alex':
+        students.remove(student)
+```
+
+**Important Considerations**
+
+1.  When working with shared references in nested structures, modifications affect all references to that object.
+2.  For shallow copying a list or dictionary, you can use `.copy()` method:
+3.  Remember that dictionary mutations like `append()` or adding keys affect the original object, as they're destructive operations.
+
+
+[Back to the top](#top)
+
 *** 
+
 
 ### Other Python Collections
 
