@@ -1064,6 +1064,74 @@ Make sure the functions are at consistent abstraction levels, where:
 
 Function names should be in the language of the problem domain (verbs that make sense in the context).  They should specify "what" to do, not "how" to do it
 
+### Default Function Arguments: Mutable vs. Immutable Parameters
+
+Default function arguments in Python work differently depending on whether they are mutable or immutable objects. This is a key concept that's often tested in assessments.
+
+#### Immutable Default Arguments
+
+When an immutable object (like a string, integer, or tuple) is used as a default argument, it behaves as you might expect:
+
+```python
+def greet(name="Guest"):
+    return f"Hello, {name}!"
+
+print(greet())        # "Hello, Guest!"
+print(greet("Alex"))  # "Hello, Alex!"
+```
+
+Each function call that uses the default value gets a "fresh" reference to the immutable value. Since immutable objects can't be changed, there's no concern about maintaining state between function calls.
+
+#### Mutable Default Arguments
+
+The behavior changes dramatically with mutable default arguments:
+
+```python
+def add_item(item, items=[]):
+    items.append(item)
+    return items
+
+list1 = add_item(1)  # [1]
+list2 = add_item(2)  # [1, 2]  - Not [2] as you might expect!
+
+print(list1)  # [1, 2]
+print(list2)  # [1, 2]
+```
+
+This behavior occurs because:
+1.  The empty list `[]` is created once when the function is defined, not each time the function is called
+2.  All calls to `add_item()` that use the default argument reference the same list object
+3.  The `append()` method mutates this shared list object
+4.  Both `list1 `and `list2` end up pointing to the same object
+
+Python passes object references to functions. With mutable objects, operations that mutate the object (`like append()`) will affect the original object.
+
+#### The Proper Pattern
+
+To avoid this unexpected shared state, the standard pattern is to use None as the default parameter and create a new mutable object inside the function:
+
+```python
+def add_item(item, items=None):
+    if items is None:
+        items = []  # Create a fresh list each time
+    items.append(item)
+    return items
+
+list1 = add_item(1)  # [1]
+list2 = add_item(2)  # [2]
+
+print(list1)  # [1]
+print(list2)  # [2]
+```
+
+#### Why This Matters
+
+This behavior can lead to subtle bugs that are hard to track down. Understanding this aspect of Python is important because:
+
+1.  It demonstrates how Python handles objects differently based on mutability
+2.  It shows how Python's function definition works (evaluating defaults once)
+3.  It illustrates a common pitfall that experienced Python developers must avoid
+
 Further References:
 
 [Gruppetta, S. (2024b, September 28). What can a coffee machine teach you about Python’s functions? The Python Coding Stack.](https://www.thepythoncodingstack.com/p/coffee-machine-python-function-analogy)
@@ -4520,6 +4588,14 @@ if something_went_wrong:
 
 The following are tricky bits of code tried in TA led sessions.
 
+#### What is a literal?
+
+Any syntatic notation that lets you directly represent an object in source code.
+
+#### How do you identify a method versus a function?
+
+A method occurs when an object is followed by a . and then followed by a function invocation. Whereas a function is a function invocation followed by () with the object passed into the ().
+
 #### What's wrong with this code?
 
 ```python
@@ -4534,6 +4610,8 @@ print(empty_list(lst))
 print(lst)
 ```
 
+<details>
+<summary>Solution</summary>
 The issue with the code is that modifying a list while iterating over it using its indices can lead to unexpected behavior. When you remove an element from the list using pop(idx), the indices of the subsequent elements are shifted, which can cause elements to be skipped or lead to an `IndexError`.
 
 A better approach is to clear the list directly or iterate over a copy of the list, using `lst.clear()` or a `while` loop. But if you need to preserve the for loop, then its this:
@@ -4551,6 +4629,8 @@ print(lst)  # Output: []
 ```
 
 By iterating over the copied list in reverse order: Using range(len(lst) - 1, -1, -1), we generate the indices from the last element to the first. This allows us to remove elements from the end to the beginning without affecting the indices of the remaining elements.
+
+</details>
 
 #### What's wrong with this code?
 
@@ -4607,6 +4687,46 @@ print(outer())  # Prints the value returned by `outer`.
 ```
 
 </details>
+
+#### What will this code do?
+
+```python
+def add_to_list(item, my_list=[]):
+    my_list.append(item)
+    return my_list
+
+list1 = add_to_list(1)
+list2 = add_to_list(2)
+
+print(list1)  # [1, 2]
+print(list2)  # [1, 2]
+```
+
+<details>
+<summary>Solution</summary>
+
+the default argument my_list=[] is evaluated only once when the function is defined, not each time the function is called. This creates a single list object that persists between function calls.
+Here's the sequence of events:
+1.  When the function is defined, Python creates an empty list as the default value for `my_list`
+2.  When `add_to_list(1)` is called, 1 is appended to this list, resulting in `[1]`
+3.  When `add_to_list(2)` is called, 2 is appended to the same list, resulting in `[1, 2]`
+4.  Both `list1` and `list2` reference this same list object
+
+"In Python, default mutable arguments are shared between function calls. This means that if you modify the default argument, its state will persist across function calls."
+The proper way to handle this situation is to use None as the default and initialize a new list inside the function:
+
+```python
+def add_to_list(item, my_list=None):
+    if my_list is None:
+        my_list = []
+    my_list.append(item)
+    return my_list
+```
+
+With this pattern, each function call that doesn't provide a list argument will get a fresh empty list, avoiding the shared state problem. This is an excellent example of how understanding mutability and Python's evaluation of default arguments is crucial for writing bug-free code.
+
+</details>
+
 
 #### Flow Charts and Pseudocode
 
