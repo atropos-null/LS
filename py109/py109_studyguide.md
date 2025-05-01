@@ -4612,7 +4612,9 @@ print(lst)
 
 <details>
 <summary>Solution</summary>
+
 The issue with the code is that modifying a list while iterating over it using its indices can lead to unexpected behavior. When you remove an element from the list using pop(idx), the indices of the subsequent elements are shifted, which can cause elements to be skipped or lead to an `IndexError`.
+
 
 A better approach is to clear the list directly or iterate over a copy of the list, using `lst.clear()` or a `while` loop. But if you need to preserve the for loop, then its this:
 
@@ -4629,6 +4631,21 @@ print(lst)  # Output: []
 ```
 
 By iterating over the copied list in reverse order: Using range(len(lst) - 1, -1, -1), we generate the indices from the last element to the first. This allows us to remove elements from the end to the beginning without affecting the indices of the remaining elements.
+
+One can also do the following: 
+
+```python
+lst = [1, 2, 3]
+
+def empty_list(lst):
+    for _ in range(len(lst)):
+        lst.pop()
+    return lst
+
+print(empty_list(lst))
+print(lst)
+```
+
 
 </details>
 
@@ -4727,6 +4744,62 @@ With this pattern, each function call that doesn't provide a list argument will 
 
 </details>
 
+
+#### What will this code do?
+
+```python
+exclamation_marks = '!!!'
+
+def shout(text):
+    return text.upper() + exclamation_marks
+
+print(shout('hello') + exclamation_marks)
+```
+
+1.  First, a global variable exclamation_marks is created and assigned the string value `'!!!'`.
+
+2.  Then a function named shout is defined that:
+   •   Takes one parameter called text
+   •   Converts this text to uppercase using the `.upper() `string method
+   •   Concatenates the uppercase text with the global variable exclamation_marks
+   •   Returns this concatenated string
+3.  Finally, the code calls `print(shout('hello') + exclamation_marks) `which:
+   •   Calls the shout function with the argument `'hello'`
+   •   The shout function returns `'HELLO!!!'` (uppercase 'hello' + the exclamation marks)
+   •   This return value is then concatenated with exclamation_marks again
+   •   So the final string being printed is `'HELLO!!!!!!'` (the function's return value another set of exclamation marks)
+
+This is a demonstration of Python's variable scope. The exclamation_marks variable defined in the global scope is accessible within the function without needing any special declaration. The function uses this global variable in its own calculation, and then the global variable is used again after the function returns.
+
+This differs from how variable reassignment works in functions. If the function tried to reassign exclamation_marks, it would create a local variable instead of modifying the global one unless the global keyword was used.
+
+**Why does it return the string as upper without it being reassigned in a variable?**
+
+Looking at how the `upper()` method works in Python, there's an important concept to understand: string methods in Python don't modify the original string but instead return a new string with the changes applied.
+
+In the shout function:
+```python
+def shout(text):
+    return text.upper() + exclamation_marks
+```
+
+The `text.upper()` method creates and returns a new string with all characters converted to uppercase. This happens because strings in Python are immutable - they cannot be changed after they're created.
+
+When you call `text.upper()`, Python:
+1.  Creates a brand new string with all uppercase characters
+2.  Returns this new string
+3.  The original text parameter remains unchanged
+This is exactly what we see in the "ALL CAPS" exercise from Python Basics, where string.`upper()` returns a new uppercase string while leaving the original string unchanged:
+
+```python
+string = 'confetti floating everywhere'
+uppercased_string = string.upper()  # Creates a new string
+print(uppercased_string)  # CONFETTI FLOATING EVERYWHERE
+```
+
+You don't necessarily need to assign the result to a variable - you can use the returned value directly in expressions, which is what the shout function does when it immediately concatenates the uppercase string with the exclamation marks.
+
+This behavior is consistent across Python string methods - they return new strings rather than modifying the original strings. It's a key concept to understand when working with strings in Python due to their immutable nature.
 
 #### Flow Charts and Pseudocode
 
