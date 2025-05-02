@@ -3150,6 +3150,14 @@ Dictionaries in Python are **unordered collections of key-value pairs**, they ma
 
 * Allowed keys: strings, numbers, tuples (containing only immutable elements), and frozensets
 * Not allowed: lists, sets, dictionaries (mutable objects)
+* Dictionary keys must be hashable, not just immutable. Hashability means the object has a hash value that doesn't change during its lifetime (which is why immutability is a prerequisite for hashability). Dictionary keys must be hashable because dictionaries use a hash table implementation internally for efficient lookups
+* When you use a mutable object as a key you get a `TypeError`.
+
+```python
+my_dict = {}
+my_dict[[1, 2, 3]] = "value"  # Raises TypeError: unhashable type: 'list'
+```
+
 
 2. **​Values can be any type**​: Strings, numbers, lists, other dictionaries, functions, etc.
 
@@ -3879,6 +3887,14 @@ Use Cases​:
 # Creating a tuple
 coordinates = (10, 20)
 rgb_color = (255, 0, 127)
+```
+
+Tuples are immutable but can have mutable elements, most commonly lists.  To mutate a tuple's mutable elements, do the following:
+
+```python
+tuple2 = (1, 2, [3, 4])
+tuple2[2][0] = 9  # Modifies the first element of the list inside the tuple
+print(tuple2)     # Outputs: (1, 2, [9, 4])
 ```
 
 2. **Sets**: Unordered collection, no duplicates, mutable but contains only immutable objects. Uses `{}`
