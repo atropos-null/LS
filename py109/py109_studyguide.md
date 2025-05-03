@@ -608,7 +608,7 @@ In Python, variables are names that refer to objects stored in memory. They work
 
 **Initialization and Assignment**
 
-When you first create a variable, you're initializing it. This happens through an assignment operation:
+Variable initialization​ is the first time a variable name is bound to a value. This creates the variable name in the current scope. Variable assignment​ is the operation of binding a name to an object (a value). In Python, this is done using the = operator.
 
 `greeting = 'Hello'  # Initialization of the greeting variable`
 
@@ -622,6 +622,7 @@ A helpful analogy: "imagine objects as balloons, and variables as strings tied t
 
 **Reassignment**
 
+Variable reassignment​ is when an existing variable name is bound to a new object (value).
 When you reassign a variable, you're simply making it point to a different object:
 
 ```python
