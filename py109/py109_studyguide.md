@@ -532,9 +532,8 @@ Readability of code is the core tenant of Python. Thus what and how naming occur
 
 Legal names​ in Python:
 
-* Can contain letters, numbers, and underscores
-* Must start with a letter or underscore (not a number)
-* Cannot be Python keywords (like if, for, while, etc.)
+* Can contain letters, numbers, and underscores only.
+* Must start with a letter or underscore.
 
 Illegal names​ violate these rules, such as:
 
@@ -544,15 +543,15 @@ Illegal names​ violate these rules, such as:
 * Names that are Python keywords (if, class, for)
 
 
-
 #### Idiomatic vs. Non-idiomatic Naming Conventions
 
 
 Idiomatic naming refers to Python's style guide [PEP8](https://peps.python.org/pep-0008/), while non-idiomatic naming doesn't. According to the ["PY101 - Coding Tips" lesson](https://launchschool.com/lessons/a29e9831/assignments/73146c1c), idiomatic names depend on what you're naming:
 
-* **Variables and functions**​: Use snake_case (lowercase with underscores)
+* **Variables, functions, methods, module names, and arguments**​: Use snake_case (lowercase with underscores)
 * **​Constants**​: Use SCREAMING_SNAKE_CASE (all uppercase with underscores)
-* **​Classes**​: Use PascalCase (also called CamelCase or upper CamelCase)
+* **​Classes** and **Exceptions**​: Use PascalCase
+
 
 ```python
 
@@ -572,6 +571,7 @@ class UserAccount:              # Class (PascalCase)
     pass
 class UserAuthentication:       # Class (PascalCase)
     pass
+class NPC:                      #Use all Caps for acronyms per Pep-8
 ```
 
 **Non-idiomatic naming**​ refers to names that, while legally valid in Python (the code will run), don't follow Python's style conventions. 
@@ -594,6 +594,9 @@ Further References:
 
 [Gruppetta, S. (2024a, February 16). What’s in a name? The Python Coding Stack.](https://www.thepythoncodingstack.com/p/whats-in-a-name-python-namespace-objects-names)
 
+[Serrão, R. G. (n.d.-f). Naming matters | Pydon’t 🐍. Mathspp](https://mathspp.com/blog/pydonts/naming-matters)
+
+[Serrão, R. G. (n.d.-l). Usages of underscore | Pydon’t 🐍. Mathspp](https://mathspp.com/blog/pydonts/usages-of-underscore)
 
 [Back to the top](#top)
 
@@ -839,6 +842,7 @@ Python's optimization for immutable values means that even with deep copies, you
 Shallow and deep copying directly builds on the fundamental concept that variables in Python are references to objects in memory. When you make a copy, you're really creating new references (pointers) to either the same objects (shallow copy) or brand new duplicate objects (deep copy). The copying mechanism is fundamentally about how variables reference objects in memory.
 
 Understanding shallow vs. deep copying is also important for '**Pass by Object Reference**' because when you pass mutable objects to functions, you're passing a reference, not a copy. This has similar implications to using shallow copies.​
+
 
 #### Connecting Copy Operations to Parameter Passing in Python
 
