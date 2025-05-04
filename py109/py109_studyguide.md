@@ -635,11 +635,11 @@ After reassignment, the variable points to the new object, and if there are no o
 
 ### Variable Scope
 
-Variable scope determines where in your code a variable can be accessed:
+A variable's scope is the region of code where that variable is valid and can be referenced. Scope can be Local, Enclosing, Global, and Built-in. 
 
 **Global Scope**
 
-Variables defined outside any function have global scope and can be accessed throughout your program.
+Variables defined outside any function have global scope and can be accessed throughout your program, including inside functions and classes, unless shadowed by a local variable with the same name.
 
 ```python
 
@@ -665,7 +665,7 @@ The use of globals are generally considered to be bad form and should be avoided
 
 **Local Scope**
 
-Variables defined inside a function have local scope and can only be accessed within that function
+Variables defined inside a function have local scope and can only be accessed within that function, and cannot be accessed or modified outside of that function. Local variables of one function are completely independent of local variables in another function, even if they have the same name.
 
 ```python
 def another_function():
@@ -680,7 +680,7 @@ Assignment statements in the local function cannot change variables defined outs
 
 **Important Scope Rule**
 
-While you can access global variables from inside functions, you cannot reassign them without using the `global` keyword:
+A function can access variables defined in the global scope without any special declaration, as long as it does not attempt to modify them. This is because the global variables are available to the local scope as read-only by default. While you can access global variables from inside functions, you cannot reassign them without using the `global` keyword:
 
 ```python
 count = 10  # Global variable
@@ -870,7 +870,9 @@ Key Takeaways
 
 ### Variable Shadowing
 
-Variable shadowing occurs when a variable in an inner scope has the same name as a variable in an outer scope, effectively "hiding" the outer variable.
+Variable shadowing occurs when a variable in an inner scope has the same name as a variable in an outer scope, effectively "hiding" the outer variable.  
+
+Local variable can "shadow" a global variable if it has the same name. In this case, the local variable takes precedence within the function's scope.
 
 ```python
 message = "Global message"  # Global variable
@@ -1071,7 +1073,8 @@ Function names should be in the language of the problem domain (verbs that make 
 
 ### Default Function Arguments: Mutable vs. Immutable Parameters
 
-Default function arguments in Python work differently depending on whether they are mutable or immutable objects. This is a key concept that's often tested in assessments.
+Default argument values in Python are evaluated once when the function is defined, not each time the function is called.
+Default function arguments in Python work differently depending on whether they are mutable or immutable objects. This means that if the default argument is a mutable object (like a list), changes to it will persist across function calls.
 
 #### Immutable Default Arguments
 
@@ -1109,11 +1112,14 @@ This behavior occurs because:
 3.  The `append()` method mutates this shared list object
 4.  Both `list1 `and `list2` end up pointing to the same object
 
-Python passes object references to functions. With mutable objects, operations that mutate the object (`like append()`) will affect the original object.
+Once again, when a function has a mutable default argument, such as a list or a dictionary, that default argument is created once—at the time the function is defined—and persists across all subsequent calls to the function. 
+
+Python passes object references to functions. With mutable objects, operations that mutate the object (like `append()`) will affect the original object.
+
 
 #### The Proper Pattern
 
-To avoid this unexpected shared state, the standard pattern is to use None as the default parameter and create a new mutable object inside the function:
+To avoid this unexpected shared state, the standard pattern is to use `None` as the default parameter and create a new mutable object inside the function:
 
 ```python
 def add_item(item, items=None):
