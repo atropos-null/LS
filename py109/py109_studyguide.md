@@ -718,6 +718,13 @@ print(b)  # [1, 2]
 
 This mutation affects both variables because they point to the same object, but scope isn't involved here at all - it's about object identity and mutation, not variable assignment.
 
+Final Rules:
+
+1.  Variables defined in a function are local to that function and cannot be accessed in the outer scope.
+2.  Functions can access variables from outer scopes for reading. When attempting to reassign an outer scope variable within a function, Python creates a new local variable instead. However, if the outer scope variable references a mutable object (like a list or dictionary), the function can modify the contents of that object without creating a local variable, and these changes will persist outside the function.
+3.  To modify a global variable within a function, you must declare it with the global keyword.
+4.  Peer scopes do not conflict - variables in one function are not accessible in another function at the same level.
+
 
 Further References:
 
