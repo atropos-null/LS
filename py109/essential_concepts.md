@@ -42,19 +42,100 @@ Initialization includes several steps that occur under the hood:
 
 **Variable shadowing** occurs when a variable in an inner scope (e.g., within a function) has the same name as a variable in an outer scope (e.g., global or enclosing scope). The inner variable "shadows" the outer one, making the outer variable inaccessible within the inner scope.
 
+```python
+x = f"I am in the global scope"
+
+def shadowing():
+    x = f"I am in the local scope"  # Local variable shadows the global one
+    print("Inside the function:", x)
+
+shadowing()  # This prints the local 'x'
+print("Outside the function:", x)  # This prints the global 'x'
+```
+
 ### Pass by Object Reference
 
 When you pass a variable to a function in Python, the function parameter becomes a new reference to the same object that the argument variable refers to. This means Python doesn't pass the variable itself or make a copy of the object's value - it passes a reference to the object in memory. The key distinction lies in the object's mutability, which determines whether modifications within the function will affect the original object.
 
-•   For mutable objects (like lists, dictionaries), operations that modify the object will affect the original object outside the function
-•   For immutable objects (like integers, strings), operations that appear to modify the object actually create a new object, leaving the original unchanged.
+* For mutable objects (like lists, dictionaries), operations that modify the object will affect the original object outside the function
+* For immutable objects (like integers, strings), operations that appear to modify the object actually create a new object, leaving the original unchanged.
 
  
 ### The Rules of the Scope
 
-Each variable has a  **scope** and that scope has a namespace. A variable's scope is the region of code where that variable is valid and can be referenced. Scope can be Local, Enclosing, Global, and Built-in.
+Each variable has a  **scope** and that scope has a namespace. A variable's scope is the region of code where that variable is valid and can be referenced. Scope can be Local, Enclosing, Global, and Built-in. 
+
+**Global scope**: Variables defined at the top level of a program or module.
+**Local scope**​: Variables defined within a function.
+**Enclosing scope**​: When working with nested functions, variables from outer functions.
 
 1.  Variables defined in a function are local to that function and cannot be accessed in the outer scope. 
 2.  Functions can access variables from outer scopes for reading. When attempting to reassign an outer scope variable within a function, Python creates a new local variable instead. However, if the outer scope variable references a mutable object (like a list or dictionary), the function can modify the contents of that object without creating a local variable, and these changes will persist outside the function.
 3.  To modify a global variable within a function, you must declare it with the global keyword.
 4.  Peer scopes do not conflict - variables in one function are not accessible in another function at the same level.
+
+### Expressions and Statements
+
+An expression is any code that evaluates to a value. Statements are complete lines of code that perform an action but do not necessarily produce a value.  An expression: `True`. A statement: `x = 5` or `import math`.
+
+### Functions
+
+Functions in Python create a new local scope. There are function definitions that can have parameters and function calls that can have arguments. Parameters are the names assigned to a function's arguments. Arguments are the actual values that get passed to the function.
+
+Default argument values in Python are evaluated only the first time  when the function is defined, not each time the function is called. Default function arguments in Python work differently depending on whether they are mutable or immutable objects. This means that if the default argument is a mutable object (like a list), changes to it will persist across function calls.
+
+### Slicing is mutating
+
+What can be sliced: Strings, Lists, Tuples, Ranges
+
+
+### Return Values
+
+#### When empty...
+
+##### Return Empty Strings:
+- `capitalize()`
+- `.upper()`
+- `.lower()`
+- `.swapcase()`
+- `.title()`
+- `.strip()`
+- `.rstrip()`
+- `.lstrip()`
+- `replace()`
+
+##### Return `False` for empty strings:
+- `.isalpha()`
+- `.isdigit()`
+- `.isalnum()`
+- `.islower()`
+- `.isupper()`
+- `.isspace()`
+
+##### Returns empty list for empty string:
+- `.split()`
+
+#### When not empty...
+
+##### Returns indices:
+- `.find()` - Returns the lowest index of the substring (or `-1` if not found)
+- `.rfind()` - Returns the highest index of the substring (or `-1` if not found)
+
+##### Returns `None`:
+- Functions without an explicit return statement
+- List modification methods:
+  - `.append()`
+  - `.reverse()`
+  - `.extend()`
+  - `.remove()`
+  - `clear()`
+  - `.sort()`
+  - `reverses()`
+
+##### Returns the removed item:
+- `pop()`
+
+##### Return the value:
+- `and`
+- `or`
+

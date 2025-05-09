@@ -718,6 +718,24 @@ print(b)  # [1, 2]
 
 This mutation affects both variables because they point to the same object, but scope isn't involved here at all - it's about object identity and mutation, not variable assignment.
 
+```python
+level_1 = "I am in the global scope."
+
+def locale_scope():
+
+    level_2 = f"I am in the local scope."
+
+    def enclosing_scope():
+        level_3 = f"I am in the enclosing scope."
+        return level_3
+    
+    print(enclosing_scope())
+    return level_2
+
+print(locale_scope())
+print(level_1)
+```
+
 Final Rules:
 
 1.  Variables defined in a function are local to that function and cannot be accessed in the outer scope.
@@ -942,7 +960,7 @@ Unless mentioned specifically, the term variable in the broadest sense possible.
 
 #### Expressions
 
-An expression is any code that evaluates to a value. 
+When Python evaluates an expression, it is reduced to a single value.
 
 Key points to understand:
 * ​Simple expressions​: Literals like `5`, `'hello'`, or `True`
@@ -963,6 +981,8 @@ Important types:
 * ​Control flow statements​: `if`, `elif`, `else`, `while`, `for`
 * ​Import statements​: `import math`
 * ​Return statements​: `return x`
+
+It's worth noting that in Python, expressions can be used as statements (these are called expression statements), but not all statements can be used as expressions.
 
 [Back to the top](#top)
 
@@ -985,6 +1005,11 @@ def function_name(parameter1, parameter2):
 ```python
 result = function_name(argument1, argument2)
 ```
+
+Functions are first-class objects, which means they can be:
+* Assigned to variables (as you observed with result = double)
+* Passed as arguments to other functions
+* Returned from other functions
 
 #### Return Values
 
@@ -1154,6 +1179,8 @@ Further References:
 
 [Gruppetta, S. (2024b, September 28). What can a coffee machine teach you about Python’s functions? The Python Coding Stack.](https://www.thepythoncodingstack.com/p/coffee-machine-python-function-analogy)
 
+[Gruppetta, S. (2025b, May 7). “AI Coffee” grand opening this Monday • A story about parameters and arguments in Python functions. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/python-function-parameters-arguments-args-kwargs-optional-positional-keyword)
+
 [Back to the top](#top)
 
 ***
@@ -1233,7 +1260,7 @@ type(1+2j)       # <class 'complex'>
 * Have ordered elements (characters)
 * Can be accessed by index
 * Can be iterated over
-* Support operations like membership testing with in
+* Support operations like membership testing with `in`
 
 4. **​String Representation**​: Strings have literal representation in code and different display formats when printed (e.g., escape sequences like `\n` are interpreted when displayed).
 
@@ -1546,7 +1573,7 @@ student_grades = {}
 student_grades["Alice"] = 95
 ```
 
-The, Python internally does the following:
+Python internally does the following:
 1. Calculates hash(`"Alice"`)
 2. Uses that number to determine where to store `95`
 3. When retrieving, calculates hash(`"Alice"`) again to find the location
@@ -1652,6 +1679,8 @@ Further References:
 
 [Gruppetta, S. (2024a, May 11). Where’s William? How quickly can you find him? • What’s a Python hashable object? The Python Coding Stack.](https://www.thepythoncodingstack.com/p/wheres-william-python-hash-hashable)
 
+[Zaczyński, B. (2023, December 1). Build a hash table in Python with TDD.](https://realpython.com/python-hash-table/)
+
 [Back to the top](#top)
 
 ***
@@ -1679,6 +1708,8 @@ Falsy values in Python include:
 *   Empty collections: `[]` (empty list), `{}` (empty dict), `()` (empty tuple)
 *   `set()` (empty set)
 *   `range(0)` (empty range)
+*   `frozenset()`
+*   `len(0)`
 
 **All other values are considered truthy in Python**.
 
@@ -1697,6 +1728,18 @@ if name:  # Checks if name is truthy (not empty)
 else:
     print("you must enter your name!")
 ```
+
+#### The difference between if `x == True` and `if x `
+
+`x == True` explicitly checks whether `x` is equal to the Boolean value `True`. It requires that `x` is a Boolean (either `True` or `1`) and exactly `True`. If `x` is a truthy value, it will evaluate to `False` unless x is exactly True. `if x` checks whether `x` is truthy, meaning it evaluates to True in a Boolean context. Many values in Python are considered "truthy" and will satisfy the condition, even if they are not strictly equal to `True`.
+
+```python
+  def add_to_list(item, lst=None):
+        if lst is None:
+            lst = []
+        lst.append(item)
+        return lst
+```    
 
 [Back to the top](#top)
 
@@ -1911,6 +1954,18 @@ For example, in the expression `not a and b or c`, Python would evaluate:
 * First: `not a`
 * Then: `(not a) and b`
 * Finally: `((not a) and b) or c` #prints out `c`
+
+```python
+a = 1
+b = 2
+c = 3
+d = 4
+```
+
+`a or b and c`  means `a or (b and c)`
+`a and b or c and d` means `(a and b) or (c and d)`
+`a and b and c or d` means `((a and b) and c) or d)`
+`not a and b or c` means `((a) and b) or c)`
 
 
 [Back to the top](#top)
@@ -2208,7 +2263,7 @@ To avoid later problems:
 
 Further References:
 
-[Gruppetta, S. (2025, February 9). The One About the £5 Note and the Trip to the Coffee Shop • The Difference Between `is` and `==` in Python. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/python-is-and-equals-equals-understanding-them-using-a-5-pound-note])
+[Gruppetta, S. (2025, February 9). The One About the £5 Note and the Trip to the Coffee Shop • The Difference Between `is` and `==` in Python. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/python-is-and-equals-equals-understanding-them-using-a-5-pound-note)
 
 [Gruppetta, S. (2024a, July 4). After you. No, I insist, you go first • Python’s operator precedence. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/python-operator-precedence-after-you-no-i-insist)
 
@@ -3081,7 +3136,14 @@ If an object is indexable, its sliceable.
 * `count(item)`: Returns the number of occurrences of the specified item.
 
 **Ordering Elements**
-*   `reverse()`: Reverses the elements in-place, mutating the object. Returns `None`.  Use when you want to modify the list. Only works on lists!!!
+*   `reverse()`: Reverses the elements in-place, mutating the object. Returns `None`.  Use when you want to modify the list. Only works on lists!!! Mutating methods act on the object destructively and do not require a variable to be stored. Reverse really returns None pretty easily. To make it actually work:
+
+```python
+def reverse_list2(lst):
+    lst.reverse()
+    return lst
+```
+
 *   `sort([key=None, reverse=False])`: Sorts the list in-place, optionally using a key function and/or in reverse order. Returns `None`
 
 ```python
@@ -3877,6 +3939,27 @@ students = [
 for student in students[:]:  # Make a copy of the list for iteration
     if student['name'] == 'Alex':
         students.remove(student)
+```
+
+#### One more for the road
+
+```python
+players = [
+  {'name': "Joe", 'age': 25},
+  {'name': "Andy", 'age': 31},
+  {'name': "Ralph", 'age': 18},
+  {'name': "Mark", 'age': 28},
+]
+
+def older_than_age(players_list, player_age):
+    for player in players_list:
+        if player['age'] > player_age:
+            return True
+    
+    return False
+
+print(older_than_age(players, 30)) # True
+print(older_than_age(players, 31)) # False
 ```
 
 **Important Considerations**
@@ -4834,6 +4917,101 @@ print(uppercased_string)  # CONFETTI FLOATING EVERYWHERE
 You don't necessarily need to assign the result to a variable - you can use the returned value directly in expressions, which is what the shout function does when it immediately concatenates the uppercase string with the exclamation marks.
 
 This behavior is consistent across Python string methods - they return new strings rather than modifying the original strings. It's a key concept to understand when working with strings in Python due to their immutable nature.
+
+### F'n Eloise
+
+What will this code output?
+
+```python
+text = 'Hello! I am Eloise.'
+
+def swap(s):
+    for char in s:
+        s.replace(char, char.upper())
+    return s
+
+print(swap(text)) 
+print(text)
+```
+
+<details>
+<summary>Solution</summary>
+
+It outputs:
+```python
+'Hello! I am Eloise.'
+'Hello! I am Eloise.'
+```
+
+1.  ​Strings are immutable in Python​: Once a string is created, you cannot change its contents. The replace() method doesn't modify the original string - it returns a new string with the replacements made.
+
+2.  ​Return values are not being captured​: Inside the swap function, s.replace(char, char.upper()) returns a new string, but you're not capturing this return value. The result of the replacement is effectively discarded.
+To fix this code, you need to capture the return value of the replace() method.
+
+Options to correct:
+
+```python
+text = 'Hello! I am Eloise.'
+
+def swap(s):
+    for char in s:
+        s = s.replace(char, char.upper())
+    return s
+
+result = swap(text)
+print(text)
+print(result)    
+```
+
+Or:
+
+```python
+text = 'Hello! I am Eloise.'
+
+def swap(s):
+    new_s = s
+    for char in s:
+        new_s = new_s.replace(char, char.upper())
+    return new_s
+
+print(swap(text))
+print(text)
+```
+
+The better method:
+
+```python
+text = 'Hello! I am Eloise.'
+
+def swap(s):
+    return s.upper()
+
+print(swap(text))  # Will print: HELLO! I AM ELOISE.
+print(text)        # Will still print: Hello! I am Eloise.
+```
+
+Why does the following not work?
+
+```python
+text = 'Hello! I am Eloise.'
+
+def swap(s):
+    for char in s:
+        s.replace(char, char.upper())
+    return s
+
+print(swap(text))  # This will print: Hello! I am Eloise.
+print(text)        # This will also print: Hello! I am Eloise.
+```
+
+There are two main issues:
+
+1.  ​Each iteration resets the progress​: In each loop iteration, you're starting with the original string s again. You're not building upon the changes from previous iterations. The variable stringy gets reassigned in each iteration, but it always starts from the original s.
+2.  `​String.replace()` behavior​: The `replace()` method replaces ​all occurrences​ of a character. When you process the string character by character in a loop, the later iterations can undo changes made by earlier iterations.
+
+To fix this, you need to build upon each change.
+
+</details>
 
 #### Flow Charts and Pseudocode
 
