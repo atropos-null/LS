@@ -37,6 +37,7 @@ print(new_list)
 
 <details>
 <summary>Solution</summary>
+
 ```python
 print(my_list) #[1,2,3,4]
 print(new_list) #[7,8,9]
