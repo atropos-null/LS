@@ -1699,6 +1699,8 @@ Further References:
 
 **Truthiness** refers to how Python evaluates values in a boolean context (like in an `if` statement).
 
+When Python encounters a value in a condition (like in an if statement), it evaluates the truthiness of that value. Any value that is not in the falsy list evaluates as true (is truthy). Remember: a value that "evaluates as true" is not the same as being equal to `True`.
+
 Falsy values in Python include:
 
 *   `False`
@@ -2660,16 +2662,17 @@ temperatures_str = [f"{temp:.1f}°C" for temp in temperatures]
 
 ## Ranges
 
-A range is a built-in sequence type in Python that represents an immutable sequence of numbers, typically used for looping a specific number of times in for loops.
+A range is a built-in sequence type in Python that represents an immutable sequence of numbers, typically used for looping a specific number of times in `for` loops.
 
 #### Creating Ranges
 
 The `range()` function can be called in three different ways:
-1.  `​range(stop)`​: Creates a sequence from 0 to stop-1
+1.  `​range(stop)`​: Creates a sequence from `0` to `stop-1`
     `range(5)  # Represents the sequence 0, 1, 2, 3, 4`
-2. `range(start, stop)`​: Creates a sequence from start to stop-1
+2. `range(start, stop)`​: Creates a sequence from `start` to `stop-1`
     `range(2, 7)  # Represents the sequence 2, 3, 4, 5, 6`
-3. `range(start, stop, step)`​: Creates a sequence from start to stop-1, incrementing by  step. 
+3. `range(start, stop, step)`​: Creates a sequence from `start` to `stop-1`, incrementing by `step`. 
+
 ```python
 range(1, 10, 2)  # Represents the sequence 1, 3, 5, 7, 9
 range(10, 0, -1)  # Represents the sequence 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
@@ -2829,6 +2832,14 @@ print(l)                # [0, 1, 2, 3, 4]
 l.append(5)             # Can modify lists
 print(l)                # [0, 1, 2, 3, 4, 5]
 ```
+
+#### Ranges and Memory
+
+Range objects are memory-efficient because they only store three values regardless of the sequence length: the start, stop, and step values. For example, `range(1, 1000000)` uses the same amount of memory as `range(1, 10`) because both only store these three integer values.
+
+In contrast, a list stores every single value in memory. So, `list(range(1, 1000000))` would create a list containing all 999,999 integers, requiring significantly more memory than the range object itself.
+
+This memory efficiency makes range objects particularly useful when working with large sequences where you don't need to store or modify all values at once.
 
 [Back to the top](#top)
 
@@ -3007,6 +3018,41 @@ while index < len(fish):
         print('Found Nemo!')
         break
     index += 1
+```
+
+Two ways to do the same thing. Task: write a function that calculates the sum of all even numbers from 1 to n (inclusive). Include appropriate validation.
+
+```python
+def loop_sum(n):
+    count = []
+    for i in range(n+1):
+        if i % 2 == 0:
+           count.append(i)
+    total = sum(count)    
+    return total
+print(loop_sum(8)) #2 4 6 8 = 20
+
+def loop_sum(n):
+    index = []
+    i = 1
+    while i <= n:
+        if i % 2 == 0:
+           index.append(i)
+        i += 1
+    total = sum(index)    
+    return total
+
+def loop_sum(n):
+    total = 0
+    i = 1  # Start from 1 as specified
+    while i <= n:
+        if i % 2 == 0:
+            total += i
+        i += 1
+    return total
+
+print(loop_sum(8)) #2 4 6 8 = 20
+
 ```
 
 [Back to the top](#top)
@@ -4308,6 +4354,7 @@ copy = original[:]  # Creates a shallow copy
 1.  **​Confusing stop Index**​: Remember that the stop index is exclusive (not included in the slice).
 2.  **​IndexError vs. Slicing**​: While `list[6] = 5` would raise an `IndexError` if the list doesn't have 7 elements, slicing like `list[2:6]` will not raise an error even if the list is shorter.
 3.  **​Modifying Slices​**: Modifying a slice of a mutable object doesn't modify the original.
+4. Note that the length of the replacement list does not need to match the length of the slice being replaced. Python automatically adjusts the list size to accommodate the change.
 
 Further References:
 
@@ -4777,6 +4824,9 @@ else:
     print(lst1)
 ```
 
+<details>
+<summary>Solution</summary>
+
 1. First, `lst1 `is initialized as the list `[0, 1, 2, 3]`.
 2.  The second line is where things get interesting:
    * `lst1.reverse()` reverses the list in place. This means it modifies `lst1` directly and returns `None`.
@@ -4784,7 +4834,7 @@ else:
    * Therefore, `lst2` is assigned the value `None`.
 3.  In the if statement, `None` is considered falsy, so the code enters the `else` block.
 4.  Inside the `else `block, it prints lst1. Since `lst1.reverse()` was called once, `lst1` is now `[3, 2, 1, 0]`.
-
+</details>
 
 #### What will this code do?
 
@@ -4832,8 +4882,8 @@ def add_to_list(item, my_list=[]):
 list1 = add_to_list(1)
 list2 = add_to_list(2)
 
-print(list1)  # [1, 2]
-print(list2)  # [1, 2]
+print(list1) 
+print(list2)  
 ```
 
 <details>
@@ -4872,6 +4922,9 @@ def shout(text):
 
 print(shout('hello') + exclamation_marks)
 ```
+
+<details>
+<summary>Solution</summary>
 
 1.  First, a global variable exclamation_marks is created and assigned the string value `'!!!'`.
 
@@ -4917,6 +4970,8 @@ print(uppercased_string)  # CONFETTI FLOATING EVERYWHERE
 You don't necessarily need to assign the result to a variable - you can use the returned value directly in expressions, which is what the shout function does when it immediately concatenates the uppercase string with the exclamation marks.
 
 This behavior is consistent across Python string methods - they return new strings rather than modifying the original strings. It's a key concept to understand when working with strings in Python due to their immutable nature.
+
+</details>
 
 ### F'n Eloise
 

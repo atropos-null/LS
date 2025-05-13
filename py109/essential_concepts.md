@@ -84,9 +84,17 @@ Functions in Python create a new local scope. There are function definitions tha
 
 Default argument values in Python are evaluated only the first time  when the function is defined, not each time the function is called. Default function arguments in Python work differently depending on whether they are mutable or immutable objects. This means that if the default argument is a mutable object (like a list), changes to it will persist across function calls.
 
+
+### Loops
+
+The choice between loops is about selecting the most appropriate tool for readability and clarity, not about strict requirements. With that said, `for` loops are used to iterate over a sequence (like a list, tuple, string) or other iterable objects. `while` loops continue executing as long as a condition remains `True`.
+
 ### Slicing is mutating
 
-What can be sliced: Strings, Lists, Tuples, Ranges
+start  - that exact index number
+stop   - functionally, index number - 1
+
+Note that the length of the replacement list does not need to match the length of the slice being replaced. Python automatically adjusts the list size to accommodate the change.
 
 
 ### Return Values
