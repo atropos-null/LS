@@ -2122,6 +2122,48 @@ list1.extend(list2)  # Modifies list1 in-place
 print(list1)  # [1, 2, 3, 4, 5, 6]
 ```
 
+### General Behavior of Augmented Assignment Operators
+
+Immutable objects (like integers, strings, tuples, etc.) cannot be changed after they are created. Any operation involving an augmented assignment operator creates a new object. The original variable is updated to reference this new object.
+
+```python
+x = 5          # Immutable integer
+x *= 3         # Equivalent to x = x * 3
+print(x)       # Output: 15
+
+x = 5
+x += 3  # Equivalent to x = x + 3
+print(x)  # Output: 8
+
+y = 10         # Immutable integer
+y /= 4         # Equivalent to y = y / 4
+print(y)       # Output: 2.5 (a new float object)
+
+s = "Hello"
+s += " World"
+print(s)  # Output: "Hello World"
+```
+
+
+Mutable objects (like lists, dictionaries, sets, etc.) can be modified in place. If the object implements the in-place operation method (e.g., __imul__, __isub__), the operation is done in place, and no new object is created. If the in-place operation method is not implemented, Python falls back to the regular operation and creates a new object.
+
+```python
+lst = [1, 2, 3]  # Mutable list
+lst *= 2         # Equivalent to lst.extend(lst)
+print(lst)       # Output: [1, 2, 3, 1, 2, 3]
+```
+
+| **Operator** | **Immutable Objects**          | **Mutable Objects**                              |
+|--------------|--------------------------------|------------------------------------------------|
+| `+=`         | Creates new object            | Modifies in place if supported (`__iadd__`), else new object |
+| `*=`         | Creates new object            | Modifies in place if supported (`__imul__`), else new object |
+| `-=`         | Creates new object            | Modifies in place if supported (`__isub__`), else new object |
+| `/=`         | Creates new object            | Rarely applicable to mutable objects            |
+| `**=`        | Creates new object            | Rarely applicable to mutable objects            |
+| `//=`        | Creates new object            | Rarely applicable to mutable objects            |
+| `%=`         | Creates new object            | Rarely applicable to mutable objects            |
+
+
 [Back to the top](#top)
 
 
@@ -3674,6 +3716,27 @@ nested_dict['person3'] = {'name': 'Mike', 'age': 35, 'hobbies': ['swimming']}
 
 # Modifying nested data
 nested_dict['person1']['hobbies'].append('cooking')
+
+#Consider the nested dictionary below. 
+# Write code to: Access the value 'apple'
+# Change 'banana' to 'orange'
+# Add a new fruit 'grape' to person2's favorites
+   
+people = {
+    'person1': {'name': 'John', 'age': 25, 'favorites': ['apple', 'banana']},
+    'person2': {'name': 'Sarah', 'age': 30, 'favorites': ['cherry']}
+}
+
+apple = people['person1']['favorites'][0]
+print(apple)
+
+#Change 'banana' to 'orange'
+people['person1']['favorites'][1] = 'orange'
+print(people)
+
+## Add 'grape' to person2's favorites
+people['person2']['favorites'].append('grape')
+print(people)
 ```
 
 Further References:

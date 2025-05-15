@@ -2,16 +2,13 @@
 #the user wants to determine the sum or the product of all numbers between 1 and the entered integer, inclusive.
 
 def sum_it_up(num):
-    to_total = []
-    for i in range(1, num+1):
-        to_total.append(i)
-    sum_total = sum(to_total)
-    return sum_total
+    return sum(range(1, num+1))
 
 def multiply_num(num):
     product_total = 1
     for i in range(1, num):
         product_total += product_total * i
+        
     return product_total
 
 while True:

@@ -141,9 +141,43 @@ Note that the length of the replacement list does not need to match the length o
   - `reverses()`
 
 ##### Returns the removed item:
-- `pop()`
+- `pop()` removes the value associated with the key used in the `()` if a dictionary, or  the element if a list
+- `popitem()` removes the key-value pair
 
 ##### Return the value:
 - `and`
 - `or`
+- `get()`
 
+##### Returns the shallow copy
+
+- `copy()`
+
+##### Returns the number of items in the sequence
+
+- `len()`
+
+##### Returns the sum of all items in a sequence (numbers only)
+
+- `sum()`
+
+##### Returns the largest item
+
+- `max()` 
+
+##### Returns the largest item
+
+- `min()`
+
+##### Returns a new sorted list
+
+- `sorted()`:  (unlike list.sort() which sorts in-place)
+
+##### Returns a reverse iterator object
+
+- `reversed()`:  Creates an iterator that produces the elements in reverse order, returning a reverse iterator object, not a list. Preserves the original list.
+
+##### Returns Nothing!!!!
+
+- `del` statement
+- `clear()`
