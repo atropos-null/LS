@@ -4488,12 +4488,19 @@ print("Hello, {}!".format(name))  # .format() method
 
 Using `print()` doesn't create new references to objects.
 
+ When `print()` is called with multiple arguments, Python automatically converts each argument to a string representation using the str`()` function behind the scenes. This automatic conversion isn't considered coercion since it happens internally within the `print()` function.
+
+Also, besides the sep parameter, `print()` also accepts other parameters like:
+* `end`: specifies what to print at the end (default is newline `\n`)
+* `file`: specifies where to send the output (default is standard output)
+* `flush`: whether to forcibly flush the stream
+
 [Back to the top](#top)
 
 
 ### The `input()` Function
 
-The `input()` function reads a line from the console, converts it to a string, and returns it. It always returns a string, in the process creating a new string object in memory. This string is inherently truthy. Remember that an empty string is inherently falsy.
+The `input()` function reads a line from the console, returning the entered data as a string, regardless of what was typed.", and returns it. It always returns a string, in the process creating a new string object in memory. This string is inherently truthy. Remember that an empty string is inherently falsy.
 
 ```python
 
