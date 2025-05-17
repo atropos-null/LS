@@ -10,7 +10,7 @@ Objects in Python consist of three key components:
 
 ### Variables are references to objects in memory
 
-When a variable is created in Python, it is initialized. **Variable initialization**​ is the first time a variable name is bound to a value. This creates the variable name in the current scope. **Variable assignment**​ is the operation of binding a name to an object (a value). In Python, this is done using the `=` operator. 
+When a variable is created in Python, it is initialized. **Variable initialization**​ is the first time a variable name is bound to a value. This creates the variable name in the current scope. **Variable assignment**​ is the operation of binding a name to an object (a value). In Python, this is performed by using the `=` operator. 
 
 Initialization includes several steps that occur under the hood: 
 
@@ -123,6 +123,9 @@ Note that the length of the replacement list does not need to match the length o
 ##### Returns empty list for empty string:
 - `.split()`
 
+##### Returns None if item not present:
+- `.get()`
+
 #### When not empty...
 
 ##### Returns indices:
@@ -136,9 +139,9 @@ Note that the length of the replacement list does not need to match the length o
   - `.reverse()`
   - `.extend()`
   - `.remove()`
-  - `clear()`
+  - `.clear()`
   - `.sort()`
-  - `reverses()`
+  - `.reverses()`
 
 ##### Returns the removed item:
 - `pop()` removes the value associated with the key used in the `()` if a dictionary, or  the element if a list

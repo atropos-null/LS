@@ -210,7 +210,7 @@ print(id(a) == id(b))  # Might be True due to interning
 
 To review, we know now that an object is a chunk of data that contains the following:
 
-1.  **​An identity**​: A unique identifier (accessible via the id() function)
+1.  **​An identity**​: A unique identifier (accessible via the `id()` function)
 2.  **​A type**​: Determines what operations can be performed on it (accessible via `type()`)
 3.  **​A value**​: The actual data it contains
 
@@ -297,7 +297,7 @@ Mutability & Immutability is directly related to how Python manages memory.
 
 #### Immutable Objects
 
-**Strings, tuples, and numbers are immutable and cannot be changed after creation**. Any operation that appears to modify them actually creates a new object and reassigning the reference. ​Immutable objects​ can be shared safely (via interning) since they can't be changed.
+**Strings, tuples, and numbers are immutable and cannot be changed after creation**. Any operation that appears to modify them actually creates a new object and the reference is reassigned. ​Immutable objects​ can be shared safely (via interning) since they can't be changed.
 
 ```python
 s = "hello"
@@ -308,7 +308,7 @@ print(id(s))  # Different ID - new object
 
 #### Mutable Objects
 
-Lists, dictionaries, sets, custom classes allow for  operations to change the object itself without creating a new one. Operations that change them affect the same memory location. Mutable objects​ provide efficiency for operations that modify data in-place without creating copies.
+**Lists, dictionaries, sets, custom classes ** allow for operations to change the object itself without creating a new one. Operations that change them affect the same memory location. Mutable objects​ provide efficiency for operations that modify data in-place without creating copies.
 
 ```python
 my_list = [1, 2, 3]
@@ -401,7 +401,7 @@ Remember:
 
 As we can now conclude, multiple variables can reference the same object. 
 
-Memory aliasing occurs when multiple variables refer to the same object in memory. This is a fundamental concept in Python that's directly connected to its object reference model and has important implications for how code behaves.
+Memory aliasing occurs when multiple variables refer to the same object in memory. This is a fundamental concept in Python that is directly connected to its object reference model and has important implications for how code behaves.
 
 **How Memory Aliasing Works**
 
@@ -478,7 +478,7 @@ Python evaluates the type of x at runtime based on the value it currently holds.
 
 For example, in a statically typed language:
 
-```
+```python
 int x = 5;         // x can only hold integers
 x = "hello";       // Error! Can't assign a string to an integer variable
 ```
@@ -574,7 +574,7 @@ class UserAuthentication:       # Class (PascalCase)
 class NPC:                      #Use all Caps for acronyms per Pep-8
 ```
 
-**Non-idiomatic naming**​ refers to names that, while legally valid in Python (the code will run), don't follow Python's style conventions. 
+**Non-idiomatic naming**​ refers to names that, while legally valid in Python (the code will run), do not follow Python's style conventions. 
 
 ```python
 # Non-idiomatic (but legal)
@@ -608,7 +608,7 @@ In Python, variables are names that refer to objects stored in memory. They work
 
 **Initialization and Assignment**
 
-Variable initialization​ is the first time a variable name is bound to a value. This creates the variable name in the current scope. Variable assignment​ is the operation of binding a name to an object (a value). In Python, this is done using the = operator.
+Variable initialization​ is the first time a variable name is bound to a value. This creates the variable name in the current scope. Variable assignment​ is the operation of binding a name to an object (a value). In Python, this is performed by using the `=` operator.
 
 `greeting = 'Hello'  # Initialization of the greeting variable`
 
@@ -703,7 +703,7 @@ To review...
 
 Scope in Python is fundamentally about variable names and where they can be accessed or assigned to. The statement by Hunner above, correctly emphasizes that scope concerns the ability to assign new values to variables (updating which object a variable points to) rather than the ability to mutate objects.
 
-Variable scope determines where in your code a variable name can be accessed or reassigned. As explained in the Variable Scope assignment, Python has primarily global and local scopes that determine where variables can be accessed by name. When you create an assignment statement like `x = 5`, you're binding the name x to point to the object `5` in memory. The scope rules determine where this binding is valid. Scope restrictions apply specifically to reassignment operations. For example, if you try to reassign a global variable inside a function without using the global keyword, Python will create a new local variable instead.
+Variable scope determines where in your code a variable name can be accessed or reassigned. Python has primarily global and local scopes that determine where variables can be accessed by name. When you create an assignment statement like `x = 5`, you're binding the name `x` to point to the object `5` in memory. The scope rules determine where this binding is valid. Scope restrictions apply specifically to reassignment operations. For example, if you try to reassign a global variable inside a function without using the global keyword, Python will create a new local variable instead.
 
 In contrast, object mutation is not restricted by scope. You can mutate a global object from within a function without using the global keyword. This distinction is critical because it explains why we can modify global mutable objects from inside functions without the global keyword, but need global when we want to reassign those variables.
 
@@ -747,6 +747,8 @@ Final Rules:
 Further References:
 
 A hands on look at global variables and their problems can be found here: [Runestone Academy, 12.10 Global Variables](https://runestone.academy/ns/books/published/fopp/Functions/GlobalVariables.html)
+
+[Chong, C. (2025, February 3). Why variable scoping can make or break your data science workflow. Towards Data Science.](https://towardsdatascience.com/why-variable-scoping-can-make-or-break-your-data-science-workflow-5b449291ac73/)
 
 [Gruppetta, S. (2024b, October 27). Let’s eliminate general bewilderment • Python’s LEGB rule, scope, and namespaces. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/python-legb-rule-scope-namespace)
 
@@ -1110,7 +1112,7 @@ Default function arguments in Python work differently depending on whether they 
 
 #### Immutable Default Arguments
 
-When an immutable object (like a string, integer, or tuple) is used as a default argument, it behaves as you might expect:
+When an immutable object (like a string, integer, or tuple) is used as a default argument, it behaves as one might expect:
 
 ```python
 def greet(name="Guest"):
@@ -1131,11 +1133,11 @@ def add_item(item, items=[]):
     items.append(item)
     return items
 
-list1 = add_item(1)  # [1]
-list2 = add_item(2)  # [1, 2]  - Not [2] as you might expect!
+list1 = add_item(1)  
+list2 = add_item(2)  
 
-print(list1)  # [1, 2]
-print(list2)  # [1, 2]
+print(list1)  # [1]
+print(list2)  # [1, 2]  - Not [2] as you might expect!
 ```
 
 This behavior occurs because:
@@ -1321,7 +1323,7 @@ Key Features:
 * Arguments fill placeholders in order (unless specified otherwise)
 
 
-**Advanced .format() Techniques**:
+**Advanced `.format()` Techniques**:
 ```python
 
 # Indexed placeholders
@@ -1454,7 +1456,7 @@ Further References:
 
 * With no arguments, splits on whitespace and returns empty list for empty string
 * Consecutive delimiters are treated as one delimiter by default
-* Can specify maxsplit to limit number of splits
+* Can specify `maxsplit` to limit number of splits
 
 `​.find()`​: Returns the lowest index of the substring (or `-1` if not found)
 ```python
@@ -1467,19 +1469,19 @@ Further References:
 
 Both `.find()` and `.rfind()`:
 
-* Return -1 if substring not found (rather than raising an error)
-* Empty string is always found at position 0 in non-empty strings
-* Always return -1 when searching in empty strings*
+* Return `-1` if substring not found (rather than raising an error)
+* Empty string is always found at position `0` in non-empty strings
+* Always return `-1` when searching in empty strings*
 
 #### `.join()` method
 
 The `join()` method is a string method used to concatenate elements of an iterable (like a list or tuple) into a single string. It's an essential tool for string manipulation. The join method expects exactly one argument: the iterable whose elements you want to join. If you call it with fewer or more arguments, Python will raise a `TypeError`.
 
-The join method is not just for strings, although its held in the strings warehouse if you will. Iterables of strings, file objects and generator objects can also be used by the join method. 
+The `join()` method is not just for strings, although its held in the strings' warehouse. Iterables of strings, file objects and generator objects can also be used by the `join()` method. 
 
 **Converting a List to a String with `join`**
 
-`join` is called on a string (which serves as the separator) and takes an iterable (like a list) as its argument.
+`join()` is called on a string (which serves as the separator) and takes an iterable (like a list) as its argument.
 
 Basic syntax: ```separator_string.join(iterable)```
 
@@ -1489,9 +1491,8 @@ result = ', '.join(my_list)
 print(result)  # Output: apple, banana, cherry
 ```
 
-​The items in the list must be strings​. If your list contains non-string elements, you'll need to convert them to strings first:
+​The items in the list must be string type​. If your list contains non-string elements, you'll need to convert them to strings first:
 ```python
-# python
 
 numbers = [1, 2, 3, 4, 5]
 # Convert each number to a string
@@ -1505,7 +1506,7 @@ result = ', '.join(str(num) for num in numbers)
 
 #### Important to Remember
 
-1.  Strings in Python are ​immutable​. Methods like `.capitalize(`) and `.replace(`) don't modify the original string - they return a new string.
+1.  Strings in Python are ​immutable​. Methods like `.capitalize()` and `.replace()` don't modify the original string - they return a new string.
 
 2.  A common bug is forgetting to capture the return value:
 
@@ -1523,7 +1524,7 @@ print(word)  # Now 'Hello'
 
 ``` python
 "World" in "Hello, World!"  # True
-Python" in "Hello, World!"  # False
+"Python" in "Hello, World!"  # False
 ```
 
 Python's `in` operator is typically the most idiomatic way to check whether one string contains another string in Python.
@@ -1659,7 +1660,7 @@ Internally, dictionaries and sets use hash tables:
     * Computes the key's hash value
     * Uses that value to determine where to store the key-value pair
     * When retrieving, it calculates the hash again to find the location
-2. This allows for O(1) average-case complexity for lookups, rather than O(n) with lists, This makes lookups extremely fast because Python can jump directly to the right location rather than searching through everything.
+2. This allows for `O(1)` average-case complexity for lookups, rather than `O(n)` with lists, This makes lookups extremely fast because Python can jump directly to the right location rather than searching through everything.
 
 #### Hash Collisions
 
@@ -1699,7 +1700,7 @@ Further References:
 
 **Truthiness** refers to how Python evaluates values in a boolean context (like in an `if` statement).
 
-When Python encounters a value in a condition (like in an if statement), it evaluates the truthiness of that value. Any value that is not in the falsy list evaluates as true (is truthy). Remember: a value that "evaluates as true" is not the same as being equal to `True`.
+When Python encounters a value in a condition (like in an `if` statement), it evaluates the truthiness of that value. Any value that is not in the falsy list evaluates as `True` (is truthy). Remember: a value that "evaluates as true" is not the same as being equal to `True`.
 
 Falsy values in Python include:
 
@@ -1733,15 +1734,9 @@ else:
 
 #### The difference between if `x == True` and `if x `
 
-`x == True` explicitly checks whether `x` is equal to the Boolean value `True`. It requires that `x` is a Boolean (either `True` or `1`) and exactly `True`. If `x` is a truthy value, it will evaluate to `False` unless x is exactly True. `if x` checks whether `x` is truthy, meaning it evaluates to True in a Boolean context. Many values in Python are considered "truthy" and will satisfy the condition, even if they are not strictly equal to `True`.
-
-```python
-  def add_to_list(item, lst=None):
-        if lst is None:
-            lst = []
-        lst.append(item)
-        return lst
-```    
+`x == True` explicitly checks whether `x` is equal to the Boolean value `True`. It requires that `x` is a Boolean (either `True` or `1`) and exactly `True`. If `x` is a truthy value, it will evaluate to `False` unless `x` is exactly True. If `x` checks whether `x` is truthy, meaning it evaluates to True in a Boolean context. Many values in Python are considered 
+"truthy" and will satisfy the condition, even if they are not strictly equal to `True`.
+    
 
 [Back to the top](#top)
 
@@ -1785,7 +1780,7 @@ Further References:
 
 ## Boolean Logic Gates, Logical Operators, and Short Circuit Evaluation
 
-Boolean logic gates are fundamental components in digital electronics and computer systems that process Boolean values (`True` and `False`), which are typically represented as 1 and 0 in computing.
+Boolean logic gates are fundamental components in digital electronics and computer systems that process Boolean values (`True` and `False`), which are typically represented as `1` and `0` in computing.
 
 **Basic Logic Gates**
 
@@ -1806,7 +1801,7 @@ Boolean logic gates are fundamental components in digital electronics and comput
 ```
 
 3.  ​XOR Gate (Exclusive OR)
-* XOR (exclusive or) is a binary operation that takes two operands and returns True if exactly one of the operands is truthy, but not both
+* XOR (exclusive or) is a binary operation that takes two operands and returns `True` if exactly one of the operands is truthy, but not both
 * Python doesn't have a built-in XOR operator, but you can create one with a combination of other logical operators like `and` and `or`.
 
 
@@ -1856,9 +1851,9 @@ print(0 or "")        # "" (all falsy, so returns last value)
 print(5 or 10)        # 5 (returns first truthy value)
 ```
 
-Unlike `and` and `or`, the `xor` function can't use short-circuit evaluation since it needs to evaluate both operands to determine the result.
+Unlike `and` and `or`, the `xor` function cannot use short-circuit evaluation since it needs to evaluate both operands to determine the result.
 
-`not`: The `not` operator in Python is a logical negation operator that inverts the truth value of an expression. However, unlike `and` and `or`, the `not` operator doesn't participate in short-circuit evaluation.  The not operator simply takes a single operand and returns the opposite boolean value. Stated officially: the `not` operator is a unary operator that takes a single operand and inverts its truth value, returning either `True` or `False`. **It negates whatever value it's applied to**. 
+`not`: The `not` operator in Python is a logical negation operator that inverts the truth value of an expression. However, unlike `and` and `or`, the `not` operator doesn't participate in short-circuit evaluation.  The `not` operator simply takes a single operand and returns the opposite boolean value. Stated officially: the `not` operator is a unary operator that takes a single operand and inverts its truth value, returning either `True` or `False`. **It negates whatever value it's applied to**. 
 
 ```python
 
@@ -1966,7 +1961,7 @@ d = 4
 
 `a or b and c`  means `a or (b and c)`
 `a and b or c and d` means `(a and b) or (c and d)`
-`a and b and c or d` means `((a and b) and c) or d)`
+`a and b and c or d` means `((a and b) and (c or d)`
 `not a and b or c` means `((a) and b) or c)`
 
 
@@ -1976,7 +1971,7 @@ d = 4
 
 ## Operators
 
-We've already covered Logical Operators right above. Now for the rest.
+We've already covered Logical Operators above. Now for the rest.
 
 ### Arithmetic: +, -, *, /, //, %, **
 
@@ -1989,6 +1984,45 @@ Basic Arithmetic Operators:
 *   Floor Division (`//`)​: Divides and returns the largest integer less than or equal to the result
 *   Modulo (`%`)​: Returns the remainder of division
 *   Exponentiation (`**`)​: Raises left operand to the power of right operand
+
+A note on Modul (`%`):
+
+For `10 % 3 = 1`, when `10 / 3 = 3.333`:
+
+10 = 3 × 3 + 1
+     │    │  └── This is the remainder (what's left over)
+     │    └────── This is the quotient (how many complete times 3 goes into 10)
+     └────────── The original number we're dividing (dividend)
+    
+While `10 ÷ 3 = 3.33333`... in regular division, in integer division:
+
+`3` goes into `10` three complete times (quotient = 3)
+After taking out those three 3s (`3 × 3 = 9`), we have `1` left over (remainder = `1`)
+
+The mathematical relationship can be expressed as:
+
+```python
+dividend = (divisor × quotient) + remainder
+10 = (3 × 3) + 1
+10 = 9 + 1
+```
+
+This is why Python has the identity:
+```python
+x == (x//y)*y + (x%y)
+
+# For our example:
+10 == (10//3)*3 + (10%3)
+10 == 3*3 + 1
+10 == 9 + 1
+```
+
+A few more examples:
+```python
+17 % 5 = 2  # Because 17 = (5 × 3) + 2
+25 % 7 = 4  # Because 25 = (7 × 3) + 4
+8 % 2 = 0   # Because 8 = (2 × 4) + 0 (divides evenly, no remainder)
+```
 
 
 Operator Precedence in Arithmetic Expressions,  order from high to low:
@@ -2009,10 +2043,10 @@ For clarity, you can use parentheses: `(4 * 5) + ((3**2) / 10)`
 
 #### Float vs Integer Division
 
-In Python 3, the division operator / always performs floating-point division.
+In Python 3, the division operator `/` always performs floating-point division.
 ` 7 / 2  # Result: 3.5`
 
-To get integer division (truncating decimal part), use floor division //:
+To get integer division (truncating decimal part), use floor division `//`:
 `7 // 2  # Result: 3`. **_Note that it rounds down!_**
 
 Whenever we mix integers and floating point numbers, we'll get a floating point number back. For most operations we might perform between two integers, we'll get an integer back. But if we divide two integers, we'll always get a floating point number back.
@@ -2110,7 +2144,7 @@ combined = list1 + list2  # [1, 2, 3, 4, 5, 6]
 
 Important characteristics of list concatenation:
 
-1. Like string concatenation, the + operator **creates a new list**
+1. Like string concatenation, the `o` operator **creates a new list**
 2. The original lists remain unchanged.
 3. Both operands must be lists (or other sequence types). You can't combine different types, resulting in a `TypeError`.
 4. For a more memory-efficient alternative to repeatedly using `+` for list concatenation, you can use the `.extend()` method to modify a list in-place:
@@ -2124,7 +2158,7 @@ print(list1)  # [1, 2, 3, 4, 5, 6]
 
 ### General Behavior of Augmented Assignment Operators
 
-Immutable objects (like integers, strings, tuples, etc.) cannot be changed after they are created. Any operation involving an augmented assignment operator creates a new object. The original variable is updated to reference this new object.
+**Immutable objects** (like integers, strings, tuples, etc.) cannot be changed after they are created. Any operation involving an augmented assignment operator creates a new object. The original variable is updated to reference this new object.
 
 ```python
 x = 5          # Immutable integer
@@ -2132,8 +2166,8 @@ x *= 3         # Equivalent to x = x * 3
 print(x)       # Output: 15
 
 x = 5
-x += 3  # Equivalent to x = x + 3
-print(x)  # Output: 8
+x += 3         # Equivalent to x = x + 3
+print(x)       # Output: 8
 
 y = 10         # Immutable integer
 y /= 4         # Equivalent to y = y / 4
@@ -2144,8 +2178,7 @@ s += " World"
 print(s)  # Output: "Hello World"
 ```
 
-
-Mutable objects (like lists, dictionaries, sets, etc.) can be modified in place. If the object implements the in-place operation method (e.g., __imul__, __isub__), the operation is done in place, and no new object is created. If the in-place operation method is not implemented, Python falls back to the regular operation and creates a new object.
+**Mutable objects** (like lists, dictionaries, sets, etc.) can be modified in place. If the object implements the in-place operation method (e.g., __imul__, __isub__), the operation is done in place, and no new object is created. If the in-place operation method is not implemented, Python falls back to the regular operation and creates a new object.
 
 ```python
 lst = [1, 2, 3]  # Mutable list
@@ -2195,6 +2228,7 @@ print(lst)       # Output: [1, 2, 3, 1, 2, 3]
 # Different types
 "5" == 5      # False (string vs int)
 ```
+
 #### Truthiness vs. Boolean Values
 
 Remember the distinction between truthiness and actual boolean values:
@@ -2340,7 +2374,7 @@ Python first evaluates the function calls left-to-right, then applies operator p
 
 There are two main types of type coercion in Python:
 
-1.  ​**Explicit type coercion** ​: When you intentionally convert one data type to another using built-in functions
+1.  ​**Explicit type coercion**​: When you intentionally convert one data type to another using built-in functions
 2.  **Implicit type coercion**​: When Python automatically converts one data type to another
 
 #### Explicit Type Coercion
@@ -2397,17 +2431,17 @@ age = 30
 message = f"Name: {name}, Age: {age}"  # Values converted to strings
 ```
 
-Boolean values are implicitly converted to integers (1 for True, 0 for False) in arithmetic operations. When using f-strings, Python implicitly converts values to strings.
+Boolean values are implicitly converted to integers (`1` for `True`, `0` for `False`) in arithmetic operations. When using f-strings, Python implicitly converts values to strings.
 
 
 #### Important Non-Coercion Cases
 
 Some operations that look like implicit coercion aren't actually considered coercion:
 
-1.  ​The `print()` function​: While `print()` does display non-string values, this conversion happens behind the scenes and isn't considered true coercion.
-`print("Age:", 30)  # Outputs: Age: 30`
+1.  ​The `print()` function​: While `print()` does display non-string values, this conversion happens behind the scenes and isn't considered true coercion. `print("Age:", 30)  # Outputs: Age: 30`
 
 2.  ​String Concatenation​: Python does NOT implicitly convert integers to strings for concatenation - this requires explicit conversion.
+
 ```python
 name = "Clare"
 age = 35
@@ -2448,7 +2482,7 @@ my_dict = dict(enumerate(my_list))  # Explicit conversion needed
 
 **Numeric Conversions**
 * Float to int: `int(3.14)` ✓ (truncates decimal part)
-* Int to float: `float(42)` ✓
+* Int to float: `float(42.0)` ✓
 * Boolean to int/float: `int(True) (1)`, `float(False) (0.0)` ✓
 
 **Collection Conversions**
@@ -2728,10 +2762,10 @@ Key properties of ranges:
 
 #### Common Operations with Ranges
 
-1.  ​Iterating with a for loop​:
+1.  ​Iterating with a `for` loop​:
 ```python
 for num in range(5):
-       print(num)  # Prints 0, 1, 2, 3, 4
+    print(num)  # Prints 0, 1, 2, 3, 4
 ```
 
 2. ​Converting to other sequence types​:
@@ -2762,7 +2796,7 @@ r[2:5]  # range(2, 5)
 1. Counting loops:
 ```python
 for i in range(5):
-       print(f"Count: {i}")
+    print(f"Count: {i}")
 ```
 
 2.  ​Working with list indices​:
@@ -2773,7 +2807,7 @@ for i in range(len(my_list)):
 ```
 
 3. Generating number sequences​:
-```even_numbers = list(range(0, 11, 2))  # [0, 2, 4, 6, 8, 10]```
+`even_numbers = list(range(0, 11, 2))  # [0, 2, 4, 6, 8, 10]`
 
 
 Lazy evaluation is an evaluation strategy where expressions are not evaluated until their values are actually needed. In Python, this concept appears in several contexts, particularly with ranges. When you create a range in Python, it doesn't immediately compute all the values in that sequence. Instead, it stores only the start, stop, and step parameters and generates values on-demand when you iterate through it or access specific elements.
@@ -2851,8 +2885,8 @@ The key differencesare in their type, memory usage, and behavior:
 * `list(range(5))` converts the range object into a list type, creating `[0, 1, 2, 3, 4]`
 
 **Memory Usage**
-* `range(5)` is memory-efficient because it only stores the start (0), stop (5), and step (1) values
-* `list(range(5))` stores all elements [0, 1, 2, 3, 4] in memory at once
+* `range(5)` is memory-efficient because it only stores the start (`0`), stop (`5`), and step (`1`) values
+* `list(range(5))` stores all elements `[0, 1, 2, 3, 4]` in memory at once
 
 **Lazy Evaluation**
 * `range(5)` is lazily evaluated - it generates values on demand when you iterate through it
@@ -2877,7 +2911,7 @@ print(l)                # [0, 1, 2, 3, 4, 5]
 
 #### Ranges and Memory
 
-Range objects are memory-efficient because they only store three values regardless of the sequence length: the start, stop, and step values. For example, `range(1, 1000000)` uses the same amount of memory as `range(1, 10`) because both only store these three integer values.
+Range objects are memory-efficient because they only store three values regardless of the sequence length: the start, stop, and step values. For example, `range(1, 1000000)` uses the same amount of memory as `range(1, 10)` because both only store these three integer values.
 
 In contrast, a list stores every single value in memory. So, `list(range(1, 1000000))` would create a list containing all 999,999 integers, requiring significantly more memory than the range object itself.
 
@@ -2925,7 +2959,7 @@ if name:  # name is truthy because it's a non-empty string
     print(f"Hi {name}")
 ```
 
-As always 'truthy' does not mean 'equal to `True`.
+As always 'truthy' does not mean 'equal to `True`'.
 
 As of 3.10 there's also **match case statements**.
 
@@ -2991,7 +3025,7 @@ A note of syntax from [Python Morsels](https://www.pythonmorsels.com/courses/jum
 >Every iteration of a for loop does an implicit assignment. The thing _between _ the **for** and the **in** in a `for` loop, is very similar to the thing on the left-hand side of an equal sign in an assignment statement.
 
 
-`while` loops continue executing as long as a condition remains True. There are two main ways to use `while` loops:
+`while` loops continue executing as long as a condition remains `True`. There are two main ways to use `while` loops:
 
 1.  ​Standard `while` loop​ - Tests a condition before each iteration:
 ```python
@@ -3004,8 +3038,7 @@ while count < 5:
 2. `​while True` with `break`​ - A more flexible approach when you need more complex exit conditions:
 ```python
 while True:
-    print('Continue? (y/n)')
-    answer = input()
+    answer = input('Continue? (y/n) ')
     if answer.lower() == 'n':
         break
 ```
@@ -3219,12 +3252,50 @@ If an object is indexable, its sliceable.
 * `remove(item)`: Removes the **first occurrence** of the specified value, raising a `ValueError` if the item isn't found. Returns `None`.
 * `clear()`: removes all items from the list. Returns `None`.
 
+```python
+# This will cause unexpected behavior and probably unwanted 
+words = ['scooby', 'do', 'on', 'channel', 'two']
+for word in words:
+    print(word)  # prints: scooby, on, two (in that order)
+    words.remove(word)
+print(words) #['do', 'channel']
+
+
+#cleaner way to do it:
+words = ['scooby', 'do', 'on', 'channel', 'two']
+for word in words:
+    print(word)
+words.clear()  # Remove all elements after iteration
+```
+
 **Finding Elements**
 * `index(item[, start[, end]])`: Returns the index of the **first occurrence** of the given item, raising a `ValueError` if the item isn't found.
 * `count(item)`: Returns the number of occurrences of the specified item.
 
+```python
+fruits = ['apple', 'banana', 'orange', 'apple', 'mango']
+print(fruits.index('apple'))  # Output: 0
+
+#with start index:
+fruits = ['apple', 'banana', 'orange', 'apple', 'mango']
+print(fruits.index('apple', 1))  # Output: 3 (finds second 'apple')
+
+#with both index: 
+fruits = ['apple', 'banana', 'orange', 'apple', 'mango']
+print(fruits.index('apple', 0, 3))  # Output: 0 (searches only in first 3 elements)
+
+#potential error handling
+fruits = ['apple', 'banana', 'orange']
+try:
+    index = fruits.index('mango')
+except ValueError:
+    print("'mango' is not in the list")
+
+
+```
+
 **Ordering Elements**
-*   `reverse()`: Reverses the elements in-place, mutating the object. Returns `None`.  Use when you want to modify the list. Only works on lists!!! Mutating methods act on the object destructively and do not require a variable to be stored. Reverse really returns None pretty easily. To make it actually work:
+*   `reverse()`: Reverses the elements in-place, mutating the object. Returns `None`.  Use when you want to modify the list. Only works on lists!!! Mutating methods act on the object destructively and do not require a variable to be stored. Reverse really returns `None` pretty easily. To make it actually work:
 
 ```python
 def reverse_list2(lst):
@@ -3258,7 +3329,7 @@ print(words)  # ["kiwi", "pear", "apple", "banana"]
 * `sum()`: returns the sum of all items in a list (numbers only)
 * `max()`:  returns the largest item in a list
 * `min()`:  returns the smallest item in a list
-* `sorted()`:  returns a new sorted list (unlike list.sort() which sorts in-place)
+* `sorted()`:  returns a new sorted list (unlike `list.sort()` which sorts in-place)
 * `reversed(list)`: Creates an iterator that produces the elements in reverse order, 
 returning a reverse iterator object, not a list. Preserves the original list.
 
@@ -3364,8 +3435,8 @@ car = dict(items)
 
 `dict()` requires the following to work:
 
-* An iterable of key-value pairs like [('key1', 'value1'), ('key2', 'value2')]
-* Keyword arguments like dict(key1='value1', key2='value2')
+* An iterable of key-value pairs like `[('key1', 'value1'), ('key2', 'value2')]`
+* Keyword arguments like `dict(key1='value1', key2='value2')`
 
 3.  Dictionary Comprehensions: For creating dictionaries based on existing data.
 
@@ -3501,7 +3572,8 @@ print(car)  # {'type': 'sedan', 'color': 'green', 'year': 2003, 'mileage': 80_00
 
 #### Removing from dictionaries
 
-1.  The `del` Statement: directly removes a key-value pair from a dictionary, mutating the dictionary object. It raises a `KeyError` if a key doesn't exist. No value is returned.
+1.  The `del` Statement directly removes a key-value pair from a dictionary, mutating the dictionary object. It raises a `KeyError` if a key doesn't exist. No value is returned.
+
 ```python
 car = {
     'type': 'sedan',
@@ -3514,7 +3586,7 @@ del car['mileage']
 print(car)  # {'type': 'sedan', 'color': 'blue', 'year': 2003}
 ```
 
-2. **The `pop()` method**:  removes a key-value pair and returns the value associated with the removed key. It will accept a default value as a second argument to return if the key doesn't exist, however if a key nor a default does not exist, it will raise a `KeyError`. This is a useful method when you know what you are removing.
+2. **The `pop()` method** removes a key-value pair and returns the value associated with the removed key. It will accept a default value as a second argument to return if the key doesn't exist, however if a key nor a default does not exist, it will raise a `KeyError`. This is a useful method when you know what you are removing.
 ```python
 
 car = {
@@ -3563,6 +3635,7 @@ print(car)  # {}
 ```
 
 5. Dictionary Comprehension for Selective Removal: To remove multiple items based on a condition, you can use dictionary comprehension.  
+
 ```python
 car = {
     'type': 'sedan',
@@ -3580,13 +3653,6 @@ print(car)  # {'type': 'sedan', 'color': 'blue'}
 Be sure not to remove while iterating through it, instead create a copy or collect keys to remove first.
 
 ```python
-# This will cause unexpected behavior and probably unwanted 
-words = ['scooby', 'do', 'on', 'channel', 'two']
-for word in words:
-    print(word)  # prints: scooby, do, on, channel, two (in that order)
-    words.remove(word)
-
-print(words)  # Prints: ['do', 'channel']
 
 # Safer approach
 car = {'type': 'sedan', 'color': 'blue', 'mileage': 80_000}
@@ -3727,8 +3793,7 @@ people = {
     'person2': {'name': 'Sarah', 'age': 30, 'favorites': ['cherry']}
 }
 
-apple = people['person1']['favorites'][0]
-print(apple)
+print(people['person1']['favorites'][0])
 
 #Change 'banana' to 'orange'
 people['person1']['favorites'][1] = 'orange'
@@ -3752,11 +3817,11 @@ Further References:
 
 * The most common action you'll see performed on a dictionary is to look up the value for a particular key.
 
-* Use Dictionaries when you need to look up one value based on another in Python.
+* Use dictionaries when you need to look up one value based on another.
 
-* If you care about looping, but you don't care about key lookups, you probably don't need a dictionary. If looping is all you need, a list of tuples might be a better way.
+* If you care about looping, but you don't care about key lookups, you probably don't need a dictionary. If looping is all you need, consider a list of tuples.
 
-* When you loop over a dictionary, you'll get keys. If you'd like to get keys and values, you can use the dictionary items method.
+* When you loop over a dictionary, you'll get keys. If you'd like to get keys and values, you can use the dictionary .item() method.
 
 But remember to ask yourself, why am I looping here and do I need a dictionary or would a list be a better way to store my data?
 
@@ -3779,7 +3844,6 @@ my_dict = dict(key_value_pairs)
 2. Using Dictionary Comprehension:
 
 ```python
-python
 
 # From two separate lists
 keys = ['a', 'b', 'c']
@@ -3806,6 +3870,7 @@ Further examples:
 ```python
 # Iterate through a list to build a dictionary
 my_list = ['apple', 'banana', 'cherry', 'date']
+
 # Create a dictionary with the items as keys and their lengths as values
 fruit_lengths = {}
 for fruit in my_list:
@@ -3888,7 +3953,7 @@ high_performers = [student for student in students if student['grade'] > 80]
 ```
 
 4. **Sorting the List**
-To sort a list of dictionaries, you can use the sorted() function with a key parameter:
+To sort a list of dictionaries, you can use the `sorted()` function with a key parameter:
 
 ```python
 # Sort by grade (ascending)
@@ -4488,7 +4553,7 @@ print("Hello, {}!".format(name))  # .format() method
 
 Using `print()` doesn't create new references to objects.
 
- When `print()` is called with multiple arguments, Python automatically converts each argument to a string representation using the str`()` function behind the scenes. This automatic conversion isn't considered coercion since it happens internally within the `print()` function.
+When `print()` is called with multiple arguments, Python automatically converts each argument to a string representation using the str`()` function behind the scenes. This automatic conversion isn't considered coercion since it happens internally within the `print()` function.
 
 Also, besides the sep parameter, `print()` also accepts other parameters like:
 * `end`: specifies what to print at the end (default is newline `\n`)
@@ -4500,7 +4565,7 @@ Also, besides the sep parameter, `print()` also accepts other parameters like:
 
 ### The `input()` Function
 
-The `input()` function reads a line from the console, returning the entered data as a string, regardless of what was typed.", and returns it. It always returns a string, in the process creating a new string object in memory. This string is inherently truthy. Remember that an empty string is inherently falsy.
+The `input()` function reads a line from the console, returning the entered data as a string, regardless of what was typed and returns it. It always returns a string, in the process creating a new string object in memory. This string is inherently truthy. Remember that an empty string is inherently falsy.
 
 ```python
 
@@ -4514,16 +4579,16 @@ height = float(input("Enter your height in meters: "))
 
 # Input validation
 
-while True:
-       try:
-           number = int(input("Enter a number: "))
-           break
-       except ValueError:
-           print("That's not a valid number. Try again.")
+while True:     
+    try:
+        number = int(input("Enter a number: "))
+        break
+    except ValueError:
+        print("That's not a valid number. Try again.")
 
 # Handling empty input with default values
 
-   response = input("Enter a value (default is 'yes'): ") or "yes"
+response = input("Enter a value (default is 'yes'): ") or "yes"
 
 # Multiline input
 
@@ -4548,26 +4613,26 @@ Input processing loop:
 
 ```python
 
-   while True:
-       command = input("Enter command (q to quit): ")
-       if command.lower() == 'q':
-           break
-       # Process command
+while True:
+    command = input("Enter command (q to quit): ")
+    if command.lower() == 'q':
+        break
+    # Process command
 ```
 
 Getting yes/no input:
 
 ```python
 while True:
-       response = input("Continue? (y/n): ").lower()
-       if response in ('y', 'yes'):
-           # Continue
-           break
-       elif response in ('n', 'no'):
-           # Exit
-           break
-       else:
-           print("Please enter y or n.")
+    response = input("Continue? (y/n): ").lower()
+    if response in ('y', 'yes'):
+        # Continue
+        continue
+    elif response in ('n', 'no'):
+        # Exit
+        break
+    else:
+        print("Please enter y or n.")
 ```
 
 ​String Immutability​: Remember that strings in Python are immutable, so operations on `input()` results create new objects:
@@ -4847,8 +4912,7 @@ print(lst)
 <details>
 <summary>Solution</summary>
 
-The issue with the code is that modifying a list while iterating over it using its indices can lead to unexpected behavior. When you remove an element from the list using pop(idx), the indices of the subsequent elements are shifted, which can cause elements to be skipped or lead to an `IndexError`.
-
+The issue with the code is that modifying a list while iterating over it using its indices can lead to unexpected behavior. When you remove an element from the list using `pop(idx)`, the indices of the subsequent elements are shifted, which can cause elements to be skipped or lead to an `IndexError`.
 
 A better approach is to clear the list directly or iterate over a copy of the list, using `lst.clear()` or a `while` loop. But if you need to preserve the for loop, then its this:
 
@@ -4864,7 +4928,7 @@ print(empty_list(lst))  # Output: []
 print(lst)  # Output: []
 ```
 
-By iterating over the copied list in reverse order: Using range(len(lst) - 1, -1, -1), we generate the indices from the last element to the first. This allows us to remove elements from the end to the beginning without affecting the indices of the remaining elements.
+By iterating over the copied list in reverse order: Using `range(len(lst) - 1, -1, -1)`, we generate the indices from the last element to the first. This allows us to remove elements from the end to the beginning without affecting the indices of the remaining elements.
 
 One can also do the following: 
 
@@ -4909,15 +4973,15 @@ else:
 #### What will this code do?
 
 ```python
-   def outer():
-       x = "local"
-       def inner():
-           nonlocal x
-           x = "nonlocal"
-       inner()
-       return x
+def outer():
+    x = "local"
+    def inner():
+        nonlocal x
+        x = "nonlocal"
+    inner()
+    return x
    
-   print(outer())
+print(outer())
 
 ```
 
