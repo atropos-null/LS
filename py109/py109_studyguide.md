@@ -3482,7 +3482,7 @@ print(car.get('model'))  # None
 print(car.get('model', 'Unknown'))
 ```
 
-3. **Checking if a Key Exists**: Before accessing a value, you can check if a key exists using the in operator.
+3. **Checking if a Key Exists**: Before accessing a value, you can check if a key exists using the `in` operator.
 ```python 
 student = {
     'id': 123,
@@ -3723,7 +3723,7 @@ def new_dictionary(old_dictionary):   #creating a new dictionary from an old dic
 
 ```
 
-**`dict.get()`**: retrieves a value associated with a key. It is safer than bracket notation because it doesn't raise `KeyError` for missing keys. It provides a clean way to handle missing keys with default values. Can be chained for nested dictionaries: `data.get('user', {}).get('address', {})`
+**`dict.get()`**: retrieves a value associated with a key. It is safer than bracket notation because it does not raise `KeyError` for missing keys. It provides a clean way to handle missing keys with default values. Can be chained for nested dictionaries: `data.get('user', {}).get('address', {})`
 
 These usually work together!
 
@@ -3821,7 +3821,7 @@ Further References:
 
 * If you care about looping, but you don't care about key lookups, you probably don't need a dictionary. If looping is all you need, consider a list of tuples.
 
-* When you loop over a dictionary, you'll get keys. If you'd like to get keys and values, you can use the dictionary .item() method.
+* When you loop over a dictionary, you'll get keys. If you'd like to get keys and values, you can use the dictionary `.item()` method.
 
 But remember to ask yourself, why am I looping here and do I need a dictionary or would a list be a better way to store my data?
 
@@ -4007,7 +4007,7 @@ unique_subjects = list(set(all_subjects))
 
 #### Dictionary View Methods with Lists of Dictionaries
 
-You can use dictionary view methods like `keys()`, `values()`, `and items()` on each dictionary:
+You can use dictionary view methods like `keys()`, `values()`, and `items()` on each dictionary:
 
 ```python
 # Get all keys from the first student
@@ -4553,7 +4553,7 @@ print("Hello, {}!".format(name))  # .format() method
 
 Using `print()` doesn't create new references to objects.
 
-When `print()` is called with multiple arguments, Python automatically converts each argument to a string representation using the str`()` function behind the scenes. This automatic conversion isn't considered coercion since it happens internally within the `print()` function.
+When `print()` is called with multiple arguments, Python automatically converts each argument to a string representation using the `str()` function behind the scenes. This automatic conversion isn't considered coercion since it happens internally within the `print()` function.
 
 Also, besides the sep parameter, `print()` also accepts other parameters like:
 * `end`: specifies what to print at the end (default is newline `\n`)
@@ -4812,7 +4812,7 @@ except (ValueError, TypeError):
 #### The `else` Clause
 
 
-The `else` clause executes if the try block doesn't raise an exception
+The `else` clause executes if the try block doesn't raise an exception.
 
 ```python
 try:
@@ -4845,7 +4845,7 @@ finally:
 #### Raising Exceptions
 
 
-You can raise exceptions with the raise statement
+You can raise exceptions with the raise statement.
 
 ```python 
 
@@ -4860,7 +4860,7 @@ def validate_age(age):
 #### Creating Custom Exceptions
 
 
-You can create your own exception types by inheriting from Exception
+You can create your own exception types by inheriting from Exception.
 
 ```python
 class CustomError(Exception):
@@ -4875,9 +4875,9 @@ if something_went_wrong:
 #### Exception Handling Best Practices
 
 1. Be specific with your exception handling - avoid catching all exceptions with a bare `except:` clause.
-2. Keep the `try` block as small as possible
-3. Use `finally` for cleanup code
-4. Document which exceptions your functions might raise
+2. Keep the `try` block as small as possible.
+3. Use `finally` for cleanup code.
+4. Document which exceptions your functions might raise.
 
 [Back to the top](#top)
 
@@ -4893,7 +4893,7 @@ Any syntatic notation that lets you directly represent an object in source code.
 
 #### How do you identify a method versus a function?
 
-A method occurs when an object is followed by a . and then followed by a function invocation. Whereas a function is a function invocation followed by () with the object passed into the ().
+A method occurs when an object is followed by a . and then followed by a function invocation. Whereas a function is a function invocation followed by `()` with the object passed into the `()`.
 
 #### What's wrong with this code?
 
@@ -5023,7 +5023,8 @@ print(list2)
 <details>
 <summary>Solution</summary>
 
-the default argument my_list=[] is evaluated only once when the function is defined, not each time the function is called. This creates a single list object that persists between function calls.
+the default argument `my_list=[]` is evaluated only once when the function is defined, not each time the function is called. This creates a single list object that persists between function calls.
+
 Here's the sequence of events:
 1.  When the function is defined, Python creates an empty list as the default value for `my_list`
 2.  When `add_to_list(1)` is called, 1 is appended to this list, resulting in `[1]`
@@ -5031,7 +5032,8 @@ Here's the sequence of events:
 4.  Both `list1` and `list2` reference this same list object
 
 "In Python, default mutable arguments are shared between function calls. This means that if you modify the default argument, its state will persist across function calls."
-The proper way to handle this situation is to use None as the default and initialize a new list inside the function:
+
+The proper way to handle this situation is to use `None` as the default and initialize a new list inside the function:
 
 ```python
 def add_to_list(item, my_list=None):
@@ -5093,7 +5095,7 @@ When you call `text.upper()`, Python:
 1.  Creates a brand new string with all uppercase characters
 2.  Returns this new string
 3.  The original text parameter remains unchanged
-This is exactly what we see in the "ALL CAPS" exercise from Python Basics, where string.`upper()` returns a new uppercase string while leaving the original string unchanged:
+This is exactly what we see in the "ALL CAPS" exercise from Python Basics, where `string.upper()` returns a new uppercase string while leaving the original string unchanged:
 
 ```python
 string = 'confetti floating everywhere'
@@ -5132,10 +5134,10 @@ It outputs:
 'Hello! I am Eloise.'
 ```
 
-1.  ​Strings are immutable in Python​: Once a string is created, you cannot change its contents. The replace() method doesn't modify the original string - it returns a new string with the replacements made.
-
-2.  ​Return values are not being captured​: Inside the swap function, s.replace(char, char.upper()) returns a new string, but you're not capturing this return value. The result of the replacement is effectively discarded.
-To fix this code, you need to capture the return value of the replace() method.
+1.  ​Strings are immutable in Python​: Once a string is created, you cannot change its contents. The `replace()` method doesn't modify the original string - it returns a new string with the replacements made.
+)
+2.  ​Return values are not being captured​: Inside the swap function, `s.replace(char, char.upper()` returns a new string, but you're not capturing this return value. The result of the replacement is effectively discarded.
+To fix this code, you need to capture the return value of the `replace()` method.
 
 Options to correct:
 
@@ -5195,7 +5197,7 @@ print(text)        # This will also print: Hello! I am Eloise.
 
 There are two main issues:
 
-1.  ​Each iteration resets the progress​: In each loop iteration, you're starting with the original string s again. You're not building upon the changes from previous iterations. The variable stringy gets reassigned in each iteration, but it always starts from the original s.
+1.  ​Each iteration resets the progress​: In each loop iteration, you're starting with the original string `s` again. You're not building upon the changes from previous iterations. The variable stringy gets reassigned in each iteration, but it always starts from the original `s`.
 2.  `​String.replace()` behavior​: The `replace()` method replaces ​all occurrences​ of a character. When you process the string character by character in a loop, the later iterations can undo changes made by earlier iterations.
 
 To fix this, you need to build upon each change.
