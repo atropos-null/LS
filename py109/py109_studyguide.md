@@ -5204,6 +5204,38 @@ To fix this, you need to build upon each change.
 
 </details>
 
+### What will this code do?
+
+```python
+num = 1
+
+def modify():
+    num += 1
+    print(num)
+
+modify()
+```
+
+<details>
+<summary>Solution</summary>
+
+
+
+On line 1, the variable num is assigned the value 1, which is an integer data type.
+
+Line 3 defines a function named `modify()` that has no parameters.
+
+Inside the function, the statement `num += 1` attempts to increment a variable named num by 1. However, this leads to two problems:
+
+The value of the global variable `num` is not passed as an argument when the function is called on line 7.
+
+In Python, when a variable is assigned within a function (such as `num += 1`), it is treated as a local variable by default.
+
+The statement `num += 1` tries to read the value of the local variable num before assigning to it, but since num is not initialized within the function, this results in an `UnboundLocalError`.
+
+This demonstrates how variable scope works in Python. To fix this problem, either pass the global variable as an argument to the function, or use the global keyword inside the function before `num += 1`.
+</details>
+
 #### Flow Charts and Pseudocode
 
 Apparently, they might ask about it.
