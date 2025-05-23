@@ -221,7 +221,7 @@ To review, we know now that an object is a chunk of data that contains the follo
 
 2. **Everything Has Methods and Attributes**: Since everything is an object, you can call methods on any value.
 
-3. **Mutability vs. Immutabilit**y: Objects can be either mutable (can be changed) or immutable (cannot be changed):
+3. **Mutability vs. Immutability**: Objects can be either mutable (can be changed) or immutable (cannot be changed):
 * Immutable: int, float, str, tuple, frozenset
 * Mutable: list, dict, set
 
@@ -308,7 +308,7 @@ print(id(s))  # Different ID - new object
 
 #### Mutable Objects
 
-**Lists, dictionaries, sets, custom classes ** allow for operations to change the object itself without creating a new one. Operations that change them affect the same memory location. Mutable objects​ provide efficiency for operations that modify data in-place without creating copies.
+**Lists, dictionaries, sets, custom classes** allow for operations to change the object itself without creating a new one. Operations that change them affect the same memory location. Mutable objects​ provide efficiency for operations that modify data in-place without creating copies.
 
 ```python
 my_list = [1, 2, 3]
@@ -332,6 +332,8 @@ The distinction helps create predictable behavior, especially when using objects
 [Back to the top](#top)
 
 ### Python's Parameter Passing Mechanism: Pass by Object Reference
+
+> "Variables are not passed to or returned by functions: ​references to objects​ are passed."
 
 Python uses what's commonly called "**pass by object reference**" (some also call it "pass by assignment"). This means:
 
@@ -680,7 +682,7 @@ Assignment statements in the local function cannot change variables defined outs
 
 **Important Scope Rule**
 
-A function can access variables defined in the global scope without any special declaration, as long as it does not attempt to modify them. This is because the global variables are available to the local scope as read-only by default. While you can access global variables from inside functions, you cannot reassign them without using the `global` keyword:
+A function can access variables defined in the global scope without any special declaration, as long as it does not attempt to modify them. This is because the global variables are available to the local scope as read-only by default. Python lets you read global variables in functions but creates a new local variable when you try to assign to a variable with the same name. While you can access global variables from inside functions, you cannot reassign them without using the `global` keyword:
 
 ```python
 count = 10  # Global variable
@@ -4889,7 +4891,34 @@ The following are tricky bits of code tried in TA led sessions.
 
 #### What is a literal?
 
-Any syntatic notation that lets you directly represent an object in source code.
+A literal in Python is a value written exactly as it is meant to be interpreted, without needing computation or evaluation.
+
+A literal is a fixed value written directly in the code. Literals represent constant values that are assigned to variables or used in expressions. Python supports several types of literals:
+
+Types of literals in Python:
+
+String literals
+
+Text enclosed in single, double, or triple quotes.
+
+Example: "hello", 'Python', """multi-line"""
+Numeric literals
+
+Integers: 10, -3, 0
+Floating-point numbers: 3.14, -0.001
+Complex numbers: 2 + 3j
+Boolean literals
+
+Only True and False (note the capital letters).
+Special literal
+
+None represents the absence of a value.
+Collection literals
+
+List: [1, 2, 3]
+Tuple: (1, 2, 3)
+Dictionary: {'a': 1, 'b': 2}
+Set: {1, 2, 3}
 
 #### How do you identify a method versus a function?
 
@@ -5188,19 +5217,25 @@ text = 'Hello! I am Eloise.'
 
 def swap(s):
     for char in s:
-        s.replace(char, char.upper())
-    return s
+        text = s.replace(char, char.upper())
+    return text
+
 
 print(swap(text))  # This will print: Hello! I am Eloise.
 print(text)        # This will also print: Hello! I am Eloise.
 ```
 
-There are two main issues:
+Problems:
 
-1.  ​Each iteration resets the progress​: In each loop iteration, you're starting with the original string `s` again. You're not building upon the changes from previous iterations. The variable stringy gets reassigned in each iteration, but it always starts from the original `s`.
-2.  `​String.replace()` behavior​: The `replace()` method replaces ​all occurrences​ of a character. When you process the string character by character in a loop, the later iterations can undo changes made by earlier iterations.
+**UnboundLocalError / Scope Issue**
+Inside swap, you assign to text but text is not declared as global. This causes Python to treat text as a local variable, but it doesn't exist at the start of the function.
 
-To fix this, you need to build upon each change.
+**Logic Issue: Overwriting in Loop**
+
+Each time through the loop, you replace all occurrences of char in s with its uppercase version, but then you keep doing this for every character, repeatedly replacing in the original string. This means after the last character, only the last replacement is reflected, and previous changes are overwritten.
+
+**Not Modifying the Original text**
+The global text variable is never changed by the function; the function only returns a new string.
 
 </details>
 
