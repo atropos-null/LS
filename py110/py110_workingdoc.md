@@ -167,7 +167,7 @@ r = range(0, 12, 2)
 print(len(r)) #6
 ```
 
-### Iterating over a Squence
+### Iterating over a Sequence
 
 All sequence types are iterables, meaning Python can iterate over the sequence's elements in a loop. Iterating refers to traversing each item in a collection. In Python, there are multiple ways to iterate, with the `for` loop being the most common and idiomatic way.
 
@@ -196,8 +196,6 @@ for char in message:
 #y
 #e
 ```
-
-Page Reference:
 
 Further Reference:
 
@@ -1446,12 +1444,6 @@ Both lists and tuples can be iterated over using `for` loops. The `enumerate()` 
 
 
 Page Reference: [Working with Lists and Tuples](https://launchschool.com/lessons/1b66cd61/assignments/6992af5a)
-
-
-[Back to the top](#top)
-
-***
-
 
 [Back to the top](#top)
 
