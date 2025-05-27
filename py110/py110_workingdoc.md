@@ -10,6 +10,7 @@
 - [Working with Strings and Ranges](#working-strings-ranges)
 - [Working with Lists and Tuples](#working-lists-tuples)
 - [Working with Dictionaries, Sets, and Frozen Sets](#working-dictionaries-sets-frozen-sets)
+- [Unpacking Iterables in Python](#unpacking-iterables-python)
 
 ***
 
@@ -1133,28 +1134,26 @@ Page Reference: [Dictionaries, Sets and Frozen Sets](https://launchschool.com/le
 
 ### Working with Ranges
 
-- **Range Object:**  
-  Python's `range()` function creates a special range object, which is an iterable sequence of numbers. In Python, the range function offers a convenient way to generate a sequence of numbers. This special sequence is encapsulated in what we call a range object.
+**Range Object:**  
+Python's `range()` function creates a special range object, which is an iterable sequence of numbers. In Python, the range function offers a convenient way to generate a sequence of numbers. This special sequence is encapsulated in what we call a range object.
 
-  Crucially, the range object *doesn't hold all its numbers simultaneously*—it delivers numbers *upon request*.
+Crucially, the range object *doesn't hold all its numbers simultaneously*—it delivers numbers *upon request*.
 
-- **range Function Arguments:**  
-  The `range()` function is flexible depending on the number of arguments:
+**range Function Arguments:**  
+The `range()` function is flexible depending on the number of arguments:
 
-  - `range(end)`: Generates numbers from `0` up to, but not including, `end`.  
+* `range(end)`: Generates numbers from `0` up to, but not including, `end`.  
     _Example:_ `list(range(3))` results in `[0, 1, 2]`
-  - `range(start, end)`: Generates numbers from `start` up to, but not including, `end`.  
+* `range(start, end)`: Generates numbers from `start` up to, but not including, `end`.  
     _Example:_ `list(range(1, 3))` results in `[1, 2]`
-  - `range(start, end, step)`: Generates numbers from `start`, incremented by `step`, up to, but not including, `end`.  
+* `range(start, end, step)`: Generates numbers from `start`, incremented by `step`, up to, but not including, `end`.  
     _Example:_ `list(range(1, 6, 2))` results in `[1, 3, 5]`
-  - A negative `step` value makes the range decrement:  
+* A negative `step` value makes the range decrement:  
     _Example:_ `list(range(6, 1, -1))` results in `[6, 5, 4, 3, 2]`
 
-- **Iterating over Ranges:**  
-  The `for` loop is the standard way to iterate over a range object.
+ **Iterating over Ranges:**  The `for` loop is the standard way to iterate over a range object.
 
-- **enumerate Function:**  
-  Used during iteration to track both the element and its position (index) in a sequence. It returns an iterable of tuples: `(index, element)`. Tuple unpacking is a common way to handle these tuples. This function accepts an iterable and returns a new iterable. Each element of the new iterable is a tuple that contains an index number and the original element.
+**enumerate Function:**  Used during iteration to track both the element and its position (index) in a sequence. It returns an iterable of tuples: `(index, element)`. Tuple unpacking is a common way to handle these tuples. This function accepts an iterable and returns a new iterable. Each element of the new iterable is a tuple that contains an index number and the original element.
 
 ```python
 colors = ["red", "green", "blue"]
@@ -1166,52 +1165,50 @@ for idx, color in enumerate(colors):
 #Color blue is at index 2.
 ```
 
-- **Range Attributes and Methods:**
-  - `range.count(value)`: Returns how many times a specific value appears in the range (always 0 or 1).
-  - `range.index(value)`: Returns the index within the range of the given value. Raises `ValueError` if the value is not in the range.
-  - `range.start`, `range.stop`, `range.step`: Attributes containing the values used during range creation.
+**Range Attributes and Methods:**
+* `range.count(value)`: Returns how many times a specific value appears in the range (always 0 or 1).
+* `range.index(value)`: Returns the index within the range of the given value. Raises `ValueError` if the value is not in the range.
+* `range.start`, `range.stop`, `range.step`: Attributes containing the values used during range creation.
 
 
 ### Working with Strings
 
-- **Strings as Sequences:**  
-  Python strings are sequences of characters and share properties/methods with other sequence types (indexing, slicing, length, iteration).
+**Strings as Sequences:**  Python strings are sequences of characters and share properties/methods with other sequence types (indexing, slicing, length, iteration).
 
 
-- **Common String Methods:**
-  - `str.index(sub[, start[, end]])`: Searches for a substring and returns the lowest index where found. Raises `ValueError` if not found.
-  - `str.find(sub[, start[, end]])`: Searches for a substring and returns lowest index where found, or `-1` if not found.
-  - `str.count(sub[, start[, end]])`: Returns the number of non-overlapping occurrences of a substring.
-    - All three support optional `start` and `end` arguments to confine the search.
-  - `str.replace(old, new[, count])`: Substitute occurrences of `old` with `new`. Optional `count` limits replacements.
-  - `str.upper()` and `str.lower()`: Convert all characters to uppercase or lowercase.
-  - `str.casefold()`: Internationalized version of `lower()`, designed for case-insensitive comparisons and Unicode. It's crafted to dismiss all variations in case, making it ideal for comparisons that are case-insensitive.
+**Common String Methods:**
+* `str.index(sub[, start[, end]])`: Searches for a substring and returns the lowest index where found. Raises `ValueError` if not found.
+* `str.find(sub[, start[, end]])`: Searches for a substring and returns lowest index where found, or `-1` if not found.
+* `str.count(sub[, start[, end]])`: Returns the number of non-overlapping occurrences of a substring.
+* All three support optional `start` and `end` arguments to confine the search.
+* `str.replace(old, new[, count])`: Substitute occurrences of `old` with `new`. Optional `count` limits replacements.
+* `str.upper()` and `str.lower()`: Convert all characters to uppercase or lowercase.
+* `str.casefold()`: Internationalized version of `lower()`, designed for case-insensitive comparisons and Unicode. It's crafted to dismiss all variations in case, making it ideal for comparisons that are case-insensitive.
 
-  - `str.capitalize()`: Makes the first character uppercase and the rest lowercase.
-  - `str.swapcase()`: Inverts the case of each character (also internationalized).  
+* `str.capitalize()`: Makes the first character uppercase and the rest lowercase.
+* `str.swapcase()`: Inverts the case of each character (also internationalized).  
     _Note:_ Running `swapcase()` twice may not return the original string for some Unicode characters (e.g., `'Straße'`).
-  - `str.join(iterable)`: Concatenates strings from an iterable, using the string as a separator. All elements must be strings.
-  - `str.split(sep=None, maxsplit=-1)`: Splits a string into a list using a separator (defaults to whitespace). `maxsplit` limits splits. Splitting with an empty string raises `ValueError`.
+* `str.join(iterable)`: Concatenates strings from an iterable, using the string as a separator. All elements must be strings.
+* `str.split(sep=None, maxsplit=-1)`: Splits a string into a list using a separator (defaults to whitespace). `maxsplit` limits splits. Splitting with an empty string raises `ValueError`.
 
-- **Whitespace Removal:**
-  - `str.strip([chars])`: Removes leading/trailing whitespace (or specified characters).
-  - `str.lstrip([chars])`: Removes leading whitespace (or specified characters).
-  - `str.rstrip([chars])`: Removes trailing whitespace (or specified characters).
+**Whitespace Removal:**
+* `str.strip([chars])`: Removes leading/trailing whitespace (or specified characters).
+* `str.lstrip([chars])`: Removes leading whitespace (or specified characters).
+* `str.rstrip([chars])`: Removes trailing whitespace (or specified characters).
 
-- **Checking String Content:**
-  - `str.startswith(prefix[, start[, end]])` and `str.endswith(suffix[, start[, end]])`: Check if a string starts/ends with a substring.
-  - `str.isalpha()`: Returns `True` if all characters are alphabetic.
-  - `str.isalnum()`: Returns `True` if all characters are alphanumeric.
-  - `str.isdigit()`: Returns `True` if all characters are digits.
-  - `str.isspace()`: Returns `True` if all characters are whitespace.
+**Checking String Content:**
+* `str.startswith(prefix[, start[, end]])` and `str.endswith(suffix[, start[, end]])`: Check if a string starts/ends with a substring.
+* `str.isalpha()`: Returns `True` if all characters are alphabetic.
+* `str.isalnum()`: Returns `True` if all characters are alphanumeric.
+* `str.isdigit()`: Returns `True` if all characters are digits.
+* `str.isspace()`: Returns `True` if all characters are whitespace.
 
     _Note:_ These return `False` for empty strings and are internationalized (recognize Unicode).
 
-- **Conversion to String (`str()`):**  
-  The `str()` function converts various data types into their string representation by invoking the object's `__str__` method. This works for numbers, booleans, `None`, and collections. The `str` function is the go-to approach for converting various data types to their string representation.
+**Conversion to String (`str()`):**  
+The `str()` function converts various data types into their string representation by invoking the object's `__str__` method. This works for numbers, booleans, `None`, and collections. The `str` function is the go-to approach for converting various data types to their string representation.
 
-- **Iterating over Strings:**  
-  Strings can be iterated character by character using `for` or `while` loops. The `for` loop is the more idiomatic approach.
+**Iterating over Strings:**  Strings can be iterated character by character using `for` or `while` loops. The `for` loop is the more idiomatic approach.
 
 Page Reference: [Working with Strings and Ranges](https://launchschool.com/lessons/1b66cd61/assignments/ec6f2031)
 
@@ -1231,21 +1228,21 @@ Page Reference: [Working with Strings and Ranges](https://launchschool.com/lesso
 
 Lists are flexibile due to their mutability and introduces several built-in methods for manipulating list content:
 
-- `list.count(object)`: Counts the number of occurrences of a specific object within the list. Returns `0` if the object is not present.  
+* `list.count(object)`: Counts the number of occurrences of a specific object within the list. Returns `0` if the object is not present.  
   **Example:**  
   ```python
   nums = [1, 2, 2, 3, 3, 3]
   nums.count(3)  # 3
   ```
 
-- `list.index(object, start=0, end=len(list))`: Returns the index of the first occurrence of a specified object. Can search within a specified range using `start` and `end` arguments. Raises a `ValueError` if the object is not found.  
+* `list.index(object, start=0, end=len(list))`: Returns the index of the first occurrence of a specified object. Can search within a specified range using `start` and `end` arguments. Raises a `ValueError` if the object is not found.  
   **Example:**  
   ```python
   fruits = ['apple', 'orange', 'banana', 'apple', 'grape']
   fruits.index('apple')  # 0
   ```
 
-- `list.append(object)`: Adds an object to the end of the list.  
+* `list.append(object)`: Adds an object to the end of the list.  
   **Example:**  
   ```python
   numbers = [1, 2, 3]
@@ -1253,7 +1250,7 @@ Lists are flexibile due to their mutability and introduces several built-in meth
   numbers  # [1, 2, 3, 4]
   ```
 
-- `list.insert(index, object)`: Inserts an object prior to a specific index position.  
+* `list.insert(index, object)`: Inserts an object prior to a specific index position.  
   **Example:**  
   ```python
   numbers = [1, 2, 3, 4]
@@ -1263,7 +1260,7 @@ Lists are flexibile due to their mutability and introduces several built-in meth
 
 In the above example, the insert call inserts the string `'two-point-five'` between index positions 1 and 2 in the list.
 
-- `list.extend(iterable)`: Appends all elements from an iterable (like another list, tuple, or set) to the end of the current list.  
+* `list.extend(iterable)`: Appends all elements from an iterable (like another list, tuple, or set) to the end of the current list.  
   **Example:**  
   ```python
   numbers = [1, 2, 3]
@@ -1273,7 +1270,7 @@ In the above example, the insert call inserts the string `'two-point-five'` betw
 
  Keep in mind that sets are unordered, so objects added from a set may not be in the expected order.
 
-- `list.remove(value)`: Removes the first occurrence of a specified value from the list. Raises a `ValueError` if the element is not found.  
+* `list.remove(value)`: Removes the first occurrence of a specified value from the list. Raises a `ValueError` if the element is not found.  
   **Example:**  
   ```python
   numbers = [1, 2, 'two-point-five', 3, 4]
@@ -1283,7 +1280,7 @@ In the above example, the insert call inserts the string `'two-point-five'` betw
 
 If the element we are trying to remove doesn't exist in the list, `list.remove` raises a `ValueError`.
 
-- `list.pop(index=-1)`: Removes and returns the object at a specific index. If no index is specified, it removes and returns the last item. Raises an `IndexError` if the list is empty or the index is out of range.  
+* `list.pop(index=-1)`: Removes and returns the object at a specific index. If no index is specified, it removes and returns the last item. Raises an `IndexError` if the list is empty or the index is out of range.  
   **Example:**  
   ```python
   numbers = [1, 2, 'two-point-five', 3, 4]
@@ -1292,7 +1289,7 @@ If the element we are trying to remove doesn't exist in the list, `list.remove` 
 
 Similarly, if the list is empty, `list.pop` will raise an `IndexError`.
 
-- `list.reverse()`: Reverses the order of the list's elements in-place.  
+* `list.reverse()`: Reverses the order of the list's elements in-place.  
   **Example:**  
   ```python
   numbers = [1, 2, 3, 4, 5, 6]
@@ -1300,7 +1297,7 @@ Similarly, if the list is empty, `list.pop` will raise an `IndexError`.
   numbers  # [6, 5, 4, 3, 2, 1]
   ```
 
-- `list.sort(key=None, reverse=False)`: Sorts the list's elements in-place. Can sort various data types as long as elements can be compared. Raises a `TypeError` if elements cannot be compared. The `key` argument can be used for customized sorting (e.g., case-insensitive using `str.casefold` or sorting numeric strings using `int`). The `reverse=True` argument sorts in descending order.  
+* `list.sort(key=None, reverse=False)`: Sorts the list's elements in-place. Can sort various data types as long as elements can be compared. Raises a `TypeError` if elements cannot be compared. The `key` argument can be used for customized sorting (e.g., case-insensitive using `str.casefold` or sorting numeric strings using `int`). The `reverse=True` argument sorts in descending order.  
   **Example:**  
   ```python
   numbers = [61, 103, 525, 10100, 25, 3]
@@ -1320,8 +1317,7 @@ Similarly, if the list is empty, `list.pop` will raise an `IndexError`.
 
 Tuples are immutable, which means their content cannot be changed after creation:
 
-- **Tuple Unpacking:**  
-  A concise way to assign values from a tuple to multiple variables simultaneously. The number of variables must match the number of elements in the tuple.
+* **Tuple Unpacking:**  A concise way to assign values from a tuple to multiple variables simultaneously. The number of variables must match the number of elements in the tuple.
   **Example:**  
   ```python
   shades = ('crimson', 'emerald', 'azure')
@@ -1330,14 +1326,14 @@ Tuples are immutable, which means their content cannot be changed after creation
 
 The beauty of tuple unpacking lies in its simplicity and readability. While other iterables can be unpacked, tuples are ideal because they often have a predictable number of elements.
 
-- `tuple.count(object)`: Identical to `list.count`, counts occurrences of an object in a tuple.  
+* `tuple.count(object)`: Identical to `list.count`, counts occurrences of an object in a tuple.  
   **Example:**  
   ```python
   nums = (1, 2, 2, 3, 3, 3)
   nums.count(3)  # 3
   ```
 
-- `tuple.index(object, start=0, end=len(tuple))`: Identical to `list.index`, returns the index of the first occurrence of an object in a tuple. Raises a `ValueError` if the object is not found.  
+* `tuple.index(object, start=0, end=len(tuple))`: Identical to `list.index`, returns the index of the first occurrence of an object in a tuple. Raises a `ValueError` if the object is not found.  
   **Example:**  
   ```python
   fruits = ('apple', 'orange', 'banana', 'apple', 'grape')
@@ -1346,14 +1342,14 @@ The beauty of tuple unpacking lies in its simplicity and readability. While othe
 
 ### Conversions
 
-- **Strings to Lists and Tuples:** Use the `list()` and `tuple()` functions.  
+* **Strings to Lists and Tuples:** Use the `list()` and `tuple()` functions.  
   **Example:**  
   ```python
   list("apple")   # ['a', 'p', 'p', 'l', 'e']
   tuple("banana") # ('b', 'a', 'n', 'a', 'n', 'a')
   ```
 
-- **Tuples to Lists and Vice Versa:** Easily switch using `list()` and `tuple()`.  
+* **Tuples to Lists and Vice Versa:** Easily switch using `list()` and `tuple()`.  
   **Example:**  
   ```python
   fruits_list = ["apple", "banana", "cherry"]
@@ -1361,7 +1357,7 @@ The beauty of tuple unpacking lies in its simplicity and readability. While othe
   fruits_tuple  # ('apple', 'banana', 'cherry')
   ```
 
-- **Dictionaries to Lists and Tuples:**  
+* **Dictionaries to Lists and Tuples:**  
   - **Extracting Keys:** Use the `.keys()` method, which returns a dynamic view object. Converting the view to a list or tuple creates a static snapshot.
     - _Dynamic view example:_  
       ```python
@@ -1393,7 +1389,7 @@ The beauty of tuple unpacking lies in its simplicity and readability. While othe
 
 For those instances when we wish to retain the connection between keys and values, the items method steps in.
 
-- **Sets and Frozen Sets to Lists and Tuples:**  
+* **Sets and Frozen Sets to Lists and Tuples:**  
   Use the `list()` and `tuple()` functions. Remember that the order of elements in the resulting list or tuple may vary due to the unordered nature of sets. Sorting may be necessary.
   - **Example:**  
     ```python
@@ -1410,21 +1406,21 @@ For those instances when we wish to retain the connection between keys and value
 
 Both lists and tuples can be iterated over using `for` loops. The `enumerate()` function is useful when you need both the index and the value during iteration.
 
-- **Example (List Iteration):**  
+**Example (List Iteration):**  
   ```python
   fruits = ["apple", "banana", "cherry"]
   for fruit in fruits:
       print(fruit)
   ```
 
-- **Example (Tuple Iteration):**  
+**Example (Tuple Iteration):**  
   ```python
   colors = ("red", "green", "blue")
   for color in colors:
       print(color)
   ```
 
-- **Example (Iteration with enumerate):**  
+**Example (Iteration with enumerate):**  
   ```python
   fruits = ["apple", "banana", "cherry"]
   for index, fruit in enumerate(fruits):
@@ -1434,13 +1430,13 @@ Both lists and tuples can be iterated over using `for` loops. The `enumerate()` 
 
 ### Key Takeaways
 
-- Lists are the go-to for collections that need to be modified frequently.
-- Tuples are suitable for collections where the contents should remain constant.
-- Python provides a rich set of methods for working with lists, allowing for efficient manipulation.
-- Tuple operations are more limited due to their immutability, but they support fundamental actions like counting and indexing.
-- Conversions between different collection types are straightforward using built-in functions and methods.
-- Dictionary views (`.keys()`, `.values()`, `.items()`) are dynamic, but conversions to lists or tuples create static copies.
-- Both lists and tuples are iterable, and `enumerate` is a valuable tool for accessing both index and value during iteration.
+* Lists are the go-to for collections that need to be modified frequently.
+* Tuples are suitable for collections where the contents should remain constant.
+* Python provides a rich set of methods for working with lists, allowing for efficient manipulation.
+* Tuple operations are more limited due to their immutability, but they support fundamental actions like counting and indexing.
+* Conversions between different collection types are straightforward using built-in functions and methods.
+* Dictionary views (`.keys()`, `.values()`, `.items()`) are dynamic, but conversions to lists or tuples create static copies.
+* Both lists and tuples are iterable, and `enumerate` is a valuable tool for accessing both index and value during iteration.
 
 
 Page Reference: [Working with Lists and Tuples](https://launchschool.com/lessons/1b66cd61/assignments/6992af5a)
@@ -1453,174 +1449,171 @@ Page Reference: [Working with Lists and Tuples](https://launchschool.com/lessons
 
 ### Dictionaries
 
-- **Key-Value Storage:**  Dictionaries store data as key-value pairs.  
+**Key-Value Storage:**  Dictionaries store data as key-value pairs.  
 
-- **Value Data Types:**  Values can be any data type.
+**Value Data Types:**  Values can be any data type.
 
-- **Hashable Keys:**  Dictionary keys must be hashable and unique.
+**Hashable Keys:**  Dictionary keys must be hashable and unique.
 
-- **Accessing Values:**   Values are retrieved using their corresponding keys.  
+**Accessing Values:**   Values are retrieved using their corresponding keys.  
   ```python
   data['name']
   ```
 
-- **KeyError:**  Accessing a non-existent key raises a `KeyError`.
+**KeyError:**  Accessing a non-existent key raises a `KeyError`.
 
-- **Deleting Pairs:**  The `del` statement removes a key-value pair.  
+**Deleting Pairs:**  The `del` statement removes a key-value pair.  
   ```python
   del data['age']
   ```
-  Deleting a non-existent key raises a `KeyError`.
+Deleting a non-existent key raises a `KeyError`.
 
-- **Checking Key Existence:**  Use `key in d` and `key not in d`.  
+**Checking Key Existence:**  Use `key in d` and `key not in d`.  
   ```python
   'name' in data
   ```
 
-- **Copying:**    The `copy()` method creates a shallow copy.  
+**Copying:**    The `copy()` method creates a shallow copy.  
   ```python
   data_copy = data.copy()
   ```
  
-  Modifications to mutable values in a shallow copy are reflected in the original.
+Modifications to mutable values in a shallow copy are reflected in the original.
 
-- **Default Values:**
-  - `get()`: Fetches a value, returning a specified default if the key is not found.  
+**Default Values:**
+* `get()`: Fetches a value, returning a specified default if the key is not found.  
     ```python
     data.get('country', 'Serbia')
     ```
     > "`get` returns a default value which can be specified."
-  - `setdefault()`: If the key exists, returns the value; if not, adds the key with the default value.  
+* `setdefault()`: If the key exists, returns the value; if not, adds the key with the default value.  
     ```python
     data.setdefault('country', 'Serbia')
     ```
     > "`setdefault` creates a new key/value pair in a dictionary with the given key and default value."  
     > "`setdefault` does not change its associated value. It returns the existing value..."
 
-- **Removing and Returning Values:**
-  - `pop()`: Removes and returns the value for a given key.  
+**Removing and Returning Values:**
+* `pop()`: Removes and returns the value for a given key.  
     ```python
     city = data.pop('city')
     ```
     Raises `KeyError` if the key doesn't exist, unless a default value is provided as the second argument.
-  - `popitem()`: Removes and returns the last key-value pair as a tuple (insertion order maintained in Python 3.7+).  
+* `popitem()`: Removes and returns the last key-value pair as a tuple (insertion order maintained in Python 3.7+).  
     ```python
     last_item = data.popitem()
     ```
     Raises `KeyError` if the dictionary is empty.
 
-- **Merging Dictionaries:**
-  - `update()`: Merges one dictionary into another, overwriting values for overlapping keys.  
+**Merging Dictionaries:**
+* `update()`: Merges one dictionary into another, overwriting values for overlapping keys.  
     ```python
     data.update(new_data)
     ```
     > "...if keys in the dictionary being updated overlap with keys in the dictionary passed to update, their values get overwritten."
-  - `|` (Merge Operator, Python 3.9+): Combines two dictionaries and returns a new dictionary.  
+* `|` (Merge Operator, Python 3.9+): Combines two dictionaries and returns a new dictionary.  
     ```python
     merged_data = data | new_data
     ```
-  - `|=` (Update Operator, Python 3.9+): Mutates the dictionary on the left.  
+* `|=` (Update Operator, Python 3.9+): Mutates the dictionary on the left.  
     ```python
     data |= new_data
     ```
 
-- **Conversion:**  
-  Iterables of key-value pairs can be converted to dictionaries using `dict()`.  
+ **Conversion:**   Iterables of key-value pairs can be converted to dictionaries using `dict()`.  
   ```python
   dict([['name', 'Srdjan'], ['city', 'Belgrade']])
   ```
 
 ### Sets
 
-- **Unordered Collection:**  Sets are unordered collections of unique objects.  
+**Unordered Collection:**  Sets are unordered collections of unique objects.  
 
-- **No Duplicates:**  Sets are ideal for avoiding duplicates.
+**No Duplicates:**  Sets are ideal for avoiding duplicates.
 
-- **Checking Value Existence:**  
-  Use `value in s` and `value not in s`.  
+**Checking Value Existence:**   Use `value in s` and `value not in s`.  
   ```python
   'apple' in fruits
   ```
 
-- **Subset/Superset Operations:**
-  - `<=` or `issubset()`: Check if one set is a subset of another.
-  - `>=` or `issuperset()`: Check if one set is a superset of another.
-  - `<` and `>`: Check for proper subset/superset (not equal).
+**Subset/Superset Operations:**
+* `<=` or `issubset()`: Check if one set is a subset of another.
+* `>=` or `issuperset()`: Check if one set is a superset of another.
+* `<` and `>`: Check for proper subset/superset (not equal).
 
-- **Set Operations:**
-  - `union()` or `|`: Combine elements from two sets (all unique elements, original sets unchanged).  
+**Set Operations:**
+* `union()` or `|`: Combine elements from two sets (all unique elements, original sets unchanged).  
     ```python
     fruits1.union(fruits2)
     # or
     fruits1 | fruits2
     ```
-  - `intersection()` or `&`: Common elements between two sets (original sets unchanged).  
+* `intersection()` or `&`: Common elements between two sets (original sets unchanged).  
     ```python
     fruits1.intersection(fruits2)
     # or
     fruits1 & fruits2
     ```
-  - `difference()` or `-`: Elements in the first set but not the second (original sets unchanged).  
+* `difference()` or `-`: Elements in the first set but not the second (original sets unchanged).  
     ```python
     fruits1.difference(fruits2)
     # or
     fruits1 - fruits2
     ```
 
-- **Disjoint Sets:**  
-  `isdisjoint()` checks if sets have no common elements.  
+* **Disjoint Sets:**  `isdisjoint()` checks if sets have no common elements.  
   ```python
   fruits1.isdisjoint(fruits2)
   ```
 
-- **Copying:**  
-  The `copy()` method creates a new distinct set.  
+* **Copying:**   The `copy()` method creates a new distinct set.  
   ```python
   fruits_copy = fruits1.copy()
   ```
 
-- **Adding and Removing Members (sets are mutable):**
-  - `add()`: Adds a single new member (no effect if already present).  
+**Adding and Removing Members (sets are mutable):**
+* `add()`: Adds a single new member (no effect if already present).  
     ```python
     fruits.add('cherry')
     ```
-  - `remove()`: Removes a specified element (raises `KeyError` if not found).  
+* `remove()`: Removes a specified element (raises `KeyError` if not found).  
     ```python
     fruits.remove('cherry')
     ```
-  - `discard()`: Removes a specified element (no error if not found).  
+* `discard()`: Removes a specified element (no error if not found).  
     ```python
     fruits.discard('orange')
     ```
     > "If you don't care whether the element is in the set, you can use discard instead."
-  - `clear()`: Removes all elements, leaving an empty set.  
+* `clear()`: Removes all elements, leaving an empty set.  
     ```python
     fruits.clear()
     ```
-  - `pop()`: Removes and returns an arbitrary element (raises `KeyError` if empty).  
+* `pop()`: Removes and returns an arbitrary element (raises `KeyError` if empty).  
     ```python
     fruits.pop()
     ```
 
-- **Conversion:**  
-  Sequences and collections can be converted to sets using `set()`. Order is not maintained. Converting a dictionary to a set results in a set of its keys.  
+**Conversion:**   
+
+Sequences and collections can be converted to sets using `set()`. Order is not maintained. Converting a dictionary to a set results in a set of its keys.  
   ```python
   set('apple')
   set(['apple', 'banana'])
   set({'name': 'Srdjan', 'city': 'Belgrade'})
   ```
 
-  ### Frozen Sets
+### Frozen Sets
 
-- **Immutable Sets:**  Frozen sets are immutable versions of sets.  
+**Immutable Sets:**  Frozen sets are immutable versions of sets.  
 
-- **No Modification After Creation:**  Once created, a frozen set cannot be modified (`add`, `remove`, `discard`, `pop`, `clear` are unavailable).
+**No Modification After Creation:**  Once created, a frozen set cannot be modified (`add`, `remove`, `discard`, `pop`, `clear` are unavailable).
 
-- **Use Non-Mutating Methods:** Any non-mutating set method or operator can be used with frozen sets.
+**Use Non-Mutating Methods:** Any non-mutating set method or operator can be used with frozen sets.
 
-- **Hashable Objects:** Useful when set-like behavior is needed for hashable objects (e.g., as dictionary keys).
+**Hashable Objects:** Useful when set-like behavior is needed for hashable objects (e.g., as dictionary keys).
 
-- **Conversion:**  
+**Conversion:**  
   The `frozenset()` function converts other sequences and collections to frozen sets.  
   ```python
   frozenset('apple')
@@ -1629,6 +1622,125 @@ Page Reference: [Working with Lists and Tuples](https://launchschool.com/lessons
 
 
 Page Reference: [Working with Dictionaries, Sets and Frozen Sets](https://launchschool.com/lessons/1b66cd61/assignments/cf779435)
+
+[Back to the top](#top)
+
+***
+
+## Unpacking Iterables in Python
+
+### Concatenating Iterables
+
+
+**Python’s `+` Operator:**
+* Allows concatenation of iterables of the same type (e.g., lists with lists, tuples with tuples).
+* **TypeError** is raised when trying to directly concatenate iterables of different types (e.g., a list and a tuple).
+* **Workaround:** Convert iterables to the same type before concatenating.
+
+> "However, challenges arise when we try to concatenate heterogeneous data types, such as a list and a tuple: TypeError: can only concatenate list (not 'tuple') to list"
+
+### The Unary `*` Operator for Unpacking
+
+The unary asterisk (`*`) operator provides an elegant and efficient way to "unpack" the contents of an iterable. This operator expands the iterable into its individual elements.
+
+```python
+#With Lists
+numbers = [1, 2, 3, 4]
+tup1 = (5, 6)
+tup2 = (7, 8)
+joined_list = [*numbers, *tup1, *tup2]
+print(joined_list)  # Output: [1, 2, 3, 4, 5, 6, 7, 8]
+
+#With Tuples
+numbers = [1, 2, 3, 4]
+tup1 = (5, 6)
+tup2 = (7, 8)
+joined_tuple = (*numbers, *tup1, *tup2)
+print(joined_tuple)  # Output: (1, 2, 3, 4, 5, 6, 7, 8)
+
+#With Sets
+joined_set = {*numbers, *tup1, *tup2}
+print(joined_set)    # Output: {1, 2, 3, 4, 5, 6, 7, 8}
+```
+
+Function arguments in Python also benefit greatly from this unpacking technique.
+```python
+#Without the *
+
+def test(num1, num2, num3):
+    # do something
+
+numbers = [1, 2, 3]
+test(numbers[0], numbers[1], numbers[2])
+
+#With the *
+def test(num1, num2, num3):
+    # do something
+
+numbers = [1, 2, 3]
+test(*numbers)
+```
+
+Nested unpacking is new since Python 3.8.
+```python
+def test(num1, num2, num3):
+    # do something
+
+numbers = [1, 2, 3]
+test(*numbers)
+```
+
+> "This unpacking technique isn't just limited to lists. It can be used with tuples, sets, and even dictionaries (with a slight modification which we will see later)."
+
+### Applications of the Unary `*` Operator
+
+* **Merging Iterables of Different Types:**  
+The `*` operator allows for easily merging lists, tuples, sets, and other iterables into a new iterable of a desired type (e.g., merging lists and tuples into a new list or tuple).
+* **Passing Iterable Elements as Function Arguments:**  
+  Instead of manually referencing each element of an iterable to pass as individual arguments to a function, the `*` operator can unpack the iterable and pass its elements directly.
+* **Nested Unpacking (Python 3.8+):**  
+  Python 3.8 introduced the capability for nested unpacking, allowing unpacking inner iterables within an outer iterable during assignment.
+* **When Not to Use the `*` Operator:**  
+  While powerful, the `*` operator should be used judiciously. For tasks where a more intuitive and recognizable built-in function exists (like converting a list to a set using `set()`), the built-in function is often preferred for readability and clarity.
+
+> "Python, with its emphasis on clean and efficient code, offers a more elegant solution: the unary asterisk ( * ) operator. This operator can be visualized as a tool that 'unpacks' the contents of an iterable."
+
+### The Unary `**` Operator for Dictionaries
+
+The unary double-asterisk (`**`) operator is used for working with dictionaries.
+
+```python
+dict1 = {'a': 1, 'b': 2}
+dict2 = {'b': 3, 'd': 4}
+merged_dict = {**dict1, **dict2}
+print(merged_dict)  # Output: {'a': 1, 'b': 3, 'd': 4}
+```
+
+However, the `**` operator can not only unpack, but it can be used for the opposite purpose to "collect" or "pack" values into a dictionary. You might see this being used in function arguments, especially when that function takes variable keyword arguments. We haven't learned about keyword arguments yet, so while we will show you a simple example of its usage, you don't have to understand the code at this point. In this example, we pass several keyword arguments into the profile function. Using `**kwargs` collects those keyword arguments into a dictionary that we can then reference by kwargs.
+
+> "In Python programming, readability and clarity are of utmost importance. When you encounter multiple methods or techniques to accomplish a task, it's always prudent to choose the one that is more intuitive and straightforward, both for your future self and for others who might read or maintain your code."
+
+### Applications of the Unary `**` Operator
+
+* **Merging Dictionaries:**  
+Merge the contents of multiple dictionaries into a new dictionary. If keys are duplicated, the last dictionary in the sequence provides the value for that key.
+
+* **Packing Keyword Arguments:**  
+The `**` operator can also be used in function definitions to "collect" variable keyword arguments into a dictionary, commonly seen as `**kwargs`.
+
+
+### Key Takeaways
+
+* Direct concatenation of different iterable types using the `+` operator is not supported in Python.
+* The unary `*` operator unpacks the elements of an iterable, making them available as individual items.
+* The `*` operator is useful for merging different iterable types and passing iterable elements as separate function arguments.
+* Nested unpacking (Python 3.8+) allows for unpacking within unpacking during assignment.
+* Readability and clarity are crucial in Python code; choose the most intuitive method for a task.
+* The unary `**` operator is specifically for unpacking (and packing) dictionaries.
+* `**` can merge dictionaries and collect keyword arguments in function definitions (`**kwargs`).
+
+
+Page Reference: [Unpacking Iterables in Python](https://launchschool.com/lessons/1b66cd61/assignments/670b999b)
 
 [Back to the top](#top)
 
