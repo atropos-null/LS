@@ -1738,6 +1738,10 @@ The `**` operator can also be used in function definitions to "collect" variable
 
 Page Reference: [Unpacking Iterables in Python](https://launchschool.com/lessons/1b66cd61/assignments/670b999b)
 
+Further References:
+
+[Gruppetta, S. (2025c, May 7). “AI Coffee” grand opening this Monday • A story about parameters and arguments in Python functions. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/python-function-parameters-arguments-args-kwargs-optional-positional-keyword)
+
 [Back to the top](#top)
 
 ***
