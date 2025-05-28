@@ -200,7 +200,7 @@ for char in message:
 
 Further Reference:
 
-(Gruppetta, S. (2023a, April 20). Iterable: Python’s Stepping Stones. The Python Coding Stack.)[https://www.thepythoncodingstack.com/p/python-iterable-data-structures]
+[Gruppetta, S. (2023a, April 20). Iterable: Python’s Stepping Stones. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/python-iterable-data-structures)
 
 ### Concatenating with the `+` Operator
 
@@ -272,7 +272,7 @@ print(max(range(5))) #4
 
 ### Conversion to Lists and Tuples
 
-#### Converting to a list
+#### Converting to a List
 
 ```python
 string = "hello"    #Converting a string to a list breaks the string into individual characters
@@ -648,6 +648,7 @@ keys = car.keys()  # dict_keys(['type', 'color', 'year'])
 `values = car.values()  # dict_values(['sedan', 'blue', 2003])`
 
 Can include duplicate values (unlike keys, which must be unique) and useful when you need to work with all values without their associated keys. 
+
 ```python
 grades = {'Math': 95, 'Science': 88, 'History': 92}
 
@@ -852,7 +853,7 @@ print(hash("hello") == hash("world"))  # False
 Immutability is closely tied to hashability because:
 
 ```python
-This tuple is immutable and hashable
+#This tuple is immutable and hashable
 t = (1, 2, 3)
 print(hash(t))  # Works fine
 
@@ -889,9 +890,10 @@ If objects could change their values while maintaining the same hash, it would b
 
 Internally, dictionaries and sets use hash tables:
 1.  When you add a key to a dictionary, Python:
-    * Computes the key's hash value
-    * Uses that value to determine where to store the key-value pair
-    * When retrieving, it calculates the hash again to find the location
+* Computes the key's hash value
+* Uses that value to determine where to store the key-value pair
+* When retrieving, it calculates the hash again to find the location
+
 2. This allows for `O(1)` average-case complexity for lookups, rather than `O(n)` with lists, This makes lookups extremely fast because Python can jump directly to the right location rather than searching through everything.
 
 #### Hash Collisions
@@ -901,7 +903,6 @@ Sometimes different objects can produce the same hash value:
 # These might have the same hash (though unlikely)
 str1 = "ab"
 str2 = "ba"
-
 ```
 
 When this happens, Python's hash tables handle it through techniques like chaining (storing multiple items in the same bucket).
@@ -914,7 +915,6 @@ Further References:
 
 [Zaczyński, B. (2023, December 1). Build a hash table in Python with TDD.](https://realpython.com/python-hash-table/)
 
-[Back to the top](#top)
 
 ### Sets
 
@@ -970,7 +970,6 @@ print'grape' in fruits) #False
 
 Since sets don't have the concept of order or indexing, any attempt to reference a set member by its index or key will be rebuffed by Python, giving way to a `TypeError`. And, if you try to add a value that already exists in the set, it won't be added again. Python won't raise an error, either. It simply ensures that all values in the set are unique
 
-[Back to the top](#top)
 
 ### Frozen Sets
 
@@ -1203,7 +1202,7 @@ for idx, color in enumerate(colors):
 * `str.isdigit()`: Returns `True` if all characters are digits.
 * `str.isspace()`: Returns `True` if all characters are whitespace.
 
-    _Note:_ These return `False` for empty strings and are internationalized (recognize Unicode).
+_Note:_ These return `False` for empty strings and are internationalized (recognize Unicode).
 
 **Conversion to String (`str()`):**  
 The `str()` function converts various data types into their string representation by invoking the object's `__str__` method. This works for numbers, booleans, `None`, and collections. The `str` function is the go-to approach for converting various data types to their string representation.
@@ -1268,7 +1267,7 @@ In the above example, the insert call inserts the string `'two-point-five'` betw
   numbers  # [1, 2, 3, 4, 5, 6, 7]
   ```
 
- Keep in mind that sets are unordered, so objects added from a set may not be in the expected order.
+Keep in mind that sets are unordered, so objects added from a set may not be in the expected order.
 
 * `list.remove(value)`: Removes the first occurrence of a specified value from the list. Raises a `ValueError` if the element is not found.  
   **Example:**  
@@ -1449,18 +1448,15 @@ Page Reference: [Working with Lists and Tuples](https://launchschool.com/lessons
 
 ### Dictionaries
 
-**Key-Value Storage:**  Dictionaries store data as key-value pairs.  
-
-**Value Data Types:**  Values can be any data type.
-
-**Hashable Keys:**  Dictionary keys must be hashable and unique.
-
-**Accessing Values:**   Values are retrieved using their corresponding keys.  
+* **Key-Value Storage:**  Dictionaries store data as key-value pairs.  
+* **Value Data Types:**  Values can be any data type.
+* **Hashable Keys:**  Dictionary keys must be hashable and unique.
+* **Accessing Values:**   Values are retrieved using their corresponding keys.  
   ```python
   data['name']
   ```
 
-**KeyError:**  Accessing a non-existent key raises a `KeyError`.
+* **KeyError:**  Accessing a non-existent key raises a `KeyError`.
 
 **Deleting Pairs:**  The `del` statement removes a key-value pair.  
   ```python
@@ -1520,16 +1516,15 @@ Modifications to mutable values in a shallow copy are reflected in the original.
     data |= new_data
     ```
 
- **Conversion:**   Iterables of key-value pairs can be converted to dictionaries using `dict()`.  
+**Conversion:**   Iterables of key-value pairs can be converted to dictionaries using `dict()`.  
   ```python
   dict([['name', 'Srdjan'], ['city', 'Belgrade']])
   ```
 
 ### Sets
 
-**Unordered Collection:**  Sets are unordered collections of unique objects.  
-
-**No Duplicates:**  Sets are ideal for avoiding duplicates.
+* **Unordered Collection:**  Sets are unordered collections of unique objects.  
+* **No Duplicates:**  Sets are ideal for avoiding duplicates.
 
 **Checking Value Existence:**   Use `value in s` and `value not in s`.  
   ```python
@@ -1548,12 +1543,14 @@ Modifications to mutable values in a shallow copy are reflected in the original.
     # or
     fruits1 | fruits2
     ```
+
 * `intersection()` or `&`: Common elements between two sets (original sets unchanged).  
     ```python
     fruits1.intersection(fruits2)
     # or
     fruits1 & fruits2
     ```
+
 * `difference()` or `-`: Elements in the first set but not the second (original sets unchanged).  
     ```python
     fruits1.difference(fruits2)
@@ -1605,13 +1602,10 @@ Sequences and collections can be converted to sets using `set()`. Order is not m
 
 ### Frozen Sets
 
-**Immutable Sets:**  Frozen sets are immutable versions of sets.  
-
-**No Modification After Creation:**  Once created, a frozen set cannot be modified (`add`, `remove`, `discard`, `pop`, `clear` are unavailable).
-
-**Use Non-Mutating Methods:** Any non-mutating set method or operator can be used with frozen sets.
-
-**Hashable Objects:** Useful when set-like behavior is needed for hashable objects (e.g., as dictionary keys).
+* **Immutable Sets:**  Frozen sets are immutable versions of sets.  
+* **No Modification After Creation:**  Once created, a frozen set cannot be modified (`add`, `remove`, `discard`, `pop`, `clear` are unavailable).
+* **Use Non-Mutating Methods:** Any non-mutating set method or operator can be used with frozen sets.
+* **Hashable Objects:** Useful when set-like behavior is needed for hashable objects (e.g., as dictionary keys).
 
 **Conversion:**  
   The `frozenset()` function converts other sequences and collections to frozen sets.  
@@ -1630,7 +1624,6 @@ Page Reference: [Working with Dictionaries, Sets and Frozen Sets](https://launch
 ## Unpacking Iterables in Python
 
 ### Concatenating Iterables
-
 
 **Python’s `+` Operator:**
 * Allows concatenation of iterables of the same type (e.g., lists with lists, tuples with tuples).
@@ -1696,12 +1689,15 @@ test(*numbers)
 
 * **Merging Iterables of Different Types:**  
 The `*` operator allows for easily merging lists, tuples, sets, and other iterables into a new iterable of a desired type (e.g., merging lists and tuples into a new list or tuple).
+
 * **Passing Iterable Elements as Function Arguments:**  
-  Instead of manually referencing each element of an iterable to pass as individual arguments to a function, the `*` operator can unpack the iterable and pass its elements directly.
+Instead of manually referencing each element of an iterable to pass as individual arguments to a function, the `*` operator can unpack the iterable and pass its elements directly.
+
 * **Nested Unpacking (Python 3.8+):**  
-  Python 3.8 introduced the capability for nested unpacking, allowing unpacking inner iterables within an outer iterable during assignment.
+Python 3.8 introduced the capability for nested unpacking, allowing unpacking inner iterables within an outer iterable during assignment.
+
 * **When Not to Use the `*` Operator:**  
-  While powerful, the `*` operator should be used judiciously. For tasks where a more intuitive and recognizable built-in function exists (like converting a list to a set using `set()`), the built-in function is often preferred for readability and clarity.
+While powerful, the `*` operator should be used judiciously. For tasks where a more intuitive and recognizable built-in function exists (like converting a list to a set using `set()`), the built-in function is often preferred for readability and clarity.
 
 > "Python, with its emphasis on clean and efficient code, offers a more elegant solution: the unary asterisk ( * ) operator. This operator can be visualized as a tool that 'unpacks' the contents of an iterable."
 
