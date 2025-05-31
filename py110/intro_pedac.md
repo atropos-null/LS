@@ -63,6 +63,14 @@ Investing time in planning (especially for complex problems) "saves time and let
 
 ## Additional Notes and Examples
 
+| Objective | Step | Description|
+| :--- | :---  | :-----      |
+| Process the Problem | Understand the Problem | <ul><li>Identify expected input and output</li><li>Make the requirements explicit</li><li>Identify rules</li><li>Mental model of the problem (optional)</li></ul> |
+| | Examples/Test Case | Validate understanding of the problem |
+| | Data Structure | How we represent data that we will work with when converting the input to output. |
+| | Algorithm | Steps for converting input to output |
+| Code with Intent | Code | Implementation of Algorithm |
+
 
 
 **PEDAC Acronym:** P-E-D-A-C
@@ -190,3 +198,5 @@ Given `"halo"`, the substrings of length 2 or more are:
 ## Conclusion
 
 The PEDAC process provides a valuable introduction to structured problem-solving. It emphasizes the importance of understanding the problem and designing detailed algorithms before coding. Using concrete examples and breaking down complex tasks into smaller parts are key strategies. While this summary focuses on the "P," "D," and "A" steps, it lays a solid foundation for approaching programming challenges efficiently, especially in time-constrained situations like interviews.
+
+Page References: [Introduction to the PEDAC Process](https://launchschool.com/lessons/1b66cd61/assignments/44ff1dd2)
