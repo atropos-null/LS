@@ -72,16 +72,7 @@ Investing time in planning (especially for complex problems) "saves time and let
 | Code with Intent | Code | Implementation of Algorithm |
 
 
-
-**PEDAC Acronym:** P-E-D-A-C
-
-### Simple Problem Example (No PEDAC needed)
-Function to uppercase a string.
-
-### Complex Problem Example (PEDAC crucial)
--Function to find palindromic substrings from a string.
-
----
+***
 
 ### Example Problem 1: `change_me` Function
 
@@ -100,7 +91,10 @@ change_me("")                               # ""
 change_me("I LOVE mom and dad equally")     # "I LOVE MOM and DAD equally"
 ```
 
+<details>
+<summary>Solution</summary>
 Answer:
+
 ```
 input: string
 output: string (not the same object)
@@ -114,14 +108,12 @@ rules:
   Implicit requirements:
     - If the string is an empty string, the result is an empty string.
 ```
+</details>
 
----
 
 ### Example Problem 2: `palindrome_substrings` Function
 
-
 ```python
-
 """
 PROBLEM:
 
@@ -138,8 +130,10 @@ palindrome_substrings("repaper")                    # ['repaper', 'epape', 'pap'
 palindrome_substrings("supercalifragilisticexpialidocious") # ["ili"]
 ```
 
+<details>
+<summary>Solution</summary>
 Answer:
-```
+
 Some questions you might have?
 1. What is a substring?
 2. What is a palindrome?
@@ -150,35 +144,35 @@ input: string
 output: a list of substrings
 rules:
   Explicit requirements:
-    - Return only substrings which are palindromes.
-    - Palindrome words should be case sensitive; "abBA" is not a
+    * Return only substrings which are palindromes.
+    * Palindrome words should be case sensitive; "abBA" is not a
       palindrome.
 
   Implicit requirements:
-    - If the string is an empty string, the result should be an
+    * If the string is an empty string, the result should be an
       empty list.
-```
 
 Algorithm:
 
-```
-- Create an empty list, `result`, for the required substrings.
-- Initialize a `start_index` variable to 0 for the first character of
+* Create an empty list, `result`, for the required substrings.
+* Initialize a `start_index` variable to 0 for the first character of
   the substring.
-- Iterate over the string from `start_index` to length of string - 2.
-    - Initialize a `num_chars` variable to `2` for the initial
+* Iterate over the string from `start_index` to length of string - 2.
+    * Initialize a `num_chars` variable to `2` for the initial
       substring length.
-    - Iterate from `num_chars` to length of string - `start_index`:
-        - Extract substring of length `num_chars` from `string`
+    * Iterate from `num_chars` to length of string - `start_index`:
+        * Extract substring of length `num_chars` from `string`
           starting at `start_index`.
-        - Append the extracted substring to `result`.
-        - Increment `num_chars` by `1`.
-    - End of inner loop.
-    - Increment `start_index` by `1`.
-- End of outer loop.
-- Return the `result` list.
-```
----
+        * Append the extracted substring to `result`.
+        * Increment `num_chars` by `1`.
+    * End of inner loop.
+    * Increment `start_index` by `1`.
+* End of outer loop.
+* Return the `result` list.
+
+</details>
+
+***
 
 ### Concrete Example for Substring Generation
 
@@ -187,13 +181,26 @@ Given `"halo"`, the substrings of length 2 or more are:
 ['ha', 'hal', 'halo', 'al', 'alo', 'lo']
 ```
 
----
+***
 
-### Python String Slicing for Reversal
+### Might need this later: Python String Slicing for Reversal
 
 - To reverse a string: `string[::-1]` (e.g., used in `is_palindrome` function).
 
----
+***
+
+## Notes from Ewa
+
+**Problem** 
+* reread, rewrite in my own words
+* what gets printed/returned
+
+**Examples**
+* analyze ALL!
+
+**Data Structure**
+* what goes in / what comes out
+
 
 ## Conclusion
 
