@@ -366,7 +366,6 @@ my_dict = {}
 my_dict[[1, 2, 3]] = "value"  # Raises TypeError: unhashable type: 'list'
 ```
 
-
 2. **​Values can be any type**​: Strings, numbers, lists, other dictionaries, functions, etc.
 
 3.  **Order**:
@@ -389,6 +388,7 @@ car = {
     'mileage': 80_000,
 }
 ```
+
 2.  Using the `dict()` Constructor
 ```python
 # Empty dictionary
@@ -450,6 +450,27 @@ print(car.get('model'))  # None
 # Returns a default value if the key doesn't exist
 print(car.get('model', 'Unknown'))
 ```
+
+Another note about `get()`:
+
+For this line of code: `result[number] = result.get(number, 0) + 1`
+
+This line of Python code is a concise way to increment (or initialize and increment) a value in a dictionary for a given key (number). Here’s what it does:
+
+1. `result` is assumed to be a dictionary.
+2. `result.get(number, 0)` tries to get the current value for the key number; if number is not present in the dictionary, it returns `0`.
+3. `+ 1` increments that value by `1`.
+4. `result[number] = ...` sets the value back into the dictionary for the key number.
+
+```python
+result = {}
+for number in [2, 3, 2, 4, 3, 2]:
+    result[number] = result.get(number, 0) + 1
+print(result)
+# Output: {2: 3, 3: 2, 4: 1}
+```
+
+This is commonly used for counting frequencies of items in a collection. It is equivalent to using `collections.Counter`, but without importing that module.
 
 3. **Checking if a Key Exists**: Before accessing a value, you can check if a key exists using the `in` operator.
 ```python 
