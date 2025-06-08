@@ -36,3 +36,19 @@ print(running_total([14, 11, 7, 15, 20])
        == [14, 25, 32, 47, 67])                    # True
 print(running_total([3]) == [3])                  # True
 print(running_total([]) == [])                    # True
+
+
+"""
+Answer in the problem:
+
+def running_total(numbers):
+    running_totals = []
+    current_sum = 0
+
+    for num in numbers:
+        current_sum += num
+        running_totals.append(current_sum)
+
+    return running_totals
+
+"""
