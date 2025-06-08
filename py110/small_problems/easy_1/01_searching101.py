@@ -37,12 +37,12 @@ suffixes = {1: "st",
 
 for round in range(1,6):
     suffix = suffixes.get(round)
-    user_number = input(f"Enter the {round}{suffix} number: ") 
+    user_number = input(f"Enter the {round}{suffix} number: ")
     selection.append(user_number)
 
 last_number = input("Enter the last number: ")
 
 if last_number in selection:
-    print(f"{last_number} is in {','.join(str(num) for num in selection)}.")
-if last_number not in selection:
-    print(f"{last_number} isn't in {','.join(str(num) for num in selection)}.")
+    print(f"{last_number} is in {','.join(selection)}.")
+else:
+    print(f"{last_number} isn't in {','.join(selection)}.")
