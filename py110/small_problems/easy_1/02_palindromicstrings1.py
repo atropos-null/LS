@@ -32,7 +32,6 @@ def is_palindrome(string):
     else:
         return True
     
-    
 
 # All of these examples should print True
 
@@ -45,3 +44,20 @@ print(is_palindrome('Madam') == False) #True
 
 # all characters matter
 print(is_palindrome("madam i'm adam") == False) #True
+
+""" 
+
+A more pythonic method:
+
+def is_palindrome(string):
+   return string == string[::-1]
+
+or:
+
+def is_palindrome(string):
+    comparison_string = ""
+    for char in string[::-1]:
+        comparison_string += char
+    return comparison_string == string
+
+"""
