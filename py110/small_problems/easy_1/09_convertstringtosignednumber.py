@@ -25,12 +25,14 @@ Algorithm:
 def string_to_signed_integer(text):
     result = 0
     for char in text:
-        if char.isalnum():
+        if char.isdigit():
             digit = ord(char) - ord('0')
             result = result * 10 + digit
     
     if text[0] == '-':
         return result * -1
+    elif text[0] == '+':
+        return result
     else:
         return result
 
