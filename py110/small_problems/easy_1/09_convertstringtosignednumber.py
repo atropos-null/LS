@@ -31,8 +31,6 @@ def string_to_signed_integer(text):
     
     if text[0] == '-':
         return result * -1
-    elif text[0] == '+':
-        return result
     else:
         return result
 
