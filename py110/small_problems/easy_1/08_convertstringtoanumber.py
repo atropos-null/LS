@@ -42,3 +42,24 @@ def string_to_integer(text):
         
 print(string_to_integer("4321") == 4321)  # True
 print(string_to_integer("570") == 570)    # True
+
+"""
+
+Optimization options:
+
+def string_to_integer(text):
+    numbers = []
+    for char in text:
+        number = ord(char) - ord('0')
+        numbers.append(number)
+    # Rest of the function remains the same
+
+
+def string_to_integer(text):
+    result = 0
+    for char in text:
+        digit = ord(char) - ord('0')
+        result = result * 10 + digit
+    return result
+
+"""
