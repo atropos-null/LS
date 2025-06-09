@@ -43,3 +43,19 @@ string = "What's up doc?"
 print(word_sizes(string) == {5: 1, 2: 1, 3: 1})
 
 print(word_sizes('') == {})
+
+
+"""
+Optimization:
+
+   def word_sizes(text):
+       word_dict = {}
+       words = text.split()
+       for word in words:
+           # Keep only alphabetic characters
+           clean_word = ''.join(char for char in word if char.isalpha())
+           if clean_word:  # Skip empty strings
+               word_dict[len(clean_word)] = word_dict.get(len(clean_word), 0) + 1
+       return word_dict
+
+"""
