@@ -4,6 +4,7 @@ Problem: Convert integers to a numeric string representation
     - input: integer of various place values
     - output: string
     - explicit rules: no conversions
+    - explicit rules: acknowledge sign
     - implicit rules: go right to left
     - implicit rules: use divmod
 
@@ -25,20 +26,22 @@ Algorithm:
 
 DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
-def integer_to_string(number):
-    if number == 0: 
-        return '0'
+def signed_integer_to_string(number):
     string = ''
-    working_number = number
+    working_number = abs(number)
     while working_number > 0:
         quotient, remainder  = divmod(working_number, 10)
         string = DIGITS[remainder] + string
         working_number = quotient
     
-    return string
+    if number < 0:
+        return f"-{string}"
+    elif number > 0:
+        
+        return f"+{string}"
+    else:
+        return "0"
 
-print(integer_to_string(4321) == "4321")              # True
-print(integer_to_string(0) == "0")                    # True
-print(integer_to_string(5000) == "5000")              # True
-print(integer_to_string(1234567890) == "1234567890")  # True
-
+print(signed_integer_to_string(4321) == "+4321")  # True
+print(signed_integer_to_string(-123) == "-123")   # True
+print(signed_integer_to_string(0) == "0")         # True
