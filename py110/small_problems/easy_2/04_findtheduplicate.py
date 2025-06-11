@@ -9,7 +9,7 @@ Example: [1, 5, 3, 1] => 1
 Data Structure: Dictionary
 
 Algorithm: 
-    - initialize an empty list 
+    - initialize an empty dictionary 
     - iterate over the list
         - write to dictionary, using the get method to update a count
     - if counts = 2, return number 
@@ -39,3 +39,17 @@ print(find_dup([
                   40, 23, 71, 62, 73, 32, 43, 24,  4, 56,
                    7, 34, 57, 74, 45, 11, 88, 67,  5, 58,
               ]) == 73)   
+
+"""
+Other option:
+
+def find_dup(lst):
+    seen = set()
+    for number in lst:
+        if number in seen:
+            return number
+        seen.add(number)
+    return None
+
+
+"""
