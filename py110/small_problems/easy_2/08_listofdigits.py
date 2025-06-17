@@ -12,7 +12,7 @@ Algorithm:
     - initialize empty list
     - coerce integer to a string
     - for loop:
-        - split string
+        - iterate over character
         - recoerce back to an integer
         - append list
     

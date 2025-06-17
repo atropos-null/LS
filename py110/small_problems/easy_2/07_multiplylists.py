@@ -43,6 +43,8 @@ def multiply_list(array1, array2):
         prod_list.append(a * b)
     return prod_list
 
+Or:
+
 def multiply_list(array1, array2):
     return [a * b for a, b in zip(array1, array2)]
 
