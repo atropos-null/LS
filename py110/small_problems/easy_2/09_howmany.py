@@ -20,7 +20,7 @@ def count_occurrences(list1):
     for element in list1:
          result[element] = result.get(element, 0) + 1
     for key, value in result.items():
-         print(f"{key} ==> {value}")
+         print(f"{key} => {value}")
 
 vehicles = ['car', 'car', 'truck', 'car', 'SUV', 'truck',
             'motorcycle', 'motorcycle', 'car', 'truck']
