@@ -18,7 +18,6 @@ Algorithm:
 def count_occurrences(list1):
     result = {}
     for element in list1:
-         element = element.casefold()
          result[element] = result.get(element, 0) + 1
     for key, value in result.items():
          print(f"{key} ==> {value}")
