@@ -11,7 +11,7 @@ Data Structure: Dictionary
 Algorithm:
     - initialize dictionary
     - for element in list:
-        print f-string, element, count
+        print f-string, key/value from dictionary
     
 """
 
