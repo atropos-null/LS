@@ -21,14 +21,24 @@ Algorithm
 """
 
 def average(list1):
-    sum = 1
+    sum = 0
     if len(list1) == 1:
         return list1[0]
     for element in list1:
         sum += element
-    mean = int(sum / len(list1))
+    mean = sum // len(list1)
     return mean
 
 print(average([1, 5, 87, 45, 8, 8]) == 25)        # True
 print(average([9, 47, 23, 95, 16, 52]) == 40)     # True
 print(average([7]) == 7)                          # True
+
+
+"""
+Further Optimization:
+
+def average(numbers):
+    total = sum(numbers)
+    return total // len(numbers)
+
+"""
