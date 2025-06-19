@@ -15,6 +15,13 @@ Algo:
 
 def swap_name(name):
     working = name.split()
-    return f"{working[1]}, {working[0]}"
+    last_name = working[-1]
+    first_name = working[0]
+    middle_name = " ".join(working[1:-1])
+    if len(working) == 2:
+        return f"{last_name}, {first_name}"
+    else:        
+        return f"{last_name}, {first_name} {middle_name}"
 
 print(swap_name('Joe Roberts') == "Roberts, Joe")   # True
+print(swap_name('Karl Oskar Henriksson Ragvals') == "Ragvals, Karl Oskar Henriksson")  # True
