@@ -8,8 +8,17 @@ Example: 'Joe Roberts' ==> "Roberts, Joe"
 Data structure: list for holding
 
 Algo:
+    base problem:
     - holding_list = split string
-    - return f"{holding_list[1]}, {holding_list[0]}
+    - last_name = holding[-1]
+    - return f"{last_name}, {first_name}"
+    further exploration: 
+    - middle names = join middle names
+    - if len(holding_list) == 2:
+        - return f"{last_name}, {first_name}"
+    - else
+        - return f"{last_name}, {first_name} {middle_name}"
+
 
 """
 
