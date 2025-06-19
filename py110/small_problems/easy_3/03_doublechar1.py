@@ -36,3 +36,17 @@ def repeater(text):
 print(repeater('Hello') == "HHeelllloo")              # True
 print(repeater('Good job!') == "GGoooodd  jjoobb!!")  # True
 print(repeater('') == "")                             # True
+
+
+"""
+
+Further Optimization:
+
+def repeater(text):
+    temp_list = []
+    for char in text:
+        temp_list.append(char * 2)
+    result = "".join(temp_list)
+    return result
+
+"""
