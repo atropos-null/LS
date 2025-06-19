@@ -9,7 +9,7 @@ Data Structure: None?
 
 Algo:
     - string = str(number)
-    - reversed_string = string[-1:]
+    - reversed_string = string[::-1]
     - reversed_number = int(reversed_string)
 
 """
