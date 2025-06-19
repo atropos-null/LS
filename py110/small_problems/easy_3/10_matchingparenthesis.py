@@ -25,6 +25,7 @@ Algo:
 """
 
 SYMBOLS  = ['(', ')']
+
 def is_balanced(text):
     
     temp = []
@@ -43,8 +44,6 @@ def is_balanced(text):
         return True
 
 
-
-
 print(is_balanced("What (is) this?") == True)        # True
 print(is_balanced("What is) this?") == False)        # True
 print(is_balanced("What (is this?") == False)        # True
@@ -53,3 +52,19 @@ print(is_balanced("((What)) (is this))?") == False)  # True
 print(is_balanced("Hey!") == True)                   # True
 print(is_balanced(")Hey!(") == False)                # True
 print(is_balanced("What ((is))) up(") == False)      # True
+
+"""
+Alternative method:
+
+def is_balanced(s):
+    count = 0
+    for char in s:
+        if char == '(':
+            count += 1
+        elif char == ')':
+            count -= 1
+        if count < 0:  
+            return False
+    return count == 0  # Ensures all left parentheses are matched
+
+"""
