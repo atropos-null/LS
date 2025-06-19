@@ -41,6 +41,7 @@ def sequence(count, start):
     return result
     
 print(sequence(5, 1) == [1, 2, 3, 4, 5])          # True
+print(sequence(5, 3) == [3, 6, 9, 12, 15])         # True
 print(sequence(4, -7) == [-7, -14, -21, -28])     # True
 print(sequence(3, 0) == [0, 0, 0])                # True
 print(sequence(0, 1000000) == [])                 # True
@@ -52,5 +53,5 @@ Further optimization:
 
 def sequence(count, start_num):
     return [start_num * num for num in range(1, count + 1)]
-    
+
 """
