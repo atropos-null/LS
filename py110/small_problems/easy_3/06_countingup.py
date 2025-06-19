@@ -25,3 +25,12 @@ def sequence(number):
 print(sequence(5) == [1, 2, 3, 4, 5])   # True
 print(sequence(3) == [1, 2, 3])         # True
 print(sequence(1) == [1])               # True
+
+
+"""
+Further Optimization:
+
+def sequence(number):
+   return list(range(1, number + 1))
+   
+"""
