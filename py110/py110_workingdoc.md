@@ -12,6 +12,9 @@
 - [Working with Dictionaries, Sets, and Frozen Sets](#working-with-dictionaries-sets-and-frozen-sets)
 - [Unpacking Iterables in Python](#unpacking-iterables-in-python)
 - [Selection and Transformation](#selection-and-transformation)
+- [Sorting](#sorting)
+- [Nested Data Structures](#nested-data-structures)
+- [Comprehensions](#comprehensions)
 
 ***
 
@@ -799,6 +802,9 @@ Further References:
 
 [Gruppetta, S. (2024b, May 27). `dict()` is More Versatile Than You May Think. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/python-dict-is-more-versatile-than-you-may-think)
 
+[Gruppetta, S. (2025d, June 11). Are Python dictionaries ordered data structures? The Python Coding Stack.](https://www.thepythoncodingstack.com/p/are-python-dictionaries-ordered-data)
+
+
 [Back to the top](#top)
 
 
@@ -1462,6 +1468,11 @@ Both lists and tuples can be iterated over using `for` loops. The `enumerate()` 
 
 Page Reference: [Working with Lists and Tuples](https://launchschool.com/lessons/1b66cd61/assignments/6992af5a)
 
+Further Reference:
+
+[Gruppetta, S. (2025e, June 20). I Want to Remove Duplicates from a Python List • How Do I Do It? The Python Coding Stack.](https://www.thepythoncodingstack.com/p/remove-duplicates-from-python-list)
+
+
 [Back to the top](#top)
 
 ***
@@ -1638,6 +1649,7 @@ Sequences and collections can be converted to sets using `set()`. Order is not m
 
 
 Page Reference: [Working with Dictionaries, Sets and Frozen Sets](https://launchschool.com/lessons/1b66cd61/assignments/cf779435)
+
 
 [Back to the top](#top)
 
@@ -1935,4 +1947,400 @@ Selection and transformation are fundamental operations for manipulating data in
 Page Referene:[Selection and Transformation](https://launchschool.com/lessons/1b66cd61/assignments/2c947dfc)
 [Back to the top](#top)
 
+***
+
+## Sorting
+
+### What is Sorting?
+
+Sorting is the process of arranging items within a collection into a **predictable sequence or order**. This is particularly important for lists, where element access is via index, making their order crucial. While lists are the primary focus, the principles extend to other collection types.
+
+
+### Sortable and Non-Sortable Collection Types
+
+**Lists**: Lists are directly sortable using built-in methods and functions. The order in which elements appear is significant.
+
+**Strings**: Strings are *immutable*, meaning they don't have access to any built-in sorting methods. However, their characters can be sorted using the `sorted()` function, and the result can then be rejoined into a new string.
+
+**Dictionaries**: Dictionaries are also not directly sortable in the traditional sense. While you cannot sort a dictionary itself, you can extract and display its contents in a sorted manner by sorting its keys or values into a list and then iterating through that list. Python 3.7 and later versions maintain dictionaries in **key insertion order**, meaning the order of entries is preserved from when they were first added. If a key-value pair is removed and re-inserted, it will appear at the end of the dictionary.
+
+
+### Built-in Sorting Tools in Python
+
+Python provides two primary tools for sorting:
+
+**`sorted()` function**: This built-in function returns a new sorted list without modifying the original collection.
+- Example: `sorted([2, 11, 9, 4, 107, 21, 1])` returns `[1, 2, 4, 9, 11, 21, 107]`.
+- Example: `sorted(['c', 'a', 'e', 'b', 'd'])` returns `['a', 'b', 'c', 'd', 'e']`.
+
+**`list.sort()` method**: This method modifies the list in-place and returns `None`. This distinction is crucial to avoid confusion and unintended side effects in your code.
+
+### How Sorting Works: Comparisons and the Unicode Standard
+
+**Comparisons are at the heart of how sorting works.** Sorting algorithms compare items to rearrange the collection into the desired order.
+
+**Numerical Sorting**: For numbers, `sorted()` and `list.sort()` perform natural numerical sorting by default.
+**String Sorting (Alphabetical/Lexicographical)**:
+- Python compares strings character by character. If characters at the same position are equal, it moves to the next.
+- If one string is shorter but equal up to its length, the shorter string comes first (e.g., `'cap'` before `'cape'`).
+
+#### Unicode Standard and `ord()`
+
+The ordering of characters in a string is determined by their **code point in the Unicode standard**. The `ord()` function can be used to determine a character's Unicode code point.
+
+##### Key Unicode/ASCII Rules for Sorting:
+
+**Uppercase letters come before lowercase letters**.  
+_Example_: `'C' < 'a'` because `ord('C')` is 67 and `ord('a')` is 97.
+
+**Digits and most punctuation come before letters**.  
+_Example_: `'+' < '3'` because `ord('+')` is 43 and `ord('3')` is 51.
+There are punctuation characters between uppercase and lowercase letters, and after all letters.
+    - Extended ASCII characters (code points 128–255) come after standard 7-bit ASCII.
+    - All other Unicode characters (code points 256 and above) come after ASCII and extended ASCII.
+
+### Reverse Sorting
+
+Both `sorted()` and `list.sort()` accept a `reverse` keyword argument. Setting `reverse=True` will sort the collection in descending order. The default value is `False`, for ascending order.
+
+**Example**:  `sorted([2, 11, 9, 4, 107, 21, 1], reverse=True)` returns `[107, 21, 11, 9, 4, 2, 1]`.
+
+
+### Custom Sorting with `key` and First-Class Functions
+
+For more complex sorting criteria, both `sorted()` and `list.sort()` accept a `key` keyword argument.
+
+#### First-Class Functions
+
+In Python, functions are **first-class objects**, meaning they can be assigned to variables, passed as arguments to other functions, and returned as values from functions. This is fundamental to custom sorting.
+
+#### Higher-Order Functions
+
+Functions that accept other functions as arguments or return functions are called **higher-order functions**. Since `sorted()` and `list.sort()` accept a function as an argument for `key`, they are higher-order functions.
+
+#### `key` Argument Usage
+
+The `key` argument takes a function object. This function is called _for each object from the list_ and _transforms each element into a value that Python will use for comparison during the sorting process_. Python then compares these transformed values to determine the final sort order of the original items.
+
+#### Examples:
+
+**Sorting by Length**:  `sorted(words, key=len)` can sort a list of strings by their length.  
+_Example_: `['pie', 'apple', 'shortcake']`.
+
+**Case-Insensitive Sorting**:   To sort strings case-insensitively, you can pass `str.lower` as the key.  
+_Example_: `sorted(["Cat", "dog", "ZEBRA", "monkey"], key=str.lower)` returns `["Cat", "dog", "monkey", "ZEBRA"]`.
+
+**Sorting by Multiple Criteria (Tuples as Keys)**: The function passed as `key` can return a tuple. When it does, `sorted()` and `list.sort()` compare the tuples element by element. This allows for multi-level sorting.
+
+_Example_: To sort a list of people `(name, age)` first by age, then by name if ages are equal, a custom `person_key` function can return `(age, name)`. This ensures the elements in the list are first sorted by age, and, if two persons have the same age, then the values will be sorted by their name.
+
+
+Page Reference:[Sorting](https://launchschool.com/lessons/76ecb255/assignments/6a0df143)
+[Back to the top](#top)
+
+***
+
+## Nested Data Structures
+
+Nested data structures are a common feature in Python, where **collections contain other collections**. This allows for the creation of complex data organizations. The document primarily uses lists as examples, demonstrating how they can contain other lists, dictionaries, tuples, and sets.
+
+
+### Interacting with Nested Collection Elements
+
+Accessing elements within nested structures requires chaining element references. Each inner collection retains its own index, even when housed within an outer collection.
+
+**Accessing inner lists:**  To retrieve an inner list, you access it like any other list element.  
+*Example:*  
+```python
+lst = [[1, 3], [2]]
+lst[0]  # returns [1, 3]
+```
+
+**Accessing elements within inner lists:**  To access an element inside a nested list, you chain the indices.  
+*Example:*  
+```python
+lst = [[1, 3], [2]]
+lst[0][1]  # returns 3
+```
+
+**Accessing elements in multi-layered structures:**  The concept extends to more layers.  
+*Example:*  
+```python
+lst = [[1, [9]], [2]]
+lst[0][1][0]  # returns 9
+```
+
+### Updating Nested Collection Elements
+
+Updating elements in nested structures also involves chained actions, where the first part references the element, and the second part performs the reassignment or modification.
+
+**Replacing an entire inner collection:**  You can replace an inner collection with a new value (e.g., a string) by directly assigning to its index in the outer list. This is a "destructive action."  
+*Example:*  
+```python
+lst = [[1, 3], [2]]
+lst[1] = 'hi there' # lst is now [[1, 3], 'hi there']
+```
+
+**Modifying a value within a nested list:**  This is a "chained action" where `lst[0]` returns the inner list, and then `[1] = 5` reassigns the element within that inner list.  
+*Example:*  
+```python
+lst = [[1, 3], [2]]
+lst[0][1] = 5 # lst is now [[1, 5], [2]]
+```
+
+**Inserting elements into an inner list:**  The `append()` method can be chained with an element reference to add new elements to an inner list.  
+*Examples:*  
+```python
+lst = [[1], [2]]
+lst[0].append(7)   # lst is now [[1, 7], [2]]
+
+lst[0].append([9])  # lst is now [[1, 7, [9]], [2]]
+```
+
+**Inserting key/value pairs into nested dictionaries:**  Similar to lists, you reference the inner dictionary first, then use standard dictionary key/value creation syntax.  
+*Example:*  
+```python
+lst = [{"a": "ant"}, {"b": "bear"}]
+lst[0]["c"] = "cat" # lst is now [{'a': 'ant', 'c': 'cat'}, {'b': 'bear'}]
+```
+
+### Other Nested Structures and Hashability
+
+Python lists can contain various data types, including dictionaries, tuples, sets, and frozen sets.
+
+**Dictionaries:**  While the keys in a dictionary must be hashable, the values can be any type.
+
+**Sets and Frozen Sets:**   Sets and frozen sets can also contain nested collections. **However, collections must be hashable**. Sets and frozen sets *cannot* contain lists, dictionaries, or other (non-frozen) sets. Tuples and frozen sets *are* hashable and can be contained within sets.
+
+### Variable References and Pointers in Nested Collections
+
+A crucial concept when working with nested collections is understanding that **variables store references to objects, not the objects themselves**. When an outer collection contains other collections, it holds references to those inner collection objects.
+
+**Modifying a referenced object affects all references:**  
+*Example:*  
+```python
+a = [1, 3]
+lst = [a]
+a[1] = 5 # lst[0] is now [1, 5]
+```
+
+**Modifying through different references:**  
+*Example:*  
+```python
+a = [1, 3]
+lst = [a]
+lst[0][1] = 8    # a is now [1, 8]
+```
+
+In both cases, we're modifying the object that `a` and `lst[0]` point to; we now have two ways to reference the same object.
+
+**Importance of understanding pointers:** This *fundamental concept* is critical for avoiding unexpected behavior.
+
+
+### Copying Nested Collections: Shallow vs. Deep Copies
+
+When copying collections, it's essential to understand the difference between shallow and deep copies, especially with nested structures.
+
+#### Shallow Copying
+
+A shallow copy **creates a new copy of the object, but doesn't create new versions of any nested mutable objects.** Instead, it copies references to those nested mutable objects.
+
+**Behavior:**
+* Changes to elements at the top level of the new list will **not** affect the original.
+* Changes to elements within nested mutable objects **will** be reflected in both the original and the new copy because they still share the same nested objects.
+* This is often desired for performance reasons, as it's less resource-intensive.
+
+**Techniques for Shallow Copying:**
+
+* `list()` function:  
+```python
+copy_of_lst = list(lst)
+```
+
+* Slicing (very Pythonic):  
+```python
+copy_of_lst = lst[:]
+```
+
+* `.copy()` method (explicit, concise, readable; available for lists, sets, frozen sets, dictionaries):  
+```python
+copy_of_lst = lst.copy()
+```
+
+* `copy.copy()` from `copy` module (works with all iterable collections and returns the same type):  
+```python
+import copy
+copy_of_lst = copy.copy(lst)
+```
+
+**Key takeaway:**  The critical thing to be aware of is what level you're working at, especially when working with nested collections. If you mutate a shared nested object, the change affects all references to that object.
+
+### Deep Copying
+
+A deep copy **creates a new copy of the object, and recursively creates new copies of all the nested mutable objects in the original object.**
+
+**Behavior:**
+* Changes to elements at the top level of the new list will **not** affect the original.
+* Changes to elements within nested mutable objects in the new list will **not** affect the original, as completely new copies of these nested objects have been created.
+* It can take a great deal more processing to make a deep copy than a shallow copy. Thus, think before you deep copy. Only do it when you need it.
+
+**Technique for Deep Copying:**
+*`copy.deepcopy()` from the `copy` module (works for lists, dictionaries, tuples, ranges, etc.):  
+```python
+import copy
+new_lst = copy.deepcopy(lst)
+```
+
+Understanding nested data structures, variable references, and the nuances of shallow vs. deep copying is crucial for effective and predictable manipulation of complex data in Python. Mastering these concepts **clarifies our understanding of collections and how to work with them**, enabling developers to implement robust solutions.
+
+Page Reference: [Nested Data Structures](https://launchschool.com/lessons/76ecb255/assignments/fe31086e)
+[Back to the top](#top)
+
+***
+
+## Comprehensions
+
+
+Comprehensions in Python are presented as a "shorthand for creating collections like lists, dictionaries, and sets." They are praised for making code "more concise and readable," enabling the creation of collections in a single line where multiple lines of loops would otherwise be required.
+
+## Types of Comprehensions:
+
+### List Comprehensions:  
+
+* Structure: The basic structure is `[output_expression for item in existing_list if condition]`.
+* Components:  
+    * `output_expression`: Determines values in the returned list.  
+    * `for item in existing_list`: Describes the looping action.  
+    * `if condition`: Optional part for selection criteria (filtering).  
+    * Brackets `[ ]`: Identify it as a list comprehension.  
+    
+**Functionality**: Primarily used for "transformations on lists," taking an existing list and creating a new one where each element is programmatically transformed. They also excel at "filtering" elements based on a condition, or combining both transformation and filtering.
+
+* Example (Transformation):  
+
+```python
+nums = [1, 2, 3, 4, 5]
+squared = [num**2 for num in nums]
+print(squared) # [1, 4, 9, 16, 25]
+```
+
+* Example (Filtering):  
+```python
+nums = [1, 2, 3, 4, 5]
+evens = [num for num in nums if num % 2 == 0]
+print(evens) # [2, 4]
+```
+
+### Set Comprehensions:  
+
+"Nearly identical to list comprehensions," but the output is a "set, an unordered collection with no duplicate values."
+
+* Uses "curly braces" {} instead of square brackets.
+* Important Note: Even without explicit filtering, a set comprehension can result in "fewer items than the original list" due to the elimination of duplicates.
+* Example:  
+```python
+nums = [1, 1, 2, 3, 4, 4, 5]
+distinct_squares = {num**2 for num in nums}
+print(distinct_squares) # {1, 4, 9, 16, 25}
+```
+
+### Dictionary Comprehensions:  
+
+* Also "nearly identical to list comprehensions," outputting a dictionary.
+* Uses "curly braces" {}.
+* The output_expression is a key_expression: value_expression pair.
+* Example:  
+```python
+fruits = ['apple', 'banana', 'cherry']
+fruit_length = {fruit: len(fruit) for fruit in fruits}
+print(fruit_length) # {'apple': 5, 'banana': 6, 'cherry': 6}
+```
+
+### No Tuple Comprehensions:  
+
+Python does not have tuple comprehensions, and what might appear to be one is actually a "generator," a topic for a later course.
+
+
+### Nested Comprehensions:
+
+* Used for "nested lists or more advanced needs," such as flattening a matrix.
+* Involve multiple `for` clauses, akin to nested loops.
+* Structure: `[output_expression for sublist in outer_list if condition1 for item in sublist if condition2]`
+* Caution: "Be careful with nested comprehensions. They can be incredibly difficult to read and debug. Sometimes, you just want to use regular loops."
+
+Pattern:
+```python
+[output_expression for sublist in outer_list
+                   if condition1
+                   for item in sublist
+                   if condition2]
+```
+
+Example:
+```python
+matrix = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+]
+
+flattened_matrix = []
+
+for row in matrix:
+    for cell in row:
+        flattened_matrix.append(cell)
+
+print(flattened_matrix)  # [1, 2, 3, 4, 5, 6, 7, 8, 9]
+```
+
+### Using Comprehensions with Other Collections:  
+
+Comprehensions are versatile and can be used with "any iterable data type," including "tuples, ranges, strings, frozen sets, files, and more," not just lists and dictionaries.
+
+### When NOT to Use Comprehensions (Anti-Patterns):  
+
+While useful, comprehensions can be overused.
+
+* **Side Effects (e.g., printing)**:
+
+Do not use comprehensions if you are "not using the return value." For example, using `[print(num) for num in nums]` will create a list of `None` values because the print function returns None. A regular for loop is more appropriate for actions with side effects.
+
+* Incorrect Use Example:  
+```python
+nums = [1, 2, 3, 4, 5]
+values = [print(num) for num in nums if num % 2 != 0]
+print(values) # [None, None, None]
+```
+      
+* Correct Alternative:  
+```python
+nums = [1, 2, 3, 4, 5]
+for num in nums:
+    if num % 2 != 0:
+        print(num)
+```
+
+* Identity Transformations:  If the comprehension is a simple identity transformation (e.g., `[x for x in some_iterable]`), it's better to use the collection's constructor directly, such as `list(string)` instead of `[c for c in string]`.
+
+
+**In short, don't use comprehensions if you aren't using the return value.**
+
+### Summary:  
+
+Comprehensions offer a compact and elegant way to transform data in collections. They enhance conciseness and readability, but developers are advised to use them wisely" If a comprehension becomes too complex, it might be clearer to revert to a traditional loop for the sake of readability. The document concludes by emphasizing that "Practice is key" to mastering comprehensions.
+
+
+Page Reference: [Comprehensions](https://launchschool.com/lessons/76ecb255/assignments/5780058f)
+
+Further References:
+
+[Gruppetta, S. (2024g, March 16). If you find if..else in list comprehensions confusing, read this, else. . . The Python Coding Stack.](https://www.thepythoncodingstack.com/p/conditional-expression-ternary-operator-list-com?utm_source=publication-search)
+
+[Serrão, R. G. (n.d.-e). List comprehensions 101 | Pydon’t 🐍. Mathspp.](https://mathspp.com/blog/pydonts/list-comprehensions-101)
+
+Additional Resources:
+
+[Mathspp. (n.d.). GitHub - mathspp/comprehending-comprehensions: Materials for the ebook “Comprehending Comprehensions.” GitHub.](https://github.com/mathspp/comprehending-comprehensions)
+
+[Back to the top](#top)
 ***

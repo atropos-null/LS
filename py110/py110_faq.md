@@ -12,21 +12,21 @@ A **Python range object** is a special type of iterable sequence of numbers gene
 
 The `range()` function is versatile and accepts one, two, or three arguments:
 
-- **One argument** (`range(end)`):  
+* **One argument** (`range(end)`):  
   Generates numbers starting from `0` up to, but not including, the `end` value.  
   _Example:_  
   ```python
   list(range(3))  # [0, 1, 2]
   ```
 
-- **Two arguments** (`range(start, end)`):  
+* **Two arguments** (`range(start, end)`):  
   Generates numbers starting from `start` up to, but not including, the `end` value.  
   _Example:_  
   ```python
   list(range(1, 3))  # [1, 2]
   ```
 
-- **Three arguments** (`range(start, end, step)`):  
+* **Three arguments** (`range(start, end, step)`):  
   Generates numbers starting from `start`, incremented by the `step` value, up to, but not including, the `end` value. A negative step can be used to generate a decreasing sequence.  
   _Examples:_  
   ```python
@@ -47,13 +47,13 @@ The standard way to iterate over a range object is using a `for` loop. To simult
 
 Python strings provide several methods for searching and counting substrings:
 
-- `str.index(sub[, start[, end]])`:  
+* `str.index(sub[, start[, end]])`:  
   Searches for a substring `sub` and returns the lowest index where it is found. If the substring is not found, it raises a `ValueError`.
 
-- `str.find(sub[, start[, end]])`:  
+* `str.find(sub[, start[, end]])`:  
   Similar to `index()`, it searches for a substring `sub` and returns the lowest index where it is found. However, if the substring is not found, it returns `-1` instead of raising an error.
 
-- `str.count(sub[, start[, end]])`:  
+* `str.count(sub[, start[, end]])`:  
   Returns the number of non-overlapping occurrences of a substring `sub` within the string.
 
 All three methods support optional `start` and `end` arguments to limit the search to a specific slice of the string.
@@ -64,11 +64,11 @@ All three methods support optional `start` and `end` arguments to limit the sear
 
 Python offers several methods for changing string case:
 
-- `str.upper()`: Converts all characters in the string to uppercase.
-- `str.lower()`: Converts all characters in the string to lowercase.
-- `str.casefold()`: Provides an internationalized version of `lower()`, designed for case-insensitive comparisons, especially with Unicode characters that have complex case variations.
-- `str.capitalize()`: Capitalizes the first character of the string and converts the rest to lowercase.
-- `str.swapcase()`: Inverts the case of each character in the string. It's also internationalized. Note that applying `swapcase()` twice may not always return the original string due to certain Unicode characteristics.
+* `str.upper()`: Converts all characters in the string to uppercase.
+* `str.lower()`: Converts all characters in the string to lowercase.
+* `str.casefold()`: Provides an internationalized version of `lower()`, designed for case-insensitive comparisons, especially with Unicode characters that have complex case variations.
+* `str.capitalize()`: Capitalizes the first character of the string and converts the rest to lowercase.
+* `str.swapcase()`: Inverts the case of each character in the string. It's also internationalized. Note that applying `swapcase()` twice may not always return the original string due to certain Unicode characteristics.
 
 ---
 
@@ -76,10 +76,10 @@ Python offers several methods for changing string case:
 
 `str.join()` and `str.split()` are inverse operations for manipulating sequences of strings:
 
-- `str.join(iterable)`:  
+* `str.join(iterable)`:  
   Concatenates (joins) strings from an iterable (like a list or tuple) into a single string. The string the method is called on acts as the separator between the elements. All elements in the iterable must be strings; otherwise, a `TypeError` is raised.
 
-- `str.split(sep=None, maxsplit=-1)`:  
+* `str.split(sep=None, maxsplit=-1)`:  
   Breaks a string into a list of substrings based on a specified separator `sep`. If `sep` is not provided, it splits at any sequence of whitespace. An optional `maxsplit` argument limits the number of splits performed. Splitting with an empty string as the separator raises a `ValueError`.
 
 ---
@@ -88,11 +88,11 @@ Python offers several methods for changing string case:
 
 Python provides convenient methods for removing whitespace or specific characters from the ends of a string:
 
-- `str.strip([chars])`: Removes leading and trailing whitespace characters by default. If an optional string `chars` is provided, it removes any combination of characters specified in `chars` from both the beginning and end of the string.
+* `str.strip([chars])`: Removes leading and trailing whitespace characters by default. If an optional string `chars` is provided, it removes any combination of characters specified in `chars` from both the beginning and end of the string.
 
-- `str.lstrip([chars])`: Removes leading whitespace characters by default. If `chars` is provided, it removes characters from the left (beginning) of the string.
+* `str.lstrip([chars])`: Removes leading whitespace characters by default. If `chars` is provided, it removes characters from the left (beginning) of the string.
 
-- `str.rstrip([chars])`: Removes trailing whitespace characters by default. If `chars` is provided, it removes characters from the right (end) of the string.
+* `str.rstrip([chars])`: Removes trailing whitespace characters by default. If `chars` is provided, it removes characters from the right (end) of the string.
 
 ---
 
@@ -104,91 +104,91 @@ The `str()` function is the primary way to convert various data types into their
 
 ### Fundamental Differences Between Lists and Tuples
 
-- **Mutability**:  
-  - **Lists** are *mutable*: their contents can be changed after creation.
-  - **Tuples** are *immutable*: their contents cannot be modified after they are defined.
-- **Use Cases**:  
-  - Lists are suitable for dynamic collections where data may change.
-  - Tuples are ideal for fixed sets of data that should not change.
+* **Mutability**:  
+  * **Lists** are *mutable*: their contents can be changed after creation.
+  * **Tuples** are *immutable*: their contents cannot be modified after they are defined.
+* **Use Cases**:  
+  * Lists are suitable for dynamic collections where data may change.
+  * Tuples are ideal for fixed sets of data that should not change.
 
 ---
 
 ### Counting Occurrences in Lists and Tuples
 
-- Use the `.count()` method for both lists and tuples to determine the number of times an item appears:
+* Use the `.count()` method for both lists and tuples to determine the number of times an item appears:
   ```python
   my_list.count(item)
   my_tuple.count(item)
   ```
-  - Returns `0` if the item is not present.
+  * Returns `0` if the item is not present.
 
 ---
 
 ### Finding the Position of an Element
 
-- Use the `.index()` method to find the index of the first occurrence of an object in a list or tuple:
+* Use the `.index()` method to find the index of the first occurrence of an object in a list or tuple:
   ```python
   my_list.index(item)
   my_tuple.index(item)
   ```
-  - Optional arguments: `start` and `end` to limit the search range.
-  - Raises a `ValueError` if the object is not found.
+  * Optional arguments: `start` and `end` to limit the search range.
+  * Raises a `ValueError` if the object is not found.
 
 ---
 
 ### Adding Elements to a Python List
 
-1. **`.append(item)`**: Adds a single item to the end of the list.
-2. **`.insert(index, item)`**: Inserts an item at a specified index.
-3. **`.extend(iterable)`**: Adds all items from another iterable (list, tuple, set, etc.) to the end of the list.
-   - Note: Adding from an unordered iterable like a set may result in unpredictable order.
+1. `.append(item)`: Adds a single item to the end of the list.
+2. `.insert(index, item)`: Inserts an item at a specified index.
+3. `.extend(iterable)`: Adds all items from another iterable (list, tuple, set, etc.) to the end of the list.
+   * Note: Adding from an unordered iterable like a set may result in unpredictable order.
 
 ---
 
 ### Removing Elements from a Python List
 
-- **`.remove(value)`**: Removes the first occurrence of the specified value. Raises a `ValueError` if not found.
-- **`.pop(index)`**: Removes and returns the item at the given index. If no index is provided, removes and returns the last item. Raises an `IndexError` if the list is empty.
+* `.remove(value)`: Removes the first occurrence of the specified value. Raises a `ValueError` if not found.
+* `.pop(index)`: Removes and returns the item at the given index. If no index is provided, removes and returns the last item. Raises an `IndexError` if the list is empty.
 
 ---
 
 ### Sorting a Python List
 
-- Use the `.sort()` method to sort a list in-place (ascending order by default).
-  - **Comparable Elements**: List must contain elements that can be compared (e.g., all numbers or all strings).
-  - **TypeError**: Raised if the list contains incompatible types.
-  - **Reverse Order**: Use `reverse=True`.
-  - **Custom Criteria**: Use the `key` argument (e.g., `key=str.casefold` for case-insensitive sort, `key=int` for numeric string sort).
+* Use the `.sort()` method to sort a list in-place (ascending order by default).
+  * **Comparable Elements**: List must contain elements that can be compared (e.g., all numbers or all strings).
+  * **TypeError**: Raised if the list contains incompatible types.
+  * **Reverse Order**: Use `reverse=True`.
+  * **Custom Criteria**: Use the `key` argument (e.g., `key=str.casefold` for case-insensitive sort, `key=int` for numeric string sort).
 
 ---
 
 ### Converting Between Collection Types
 
-- **Strings to Lists/Tuples**:  
+* **Strings to Lists/Tuples**:  
   `list(string)` or `tuple(string)` — creates a list or tuple of individual characters.
 
-- **Lists to Tuples and Vice Versa**:  
+* **Lists to Tuples and Vice Versa**:  
   `tuple(list)` or `list(tuple)`
 
-- **Dictionaries to Lists/Tuples**:
-  - **Keys**: `list(dictionary.keys())` or `tuple(dictionary.keys())`
-  - **Values**: `list(dictionary.values())` or `tuple(dictionary.values())`
-  - **Key-Value Pairs**: `list(dictionary.items())` or `tuple(dictionary.items())` (results in a list or tuple of key-value tuples)
+* **Dictionaries to Lists/Tuples**:
+  * **Keys**: `list(dictionary.keys())` or `tuple(dictionary.keys())`
+  * **Values**: `list(dictionary.values())` or `tuple(dictionary.values())`
+  * **Key-Value Pairs**: `list(dictionary.items())` or `tuple(dictionary.items())` (results in a list or tuple of key-value tuples)
 
-- **Sets/Frozensets to Lists/Tuples**:  
+* **Sets/Frozensets to Lists/Tuples**:  
   `list(set)` or `tuple(set)`  
-  - Note: Sets are unordered, so resulting order in list/tuple is unpredictable.
+  * Note: Sets are unordered, so resulting order in list/tuple is unpredictable.
 
 ---
 
 ### Iterating Over Elements in Lists and Tuples
 
-- Both are iterable; you can use a `for` loop to access each element:
+* Both are iterable; you can use a `for` loop to access each element:
   ```python
   for item in sequence:
       # process item
   ```
-- To access both index and value, use `enumerate()`:
+* To access both index and value, use `enumerate()`:
   ```python
   for index, item in enumerate(sequence):
       # process index and item
@@ -199,89 +199,89 @@ The `str()` function is the primary way to convert various data types into their
 ### Dictionaries in Python
 
 **Primary Characteristics:**
-- Dictionaries are a collection data type that stores data as **key-value pairs**.
-- **Values** can be of any data type, while **keys** must be **hashable** and **unique**.
-- Values are accessed using their corresponding keys (not numerical indices).
-- **Mutable**: Dictionaries can be changed after creation (items can be added, removed, or updated).
+* Dictionaries are a collection data type that stores data as **key-value pairs**.
+* **Values** can be of any data type, while **keys** must be **hashable** and **unique**.
+* Values are accessed using their corresponding keys (not numerical indices).
+* **Mutable**: Dictionaries can be changed after creation (items can be added, removed, or updated).
 
 ---
 
 ### Checking for Key Existence and Accessing Keys
 
-- **Check if a key exists:**  
+* **Check if a key exists:**  
   Use `key in dict` or `key not in dict`.
-- **Accessing a non-existent key:**  
+* **Accessing a non-existent key:**  
   Raises a `KeyError`.
 
 ---
 
 ### `get()` vs `setdefault()` Methods
 
-- **`get()`**:  
-  - Retrieves the value for a given key.
-  - Returns `None` (or a specified default value) if the key is not found.
-  - Does **not** modify the dictionary.
+* **`get()`**:  
+  * Retrieves the value for a given key.
+  * Returns `None` (or a specified default value) if the key is not found.
+  * Does **not** modify the dictionary.
 
-- **`setdefault()`**:  
-  - Also retrieves the value for a given key.
-  - If the key exists, returns its value (no change).
-  - If the key does **not** exist, adds the key with a specified default value and returns it.
-  - **Modifies** the dictionary if the key is missing.
+* **`setdefault()`**:  
+  * Also retrieves the value for a given key.
+  * If the key exists, returns its value (no change).
+  * If the key does **not** exist, adds the key with a specified default value and returns it.
+  * **Modifies** the dictionary if the key is missing.
 
 ---
 
 ## Merging Dictionaries
 
-- **`update()` method**:  
+* **`update()` method**:  
   Merges key-value pairs from one dictionary into another; overwrites values for matching keys.
 
-- **Merge Operators (Python 3.9+)**:
-  - `|` creates a new merged dictionary: `merged = dict1 | dict2`
-  - `|=` merges in place (like `update()`): `dict1 |= dict2`
+* **Merge Operators (Python 3.9+)**:
+  * `|` creates a new merged dictionary: `merged = dict1 | dict2`
+  * `|=` merges in place (like `update()`): `dict1 |= dict2`
 
 ---
 
 ## Sets in Python
 
 **Key Features:**
-- **Unordered** collection of **unique** objects.
-- Designed for efficient membership tests and set operations (union, intersection, difference).
-- **Mutable**: Can add or remove elements.
-- **Unordered**: No guarantee of item order.
+* **Unordered** collection of **unique** objects.
+* Designed for efficient membership tests and set operations (union, intersection, difference).
+* **Mutable**: Can add or remove elements.
+* **Unordered**: No guarantee of item order.
 
 ---
 
 ## Adding and Removing Set Elements
 
-- **Add:**  
+* **Add:**  
   `set.add(element)` — Adds an element (does nothing if already present).
 
-- **Remove:**  
-  - `set.remove(element)` — Removes element, raises `KeyError` if not found.
-  - `set.discard(element)` — Removes element, does nothing if not found.
-  - `set.pop()` — Removes and returns an arbitrary element, raises `KeyError` if empty.
-  - `set.clear()` — Removes all elements.
+* **Remove:**  
+  * `set.remove(element)` — Removes element, raises `KeyError` if not found.
+  * `set.discard(element)` — Removes element, does nothing if not found.
+  * `set.pop()` — Removes and returns an arbitrary element, raises `KeyError` if empty.
+  * `set.clear()` — Removes all elements.
 
 ---
 
 ## Subsets, Supersets, and Disjoint Sets
 
-- **Subset:**  
-  - `A <= B` or `A.issubset(B)` — All elements of A are in B.
-  - Proper subset: `A < B` (A is a subset but not equal to B).
+* **Subset:**  
+  * `A <= B` or `A.issubset(B)` — All elements of A are in B.
+  * Proper subset: `A < B` (A is a subset but not equal to B).
 
-- **Superset:**  
-  - `A >= B` or `A.issuperset(B)` — All elements of B are in A.
-  - Proper superset: `A > B` (A is a superset but not equal to B).
+* **Superset:**  
+  * `A >= B` or `A.issuperset(B)` — All elements of B are in A.
+  * Proper superset: `A > B` (A is a superset but not equal to B).
 
-- **Disjoint Sets:**  
-  - `A.isdisjoint(B)` — True if A and B have no elements in common.
+* **Disjoint Sets:**  
+  * `A.isdisjoint(B)` — True if A and B have no elements in common.
 
 # Concatenating Iterables and Unpacking Operators in Python
 
 ## Concatenating Iterables (Lists and Tuples)
 
-- **Traditional Concatenation:**  
+* **Traditional Concatenation:**  
   The `+` operator is used to concatenate iterables of the same type.  
   Example:
   ```python
@@ -289,14 +289,14 @@ The `str()` function is the primary way to convert various data types into their
   (1, 2) + (3, 4)      # (1, 2, 3, 4)
   ```
 
-- **Limitation of the `+` Operator:**  
+* **Limitation of the `+` Operator:**  
   You cannot directly concatenate iterables of different types using `+`.  
   Example:
   ```python
   [1, 2] + (3, 4)      # TypeError
   ```
 
-- **Concatenating Heterogeneous Iterables (Traditional Method):**  
+* **Concatenating Heterogeneous Iterables (Traditional Method):**  
   To concatenate different iterable types, convert them to a common type first.  
   Example:
   ```python
@@ -309,7 +309,7 @@ The `str()` function is the primary way to convert various data types into their
 
 ## The Unary `*` Operator and Iterables
 
-- **Purpose:**  
+* **Purpose:**  
   The unary `*` operator "unpacks" the elements of an iterable, treating each element as a separate value.
   Example:
   ```python
@@ -317,7 +317,7 @@ The `str()` function is the primary way to convert various data types into their
   print(*my_list)      # Output: 1 2 3
   ```
 
-- **Elegant Concatenation with `*`:**  
+* **Elegant Concatenation with `*`:**  
   You can unpack heterogeneous iterables into a new collection without explicit type conversions.
   Example:
   ```python
@@ -328,7 +328,7 @@ The `str()` function is the primary way to convert various data types into their
 
 ### Other Uses of the `*` Operator
 
-- **Passing Arguments to Functions:**  
+* **Passing Arguments to Functions:**  
   Use `*` to unpack elements of an iterable as separate arguments.
   Example:
   ```python
@@ -343,11 +343,11 @@ The `str()` function is the primary way to convert various data types into their
 
 ## Nested Unpacking
 
-- **Definition:**  
+* **Definition:**  
   Nested unpacking allows you to unpack inner iterables within an outer iterable during assignment.
-- **Availability:**  
+* **Availability:**  
   Introduced in Python 3.8.
-- **Example:**
+* **Example:**
   ```python
   data = (1, (2, 3))
   a, (b, c) = data
@@ -358,16 +358,16 @@ The `str()` function is the primary way to convert various data types into their
 
 ## The Unary `**` Operator with Dictionaries
 
-- **Purpose:**  
+* **Purpose:**  
   The unary `**` operator unpacks the key-value pairs of a dictionary.
-- **Use Cases:**
-  - **Merging Dictionaries:**
+* **Use Cases:**
+  * **Merging Dictionaries:**
     ```python
     dict1 = {'a': 1}
     dict2 = {'b': 2}
     merged = {**dict1, **dict2}    # {'a': 1, 'b': 2}
     ```
-  - **Collecting Keyword Arguments:**
+  * **Collecting Keyword Arguments:**
     ```python
     def foo(**kwargs):
         print(kwargs)
@@ -376,26 +376,204 @@ The `str()` function is the primary way to convert various data types into their
 
 ## Selection and Transformation
 
-**What are selection and transformation in the context of working with collections?**
-Selection is the process of choosing specific elements from a collection based on one or more defined criteria. Transformation, on the other hand, involves modifying or manipulating every element within a collection. When combined with selection, transformation applies the manipulation only to the elements that meet the selection criteria.
+* **What are selection and transformation in the context of working with collections?**  
+  Selection is the process of choosing specific elements from a collection based on one or more defined criteria. Transformation, on the other hand, involves modifying or manipulating every element within a collection. When combined with selection, transformation applies the manipulation only to the elements that meet the selection criteria.
 
-**How do selection and transformation relate to iteration?**
-Selection and transformation both fundamentally rely on iteration (looping) through a collection. They utilize the basic elements of a loop: a loop structure, a way to keep track of the current position or element (a counter), a method for accessing the current element's value, and a mechanism to exit the loop. The core difference lies in the added criteria: selection uses criteria to decide which elements to include, while transformation uses criteria to define how to change the elements.
+* **How do selection and transformation relate to iteration?**  
+  Selection and transformation both fundamentally rely on iteration (looping) through a collection. They utilize the basic elements of a loop: a loop structure, a way to keep track of the current position or element (a counter), a method for accessing the current element's value, and a mechanism to exit the loop. The core difference lies in the added criteria: selection uses criteria to decide which elements to include, while transformation uses criteria to define how to change the elements.
 
-**What is the key difference in the output size between selection and transformation (without selection)?**
-Selection, by its nature of picking elements, will always result in a new collection that has the same number of elements as the original or fewer. Transformation applied to every element in a collection will always result in a new collection that has the same number of elements as the original collection.
+* **What is the key difference in the output size between selection and transformation (without selection)?**  
+  Selection, by its nature of picking elements, will always result in a new collection that has the same number of elements as the original or fewer. Transformation applied to every element in a collection will always result in a new collection that has the same number of elements as the original collection.
 
-**How are selection and transformation typically implemented using loops?**
-Both selection and transformation using loops involve iterating through each element of the collection. Selection commonly incorporates an if statement inside the loop to check if the current element meets the selection criteria. If it does, the element is included in the result. Transformation, when applied to all elements, modifies each element within the loop. If transformation is combined with selection, the if statement is used to determine which elements to transform, and the transformation is applied only within that conditional block.
+* **How are selection and transformation typically implemented using loops?**  
+  Both selection and transformation using loops involve iterating through each element of the collection. Selection commonly incorporates an if statement inside the loop to check if the current element meets the selection criteria. If it does, the element is included in the result. Transformation, when applied to all elements, modifies each element within the loop. If transformation is combined with selection, the if statement is used to determine which elements to transform, and the transformation is applied only within that conditional block.
 
-**What is the benefit of extracting selection and transformation logic into functions?**
-Extracting selection and transformation logic into dedicated functions allows for reusability and modularity. Instead of writing the same looping and conditional logic repeatedly, you can define a function that performs a specific selection or transformation (like selecting all odd numbers or doubling all elements) and then call that function on different collections as needed. This makes code cleaner, more organized, and easier to maintain.
+* **What is the benefit of extracting selection and transformation logic into functions?**  
+  Extracting selection and transformation logic into dedicated functions allows for reusability and modularity. Instead of writing the same looping and conditional logic repeatedly, you can define a function that performs a specific selection or transformation (like selecting all odd numbers or doubling all elements) and then call that function on different collections as needed. This makes code cleaner, more organized, and easier to maintain.
 
-**When performing a transformation, is the original collection always modified?**
-No, when performing a transformation, the original collection is not always modified. It is important to pay attention to whether the implementation of the transformation function mutates (changes) the original collection directly or returns a new collection with the transformed elements, leaving the original collection unchanged. Both approaches are possible, and the choice depends on the desired behavior.
+* **When performing a transformation, is the original collection always modified?**  
+  No, when performing a transformation, the original collection is not always modified. It is important to pay attention to whether the implementation of the transformation function mutates (changes) the original collection directly or returns a new collection with the transformed elements, leaving the original collection unchanged. Both approaches are possible, and the choice depends on the desired behavior.
 
-**How can selection and transformation functions be made more flexible?**
-Selection and transformation functions can be made more flexible by allowing additional parameters that specify the criteria for selection or transformation. Instead of hardcoding the criteria within the function (e.g., always selecting 'Fruit'), you can pass the criterion as an argument to the function (e.g., select_type(collection, criterion)), making the function capable of performing the operation based on different criteria provided by the caller.
+* **How can selection and transformation functions be made more flexible?**  
+  Selection and transformation functions can be made more flexible by allowing additional parameters that specify the criteria for selection or transformation. Instead of hardcoding the criteria within the function (e.g., always selecting 'Fruit'), you can pass the criterion as an argument to the function (e.g., select_type(collection, criterion)), making the function capable of performing the operation based on different criteria provided by the caller.
 
-**Can a transformation modify only a subset of elements in a collection?**
-Yes, a transformation can be designed to modify only a subset of elements in a collection. This is achieved by combining transformation with selection criteria within the loop. The transformation is only applied to elements that meet the specified condition. Even if no elements meet the criteria and no transformations occur, it is still considered a transformation (sometimes called an identity transformation) because the process of checking and potentially modifying every element has been performed.
+* **Can a transformation modify only a subset of elements in a collection?**  
+  Yes, a transformation can be designed to modify only a subset of elements in a collection. This is achieved by combining transformation with selection criteria within the loop. The transformation is only applied to elements that meet the specified condition. Even if no elements meet the criteria and no transformations occur, it is still considered a transformation (sometimes called an identity transformation) because the process of checking and potentially modifying every element has been performed.
+
+---
+
+# Python Sorting FAQ
+
+---
+
+## What is sorting in Python and why is it important for collections?
+
+Sorting in Python refers to arranging the items within a collection, such as a list, into a predictable sequence or order based on specific criteria. It's crucial for collections, especially lists, because elements are accessed by their index, making their order significant. While lists are commonly sorted, strings can be sorted by converting them to a list of characters, sorting, and then rejoining. Dictionaries, while not directly sortable in the traditional sense, can have their contents extracted (e.g., keys or values) and then processed or displayed in a sorted manner. Python 3.7 and later versions maintain dictionary key insertion order, which is a form of inherent ordering.
+
+---
+
+## What are the primary built-in tools for sorting in Python, and how do they differ?
+
+Python provides two main built-in tools for sorting: the `sorted()` function and the `list.sort()` method.
+
+* **`sorted()` function**: This function takes an iterable (like a list, string, or tuple) as an argument and returns a new sorted list, leaving the original collection unchanged.
+* **`list.sort()` method**: This method is specifically for lists. It sorts the list in-place, meaning it modifies the original list directly and returns `None`.
+
+**Key difference:**  
+`sorted()` creates a new sorted list, while `list.sort()` modifies the existing list.
+
+---
+
+## How does Python determine the order when sorting strings and characters, especially with mixed cases or special symbols?
+
+Python determines the order of characters and strings based on their Unicode code points. The `ord()` function can be used to reveal the numeric Unicode value of a character. When sorting:
+
+* **Case Sensitivity:** Uppercase letters have lower Unicode code points than lowercase letters. This means `'A'` comes before `'a'`, and `'Z'` comes before `'a'`. This is sometimes imprecisely called "ASCIIbetical order."
+* **Digits and Punctuation:** Digits and most punctuation marks generally have lower Unicode code points than letters, meaning they will come before letters in a default sort.
+* **Multi-character Strings:** When comparing strings with multiple characters, Python compares them character by character from left to right. If characters at the same position are equal, it moves to the next pair. If one string is a prefix of another (e.g., `'cap'` vs. `'cape'`), the shorter string comes first.
+
+---
+
+## Can sorting be done in reverse order in Python? If so, how?
+
+Yes, both the `sorted()` function and the `list.sort()` method support reverse (descending) sorting. This is achieved by using the `reverse` keyword argument. By default, `reverse` is set to `False` (ascending order). To sort in descending order, you set `reverse=True`.
+
+**Example:**
+```python
+sorted(numbers, reverse=True)  # sorts numbers from largest to smallest
+```
+
+---
+
+## What are "first-class functions" and "higher-order functions" in Python, and how do they relate to custom sorting?
+
+* **First-Class Functions:** In Python, functions are considered "first-class objects." This means they can be:
+  * Assigned to variables.
+  * Passed as arguments to other functions.
+  * Returned as the result of other functions.
+
+* **Higher-Order Functions:** These are functions that either take one or more functions as arguments or return a function as their result.
+
+**Relation to sorting:**  
+The `sorted()` function and `list.sort()` method are higher-order functions because they accept a function object as their `key` argument. This key function is a first-class function that transforms each element in the collection into a value that Python then uses for comparison during the sorting process, enabling tailored sorting criteria beyond the default.
+
+---
+
+## How is the key argument used in sorted() and list.sort() for custom sorting? Provide an example.
+
+The `key` keyword argument in `sorted()` and `list.sort()` allows for custom sorting criteria. It takes a function as its value. This function is called once for each item in the collection, and its return value is used by the sorting algorithm for comparison.
+
+**Example: Sorting words by length**
+```python
+words = ["apple", "pie", "shortcake"]
+sorted_words = sorted(words, key=len)
+print(sorted_words)  # Output: ['pie', 'apple', 'shortcake']
+```
+Here, `len` (the built-in length function) is passed as the key. The `sorted()` function calls `len()` for each word, and the words are then ordered based on their lengths.
+
+---
+
+## How can you achieve multi-criteria sorting (sorting by one attribute, then another) using the key argument?
+
+To achieve multi-criteria sorting, the function passed to the `key` argument should return a tuple of values. Python's sorting mechanism compares tuples element by element. It will first compare the first elements of the tuples, and if they are equal, it moves on to compare the second elements, and so on.
+
+**Example: Sorting people by age, then by name**
+```python
+people = [("Jack", 30), ("John", 25), ("Betty", 25), ("Anna", 30)]
+
+def person_key(person):
+    name, age = person
+    return (age, name) # Return a tuple: age first, then name
+
+sorted_people = sorted(people, key=person_key)
+print(sorted_people)
+# Output: [('Betty', 25), ('John', 25), ('Anna', 30), ('Jack', 30)]
+```
+
+Here, `person_key` returns `(age, name)`. The list is first sorted by age. If two people have the same age (e.g., Betty and John, or Anna and Jack), their names are then used as the secondary sorting criterion.
+
+---
+
+## What are some practical considerations or useful rules to remember when working with character and string sorting in Python?
+
+* **Uppercase before Lowercase:** Uppercase letters always come before their lowercase counterparts due to their lower Unicode values (e.g., `'A' < 'a'`). This often leads to "ASCIIbetical" results if not accounted for.
+* **Digits and Punctuation:** Digits and most punctuation characters typically have lower Unicode values than letters, meaning they will appear earlier in a default sort.
+* **Extended ASCII and Other Unicode:** Characters from "Extended ASCII" (code points 128-255) and other global scripts/symbols (code points 256 and above) will appear after standard ASCII characters, ordered by their respective Unicode values.
+* **Case-Insensitive Sorting:** For case-insensitive string sorting, use `str.lower` as the key function (e.g., `sorted(animals, key=str.lower)`).
+* **In-place vs. New List:** Remember the distinction between `list.sort()` (modifies in-place, returns `None`) and `sorted()` (returns a new sorted list, original unchanged) to avoid unexpected side effects.
+
+---
+
+## Nested Data Structures and Copying in Python
+
+* **What are nested data structures in Python, and how do you access their elements?**  
+  Nested data structures in Python refer to collections that contain other collections. For example, a list can contain other lists, dictionaries, tuples, sets, or frozensets. To access elements within a nested structure, you chain element references using bracket notation. Each level of nesting requires another set of brackets with the corresponding index or key.  
+  Example:  
+  ```python
+  lst = [[1, 3], [2]]
+  lst[0][1]  # Accesses the second element of the first inner list (value: 3)
+  ```
+  If you have a list containing a dictionary:  
+  ```python
+  lst = [{"a": "ant"}]
+  lst[0]["a"]  # Accesses the value "ant"
+  ```
+
+* **How do you update elements within nested data structures?**  
+  Updating elements in nested data structures involves chained references, just like accessing them. Assigning a new value changes the element destructively.  
+  Example:  
+  ```python
+  lst = [[1, 3], [2]]
+  lst[0][1] = 5  # Changes the second element of the first inner list to 5
+  ```
+  To insert a new key-value pair into a dictionary nested within a list:  
+  ```python
+  lst = [{"a": "ant"}]
+  lst[0]["c"] = "cat"  # Adds a new key-value pair to the first dictionary
+  ```
+
+* **Can all Python collection types be nested within each other without restrictions?**  
+  Not all Python collection types can be nested without restrictions, especially sets and frozensets. Sets and frozensets can only contain hashable objects, so they cannot directly contain mutable collections like lists, dictionaries, or other (non-frozen) sets. Tuples and frozensets themselves are hashable and can be elements of a set or frozenset.
+
+* **Explain the concept of "variable references for nested collections" and why it's important to understand.**  
+  When you create nested collections by adding existing variables (which are themselves collections) to a new outer collection, you are adding references (pointers) to those objects, not copies. If you modify the original variable, the corresponding element within the nested structure will also change, and vice versa. This is because both point to the same object in memory. Understanding this helps avoid unintended side-effects when working with nested data structures.
+
+* **What is a "shallow copy" of a collection, and what are its implications for nested mutable objects?**  
+  A shallow copy creates a new top-level collection, but does not copy nested mutable objects. Instead, the shallow copy shares references to those objects with the original.  
+  * Modifying a top-level element in the shallow copy does **not** affect the original.  
+  * Modifying a nested mutable object (like an inner list or dictionary) through the shallow copy **does** affect the original, since both the copy and original point to the same nested object.
+
+* **What are the common methods for performing a shallow copy of lists and dictionaries in Python?**  
+  * Using the `list()` or `dict()` constructor:  
+    ```python
+    copy_of_lst = list(lst)
+    copy_of_dict = dict(original_dict)
+    ```
+  * Using slicing (for lists):  
+    ```python
+    copy_of_lst = lst[:]
+    ```
+  * Using the `.copy()` method:  
+    ```python
+    copy_of_lst = lst.copy()
+    copy_of_dict = original_dict.copy()
+    ```
+  * Using the `copy.copy()` function from the `copy` module:  
+    ```python
+    import copy
+    copy_of_collection = copy.copy(original_collection)
+    ```
+  The `.copy()` method is generally recommended for its explicitness and readability.
+
+* **What is a "deep copy," how does it differ from a shallow copy, and when should you use it?**  
+  A deep copy creates a completely new, independent copy of the original object and recursively copies all nested mutable objects. Changes to nested objects in the deep copy do **not** affect the original, and vice versa.  
+  Use a deep copy when you want full independence between the original and the copy, especially if you need to modify nested mutable structures in the copy without impacting the original.
+
+* **How do you perform a deep copy in Python?**  
+  Use the `deepcopy()` function from the `copy` module:
+  ```python
+  import copy
+  original_list = [{'a': 'foo'}, ['bar']]
+  deep_copied_list = copy.deepcopy(original_list)
+  ```
+  After performing a deep copy, modifications to nested elements in `deep_copied_list` (like `deep_copied_list[1].append("baz")`) will not affect the original list.
