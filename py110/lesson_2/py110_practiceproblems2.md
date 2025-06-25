@@ -110,8 +110,7 @@ For each object shown below, demonstrate how you would access the letter `g`.
 ```python
 lst1 = ['a', 'b', ['c', ['d', 'e', 'f', 'g']]] 
 
-lst2 = [
-    {
+lst2 = [{
         'first': ['a', 'b', 'c'],
         'second': ['d', 'e', 'f']
     },
@@ -124,11 +123,7 @@ lst3 = [['abc'], ['def'], {'third': ['ghi']}]
 
 dict1 = {'a': ['d', 'e'], 'b': ['f', 'g'], 'c': ['h', 'i']}
 
-# This one is much more challenging than it looks! Try it, but don't
-# stress about it. If you don't solve it in 10 minutes, you can look
-# at the answer.
 dict2 = {'1st': {'d': 3}, '2nd': {'e': 2, 'f': 1}, '3rd': {'g': 0}}
-
 ```
 
 Answer:
@@ -201,13 +196,11 @@ munsters = {
 'Grandpa is a 402-year-old male.'
 'Eddie is a 10-year-old male.'
 'Marilyn is a 23-year-old female.'
-
 ```
 
 Answer:
 
 ```python
-
 names = list(munsters.keys())
 for name in names:
     age, gender = list(munsters[name].values())
@@ -220,6 +213,8 @@ for name, info in munsters.items():
 ```
 
 # Practice Problems: Comprehensions
+
+## Problem 1 
 
 Consider the following nested dictionary:
 
@@ -265,4 +260,235 @@ all_male_ages = [member['age'] for member in munsters.values()
 print(sum(all_male_ages))     # 444
 ```
 
+## Problem 2
 
+Given the following data structure, return a new list with the same structure, but with the values in each sublist ordered in ascending order. Use a comprehension if you can. (Try using a for loop first.) The string values should be sorted as strings, while the numeric values should be sorted as numbers.
+
+```python
+lst = [['b', 'c', 'a'], [2, 11, -3], ['blue', 'black', 'green']]
+```
+
+Expected Result: `[['a', 'b', 'c'], [-3, 2, 11], ['black', 'blue', 'green']]`
+
+Answer:
+```python
+new_list = [sorted(element) for element in lst]
+print(new_list)
+```
+
+## Problem 3
+
+Given the following data structure, write some code that uses comprehensions to define a dictionary where the key is the first item in each sublist, and the value is the second.
+
+```python
+lst = [
+    ['a', 1],
+    ['b', 'two'],
+    ['sea', {'c': 3}],
+    ['D', ['a', 'b', 'c']]
+]
+
+# Expected Result, Pretty printed for clarity
+{
+    'a': 1,
+    'b': 'two',
+    'sea': {'c': 3},
+    'D': ['a', 'b', 'c']
+}
+```
+
+Answer:
+
+```python
+#For Loop:
+empty = {}
+for element in lst:
+    empty[element[0]] = element[1]
+print(empty)
+
+#Comprehension:
+dictie = {element[0]: element[1] for element in lst}
+```
+
+## Practice Problem 5
+
+Given the following data structure, sort the list so that the sub-lists are ordered based on the sum of the odd numbers that they contain. You shouldn't mutate the original list. 
+
+Note that the first sublist has the odd numbers 1 and 7; the second sublist has odd numbers 1, 5, and 3; and the third sublist has 1 and 3. Since (1 + 3) < (1 + 7) < (1 + 5 + 3), the sorted list should look like th
+
+```python
+lst = [[1, 6, 7], [1, 5, 3], [1, 8, 3]]
+
+#Expected Result:
+[[1, 8, 3], [1, 6, 7], [1, 5, 3]]
+```
+
+Answer:
+```python
+def sum_of_odd_numbers(sublist):
+    odd_numbers = [num for num in sublist if num % 2 != 0]
+    return sum(odd_numbers)
+
+sorted_list = sorted(lst, key=sum_of_odd_numbers)
+print(sorted_list)
+```
+
+## Practice Problem 6
+
+Given the following data structure, return a new list identical in structure to the original but, with each number incremented by 1. Do not modify the original data structure. Use a comprehension.
+
+```python
+lst = [{'a': 1}, {'b': 2, 'c': 3}, {'d': 4, 'e': 5, 'f': 6}]
+
+#Expected Result:
+[{'a': 2}, {'b': 3, 'c': 4}, {'d': 5, 'e': 6, 'f': 7}]
+```
+
+Answer:
+```python
+new_list = [{key: value + 1 for key, value in dictionary.items()}
+                            for dictionary in lst]
+```
+
+## Practice Problem 7
+
+Given the following data structure return a new list identical in structure to the original, but containing only the numbers that are multiples of 3.
+
+```python
+lst = [[2], [3, 5, 7, 12], [9], [11, 15, 18]]
+
+#Expected Result: [[], [3, 12], [9], [15, 18]]
+```
+
+Answer:
+```python
+new_lst = [[value for value in sublst if value % 3 == 0] for sublst in lst]
+```
+
+## Practice Problem 8
+
+Given the following data structure, write some code to return a list that contains the colors of the fruits and the sizes of the vegetables. The sizes should be uppercase, and the colors should be capitalized.
+
+```python
+dict1 = {
+    'grape': {
+        'type': 'fruit',
+        'colors': ['red', 'green'],
+        'size': 'small',
+    },
+    'carrot': {
+        'type': 'vegetable',
+        'colors': ['orange'],
+        'size': 'medium',
+    },
+    'apricot': {
+        'type': 'fruit',
+        'colors': ['orange'],
+        'size': 'medium',
+    },
+    'marrow': {
+        'type': 'vegetable',
+        'colors': ['green'],
+        'size': 'large',
+    },
+}
+
+#Expected Result: [["Red", "Green"], "MEDIUM", ["Orange"], "LARGE"]
+```
+
+Answer:
+```python
+def transform_item(item):
+    if item['type'] == 'fruit':
+        return [color.capitalize() for color in item['colors']]
+    else:
+        return item['size'].upper()
+
+result = [transform_item(item) for item in dict1.values()]
+print(result)
+```
+
+
+## Practice Problem 9
+
+Given the following data structure, write some code to return a list that contains only the dictionaries where all the numbers are even.
+
+```python
+lst = [
+    {'a': [1, 2, 3]},
+    {'b': [2, 4, 6], 'c': [3, 6], 'd': [4]},
+    {'e': [8], 'f': [6, 10]},
+]
+
+#Expected result: [{'e': [8], 'f': [6, 10]}]
+```
+
+Answer:
+
+```python
+
+def list_is_even(number_list):
+    return all(num % 2 == 0 for num in number_list)
+
+def all_even(dictionary):
+    return all(list_is_even(lst) for lst in dictionary.values())
+
+result = [d for d in lst if all_even(d)]
+
+```
+
+## Practice Problem 10
+
+A UUID (Universally Unique Identifier) is a type of identifier often used to uniquely identify items, even when some of those items were created on a different server or by a different application. That is, without any synchronization, two or more computer systems can create new items and label them with a UUID with no significant risk of stepping on each other's toes. It accomplishes this feat through massive randomization. The number of possible UUID values is approximately 3.4 X 10E38, which is a huge number. The chance of a conflict, a "collision", is vanishingly small with such a large number of possible values.
+
+Each UUID consists of 32 hexadecimal characters (the digits 0-9 and the letters a-f) represented as a string. The value is typically broken into 5 sections in an 8-4-4-4-12 pattern, e.g., 'f65c57f6-a6aa-17a8-faa1-a67f2dc9fa91'.
+
+Write a function that takes no arguments and returns a string that contains a UUID.
+
+```python
+import random
+
+def generate_uuid():
+    hex_chars = '0123456789abcdef'
+    sections = [8, 4, 4, 4, 12]
+    uuid = []
+
+    for section in sections:
+        chars = [random.choice(hex_chars) for _ in range(section)]
+        uuid.append(''.join(chars))
+
+    return '-'.join(uuid)
+
+# Outputs shown below are samples - you output will vary
+print(generate_uuid())  # '02e51c2f-dacd-c319-53b5-e40e6e8c1f78'
+print(generate_uuid())  # '39038ab9-3b95-43d8-6959-5d785ccb9b69'
+print(generate_uuid())  # 'f7d56480-c5b2-8d4d-465f-01a4ea605729'
+```
+
+## Practice Problem 11
+
+
+The following dictionary has list values that contains strings. Write some code to create a list of every vowel (a, e, i, o, u) that appears in the contained strings, then print it.
+
+```python
+dict1 = {
+    'first':  ['the', 'quick'],
+    'second': ['brown', 'fox'],
+    'third':  ['jumped'],
+    'fourth': ['over', 'the', 'lazy', 'dog'],
+}
+
+vowels = ['a','e','i','o','u']
+empty = []
+for key, value in dict1.items():
+    for word in value:
+        for char in word:
+            if char in vowels:
+                empty.append(char)
+print(empty)
+
+list_of_vowels = [char for key, value in dict1.items() for word in value for char in word if char in vowels]
+print(list_of_vowels)
+# ['e', 'u', 'i', 'o', 'o', 'u', 'e', 'o', 'e', 'e', 'a', 'o']
+
+```

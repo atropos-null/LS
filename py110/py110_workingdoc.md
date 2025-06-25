@@ -2347,6 +2347,36 @@ for num in nums:
 
 Comprehensions offer a compact and elegant way to transform data in collections. They enhance conciseness and readability, but developers are advised to use them wisely" If a comprehension becomes too complex, it might be clearer to revert to a traditional loop for the sake of readability. The document concludes by emphasizing that "Practice is key" to mastering comprehensions.
 
+### Now for the things they didn't tell us
+
+```python
+data = [[[0, 1], []], [[2, 3, 4], [5], [6, 7]], [], [[8, 9]]]
+
+#This data needs to be flattened into one structure but there's a three levels going on.
+
+#We can do it without list comprehensions:
+lst = []
+for sub in data:
+    for subsub in sub:  
+        for val in subsub:
+            lst.append(val)
+print(lst)
+```
+
+The order in the comprehension is the order you see here in the for loop. It goes from outermost to innermost. Literally, whatever the for loop would do in order, follow that in order. 
+
+```python
+new_lst = [val for sub in data for subsub in sub for val in subsub]
+print(new_lst)
+```
+
+The pattern for list comprehensions for dictionaries are:
+```python
+[expression 
+for outer_key, outer_value in outer_dict.items() 
+for inner_key, inner_value in outer_value.items()]
+```
+
 
 Page Reference: [Comprehensions](https://launchschool.com/lessons/76ecb255/assignments/5780058f)
 
