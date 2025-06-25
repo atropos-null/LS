@@ -218,3 +218,51 @@ for name in names:
 for name, info in munsters.items():
     print(f"{name} is a {info['age']}-year-old {info['gender']}.")
 ```
+
+# Practice Problems: Comprehensions
+
+Consider the following nested dictionary:
+
+```python
+munsters = {
+    'Herman':  {'age': 32,  'gender': 'male'},
+    'Lily':    {'age': 30,  'gender': 'female'},
+    'Grandpa': {'age': 402, 'gender': 'male'},
+    'Eddie':   {'age': 10,  'gender': 'male'},
+    'Marilyn': {'age': 23,  'gender': 'female'},
+}
+```
+
+Compute and display the total age of the family's male members. Try working out the answer two ways: first with an ordinary loop, then with a comprehension.
+
+The result should be 444.
+
+With for loop:
+```python
+sum_ages = 0
+names = list(munsters.keys())
+for name in names:
+    age, gender = list(munsters[name].values())
+    if gender == 'male':
+        sum_ages += age
+print(sum_ages)
+
+#Optimized:
+
+total_male_age = 0
+for member in munsters.values():
+    if member['gender'] == 'male':
+        total_male_age += member['age']
+
+print(total_male_age)         # 444
+```
+
+With comprehensions:
+```python
+all_male_ages = [member['age'] for member in munsters.values()
+                               if member['gender'] == 'male']
+
+print(sum(all_male_ages))     # 444
+```
+
+

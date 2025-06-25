@@ -2291,6 +2291,24 @@ for row in matrix:
         flattened_matrix.append(cell)
 
 print(flattened_matrix)  # [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+#Even cubier:
+
+cube = [
+    [[1, 2], [3, 4]],
+    [[5, 6], [7, 8]]
+]
+
+# Goal: Flatten to 1D
+flat = [num for layer in cube for row in layer for num in row]
+# Result: [1, 2, 3, 4, 5, 6, 7, 8]
+
+# Equivalent:
+flat = []
+for layer in cube:
+    for row in layer:
+        for num in row:
+            flat.append(num)
 ```
 
 ### Using Comprehensions with Other Collections:  
@@ -2337,6 +2355,10 @@ Further References:
 [Gruppetta, S. (2024g, March 16). If you find if..else in list comprehensions confusing, read this, else. . . The Python Coding Stack.](https://www.thepythoncodingstack.com/p/conditional-expression-ternary-operator-list-com?utm_source=publication-search)
 
 [Serrão, R. G. (n.d.-e). List comprehensions 101 | Pydon’t 🐍. Mathspp.](https://mathspp.com/blog/pydonts/list-comprehensions-101)
+
+[Reuven. (2021, April 7). Want to understand Python’s comprehensions? Think in Excel or SQL. — Reuven Lerner. Reuven Lerner.](https://lerner.co.il/2015/07/16/want-to-understand-pythons-comprehensions-think-like-an-accountant/)
+
+[Reuven. (2019, May 2). Understanding nested list comprehensions in Python — Reuven Lerner. Reuven Lerner.](https://lerner.co.il/2015/07/23/understanding-nested-list-comprehensions-in-python/)
 
 Additional Resources:
 
