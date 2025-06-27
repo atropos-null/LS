@@ -264,6 +264,18 @@ Transform the following list of lists so that each inner list is sorted, but onl
 
 ```python
 data = [[8, 3, 12, 1], [15, 6, 2, 9], [7, 4, 11, 10]]
+
+#For Loop:
+for sublist in data:
+    new_sublist = []
+    for element in sublist:
+        if element > 5:
+            new_sublist.append(element)
+    new_data.append(sorted(new_sublist))
+
+
+new_data = [sorted([number for number in sublist if number > 5]) for sublist in data]
+
 #Expected result: [[8, 12], [6, 9, 15], [7, 10, 11]]
 ```
 
