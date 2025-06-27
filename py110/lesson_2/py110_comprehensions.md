@@ -13,7 +13,12 @@ people = [
     {'name': 'Diana', 'age': 16},
     {'name': 'Eve', 'age': 22}
 ]
+```
 
+<details>
+<summary>Show Solution</summary>
+
+````python
 #For Loop
 new_list = []
 for entry in people:
@@ -23,7 +28,9 @@ for entry in people:
 #List Comprehension   
 new_list = [entry['name'] for entry in people if entry['age'] > 18]
 print(new_list)
-```
+````
+
+</details>
 
 Expected result: `['Alice', 'Charlie', 'Eve']`
 
@@ -36,7 +43,12 @@ Expected result: `[[4, 16], [36, 64], [100, 144]]`
 
 ```python
 numbers = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]]
+```
 
+<details>
+<summary>Show Solution</summary>
+
+````python
 #For Loop
 new_list = []
 for sublist in numbers:
@@ -50,7 +62,9 @@ for sublist in numbers:
 new_list = [[item ** 2 for item in sublist if item % 2 == 0] for sublist in numbers]
 
 print(new_list)
-```
+````
+
+</details>
 
 ## Problem 3
 
@@ -62,21 +76,31 @@ data = [[[0, 1], []], [[2, 3, 4], [5], [6, 7]], [], [[8, 9]]]
 
 We can do it without list comprehensions:
 
-```python
+<details>
+<summary>Show Solution</summary>
+
+````python
 lst = []
 for sub in data:
     for subsub in sub:  
         for val in subsub:
             lst.append(val)
 print(lst)
-```
+````
+
+</details>
 
 The order in the comprehension is the order you see here in the for loop. It goes from outermost to innermost. Literally, whatever the for loop would do in order, follow that in order. 
 
-```python
+<details>
+<summary>Show Solution</summary>
+
+````python
 new_lst = [val for sub in data for subsub in sub for val in subsub]
 print(new_lst)
-```
+````
+
+</details>
 
 ## Problem 4
 
@@ -85,7 +109,6 @@ Here's a tuple to a dictionary. Transform the following list of tuples into a li
 Expected result: `[{'name': 'Alice', 'score': 85}, {'name': 'Charlie', 'score': 91}, {'name': 'Eve', 'score': 88}]`
 
 ```python
-
 student_scores = [
     ('Alice', 85),
     ('Bob', 72),
@@ -93,7 +116,12 @@ student_scores = [
     ('Diana', 68),
     ('Eve', 88)
 ]
+```
 
+<details>
+<summary>Show Solution</summary>
+
+````python
 lst = []
 
 #for loop
@@ -104,7 +132,9 @@ print(lst)
 #list comprehension
 lst_comp = [{first: second} for first, second in student_scores ]
 print(lst_comp)
-```
+````
+
+</details>
 
 ## Problem 5
 
@@ -118,7 +148,12 @@ sentences = {
     'afternoon': 'over the lazy dog sleeping',
     'evening': 'under the bright starry sky'
 }
+```
 
+<details>
+<summary>Show Solution</summary>
+
+````python
 def get_four(text):
     temp = []
     holding = text.split()
@@ -128,7 +163,9 @@ def get_four(text):
     return temp
 
 new_dict = {key: get_four(value) for key, value in sentences.items()}
-```
+````
+
+</details>
 
 ## Problem 6
 
@@ -137,11 +174,18 @@ but only include words that start with a vowel.
 
 ```python
 words = ['apple', 'banana', 'orange', 'grape', 'elephant', 'tiger']
+```
 
+<details>
+<summary>Show Solution</summary>
+
+````python
 counts = {word: len(word) for word in words if word[0] in 'aeiou'}
 
 #Expected result: {'apple': 5, 'orange': 6, 'elephant': 8}
-```
+````
+
+</details>
 
 ## Problem 7
 
