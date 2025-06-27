@@ -102,42 +102,8 @@ print(new_lst)
 
 </details>
 
+
 ## Problem 4
-
-Here's a tuple to a dictionary. Transform the following list of tuples into a list of dictionaries with keys 'name' and 'score', but only include entries where the score is above 75.
-
-Expected result: `[{'name': 'Alice', 'score': 85}, {'name': 'Charlie', 'score': 91}, {'name': 'Eve', 'score': 88}]`
-
-
-```python
-student_scores = [
-    ('Alice', 85),
-    ('Bob', 72),
-    ('Charlie', 91),
-    ('Diana', 68),
-    ('Eve', 88)
-]
-```
-
-<details>
-<summary>Show Solution</summary>
-
-````python
-lst = []
-
-#for loop
-for first, second, in student_scores:
-    lst.append({first: second})
-print(lst)
-
-#list comprehension
-lst_comp = [{first: second} for first, second in student_scores ]
-print(lst_comp)
-````
-
-</details>
-
-## Problem 5
 
 Given the following dictionary, create a new dictionary where each key maps to a list of words from the original value that have more than 4 characters.
 
@@ -168,7 +134,7 @@ new_dict = {key: get_four(value) for key, value in sentences.items()}
 
 </details>
 
-## Problem 6
+## Problem 5
 
 Given a list of words, create a dictionary where the keys are the words and the values are the lengths of those words, 
 but only include words that start with a vowel.
@@ -188,7 +154,7 @@ counts = {word: len(word) for word in words if word[0] in 'aeiou'}
 
 </details>
 
-## Problem 7
+## Problem 6
 
 Transform the following dictionary to create a new dictionary where the keys remain the same, but the values are lists containing only the vowels from the original string values.
 
@@ -212,7 +178,7 @@ new_data = {key: [char for char in value if char in 'aeiou'] for key, value in d
 
 
 
-## Problem 8 
+## Problem 7 
 
 Given the following nested structure, create a flat list of all the even numbers across all sublists.
 
@@ -235,7 +201,7 @@ flat_list = [num for sublist in nested_nums for num in sublist if num % 2 == 0]
 ```
 </details>
 
-## Problem 9
+## Problem 8
 
 Transform the following list of tuples into a list of dictionaries with keys 'name' and 'score', but only include entries where the score is above 75.
 
@@ -272,7 +238,7 @@ print(higher_scores)
 ```
 </details>
 
-## Practice Problem 10
+## Practice Problem 9
 
 Transform the following list of lists so that each inner list is sorted, but only keep numbers that are greater than 5.
 
