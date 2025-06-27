@@ -154,6 +154,16 @@ data = {
     'third': 'launch school'
 }
 
+data = {
+    'first': 'hello world',
+    'second': 'python programming',
+    'third': 'launch school'
+}
+
+new_data = {key: [char for char in value if char in 'aeiou'] for key, value in data.items()}
+
+print(new_data)
+
 #Expected Result: {'first': ['e', 'o', 'o'], 'second': ['o', 'o', 'a', 'i'], 'third': ['a', 'u', 'o', 'o']}
 ```
 
@@ -168,6 +178,8 @@ nested_nums = [
     [8, 9],
     [10, 11, 12, 13, 14]
 ]
+
+flat_list = [num for sublist in nested_nums for num in sublist if num % 2 == 0]
 
 # Expected result: [2, 4, 6, 8, 10, 12, 14]
 ```
@@ -184,6 +196,20 @@ student_scores = [
     ('Diana', 68),
     ('Eve', 88)
 ]
+
+# For Loop
+high_scores = []
+
+for tupled in student_scores:
+        name, score = tupled
+        if score > 75:
+            high_scores.append({name: score})
+       
+print(high_scores)
+
+# Comprehension
+higher_scores = [{name: score} for name, score in student_scores if score > 75 ]
+print(higher_scores)
 
 #Expected result: [{'name': 'Alice', 'score': 85}, {'name': 'Charlie', 'score': 91}, {'name': 'Eve', 'score': 88}]
 ```
