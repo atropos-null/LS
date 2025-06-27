@@ -108,6 +108,7 @@ Here's a tuple to a dictionary. Transform the following list of tuples into a li
 
 Expected result: `[{'name': 'Alice', 'score': 85}, {'name': 'Charlie', 'score': 91}, {'name': 'Eve', 'score': 88}]`
 
+
 ```python
 student_scores = [
     ('Alice', 85),
@@ -198,18 +199,18 @@ data = {
     'third': 'launch school'
 }
 
-data = {
-    'first': 'hello world',
-    'second': 'python programming',
-    'third': 'launch school'
-}
-
-new_data = {key: [char for char in value if char in 'aeiou'] for key, value in data.items()}
-
-print(new_data)
-
 #Expected Result: {'first': ['e', 'o', 'o'], 'second': ['o', 'o', 'a', 'i'], 'third': ['a', 'u', 'o', 'o']}
 ```
+
+<details>
+<summary>Show Solution</summary>
+
+```python
+new_data = {key: [char for char in value if char in 'aeiou'] for key, value in data.items()}
+```
+</details>
+
+
 
 ## Problem 8 
 
@@ -222,11 +223,17 @@ nested_nums = [
     [8, 9],
     [10, 11, 12, 13, 14]
 ]
+```
 
+<details>
+<summary>Show Solution</summary>
+
+```python
 flat_list = [num for sublist in nested_nums for num in sublist if num % 2 == 0]
 
 # Expected result: [2, 4, 6, 8, 10, 12, 14]
 ```
+</details>
 
 ## Problem 9
 
@@ -240,8 +247,13 @@ student_scores = [
     ('Diana', 68),
     ('Eve', 88)
 ]
+```
 
-# For Loop
+<details>
+<summary>Show Solution</summary>
+
+```python
+#For Loop
 high_scores = []
 
 for tupled in student_scores:
@@ -251,12 +263,14 @@ for tupled in student_scores:
        
 print(high_scores)
 
+
 # Comprehension
 higher_scores = [{name: score} for name, score in student_scores if score > 75 ]
 print(higher_scores)
 
 #Expected result: [{'name': 'Alice', 'score': 85}, {'name': 'Charlie', 'score': 91}, {'name': 'Eve', 'score': 88}]
 ```
+</details>
 
 ## Practice Problem 10
 
@@ -264,7 +278,11 @@ Transform the following list of lists so that each inner list is sorted, but onl
 
 ```python
 data = [[8, 3, 12, 1], [15, 6, 2, 9], [7, 4, 11, 10]]
+```
+<details>
+<summary>Show Solution</summary>
 
+```python
 #For Loop:
 for sublist in data:
     new_sublist = []
@@ -278,6 +296,7 @@ new_data = [sorted([number for number in sublist if number > 5]) for sublist in 
 
 #Expected result: [[8, 12], [6, 9, 15], [7, 10, 11]]
 ```
+</details>
 
 ***
 
