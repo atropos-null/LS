@@ -205,6 +205,8 @@ flat_list = [num for sublist in nested_nums for num in sublist if num % 2 == 0]
 
 Transform the following list of tuples into a list of dictionaries with keys 'name' and 'score', but only include entries where the score is above 75.
 
+Expected result: `[{'name': 'Alice', 'score': 85}, {'name': 'Charlie', 'score': 91}, {'name': 'Eve', 'score': 88}]`
+
 ```python
 student_scores = [
     ('Alice', 85),
@@ -219,22 +221,19 @@ student_scores = [
 <summary>Show Solution</summary>
 
 ```python
-#For Loop
-high_scores = []
+#for loop
 
-for tupled in student_scores:
-        name, score = tupled
-        if score > 75:
-            high_scores.append({name: score})
-       
-print(high_scores)
+lst = []
+for name, score in student_scores:
+    if score > 75:
+        my_dict = {"name": name, "score": score}
+        lst.append(my_dict)
+print(lst)
 
 
 # Comprehension
-higher_scores = [{name: score} for name, score in student_scores if score > 75 ]
+higher_scores = [{"name": name, "score": score} for name, score in student_scores if score > 75 ]
 print(higher_scores)
-
-#Expected result: [{'name': 'Alice', 'score': 85}, {'name': 'Charlie', 'score': 91}, {'name': 'Eve', 'score': 88}]
 ```
 </details>
 
