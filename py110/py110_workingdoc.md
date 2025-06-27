@@ -2347,6 +2347,12 @@ for num in nums:
 
 Comprehensions offer a compact and elegant way to transform data in collections. They enhance conciseness and readability, but developers are advised to use them wisely" If a comprehension becomes too complex, it might be clearer to revert to a traditional loop for the sake of readability. The document concludes by emphasizing that "Practice is key" to mastering comprehensions.
 
+When working with comprehensions, especially when using nested collections:
+
+* Take the time to break down and understand the structure of the collection.
+* Choose an appropriate comprehension type method and be clear on its implementation and return value.
+* Understand what is being returned by the various comprehensions at each level. When iterating through nested collections, be particularly aware of the return value of the comprehensions.
+
 ### Now for the things they didn't tell us
 
 ```python
@@ -2376,6 +2382,7 @@ The pattern for list comprehensions for dictionaries are:
 for outer_key, outer_value in outer_dict.items() 
 for inner_key, inner_value in outer_value.items()]
 ```
+
 
 
 Page Reference: [Comprehensions](https://launchschool.com/lessons/76ecb255/assignments/5780058f)
