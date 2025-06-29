@@ -768,3 +768,387 @@ print(tupps)
 ```
 
 </details>
+
+## Nested Dictionary Structures
+
+### Problem 1: Basic Value Extraction
+
+Data Structure:
+```python
+students = {
+    'Alice': {'grade': 85, 'subject': 'Math'},
+    'Bob': {'grade': 92, 'subject': 'Science'},
+    'Charlie': {'grade': 78, 'subject': 'Math'},
+    'Diana': {'grade': 95, 'subject': 'English'}
+}
+```
+Task:​ Extract all grades into a list.
+Expected Result:​ `[85, 92, 78, 95]`
+
+<details>
+<summary>Show Solution</summary>
+
+</details>
+
+### Problem 2: Conditional Filtering
+
+Data Structure:
+```python
+employees = {
+    'John': {'salary': 50000, 'department': 'IT'},
+    'Sarah': {'salary': 75000, 'department': 'Finance'},
+    'Mike': {'salary': 60000, 'department': 'IT'},
+    'Lisa': {'salary': 80000, 'department': 'HR'}
+}
+```
+
+Task:​ Extract names of employees in the IT department.
+Expected Result:​ `['John', 'Mike']`
+
+
+<details>
+<summary>Show Solution</summary>
+
+</details>
+
+### Problem 3: Value Transformation
+
+Data Structure:
+```python
+products = {
+    'laptop': {'price': 1200, 'category': 'electronics'},
+    'shirt': {'price': 25, 'category': 'clothing'},
+    'phone': {'price': 800, 'category': 'electronics'},
+    'shoes': {'price': 100, 'category': 'clothing'}
+}
+```
+
+Task:​ Extract product names for items under $500, converted to uppercase.
+Expected Result:​ `['SHIRT', 'SHOES']`
+
+<details>
+<summary>Show Solution</summary>
+
+</details>
+
+### Problem 4: Complex Nested Structure
+
+Data Structure:
+```python
+library = {
+    'fiction': {
+        'books': [
+            {'title': '1984', 'author': 'Orwell', 'pages': 328},
+            {'title': 'Brave New World', 'author': 'Huxley', 'pages': 268}
+        ]
+    },
+    'science': {
+        'books': [
+            {'title': 'Cosmos', 'author': 'Sagan', 'pages': 365},
+            {'title': 'Brief History', 'author': 'Hawking', 'pages': 256}
+        ]
+    }
+}
+```
+
+Task:​ Extract all book titles from all categories.
+Expected Result:​ `['1984', 'Brave New World', 'Cosmos', 'Brief History']`
+
+<details>
+<summary>Show Solution</summary>
+
+</details>
+
+### Problem 5: Multiple Conditions
+Data Structure:
+```python
+restaurants = {
+    'Pizza Palace': {'rating': 4.2, 'cuisine': 'Italian', 'price_range': 'medium'},
+    'Burger Barn': {'rating': 3.8, 'cuisine': 'American', 'price_range': 'low'},
+    'Sushi Spot': {'rating': 4.7, 'cuisine': 'Japanese', 'price_range': 'high'},
+    'Taco Time': {'rating': 4.0, 'cuisine': 'Mexican', 'price_range': 'low'}
+}
+```
+Task:​ Extract names of restaurants with rating above 4.0 and low price range.
+Expected Result:​ `['Taco Time']`
+
+<details>
+<summary>Show Solution</summary>
+
+</details>
+
+### Problem 6: Key-Value Combination
+Data Structure:
+
+```python
+scores = {
+    'Alex': [85, 92, 78],
+    'Beth': [90, 88, 95],
+    'Carl': [76, 82, 85],
+    'Dana': [88, 91, 87]
+}
+```
+
+Task:​ Extract formatted strings showing each student's name and average score.
+Expected Result:​ `['Alex: 85.0', 'Beth: 91.0', 'Carl: 81.0', 'Dana: 88.7']`
+
+<details>
+<summary>Show Solution</summary>
+
+
+</details>
+
+### Problem 7: Nested List Processing
+Data Structure:
+
+```python
+inventory = {
+    'warehouse_a': {
+        'items': ['laptop', 'mouse', 'keyboard'],
+        'quantities': [10, 50, 30]
+    },
+    'warehouse_b': {
+        'items': ['monitor', 'speaker', 'webcam'],
+        'quantities': [8, 25, 15]
+    }
+}
+```
+
+Task:​ Extract all item names from all warehouses.
+Expected Result:​ `['laptop', 'mouse', 'keyboard', 'monitor', 'speaker', 'webcam']`
+
+
+<details>
+<summary>Show Solution</summary>
+
+
+</details>
+
+### Problem 8: Conditional Transformation
+Data Structure:
+```python
+
+weather_data = {
+    'Monday': {'temp': 25, 'condition': 'sunny'},
+    'Tuesday': {'temp': 18, 'condition': 'rainy'},
+    'Wednesday': {'temp': 30, 'condition': 'sunny'},
+    'Thursday': {'temp': 22, 'condition': 'cloudy'},
+    'Friday': {'temp': 28, 'condition': 'sunny'}
+}
+```
+
+Task:​ Extract temperatures in Fahrenheit `(°F = °C × 9/5 + 32)` for sunny days only.
+Expected Result:​ `[77.0, 86.0, 82.4]`
+
+<details>
+<summary>Show Solution</summary>
+
+
+</details>
+
+
+### Problem 9: Deep Nesting
+Data Structure:
+```python
+company = {
+    'engineering': {
+        'teams': {
+            'frontend': {'members': ['Alice', 'Bob'], 'lead': 'Alice'},
+            'backend': {'members': ['Charlie', 'Diana'], 'lead': 'Charlie'}
+        }
+    },
+    'marketing': {
+        'teams': {
+            'digital': {'members': ['Eve', 'Frank'], 'lead': 'Eve'},
+            'print': {'members': ['Grace'], 'lead': 'Grace'}
+        }
+    }
+}
+```
+
+Task:​ Extract all team leads from all departments.
+Expected Result:​ `['Alice', 'Charlie', 'Eve', 'Grace']`
+
+<details>
+<summary>Show Solution</summary>
+
+
+</details>
+
+### Problem 10: Complex Filtering and Transformation
+Data Structure:
+
+```python
+sales_data = {
+    'Q1': {
+        'jan': {'revenue': 50000, 'expenses': 30000},
+        'feb': {'revenue': 60000, 'expenses': 35000},
+        'mar': {'revenue': 55000, 'expenses': 32000}
+    },
+    'Q2': {
+        'apr': {'revenue': 65000, 'expenses': 40000},
+        'may': {'revenue': 70000, 'expenses': 42000},
+        'jun': {'revenue': 45000, 'expenses': 35000}
+    }
+}
+```
+
+Task:​ Extract profit `(revenue - expenses)` for months where profit exceeds $20,000.
+Expected Result:​ `[20000, 25000, 23000, 25000, 28000]`
+
+<details>
+<summary>Show Solution</summary>
+
+
+</details>
+
+### Problem 11:  Intermediate
+
+Data Structure:
+
+```python
+students = {
+    'math_101': {
+        'Alice': {'midterm': 85, 'final': 92, 'projects': [88, 90, 87]},
+        'Bob': {'midterm': 78, 'final': 84, 'projects': [82, 85, 80]},
+        'Charlie': {'midterm': 92, 'final': 89, 'projects': [95, 88, 91]}
+    },
+    'science_201': {
+        'Diana': {'midterm': 88, 'final': 95, 'projects': [90, 93, 89]},
+        'Eve': {'midterm': 76, 'final': 82, 'projects': [78, 80, 85]},
+    }
+}
+```
+
+Task:​ Extract the names of all students whose average project score is above 85.
+Expected Result:​ `['Alice', 'Charlie', 'Diana']`
+
+<details>
+<summary>Show Solution</summary>
+
+
+</details>
+
+### Problem 12: Advanced
+Data Structure:
+
+```python
+inventory = {
+    'electronics': {
+        'smartphones': [
+            {'brand': 'Apple', 'model': 'iPhone 14', 'price': 999, 'stock': 15},
+            {'brand': 'Samsung', 'model': 'Galaxy S23', 'price': 899, 'stock': 8}
+        ],
+        'laptops': [
+            {'brand': 'Dell', 'model': 'XPS 13', 'price': 1299, 'stock': 5},
+            {'brand': 'Apple', 'model': 'MacBook Air', 'price': 1199, 'stock': 12}
+        ]
+    },
+    'clothing': {
+        'shirts': [
+            {'brand': 'Nike', 'model': 'Dri-Fit', 'price': 35, 'stock': 50},
+            {'brand': 'Adidas', 'model': 'Classic', 'price': 28, 'stock': 0}
+        ]
+    }
+}
+```
+
+Task:​ Extract the model names of all items that are in stock (stock > 0) and cost less than $1000.
+Expected Result:​ `['Galaxy S23', 'Dri-Fit']`
+
+<details>
+<summary>Show Solution</summary>
+
+
+</details>
+
+### Problem 13: Intermediate
+
+Data Structure:
+```python
+weather_stations = {
+    'station_001': {
+        'location': 'Downtown',
+        'readings': [
+            {'date': '2023-01-15', 'temp': 22, 'humidity': 65},
+            {'date': '2023-01-16', 'temp': 18, 'humidity': 70},
+            {'date': '2023-01-17', 'temp': 25, 'humidity': 60}
+        ]
+    },
+    'station_002': {
+        'location': 'Airport',
+        'readings': [
+            {'date': '2023-01-15', 'temp': 20, 'humidity': 68},
+            {'date': '2023-01-16', 'temp': 16, 'humidity': 75},
+            {'date': '2023-01-17', 'temp': 23, 'humidity': 62}
+        ]
+    }
+}
+```
+
+Task:​ Extract all temperature readings above 20 degrees from all stations.
+Expected Result:​ `[22, 25, 23]`
+
+<details>
+<summary>Show Solution</summary>
+
+
+</details>
+
+### Problem 14: Advanced
+Data Structure:
+
+```python
+company_data = {
+    'departments': {
+        'engineering': {
+            'budget': 500000,
+            'employees': [
+                {'name': 'Alice', 'salary': 85000, 'skills': ['Python', 'JavaScript']},
+                {'name': 'Bob', 'salary': 75000, 'skills': ['Java', 'Python']}
+            ]
+        },
+        'marketing': {
+            'budget': 200000,
+            'employees': [
+                {'name': 'Charlie', 'salary': 60000, 'skills': ['SEO', 'Analytics']},
+                {'name': 'Diana', 'salary': 65000, 'skills': ['Design', 'Analytics']}
+            ]
+        }
+    }
+}
+```
+
+Task:​ Extract the names of employees who know 'Python' and work in departments with a budget over $300,000.
+Expected Result:​ `['Alice', 'Bob']`
+
+<details>
+<summary>Show Solution</summary>
+
+
+</details>
+
+Problem 5: Advanced
+Data Structure:
+```python
+tournament_data = {
+    'round_1': {
+        'match_a': {'team1': 'Lions', 'team2': 'Tigers', 'score1': 3, 'score2': 1},
+        'match_b': {'team1': 'Bears', 'team2': 'Wolves', 'score1': 2, 'score2': 4}
+    },
+    'round_2': {
+        'match_c': {'team1': 'Eagles', 'team2': 'Hawks', 'score1': 1, 'score2': 1},
+        'match_d': {'team1': 'Sharks', 'team2': 'Dolphins', 'score1': 5, 'score2': 2}
+    }
+}
+```
+Task:​ Extract the names of all winning teams (teams with the higher score). For tied games, include both team names.
+Expected Result:​ `['Lions', 'Wolves', 'Eagles', 'Hawks', 'Sharks']`
+
+
+
+<details>
+<summary>Show Solution</summary>
+
+
+</details>
