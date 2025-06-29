@@ -1128,7 +1128,7 @@ Expected Result:​ `['Alice', 'Bob']`
 
 </details>
 
-Problem 5: Advanced
+### Problem 15: Advanced
 Data Structure:
 ```python
 tournament_data = {
