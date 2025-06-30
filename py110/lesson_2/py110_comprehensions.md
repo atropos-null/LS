@@ -788,6 +788,14 @@ Expected Result:​ `[85, 92, 78, 95]`
 <details>
 <summary>Show Solution</summary>
 
+```python
+grades = [grade['grade'] for grade in students.values()]
+print(grades)
+
+#If subjects was wanted, this would be used. No other label in front of grade or subject worked.
+
+subjects = [subject['subject'] for subject in students.values()]
+print(subjects)
 </details>
 
 ### Problem 2: Conditional Filtering
@@ -809,6 +817,10 @@ Expected Result:​ `['John', 'Mike']`
 <details>
 <summary>Show Solution</summary>
 
+```python
+it_dept = [name for name, value in employees.items() if value['department'] == 'IT']
+print(it_dept)
+```
 </details>
 
 ### Problem 3: Value Transformation
@@ -828,6 +840,11 @@ Expected Result:​ `['SHIRT', 'SHOES']`
 
 <details>
 <summary>Show Solution</summary>
+
+```python
+upper_items = [good.upper() for good, data in products.items() if data['price'] < 500]
+print(upper_items)
+```
 
 </details>
 
@@ -857,6 +874,43 @@ Expected Result:​ `['1984', 'Brave New World', 'Cosmos', 'Brief History']`
 <details>
 <summary>Show Solution</summary>
 
+```python
+
+# Let's break it down by level:
+
+categories = [category for category in library.keys()]
+print(categories) 
+#['fiction', 'science']
+
+books = [book for book in library.values()]
+print(books)
+#[{'books': [
+#           {'title': '1984', 'author': 'Orwell', 'pages': 328}, 
+#           {'title': 'Brave New World', 'author': 'Huxley', 'pages': 268}]},
+# {'books': 
+#           [
+#           {'title': 'Cosmos', 'author': 'Sagan', 'pages': 365}, 
+#           {'title': 'Brief History', 'author': 'Hawking', 'pages': 256}]}]
+
+
+data_fiction = [data for data in library['fiction']['books']]
+print(data_fiction)
+#[{'title': '1984', 'author': 'Orwell', 'pages': 328}, {'title': 'Brave New World', 'author': 'Huxley', 'pages': 268}]
+
+data_science = [data for data in library['science']['books']]
+print(data_science)
+#[{'title': 'Cosmos', 'author': 'Sagan', 'pages': 365}, {'title': 'Brief History', 'author': 'Hawking', 'pages': 256}]
+
+titles = [book['title'] for category in library.values() for book in category['books']]
+print(titles)
+#['1984', 'Brave New World', 'Cosmos', 'Brief History']
+
+pages = [book['pages'] for category in library.values() for book in category['books']]
+print(pages)
+# [328, 268, 365, 256]
+
+```
+
 </details>
 
 ### Problem 5: Multiple Conditions
@@ -874,6 +928,11 @@ Expected Result:​ `['Taco Time']`
 
 <details>
 <summary>Show Solution</summary>
+
+```python
+result = [name for name, data in restaurants.items() if data['rating'] >= 4.0 and data['price_range'] == 'low']
+print(result)
+```
 
 </details>
 
@@ -895,6 +954,10 @@ Expected Result:​ `['Alex: 85.0', 'Beth: 91.0', 'Carl: 81.0', 'Dana: 88.7']`
 <details>
 <summary>Show Solution</summary>
 
+```python
+result = [f'{name}: {sum(scores)/len(scores):.1f}' for name, scores in scores.items()]
+print(result)
+```
 
 </details>
 
@@ -921,6 +984,10 @@ Expected Result:​ `['laptop', 'mouse', 'keyboard', 'monitor', 'speaker', 'webc
 <details>
 <summary>Show Solution</summary>
 
+```python
+items = [item for warehouse in inventory.values() for item in warehouse['items']]
+print(items)
+```
 
 </details>
 
@@ -943,6 +1010,10 @@ Expected Result:​ `[77.0, 86.0, 82.4]`
 <details>
 <summary>Show Solution</summary>
 
+```python
+temps = [(conditions['temp']* 9/5 + 32) for conditions in weather_data.values() if conditions['condition'] == 'sunny']
+print(temps)
+```
 
 </details>
 
@@ -972,6 +1043,10 @@ Expected Result:​ `['Alice', 'Charlie', 'Eve', 'Grace']`
 <details>
 <summary>Show Solution</summary>
 
+```python
+leads = [people['lead'] for teams in company.values() for groups in teams.values() for people in groups.values()]
+print(leads)
+```
 
 </details>
 
@@ -999,7 +1074,27 @@ Expected Result:​ `[20000, 25000, 23000, 25000, 28000]`
 <details>
 <summary>Show Solution</summary>
 
+```python
+#For Loop
 
+profit = []
+for data in sales_data.values():
+    for values in data.values():
+        amount = values['revenue'] - values['expenses']
+        if amount >= 20000:
+            profit.append(amount)
+print(profit)
+
+#List Comprehension
+
+profits = [ 
+        values['revenue'] - values['expenses'] 
+        for data in sales_data.values() 
+        for values in data.values() 
+        if values['revenue'] - values['expenses'] >= 20000
+        ]
+print(profits)
+```
 </details>
 
 ### Problem 11:  Intermediate
