@@ -796,6 +796,7 @@ print(grades)
 
 subjects = [subject['subject'] for subject in students.values()]
 print(subjects)
+```
 </details>
 
 ### Problem 2: Conditional Filtering
