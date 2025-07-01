@@ -263,6 +263,29 @@ new_data = [sorted([number for number in sublist if number > 5]) for sublist in 
 ```
 </details>
 
+## Practice Problem 10
+
+Extract from the following list all names who live in 'Gryiffindor'.
+
+```python
+students = [
+    {"name": "Hermione", "house": "Gryffindor", "patronus": "Otter"},
+    {"name": "Harry", "house": "Gryffindor", "patronus": "Stag"},
+    {"name": "Ron", "house": "Gryffindor", "patronus": "Jack Russell terrier"},
+    {"name": "Draco", "house": "Slytherin", "patronus": None},
+]
+```
+Expected Result: `['Hermione', 'Harry', 'Ron']`
+
+<details>
+<summary>Show Solution</summary>
+
+```python
+gryffindor = [student['name'] for student in students if student['house'] == 'Gryffindor']
+```
+
+</details>
+
 ***
 
 # Additional List Comprehensions Practice
@@ -1122,6 +1145,22 @@ Expected Result:​ `['Alice', 'Charlie', 'Diana']`
 <details>
 <summary>Show Solution</summary>
 
+```python
+
+#For Loop:
+above_85 = []
+for pupils in students.values():
+   for name, grades in pupils.items():
+      if sum(grades['projects'])/len(grades['projects']) > 85:
+         above_85.append(name)
+                            
+#List Comprehension
+above_eightyfive = [ name 
+                    for pupils in students.values() 
+                    for name, grades in pupils.items()
+                    if sum(grades['projects'])/len(grades['projects']) > 85] 
+
+```
 
 </details>
 
@@ -1150,11 +1189,30 @@ inventory = {
 ```
 
 Task:​ Extract the model names of all items that are in stock (stock > 0) and cost less than $1000.
-Expected Result:​ `['Galaxy S23', 'Dri-Fit']`
+Expected Result:​ `['iPhone 14, 'Galaxy S23', 'Dri-Fit']`
 
 <details>
 <summary>Show Solution</summary>
 
+```python
+#For Loop
+cheap_instock = []
+for products in inventory.values():
+   for product in products.values():
+      for types in product:
+         if types['stock'] > 0 and types['price'] < 1000:
+            cheap_instock.append(types['model'])
+print(cheap_instock)
+
+#List Comprehension:
+
+instock_cheap = [types['model']
+                 for products in inventory.values()
+                 for product in products.values()
+                 for types in product
+                 if types['stock'] > 0 and types['price'] < 1000]
+print(instock_cheap)
+```
 
 </details>
 
@@ -1188,6 +1246,24 @@ Expected Result:​ `[22, 25, 23]`
 <details>
 <summary>Show Solution</summary>
 
+```python
+#For Loop:
+
+above_20 = []
+for station in weather_stations.values():
+    for readings in station['readings']:
+        if readings['temp'] > 20:
+            above_20.append(readings['temp'])
+print(above_20)
+       
+#List Comprehension
+
+above_twenty = [readings['temp']
+                for station in weather_stations.values()
+                for readings in station['readings']
+                if readings['temp'] > 20]
+print(above_twenty)
+```
 
 </details>
 
@@ -1221,6 +1297,25 @@ Expected Result:​ `['Alice', 'Bob']`
 <details>
 <summary>Show Solution</summary>
 
+```python
+#For Loop
+
+knows_python = []                           #demonstrates that you don't usually need more than two dict.values() cycles
+for departments in company_data.values():
+    for department in departments.values():
+        for employees in department['employees']:
+            if 'Python' in employees['skills']:
+                knows_python.append(employees['name'])
+print(knows_python)
+
+#List Comprehension
+python_knows = [employees['name']
+                for departments in company_data.values()
+                for department in departments.values()
+                for employees in department['employees']
+                if 'Python' in employees['skills']]
+print(python_knows)
+```
 
 </details>
 
@@ -1242,9 +1337,48 @@ Task:​ Extract the names of all winning teams (teams with the higher score). F
 Expected Result:​ `['Lions', 'Wolves', 'Eagles', 'Hawks', 'Sharks']`
 
 
+Important Note: This was a question generated from LSBot. As such its a bullshit question. What is important is the for loop and extracting the data from the dictionary. You can safely skip writing the comprehension because no one would actually do that in real life. A helper function is required to do it cleanly. 
 
 <details>
 <summary>Show Solution</summary>
 
+```python
+#For Loop:
+
+winning_teams = []
+for round in tournament_data.values():
+    for lineup in round.values():
+        if lineup['score1'] > lineup['score2']:
+            winning_teams.append(lineup['team1'])
+        elif lineup['score2'] > lineup['score1']:
+            winning_teams.append(lineup['team2'])
+        elif lineup['score1'] == lineup['score2']:
+            winning_teams.append(lineup['team1'])
+            winning_teams.append(lineup['team2'])
+print(winning_teams)
+
+#List Comprehension: No one would ever do this so don't worry about it. 
+
+def get_winners(match_data):
+    team1 = match_data['team1']
+    team2 = match_data['team2'] 
+    score1 = match_data['score1']
+    score2 = match_data['score2']
+    
+    if score1 > score2:
+        return [team1]
+    elif score2 > score1:
+        return [team2]
+    else:  # tie
+        return [team1, team2]
+
+winning_teams = [
+    team
+    for round_data in tournament_data.values()
+    for match_data in round_data.values()
+    for team in get_winners(match_data)
+]
+]
+```
 
 </details>
