@@ -1,4 +1,6 @@
 # PY110 List Comprehension Problems
+Everything you need to practice Comprehensions. The formatting is odd because it came in different rounds 
+
 
 ## Practice Problem 1
 
@@ -1382,3 +1384,5 @@ winning_teams = [
 ```
 
 </details>
+
+***
