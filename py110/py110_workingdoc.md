@@ -1528,6 +1528,7 @@ Modifications to mutable values in a shallow copy are reflected in the original.
     city = data.pop('city')
     ```
     Raises `KeyError` if the key doesn't exist, unless a default value is provided as the second argument.
+
 * `popitem()`: Removes and returns the last key-value pair as a tuple (insertion order maintained in Python 3.7+).  
     ```python
     last_item = data.popitem()
@@ -1540,6 +1541,7 @@ Modifications to mutable values in a shallow copy are reflected in the original.
     data.update(new_data)
     ```
     > "...if keys in the dictionary being updated overlap with keys in the dictionary passed to update, their values get overwritten."
+    
 * `|` (Merge Operator, Python 3.9+): Combines two dictionaries and returns a new dictionary.  
     ```python
     merged_data = data | new_data
