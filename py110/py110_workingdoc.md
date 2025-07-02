@@ -2020,7 +2020,7 @@ Functions that accept other functions as arguments or return functions are calle
 
 #### `key` Argument Usage
 
-The `key` argument takes a function object. This function is called _for each object from the list_ and _transforms each element into a value that Python will use for comparison during the sorting process_. Python then compares these transformed values to determine the final sort order of the original items.
+The `key` argument takes a function object. This function is called _for each object from the list_ and _transforms each element into a value that Python will use for comparison during the sorting process_. Python then compares these transformed values to determine the final sort order of the original items. The `list.sort` method arranges the values in a list by looking at their types. For instance, a list of integers and floats is sorted numerically, while a list of strings is sorted lexicographically.
 
 #### Examples:
 
