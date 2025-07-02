@@ -19,10 +19,10 @@ Algorithm:
     - initialize temp list 2, temp2
     - for loop:
         for i in range(len(list)):
-            if i == i[0]:
-                append i
+            if temp2 is empty:
+                append first character
             else:
-                substring = i + i-1
+                append last element in temp 2 with next element in temp 1
 
 
 
