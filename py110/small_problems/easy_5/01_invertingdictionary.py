@@ -19,7 +19,6 @@ Algorithm:
 def invert_dict(dictionary):
     return dict(zip(dictionary.values(), dictionary.keys()))
 
-
 print(invert_dict({
           'apple': 'fruit',
           'broccoli': 'vegetable',
