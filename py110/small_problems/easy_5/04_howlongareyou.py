@@ -17,9 +17,7 @@ Algorithm:
     - final list = []
     - working = string.split()
     - for word in working:
-        - length counter set to 0
-        - length += len(word)
-        - final.append(f"{word} {length}")
+        - final.append(f"{word} {len word}")
     return final
 
 """
