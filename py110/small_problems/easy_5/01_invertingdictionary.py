@@ -11,16 +11,13 @@ Example: {"fruit": "apple"} => {"apple": "fruit"}
 Data Structure: Lists, but as a conversion, not as an initialization
 
 Algorithm:
-   - convert dict.keys and dict.values to a list to preserve order
-   - zip the two lists
+   - convert dict.keys and dict.values and zip, switching positions
    - convert back to a dictionary
 
 """
 
 def invert_dict(dictionary):
-    keys = list(dictionary.keys())
-    values = list(dictionary.values())
-    return dict(zip(values, keys))
+    return dict(zip(dictionary.values(), dictionary.keys()))
 
 
 print(invert_dict({
