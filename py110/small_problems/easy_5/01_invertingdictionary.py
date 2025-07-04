@@ -20,9 +20,7 @@ Algorithm:
 def invert_dict(dictionary):
     keys = list(dictionary.keys())
     values = list(dictionary.values())
-    zipped = zip(values, keys)
-    result = dict(zipped)
-    return result 
+    return dict(zip(values, keys))
 
 
 print(invert_dict({
@@ -34,3 +32,11 @@ print(invert_dict({
           'vegetable': 'broccoli',
           'fish': 'salmon',
       })  # True
+
+
+"""
+Further Optimization:
+
+def invert_dict(my_dict):
+    return {value: key for key, value in my_dict.items()}
+"""
