@@ -19,8 +19,7 @@ Algorithm:
 """
 
 def sum_digits(num):
-    num_to_string = str(num)
-    digits = [char for char in num_to_string]
+    digits = [char for char in str(num)]
     integers = [int(char) for char in digits]
     return sum(integers)
 
