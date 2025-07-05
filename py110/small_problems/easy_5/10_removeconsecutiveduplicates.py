@@ -22,8 +22,11 @@ Algorithm:
 
 def unique_sequence(original_list):
     result = []
-    for element in original_list:
-        if element not in result:
+
+    for index, element in enumerate(original_list):
+        if index == 0:
+            result.append(element)
+        elif element != result[-1]:
             result.append(element)
     return result
     
@@ -31,3 +34,22 @@ def unique_sequence(original_list):
 original = [1, 1, 2, 6, 6, 6, 5, 5, 3, 3, 3, 4]
 expected = [1, 2, 6, 5, 3, 4]
 print(unique_sequence(original) == expected)      # True
+
+
+original = [1, 2, 1, 3, 2]
+expected = [1, 2, 1, 3, 2]
+print(unique_sequence(original) == expected)
+
+# Test case 2: Mix of consecutive and non-consecutive
+original = [1, 1, 2, 3, 2, 2, 4]
+expected = [1, 2, 3, 2, 4]
+print(unique_sequence(original) == expected)
+
+original = [5, 5, 5, 5]
+expected = [5]
+print(unique_sequence(original) == expected)
+
+
+original = [1, 2, 3, 4]
+expected = [1, 2, 3, 4]
+print(unique_sequence(original) == expected)
