@@ -28,9 +28,9 @@ Algorithm:
         - else:
             position += 1
             if position % 2 == 0:
-                empty_string += char.upper()
+                empty_string += char.lower()
             else:
-            empty_string += char.lower()
+            empty_string += char.upper()
 
 """
 
