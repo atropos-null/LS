@@ -39,7 +39,7 @@ def staggered_case(original_string):
         return ""
     swapped_string = ""
     position = 0
-    for char in string:
+    for char in original_string:
         if not char.isalpha():
             swapped_string += char
         else:
