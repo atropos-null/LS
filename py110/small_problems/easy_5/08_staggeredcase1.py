@@ -41,11 +41,11 @@ def staggered_case(original_string):
         return ""
     swapped_string = ""
     for i, char in enumerate(original_string):
-        if char.isspace() or char.isdigit() or not char.isalpha():
+        if not char.isalpha():
             swapped_string += char
         elif i % 2 == 0:
             swapped_string += char.upper()
-        elif i % 1 == 0:
+        else:
             swapped_string += char.lower()
     return swapped_string
 
