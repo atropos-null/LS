@@ -13,8 +13,8 @@ Algorithm:
     - convert number to string
     - split string into individual characters in a list
     - convert invidual characters back to integers
-    - sum the integers list
-    - return list
+    - return the sum of the integers list
+  
 
 """
 
@@ -26,3 +26,6 @@ def sum_digits(num):
 print(sum_digits(23) == 5)              # True
 print(sum_digits(496) == 19)            # True
 print(sum_digits(123456789) == 45)      # True
+
+
+""" Further Optimization: integers = [int(char) for char in str(num)] """
