@@ -15,6 +15,7 @@
 - [Sorting](#sorting)
 - [Nested Data Structures](#nested-data-structures)
 - [Comprehensions](#comprehensions)
+- [Debugging with pdb](#debugging-with-pdb)
 
 ***
 
@@ -2405,3 +2406,75 @@ Additional Resources:
 
 [Back to the top](#top)
 ***
+
+## Debugging with pdb
+
+
+
+### Evaluating Expressions
+
+You can inspect variables or evaluate expressions in the debugger without affecting program flow.
+```python
+(Pdb) print(counter)
+1
+(Pdb) print(counter + 5)
+6
+```
+
+### Setting and Clearing Breakpoints
+
+Instead of editing code with `pdb.set_trace()`, use the `b` command to set breakpoints dynamically at a specific line.
+Breakpoints receive incremental numbers. Use `cl` or `clea`r with the breakpoint number to remove them.
+```python
+(Pdb) b 6
+Breakpoint 1 at /path/to/file.py(6)
+(Pdb) cl 1
+Deleted breakpoint 1 at /path/to/file.py(6)
+Stepping Over and Into Functions
+```
+
+Use `n (next)` to step over a function, executing it fully and stopping at the next line after the call.
+Use `s (step)` to step into a function, moving through its lines interactively.
+Use `r (return)` to run until the current function exits, useful after stepping in.
+
+```python
+(Pdb) n   # Steps over the function call
+# Inside the function!
+> /path/to/file.py(6)<module>()
+-> print("After function call")
+
+(Pdb) s   # Steps into the function
+--Call--
+> /path/to/file.py(1)<module>()
+-> def test():
+(Pdb) s
+> /path/to/file.py(2)<module>()
+-> print("Inside the function!")
+
+
+(Pdb) r   # Runs until return from the function
+#Inside the function!
+--Return--
+> /path/to/file.py(2)test()->None
+-> print("Inside the function!")
+```
+
+### Additional Useful Commands
+
+`help`: Shows available commands.
+`list`: Displays lines of code around the current line.
+`where`: Shows the call stack.
+`continue (c)`: Runs until the next breakpoint or program end.
+`quit or exit`: Exits the debugger.
+
+These tools help you efficiently find and fix bugs by controlling execution flow and examining your program step-by-step.
+
+Page Reference: [Debugging with pdb](https://launchschool.com/lessons/62aa893f/assignments/3b8a425b)
+
+Further References:
+
+[Jennings, N. (2023, May 19). Python debugging with PDB.](https://realpython.com/python-debugging-pdb/)
+
+[Spiside. (n.d.). GitHub - spiside/pdb-tutorial: A simple tutorial about effectively using pdb. GitHub.](https://github.com/spiside/pdb-tutorial?tab=readme-ov-file)
+
+[Back to the top](#top)
