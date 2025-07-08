@@ -140,7 +140,7 @@ def compare_cards(player_count, dealer_count):
         print("Player Wins!")
     elif player_count > 21:
         print(f"Player score is {player_count}, Dealer score is {dealer_count}")
-        print("Player Wins!")
+        print("Dealer Wins!")
     else:
         print(f"Player score is {player_count}, Dealer score is {dealer_count}")
         print("It's a tie!")
