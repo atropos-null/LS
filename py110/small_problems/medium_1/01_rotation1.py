@@ -23,20 +23,19 @@ Algorithm:
 """
 
 def rotate_list(lst):
-    if lst == None:
+    if not isinstance(lst, list):
         return None
-    if not lst:
+
+    if not lst:  # This handles empty lists
         return []
-
-    if isinstance(lst, list):
-        result = []
-        for item in lst[1:]:
-            result.append(item)
-        result.append(lst[0])
-        return result
-        
     
-
+   
+    result = []
+    for item in lst[1:]:
+        result.append(item)
+    result.append(lst[0])
+    return result
+        
 
 # All of these examples should print True
 
