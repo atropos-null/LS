@@ -30,8 +30,7 @@ def rotate_rightmost_digits(number, count):
         front = string[:-count]
         middle = string[-count+1:]
         result = front + middle + end
-    
-    return int(result)
+        return int(result)
 
 print(rotate_rightmost_digits(735291, 2) == 735219)  # True
 print(rotate_rightmost_digits(735291, 3) == 735912)  # True
