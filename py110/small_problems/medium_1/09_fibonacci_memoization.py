@@ -41,11 +41,10 @@ fib_nums = {
 }
 
 def fibonacci(number):
-    if number <= 20:
+    if number not in fib_nums:
+        fib_nums[number] = fibonacci(number - 1) + fibonacci(number - 2)
         return fib_nums[number]
     else:
-        if number not in fib_nums:
-            fib_nums[number] = fibonacci(number - 1) + fibonacci(number - 2)
         return fib_nums[number]
 
 
