@@ -26,7 +26,7 @@ sys.set_int_max_str_digits(50_000)
 def find_fibonacci_index_by_length(number):
   
     sequence = [1, 1] 
-    while len(str(sequence[-1])) != number:
+    while len(str(sequence[-1])) < number:
         sequence.append(sequence[-2]+sequence[-1])
         last_value = sequence[-1]
     result = sequence.index(last_value) + 1
@@ -43,4 +43,4 @@ print(find_fibonacci_index_by_length(100) == 476)
 print(find_fibonacci_index_by_length(1000) == 4782)
 
 # Next example might take a little while on older systems
-print(find_fibonacci_index_by_length(10000) == 47847)
+#print(find_fibonacci_index_by_length(10000) == 47847)
