@@ -46,7 +46,7 @@ def fibonacci(number):
     else:
         if number not in fib_nums:
             fib_nums[number] = fibonacci(number - 1) + fibonacci(number - 2)
-        return 
+        return fib_nums[number]
 
 
 print(fibonacci(1) == 1)         # True
