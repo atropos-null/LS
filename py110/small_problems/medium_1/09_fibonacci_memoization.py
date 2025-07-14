@@ -9,7 +9,9 @@ Example: 12 ==> 144
 Data Structure: Dictionary
 
 Algorithm
-    - dictionary comprehension = 
+    - initialize dictionary
+    - check dictionary
+    - if not, calculate and write to dictionary
         
         
 
