@@ -10,12 +10,13 @@ digit character. You may assume that the string does not contain any punctuation
 
 Example: See below, there is only one test
 
-Data Structure: Dictionary, empty dictionary for holding
+Data Structure: Dictionary, 2 empty dictionaries for holding
 
 Algorithm:
     - initialize dictionary with key as number words and values as digits
     - empty dictionary for holding
-    - for word in string:
+    - split string in to a second temporary list
+    - for word in string.split():
         - if word not in dictionary
         - append word as is to holding list
         - if word in dictionary,
@@ -39,14 +40,13 @@ def word_to_digit(message):
         'nine': '9'}
 
     temp = []
-    for keys, values in word_digit_dict.items():
-        for word in message:
-            if word not in keys:
-                temp.append(word)
-            else:
-                temp.append(values)
-    converted_string = ",".join(temp)
-    print(converted_string)
+    words = message.split()
+    for word in words:
+        if word in word_digit_dict:
+            temp.append(word_digit_dict[word])
+        else:
+            temp.append(word)
+    converted_string = " ".join(temp)
     return converted_string
     
 
