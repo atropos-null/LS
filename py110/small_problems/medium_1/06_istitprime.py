@@ -13,6 +13,11 @@ Example 1 == False
 Data Structure: None
 
 Algorithm:
+    - handle out what happens with 1
+    - for i in range(2, whatever number)
+        - does integer  % 1 == 0?
+            return False if so
+    - Return True
 
 """
 
@@ -20,7 +25,7 @@ def is_prime(integer):
     if integer == 1:
         return False
     for i in range(2, integer):
-        if integer % i == 0 and i != integer:
+        if integer % i == 0:
             return False
     return True
 
