@@ -10,6 +10,13 @@ Example: 60, 70, 50 ==> 'acute'
 Data Structure: List
 
 Algorithm:
+    - collect angles into a list
+    - first check: sum the list to see if its greater than 180, and an all check if everthing is greater than 0
+    - subcheck:
+        - if an angle is right
+        - if an angle is acute
+        - if an angle is obtuse
+    
 
 
 """
