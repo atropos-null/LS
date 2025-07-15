@@ -25,12 +25,12 @@ def triangle(angle1, angle2, angle3):
     
     all_angles = [angle1, angle2, angle3]
     if sum(all_angles) == 180 and all(angle > 0 for angle in all_angles):
-            if any(angle == 90 for angle in all_angles):
-                return 'right'
-            elif all(angle < 90 for angle in all_angles):
-                return 'acute'
-            elif any(angle > 90 for angle in all_angles):
-                return 'obtuse'
+        if any(angle == 90 for angle in all_angles):
+            return 'right'
+        elif all(angle < 90 for angle in all_angles):
+            return 'acute'
+        elif any(angle > 90 for angle in all_angles):
+            return 'obtuse'
     else:
         return 'invalid'
 
