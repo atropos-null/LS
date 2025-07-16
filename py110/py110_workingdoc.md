@@ -1636,6 +1636,15 @@ Sequences and collections can be converted to sets using `set()`. Order is not m
   set({'name': 'Srdjan', 'city': 'Belgrade'})
   ```
 
+#### For Future Reference
+
+```python
+ if len(set(str(num))) == len(str(num)):
+    return num
+```
+
+If you want to check for unique items in an item, in this case an integer, put it through set and compare it to the length of the original. If it is the same length then they are all unique.
+
 ### Frozen Sets
 
 * **Immutable Sets:**  Frozen sets are immutable versions of sets.  
