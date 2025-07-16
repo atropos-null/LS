@@ -50,3 +50,24 @@ bubble_sort(lst3)
 expected = ["Alice", "Bonnie", "Kim", "Pete",
             "Rachel", "Sue", "Tyler"]
 print(lst3 == expected)                 # True
+
+
+""" Further Optimization:
+
+a while loop with a swapped flag:
+
+def bubble_sort(lst):
+    n = len(lst)
+    swapped = True
+    while swapped:
+        swapped = False
+        for i in range(1, n):
+            if lst[i - 1] > lst[i]:
+                lst[i - 1], lst[i] = lst[i], lst[i - 1]
+                swapped = True
+        n -= 1  # After each pass, the largest element is at the end
+    print(lst)
+    return lst
+    
+
+"""
