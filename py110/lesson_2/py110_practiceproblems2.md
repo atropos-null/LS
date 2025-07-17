@@ -15,6 +15,9 @@ lst = [10, 9, -6, 11, 7, -16, 50, 8]
 
 Answer:
 
+<details>
+<summary>Show answer</summary>
+
 ```python
 reverse_sorted = sorted(lst, reverse=True)
 print(reverse_sorted)
@@ -22,6 +25,7 @@ print(reverse_sorted)
 regular_sorted = sorted(lst)
 print(regular_sorted)
 ```
+</details>
 
 ## Practice Problem 2
 
@@ -38,12 +42,16 @@ lst = [10, 9, -6, 11, 7, -16, 50, 8]
 
 Answer:
 
+<details>
+<summary>Show answer</summary>
+
 ```python
 lst = [10, 9, -6, 11, 7, -16, 50, 8]
 lst.sort()              #[-16, -6, 7, 8, 9, 10, 11, 50]
 
 lst.sort(reverse=True)  #[50, 11, 10, 9, 8, 7, -6, -16]
 ```
+</details>
 
 ## Practice Problem 3
 
@@ -58,6 +66,9 @@ lst = [10, 9, -6, 11, 7, -16, 50, 8]
 
 Answer:
 
+<details>
+<summary>Show answer</summary>
+
 ```python
 lst = [10, 9, -6, 11, 7, -16, 50, 8]
 lst.sort(key=str)
@@ -66,6 +77,7 @@ print(lst)      #[-16, -6, 10, 11, 50, 7, 8, 9]
 lst.sort(key=str, reverse=True)
 print(lst)   #[9, 8, 7, 50, 11, 10, -6, -16]
 ```
+</details>
 
 ## Practice Problem 4
 
@@ -93,6 +105,9 @@ books = [
 
 Answer:
 
+<details>
+<summary>Show answer</summary>
+
 ```python
 def get_published_year(book):
     return int(book['published'])
@@ -100,6 +115,7 @@ def get_published_year(book):
 sorted_books = sorted(books, key=get_published_year)
 print(sorted_books)
 ```
+</details>
 
 # Practice Problems: Nested Data Structures
 
@@ -108,7 +124,7 @@ print(sorted_books)
 For each object shown below, demonstrate how you would access the letter `g`.
 
 ```python
-lst1 = ['a', 'b', ['c', ['d', 'e', 'f', 'g']]] 
+lst1 = ['a', 'b', ['c', ['d', 'e', 'f', 'g']]]
 
 lst2 = [{
         'first': ['a', 'b', 'c'],
@@ -128,11 +144,15 @@ dict2 = {'1st': {'d': 3}, '2nd': {'e': 2, 'f': 1}, '3rd': {'g': 0}}
 
 Answer:
 
-List 1: `lst1[2][1][3]`
-List 2: `lst2[1]['third'][0]`
-List 3: `lst3[2]['third'][0][0]]`
-Dict 1: `dict1['b'][0][1]`
+<details>
+<summary>Show answer</summary>
+
+List 1: `lst1[2][1][3]`  
+List 2: `lst2[1]['third'][0]`  
+List 3: `lst3[2]['third'][0][0]]`  
+Dict 1: `dict1['b'][0][1]`  
 Dict 2: `list(dict2['3rd'].keys())[0]`
+</details>
 
 ## Practice Problem 2
 
@@ -150,13 +170,14 @@ dict2 = {'a': {'a': ['1', 'two', 3], 'b': 4}, 'b': 5}
 
 Answer:
 
-List 1: `lst1[1][1] = 4`
+<details>
+<summary>Show answer</summary>
 
-List 2: `lst2[2] = 4`
-
-Dict 1: `dict1['first'][2][0] = 4`
-
+List 1: `lst1[1][1] = 4`  
+List 2: `lst2[2] = 4`  
+Dict 1: `dict1['first'][2][0] = 4`  
 Dict 2: `dict2['a']['a'][2] = 4`
+</details>
 
 ## Practice Problem 3
 
@@ -171,8 +192,13 @@ lst[0] += 2  #lst = [4, [5,8]]
 lst[1][0] -= a #lst = [4, [3,8]] 'a' is not the a in the list but the variable integer a above.
 ```
 
-Answer: `lst = [4, [3,8]]`
+Answer:
 
+<details>
+<summary>Show answer</summary>
+
+`lst = [4, [3,8]]`
+</details>
 
 ## Practice Problem 4
 
@@ -200,6 +226,9 @@ munsters = {
 
 Answer:
 
+<details>
+<summary>Show answer</summary>
+
 ```python
 names = list(munsters.keys())
 for name in names:
@@ -211,6 +240,7 @@ for name in names:
 for name, info in munsters.items():
     print(f"{name} is a {info['age']}-year-old {info['gender']}.")
 ```
+</details>
 
 # Practice Problems: Comprehensions
 
@@ -233,6 +263,9 @@ Compute and display the total age of the family's male members. Try working out 
 The result should be 444.
 
 With for loop:
+<details>
+<summary>Show answer</summary>
+
 ```python
 sum_ages = 0
 names = list(munsters.keys())
@@ -251,18 +284,23 @@ for member in munsters.values():
 
 print(total_male_age)         # 444
 ```
+</details>
 
 With comprehensions:
+<details>
+<summary>Show answer</summary>
+
 ```python
 all_male_ages = [member['age'] for member in munsters.values()
                                if member['gender'] == 'male']
 
 print(sum(all_male_ages))     # 444
 ```
+</details>
 
 ## Problem 2
 
-Given the following data structure, return a new list with the same structure, but with the values in each sublist ordered in ascending order. Use a comprehension if you can. (Try using a for loop first.) The string values should be sorted as strings, while the numeric values should be sorted as numbers.
+Given the following data structure, return a new list with the same structure, but with the values in each sublist ordered in ascending order. Use a comprehension if you can. (Try using a for loop first.)
 
 ```python
 lst = [['b', 'c', 'a'], [2, 11, -3], ['blue', 'black', 'green']]
@@ -271,10 +309,15 @@ lst = [['b', 'c', 'a'], [2, 11, -3], ['blue', 'black', 'green']]
 Expected Result: `[['a', 'b', 'c'], [-3, 2, 11], ['black', 'blue', 'green']]`
 
 Answer:
+
+<details>
+<summary>Show answer</summary>
+
 ```python
 new_list = [sorted(element) for element in lst]
 print(new_list)
 ```
+</details>
 
 ## Problem 3
 
@@ -299,6 +342,9 @@ lst = [
 
 Answer:
 
+<details>
+<summary>Show answer</summary>
+
 ```python
 #For Loop:
 empty = {}
@@ -309,12 +355,13 @@ print(empty)
 #Comprehension:
 dictie = {element[0]: element[1] for element in lst}
 ```
+</details>
 
 ## Practice Problem 5
 
 Given the following data structure, sort the list so that the sub-lists are ordered based on the sum of the odd numbers that they contain. You shouldn't mutate the original list. 
 
-Note that the first sublist has the odd numbers 1 and 7; the second sublist has odd numbers 1, 5, and 3; and the third sublist has 1 and 3. Since (1 + 3) < (1 + 7) < (1 + 5 + 3), the sorted list should look like th
+Note that the first sublist has the odd numbers 1 and 7; the second sublist has odd numbers 1, 5, and 3; and the third sublist has 1 and 3. Since (1 + 3) < (1 + 7) < (1 + 5 + 3), the sorted list is as shown below.
 
 ```python
 lst = [[1, 6, 7], [1, 5, 3], [1, 8, 3]]
@@ -324,6 +371,10 @@ lst = [[1, 6, 7], [1, 5, 3], [1, 8, 3]]
 ```
 
 Answer:
+
+<details>
+<summary>Show answer</summary>
+
 ```python
 def sum_of_odd_numbers(sublist):
     odd_numbers = [num for num in sublist if num % 2 != 0]
@@ -332,10 +383,11 @@ def sum_of_odd_numbers(sublist):
 sorted_list = sorted(lst, key=sum_of_odd_numbers)
 print(sorted_list)
 ```
+</details>
 
 ## Practice Problem 6
 
-Given the following data structure, return a new list identical in structure to the original but, with each number incremented by 1. Do not modify the original data structure. Use a comprehension.
+Given the following data structure, return a new list identical in structure to the original but, with each number incremented by 1. Do not modify the original data structure. Use a comprehension if you can.
 
 ```python
 lst = [{'a': 1}, {'b': 2, 'c': 3}, {'d': 4, 'e': 5, 'f': 6}]
@@ -345,10 +397,15 @@ lst = [{'a': 1}, {'b': 2, 'c': 3}, {'d': 4, 'e': 5, 'f': 6}]
 ```
 
 Answer:
+
+<details>
+<summary>Show answer</summary>
+
 ```python
 new_list = [{key: value + 1 for key, value in dictionary.items()}
                             for dictionary in lst]
 ```
+</details>
 
 ## Practice Problem 7
 
@@ -361,9 +418,14 @@ lst = [[2], [3, 5, 7, 12], [9], [11, 15, 18]]
 ```
 
 Answer:
+
+<details>
+<summary>Show answer</summary>
+
 ```python
 new_lst = [[value for value in sublst if value % 3 == 0] for sublst in lst]
 ```
+</details>
 
 ## Practice Problem 8
 
@@ -397,6 +459,10 @@ dict1 = {
 ```
 
 Answer:
+
+<details>
+<summary>Show answer</summary>
+
 ```python
 def transform_item(item):
     if item['type'] == 'fruit':
@@ -407,7 +473,7 @@ def transform_item(item):
 result = [transform_item(item) for item in dict1.values()]
 print(result)
 ```
-
+</details>
 
 ## Practice Problem 9
 
@@ -425,8 +491,10 @@ lst = [
 
 Answer:
 
-```python
+<details>
+<summary>Show answer</summary>
 
+```python
 def list_is_even(number_list):
     return all(num % 2 == 0 for num in number_list)
 
@@ -434,8 +502,8 @@ def all_even(dictionary):
     return all(list_is_even(lst) for lst in dictionary.values())
 
 result = [d for d in lst if all_even(d)]
-
 ```
+</details>
 
 ## Practice Problem 10
 
@@ -444,6 +512,11 @@ A UUID (Universally Unique Identifier) is a type of identifier often used to uni
 Each UUID consists of 32 hexadecimal characters (the digits 0-9 and the letters a-f) represented as a string. The value is typically broken into 5 sections in an 8-4-4-4-12 pattern, e.g., 'f65c57f6-a6aa-17a8-faa1-a67f2dc9fa91'.
 
 Write a function that takes no arguments and returns a string that contains a UUID.
+
+Answer:
+
+<details>
+<summary>Show answer</summary>
 
 ```python
 import random
@@ -464,11 +537,17 @@ print(generate_uuid())  # '02e51c2f-dacd-c319-53b5-e40e6e8c1f78'
 print(generate_uuid())  # '39038ab9-3b95-43d8-6959-5d785ccb9b69'
 print(generate_uuid())  # 'f7d56480-c5b2-8d4d-465f-01a4ea605729'
 ```
+</details>
 
 ## Practice Problem 11
 
 
 The following dictionary has list values that contains strings. Write some code to create a list of every vowel (a, e, i, o, u) that appears in the contained strings, then print it.
+
+Answer:
+
+<details>
+<summary>Show answer</summary>
 
 ```python
 dict1 = {
@@ -492,3 +571,4 @@ print(list_of_vowels)
 # ['e', 'u', 'i', 'o', 'o', 'u', 'e', 'o', 'e', 'e', 'a', 'o']
 
 ```
+</details>
