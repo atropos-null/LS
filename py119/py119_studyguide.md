@@ -13,7 +13,7 @@
 - [Range and Enumerate](#range-and-enumerate)
 - [Sum and All](#sum-and-all)
 - [Conditional Statements and Control Flow](#conditional-statements-and-control-flow)
-- [Sorting](#sorting-lists)
+- [Sorting](#sorting)
 - [Comprehensions](#comprehensions)
 - [Nested Data Structures and Iteration](#nested-data-structure-and-iteration)
 - [Shallow and Deep Copy](#shallow-and-deep-copy)
