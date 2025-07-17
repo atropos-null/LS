@@ -1636,14 +1636,18 @@ Sequences and collections can be converted to sets using `set()`. Order is not m
   set({'name': 'Srdjan', 'city': 'Belgrade'})
   ```
 
-#### For Future Reference
+#### For Future Reference:
 
 ```python
  if len(set(str(num))) == len(str(num)):
     return num
 ```
 
-If you want to check for unique items in an item, in this case an integer, put it through set and compare it to the length of the original. If it is the same length then they are all unique.
+If you want to check for unique characters in an item, in this case an integer, put it through set and compare it to the length of the original. If it is the same length then they are all unique.
+
+If you want to reduce duplicates, there's two methods.  If you don't care about the order of the items in the list, cast the list into a set and then back into a `list: list(set(queue))`
+
+If you do care about the order, create a dictionary from the list using dict.fromkeys() and then cast it back into a list: `list(dict.fromkeys(queue))`
 
 ### Frozen Sets
 
