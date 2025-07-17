@@ -54,3 +54,13 @@ new_matrix = transpose(matrix)
 
 print(new_matrix == [[1, 4, 3], [5, 7, 9], [8, 2, 6]]) # True
 print(matrix == [[1, 5, 8], [4, 7, 2], [3, 9, 6]])     # True
+
+"""
+Further Optimization:
+
+def transpose_comprehension(matrix):
+    num_cols = len(matrix[0]) # Assumes all rows have the same length
+    num_rows = len(matrix)
+    return [[matrix[row][col] for row in range(num_rows)] for col in range(num_cols)]
+    
+"""
