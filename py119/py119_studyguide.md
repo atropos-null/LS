@@ -20,6 +20,8 @@
 - [User-level Synergy](#user-level-synergy)
 - [Further practice](#further-practice)
 
+Page Reference: [Study Guide](https://launchschool.com/lessons/5638850f/assignments/e420c96a)
+
 ***
 
 ## String Methods
@@ -320,9 +322,6 @@ def new_dictionary(old_dictionary):   #creating a new dictionary from an old dic
     return new_dict
 
 ```
-
-
----
 
 ### `get()` vs `setdefault()` Methods
 
@@ -980,18 +979,13 @@ print(fruit_length) # {'apple': 5, 'banana': 6, 'cherry': 6}
 ### Can comprehensions be used with other iterable types beyond lists, sets, and dictionaries?  
 Yes, comprehensions (list, set, and dictionary) can be used in conjunction with any iterable data type in Python. This includes tuples, ranges, strings, frozen sets, files, and more. The examples provided demonstrate their use with tuples, ranges, sets, and strings to create new collections.
 
-## When should you avoid using comprehensions?  
+### While useful, comprehensions can be overused. 
 
 While comprehensions are powerful, there are specific situations where they should be avoided:  
 
 * When you don't use the return value: If your primary goal is to perform an action like printing values (e.g., `[print(num) for num in nums]`), comprehensions are not appropriate because the print function returns None, resulting in a list of `None` values that you don't need. A regular for loop is much better for such side effects.  
 
 * For identity transformations with constructors: If a comprehension simply copies elements without transformation (e.g., `[x for x in some_iterable]`), it's more idiomatic and efficient to use the collection's constructor directly, such as `list(string)` to convert a string to a list of characters. In general, if a comprehension becomes too complex or difficult to read, it's often better to revert to a traditional loop for improved clarity and maintainability.
-
-
-### When NOT to Use Comprehensions (Anti-Patterns):  
-
-While useful, comprehensions can be overused.
 
 * **Side Effects (e.g., printing)**:
 
