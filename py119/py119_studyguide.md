@@ -871,7 +871,6 @@ For more complex sorting criteria, both `sorted()` and `list.sort()` accept a `k
 The `sorted()` function and `list.sort()` method are higher-order functions because they accept a function object as their `key` argument. This key function is a first-class function that transforms each element in the collection into a value that Python then uses for comparison during the sorting process, enabling tailored sorting criteria beyond the default.
 
 
-
 ### How is the key argument used in sorted() and list.sort() for custom sorting? Provide an example.
 
 The `key` keyword argument in `sorted()` and `list.sort()` allows for custom sorting criteria. It takes a function as its value. This function is called once for each item in the collection, and its return value is used by the sorting algorithm for comparison. 
@@ -962,9 +961,23 @@ reordered_names = sorted(
 print(*reordered_names, sep="\n")
 ```
 
-It is the exact same output. But this case, lambda takes the place of of the function. Notice that its almost identical to the return statement of the first code snippet, with an extra `item:` and looks similar to list comprehension syntax. 
+It is the exact same output. But this case, lambda takes the place of of the function. Notice that its almost identical to the return statement of the first code snippet, with an extra `item:`.
 
+Side by side Comparison:
 
+```python
+#Standard Function
+
+def do_boring_stuff(x):
+    return 42 * x
+
+#Lambda Function
+lambda x: 42 * x
+```
+
+Notice that `def do_boring_stuff(x):` and then `return` are covered by `lambda x:`.
+
+The limitation of Lambda is that you can only have a single expression that evaluates to a value. This is the value returned by the lambda function. Therefore, you can't have complex algorithms in a lambda function, just whatever you can fit in a single expression!
 
 [Back to the top](#top)
 ***
