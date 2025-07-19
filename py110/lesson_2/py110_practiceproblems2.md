@@ -240,7 +240,7 @@ for name in names:
     age, gender = list(munsters[name].values())
     print(f"{name} is a {age}-old {gender}")
 
-#other option:
+#second option:
 
 for name, info in munsters.items():
     print(f"{name} is a {info['age']}-year-old {info['gender']}.")

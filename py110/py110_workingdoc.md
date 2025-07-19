@@ -2058,6 +2058,8 @@ Further Reference:
 
 [Gruppetta, S. (2023i, December 7). The Key To The key Parameter in Python. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/the-key-to-the-key-parameter-in-python?utm_source=publication-search)
 
+[Gruppetta, S. (2023i, December 1). What’s All the Fuss About `lambda` Functions in Python. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/whats-all-the-fuss-about-python-lambda-functions)
+
 ***
 
 ## Nested Data Structures

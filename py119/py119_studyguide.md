@@ -50,8 +50,8 @@ Python offers several methods for changing string case:
 
 Both methods search for a substring within a string and return the index where it first appears, but they handle missing substrings differently:
 
-•   ​`str.index()`​: Returns the index of the first occurrence. Raises a ValueError if the substring isn't found.
-•   `​str.find()`​: Returns the index of the first occurrence. Returns -1 if the substring isn't found.
+* ​`str.index()`​: Returns the index of the first occurrence. Raises a `ValueError` if the substring isn't found.
+* `​str.find()`​: Returns the index of the first occurrence. Returns `-1` if the substring isn't found.
 
 ```python
 sentence = "Hello, world!"
@@ -83,14 +83,14 @@ Python provides convenient methods for removing whitespace or specific character
 ### What about `str.replace()`?
 
 `str.replace()` doesn't modify the original string (strings are immutable in Python)
-•   ​Case-sensitive​: The method performs exact matches
-•   ​If substring not found​: Returns the original string unchanged
-•   ​Empty string replacement​: You can replace substrings with empty strings to effectively remove them.
+* ​Case-sensitive​: The method performs exact matches
+* ​If substring not found​: Returns the original string unchanged
+* ​Empty string replacement​: You can replace substrings with empty strings to effectively remove them.
 
 Syntax: `str.replace(old, new, count)`
-•   `​old`​: The substring you want to replace
-•   `​new`​: The substring you want to replace it with
-•   `​count`​: Optional parameter that determines how many instances to replace
+* `​old`​: The substring you want to replace
+* `​new`​: The substring you want to replace it with
+* `​count`​: Optional parameter that determines how many instances to replace
 
 
 [Back to the top](#top)
@@ -158,7 +158,7 @@ If the element we are trying to remove doesn't exist in the list, `list.remove` 
   **Example:**  
   ```python
   numbers = [1, 2, 'two-point-five', 3, 4]
-  numbers.pop(2)  # 3
+  numbers.pop(2)  #'two-point-five'
   ```
 
 Similarly, if the list is empty, `list.pop` will raise an `IndexError`.
@@ -452,10 +452,10 @@ print(car)  # {}
 
 **Key Features:**
 * **Unordered** collection of **unique** objects.
-* **No Duplicates** Designed for efficient membership tests and set operations (union, intersection, difference).
+* **No Duplicates**: Designed for efficient membership tests and set operations (union, intersection, difference).
 * **Mutable**: Can add or remove elements.
 * **Unordered**: No guarantee of item order.
-* **Contain Hashable Elements only** No Lists, Dictionaries or Subsets!!
+* **Contain Hashable Elements only**: No Lists, Dictionaries or Subsets!!
 
 **Subset/Superset Operations:**
 * `<=` or `issubset()`: Check if one set is a subset of another.
@@ -464,67 +464,71 @@ print(car)  # {}
 
 **Set Operations:**
 * `union()` or `|`: Combine elements from two sets (all unique elements, original sets unchanged).  
-    ```python
-    fruits1.union(fruits2)
-    # or
-    fruits1 | fruits2
-    ```
+```python
+fruits1.union(fruits2)
+# or
+fruits1 | fruits2
+```
 
 * `intersection()` or `&`: Common elements between two sets (original sets unchanged).  
-    ```python
-    fruits1.intersection(fruits2)
-    # or
-    fruits1 & fruits2
-    ```
+```python
+fruits1.intersection(fruits2)
+# or
+fruits1 & fruits2
+```
 
 * `difference()` or `-`: Elements in the first set but not the second (original sets unchanged).  
-    ```python
-    fruits1.difference(fruits2)
-    # or
-    fruits1 - fruits2
-    ```
+```python
+fruits1.difference(fruits2)
+# or
+fruits1 - fruits2
+```
 
 * **Disjoint Sets:**  `isdisjoint()` checks if sets have no common elements.  
-  ```python
-  fruits1.isdisjoint(fruits2)
-  ```
+```python
+fruits1.isdisjoint(fruits2)
+```
 
 * **Copying:**   The `copy()` method creates a new distinct set.  
-  ```python
-  fruits_copy = fruits1.copy()
-  ```
+```python
+fruits_copy = fruits1.copy()
+```
 
 **Adding and Removing Members (sets are mutable):**
 * `add()`: Adds a single new member (no effect if already present).  
-    ```python
-    fruits.add('cherry')
-    ```
+```python
+fruits.add('cherry')
+```
+
 * `remove()`: Removes a specified element (raises `KeyError` if not found).  
-    ```python
-    fruits.remove('cherry')
-    ```
+```python
+fruits.remove('cherry')
+```
+
 * `discard()`: Removes a specified element (no error if not found).  
-    ```python
-    fruits.discard('orange')
-    ```
-    > "If you don't care whether the element is in the set, you can use discard instead."
+```python
+fruits.discard('orange')
+```
+> "If you don't care whether the element is in the set, you can use discard instead."
+
 * `clear()`: Removes all elements, leaving an empty set.  
-    ```python
-    fruits.clear()
-    ```
+```python
+fruits.clear()
+```
+
 * `pop()`: Removes and returns an arbitrary element (raises `KeyError` if empty).  
-    ```python
-    fruits.pop()
-    ```
+```python
+fruits.pop()
+```
 
 **Conversion:**   
 
 Sequences and collections can be converted to sets using `set()`. Order is not maintained. Converting a dictionary to a set results in a set of its keys.  
-  ```python
-  set('apple')
-  set(['apple', 'banana'])
-  set({'name': 'Srdjan', 'city': 'Belgrade'})
-  ```
+```python
+set('apple')
+set(['apple', 'banana'])
+set({'name': 'Srdjan', 'city': 'Belgrade'})
+```
 
 Checking for duplicates: If you want to check for unique characters in an item, in this case an integer, put it through set and compare it to the length of the original. If it is the same length then they are all unique.
 
@@ -570,27 +574,30 @@ Disallowed Operations: Conversely, frozen sets cannot use mutating methods that 
 Tuples are immutable, which means their content cannot be changed after creation:
 
 * **Tuple Unpacking:**  A concise way to assign values from a tuple to multiple variables simultaneously. The number of variables must match the number of elements in the tuple.
-  **Example:**  
-  ```python
-  shades = ('crimson', 'emerald', 'azure')
-  r, g, b = shades
-  ```
+
+**Example:**  
+```python
+shades = ('crimson', 'emerald', 'azure')
+r, g, b = shades
+```
 
 The beauty of tuple unpacking lies in its simplicity and readability. While other iterables can be unpacked, tuples are ideal because they often have a predictable number of elements.
 
 * `tuple.count(object)`: Identical to `list.count`, counts occurrences of an object in a tuple.  
-  **Example:**  
-  ```python
-  nums = (1, 2, 2, 3, 3, 3)
-  nums.count(3)  # 3
-  ```
+
+**Example:**  
+```python
+nums = (1, 2, 2, 3, 3, 3)
+nums.count(3)  # 3
+```
 
 * `tuple.index(object, start=0, end=len(tuple))`: Identical to `list.index`, returns the index of the first occurrence of an object in a tuple. Raises a `ValueError` if the object is not found.  
-  **Example:**  
-  ```python
-  fruits = ('apple', 'orange', 'banana', 'apple', 'grape')
-  fruits.index('apple')  # 0
-  ```
+
+**Example:**  
+```python
+fruits = ('apple', 'orange', 'banana', 'apple', 'grape')
+fruits.index('apple')  # 0
+```
 
 [Back to the top](#top)
 ***
@@ -608,13 +615,16 @@ A **Python range object** is a special type of iterable sequence of numbers gene
 The `range()` function is versatile and accepts one, two, or three arguments:
 
 * `range(end)`: Generates numbers from `0` up to, but not including, `end`.  
-    _Example:_ `list(range(3))` results in `[0, 1, 2]`
+_Example:_ `list(range(3))` results in `[0, 1, 2]`
+
 * `range(start, end)`: Generates numbers from `start` up to, but not including, `end`.  
-    _Example:_ `list(range(1, 3))` results in `[1, 2]`
+_Example:_ `list(range(1, 3))` results in `[1, 2]`
+
 * `range(start, end, step)`: Generates numbers from `start`, incremented by `step`, up to, but not including, `end`.  
-    _Example:_ `list(range(1, 6, 2))` results in `[1, 3, 5]`
+_Example:_ `list(range(1, 6, 2))` results in `[1, 3, 5]`
+
 * A negative `step` value makes the range decrement:  
-    _Example:_ `list(range(6, 1, -1))` results in `[6, 5, 4, 3, 2]`
+_Example:_ `list(range(6, 1, -1))` results in `[6, 5, 4, 3, 2]`
 
 ### How can you iterate over a range object and also track the index of each element?
 
@@ -821,7 +831,7 @@ Sorting in Python refers to arranging the items within a collection, such as a l
 Python provides two main built-in tools for sorting: the `sorted()` function and the `list.sort()` method.
 
 * **`sorted()` function**: This function takes an iterable (like a list, string, or tuple) as an argument and returns a new sorted list, leaving the original collection unchanged.
-* **`list.sort()` method**: This method is specifically for lists. It sorts the list in-place, meaning it modifies the original list directly and returns `None`.
+* **`list.sort()` method**: This method is specifically for lists. It sorts the list in-place, meaning it modifies the original list directly and returns `None`. One can call `list.sort()` multiple times to massage the list. 
 
 **Key difference:**  
 `sorted()` creates a new sorted list, while `list.sort()` modifies the existing list.
@@ -846,25 +856,25 @@ sorted(numbers, reverse=True)  # sorts numbers from largest to smallest
 
 ### Custom Sorting with `key` and First-Class Functions
 
-For more complex sorting criteria, both `sorted()` and `list.sort()` accept a `key` keyword argument.
+For more complex sorting criteria, both `sorted()` and `list.sort()` accept a `key` keyword argument. You can set your own rules for sorting the list as long as you can express the rule as a function.
 
 #### What are "first-class functions" and "higher-order functions" in Python, and how do they relate to custom sorting?
 
 * **First-Class Functions:** In Python, functions are considered "first-class objects." This means they can be:
-  * Assigned to variables.
-  * Passed as arguments to other functions.
-  * Returned as the result of other functions.
+* Assigned to variables.
+* Passed as arguments to other functions.
+* Returned as the result of other functions.
 
 * **Higher-Order Functions:** These are functions that either take one or more functions as arguments or return a function as their result.
 
 **Relation to sorting:**  
 The `sorted()` function and `list.sort()` method are higher-order functions because they accept a function object as their `key` argument. This key function is a first-class function that transforms each element in the collection into a value that Python then uses for comparison during the sorting process, enabling tailored sorting criteria beyond the default.
 
----
+
 
 ### How is the key argument used in sorted() and list.sort() for custom sorting? Provide an example.
 
-The `key` keyword argument in `sorted()` and `list.sort()` allows for custom sorting criteria. It takes a function as its value. This function is called once for each item in the collection, and its return value is used by the sorting algorithm for comparison.
+The `key` keyword argument in `sorted()` and `list.sort()` allows for custom sorting criteria. It takes a function as its value. This function is called once for each item in the collection, and its return value is used by the sorting algorithm for comparison. 
 
 **Example: Sorting words by length**
 ```python
@@ -872,9 +882,9 @@ words = ["apple", "pie", "shortcake"]
 sorted_words = sorted(words, key=len)
 print(sorted_words)  # Output: ['pie', 'apple', 'shortcake']
 ```
+
 Here, `len` (the built-in length function) is passed as the key. The `sorted()` function calls `len()` for each word, and the words are then ordered based on their lengths.
 
----
 
 ### How can you achieve multi-criteria sorting (sorting by one attribute, then another) using the key argument?
 
@@ -907,6 +917,52 @@ Here, `person_key` returns `(age, name)`. The list is first sorted by age. If tw
 * **Case-Insensitive Sorting:** For case-insensitive string sorting, use `str.lower` as the key function (e.g., `sorted(animals, key=str.lower)`).
 
 * **In-place vs. New List:** Remember the distinction between `list.sort()` (modifies in-place, returns `None`) and `sorted()` (returns a new sorted list, original unchanged) to avoid unexpected side effects.
+
+### A heads up about lambda sorting
+
+Take this code:
+
+```python
+some_names = [
+    "Robert",
+    "Ishaan",
+    "Max",
+    "Trevor",
+    "Alexandra",
+    "Albert",
+    "Christine",
+]
+
+def get_number_of_a_s(item):
+    return item.lower().count("a")
+
+reordered_names = sorted(some_names, key=get_number_of_a_s)
+print(*reordered_names, sep="\n")
+```
+
+It takes a list of names, and then sorts them according to the quantity of letter a's in the name. This code uses a function and each item in the list is put through the secondary function that's called in the `key=get_number_of_a_s`.
+
+Now take this code:
+
+```python
+some_names = [
+    "Robert",
+    "Ishaan",
+    "Max",
+    "Trevor",
+    "Alexandra",
+    "Albert",
+    "Christine",
+]
+
+reordered_names = sorted(
+    some_names,
+    key=lambda item: item.lower().count("a"),
+)
+print(*reordered_names, sep="\n")
+```
+
+It is the exact same output. But this case, lambda takes the place of of the function. Notice that its almost identical to the return statement of the first code snippet, with an extra `item:` and looks similar to list comprehension syntax. 
 
 
 
@@ -1009,7 +1065,7 @@ for num in nums:
 * Identity Transformations:  If the comprehension is a simple identity transformation (e.g., `[x for x in some_iterable]`), it's better to use the collection's constructor directly, such as `list(string)` instead of `[c for c in string]`.
 
 
-**In short, don't use comprehensions if you aren't using the return value.**
+**In short, don't use comprehensions if you aren't using the return value**
 
 [Back to the top](#top)
 ***
@@ -1147,6 +1203,7 @@ Python lists can contain various data types, including dictionaries, tuples, set
 A crucial concept when working with nested collections is understanding that **variables store references to objects, not the objects themselves**. When an outer collection contains other collections, it holds references to those inner collection objects.
 
 **Modifying a referenced object affects all references:**  
+
 *Example:*  
 ```python
 a = [1, 3]
@@ -1155,6 +1212,7 @@ a[1] = 5 # lst[0] is now [1, 5]
 ```
 
 **Modifying through different references:**  
+
 *Example:*  
 ```python
 a = [1, 3]
@@ -1167,9 +1225,11 @@ In both cases, we're modifying the object that `a` and `lst[0]` point to; we now
 **Importance of understanding pointers:** This *fundamental concept* is critical for avoiding unexpected behavior.
 
 * **Can all Python collection types be nested within each other without restrictions?**  
+
 Not all Python collection types can be nested without restrictions, especially sets and frozensets. Sets and frozensets can only contain hashable objects, so they cannot directly contain mutable collections like lists, dictionaries, or other (non-frozen) sets. Tuples and frozensets themselves are hashable and can be elements of a set or frozenset.
 
 * **Explain the concept of "variable references for nested collections" and why it's important to understand.**  
+
 When you create nested collections by adding existing variables (which are themselves collections) to a new outer collection, you are adding references (pointers) to those objects, not copies. If you modify the original variable, the corresponding element within the nested structure will also change, and vice versa. This is because both point to the same object in memory. Understanding this helps avoid unintended side-effects when working with nested data structures.
 
 
@@ -1215,17 +1275,17 @@ data = [[[0, 1], []], [[2, 3, 4], [5], [6, 7]], [], [[8, 9]]]
 
 #We can do it without list comprehensions:
 lst = []
-for sub in data:
-    for subsub in sub:  
-        for val in subsub:
-            lst.append(val)
+for sublist in data:
+    for subsublist in sublist:  
+        for value in subsublist:
+            lst.append(value)
 print(lst)
 ```
 
 The order in the comprehension is the order you see here in the for loop. It goes from outermost to innermost. Literally, whatever the `for` loop would do in order, follow that in order. 
 
 ```python
-new_lst = [val for sub in data for subsub in sub for val in subsub]
+new_lst = [value for sublist in data for subsublist in sub for val in subsub]
 print(new_lst)
 ```
 
@@ -1288,7 +1348,8 @@ A deep copy **creates a new copy of the object, and recursively creates new copi
 * It can take a great deal more processing to make a deep copy than a shallow copy. Thus, think before you deep copy. Only do it when you need it.
 
 **Technique for Deep Copying:**
-*`copy.deepcopy()` from the `copy` module (works for lists, dictionaries, tuples, ranges, etc.):  
+
+* `copy.deepcopy()` from the `copy` module (works for lists, dictionaries, tuples, ranges, etc.):  
 ```python
 import copy
 new_lst = copy.deepcopy(lst)
