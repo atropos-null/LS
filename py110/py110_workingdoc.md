@@ -2054,6 +2054,10 @@ _Example_: To sort a list of people `(name, age)` first by age, then by name if 
 Page Reference:[Sorting](https://launchschool.com/lessons/76ecb255/assignments/6a0df143)
 [Back to the top](#top)
 
+Further Reference:
+
+[Gruppetta, S. (2023i, December 7). The Key To The key Parameter in Python. The Python Coding Stack.](https://www.thepythoncodingstack.com/p/the-key-to-the-key-parameter-in-python?utm_source=publication-search)
+
 ***
 
 ## Nested Data Structures

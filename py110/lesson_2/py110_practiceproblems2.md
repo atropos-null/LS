@@ -1,6 +1,11 @@
-# Practice Problems: Sorting
+# PY110 Practice Problems that were tricky and need further review.
 
-## Practice Problem 1
+Hint: If you are having a hard time finding a solution, chances are the solution requires a secondary function.
+
+
+## Category: Sorting
+
+### Practice Problem 1
 
 Sort the following list of numbers first in ascending numeric order, then in descending numeric order. Do not mutate the list.
 
@@ -27,7 +32,7 @@ print(regular_sorted)
 ```
 </details>
 
-## Practice Problem 2
+### Practice Problem 2
 
 Repeat the previous exercise but, this time, perform the sort by mutating the original list.
 
@@ -53,7 +58,7 @@ lst.sort(reverse=True)  #[50, 11, 10, 9, 8, 7, -6, -16]
 ```
 </details>
 
-## Practice Problem 3
+### Practice Problem 3
 
 Repeat problem 2 but, this time, sort the list as string values. Both the list passed to the sorting function and the returned list should contain numbers, not strings.
 
@@ -79,7 +84,7 @@ print(lst)   #[9, 8, 7, 50, 11, 10, -6, -16]
 ```
 </details>
 
-## Practice Problem 4
+### Practice Problem 4
 
 How would you sort the following list of dictionaries based on the year of publication of each book, from the earliest to the most recent?
 
@@ -117,9 +122,9 @@ print(sorted_books)
 ```
 </details>
 
-# Practice Problems: Nested Data Structures
+## Category: Nested Data Structures
 
-## Practice Problem 1
+### Practice Problem 5
 
 For each object shown below, demonstrate how you would access the letter `g`.
 
@@ -154,7 +159,7 @@ Dict 1: `dict1['b'][0][1]`
 Dict 2: `list(dict2['3rd'].keys())[0]`
 </details>
 
-## Practice Problem 2
+### Practice Problem 6
 
 For each of these collection objects, demonstrate how you would change the value `3` to `4`.
 
@@ -179,17 +184,17 @@ Dict 1: `dict1['first'][2][0] = 4`
 Dict 2: `dict2['a']['a'][2] = 4`
 </details>
 
-## Practice Problem 3
+### Practice Problem 7
 
 Given the following code, what will the final values of `a` and `b` be? Try to answer without running the code.
 
 ```python
 a = 2
 b = [5, 8]
-lst = [a, b] #lst = [2, [5,8]]
+lst = [a, b] 
 
-lst[0] += 2  #lst = [4, [5,8]] 
-lst[1][0] -= a #lst = [4, [3,8]] 'a' is not the a in the list but the variable integer a above.
+lst[0] += 2  
+lst[1][0] -= a 
 ```
 
 Answer:
@@ -200,7 +205,7 @@ Answer:
 `lst = [4, [3,8]]`
 </details>
 
-## Practice Problem 4
+### Practice Problem 8
 
 One of the most frequently used real-world string operations is that of "string substitution," where we take a hard-coded string and modify it with various parameters from our program.
 
@@ -239,12 +244,17 @@ for name in names:
 
 for name, info in munsters.items():
     print(f"{name} is a {info['age']}-year-old {info['gender']}.")
+
+#third option:
+
+for key, value in munsters.items():
+    print(f"{key} is a {list(value.values())[0]}-year-old {list(value.values())[1]}.")
 ```
 </details>
 
-# Practice Problems: Comprehensions
+## Category: Comprehensions
 
-## Problem 1 
+### Practice Problem 9
 
 Consider the following nested dictionary:
 
@@ -298,7 +308,7 @@ print(sum(all_male_ages))     # 444
 ```
 </details>
 
-## Problem 2
+### Practice Problem 10
 
 Given the following data structure, return a new list with the same structure, but with the values in each sublist ordered in ascending order. Use a comprehension if you can. (Try using a for loop first.)
 
@@ -319,7 +329,7 @@ print(new_list)
 ```
 </details>
 
-## Problem 3
+### Practice Problem 11
 
 Given the following data structure, write some code that uses comprehensions to define a dictionary where the key is the first item in each sublist, and the value is the second.
 
@@ -357,7 +367,7 @@ dictie = {element[0]: element[1] for element in lst}
 ```
 </details>
 
-## Practice Problem 5
+### Practice Problem 12
 
 Given the following data structure, sort the list so that the sub-lists are ordered based on the sum of the odd numbers that they contain. You shouldn't mutate the original list. 
 
@@ -385,7 +395,7 @@ print(sorted_list)
 ```
 </details>
 
-## Practice Problem 6
+### Practice Problem 13
 
 Given the following data structure, return a new list identical in structure to the original but, with each number incremented by 1. Do not modify the original data structure. Use a comprehension if you can.
 
@@ -407,7 +417,7 @@ new_list = [{key: value + 1 for key, value in dictionary.items()}
 ```
 </details>
 
-## Practice Problem 7
+### Practice Problem 14
 
 Given the following data structure return a new list identical in structure to the original, but containing only the numbers that are multiples of 3.
 
@@ -423,11 +433,25 @@ Answer:
 <summary>Show answer</summary>
 
 ```python
+
+# For Loop:
+
+only_multiplesof_3 = []
+
+for sublist in lst:
+    filtered = []
+    for element in sublist:
+        if element % 3 == 0:
+            filtered.append(element)
+    only_multiplesof_3.append(filtered)
+print(only_multiplesof_3)
+
+# List Comprehension
 new_lst = [[value for value in sublst if value % 3 == 0] for sublst in lst]
 ```
 </details>
 
-## Practice Problem 8
+### Practice Problem 15
 
 Given the following data structure, write some code to return a list that contains the colors of the fruits and the sizes of the vegetables. The sizes should be uppercase, and the colors should be capitalized.
 
@@ -475,7 +499,7 @@ print(result)
 ```
 </details>
 
-## Practice Problem 9
+### Practice Problem 16
 
 Given the following data structure, write some code to return a list that contains only the dictionaries where all the numbers are even.
 
@@ -505,7 +529,7 @@ result = [d for d in lst if all_even(d)]
 ```
 </details>
 
-## Practice Problem 10
+### Practice Problem 17
 
 A UUID (Universally Unique Identifier) is a type of identifier often used to uniquely identify items, even when some of those items were created on a different server or by a different application. That is, without any synchronization, two or more computer systems can create new items and label them with a UUID with no significant risk of stepping on each other's toes. It accomplishes this feat through massive randomization. The number of possible UUID values is approximately 3.4 X 10E38, which is a huge number. The chance of a conflict, a "collision", is vanishingly small with such a large number of possible values.
 
@@ -539,17 +563,21 @@ print(generate_uuid())  # 'f7d56480-c5b2-8d4d-465f-01a4ea605729'
 ```
 </details>
 
-## Practice Problem 11
+### Practice Problem 18
 
 
 The following dictionary has list values that contains strings. Write some code to create a list of every vowel (a, e, i, o, u) that appears in the contained strings, then print it.
 
+```python
 dict1 = {
     'first':  ['the', 'quick'],
     'second': ['brown', 'fox'],
     'third':  ['jumped'],
     'fourth': ['over', 'the', 'lazy', 'dog'],
 }
+
+#Expected Result:  ['e', 'u', 'i', 'o', 'o', 'u', 'e', 'o', 'e', 'e', 'a', 'o']
+```
 
 Answer:
 
@@ -570,7 +598,7 @@ print(empty)
 
 list_of_vowels = [char for key, value in dict1.items() for word in value for char in word if char in vowels]
 print(list_of_vowels)
-# ['e', 'u', 'i', 'o', 'o', 'u', 'e', 'o', 'e', 'e', 'a', 'o']
+
 
 ```
 </details>
