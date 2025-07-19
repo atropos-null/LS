@@ -544,18 +544,20 @@ print(generate_uuid())  # 'f7d56480-c5b2-8d4d-465f-01a4ea605729'
 
 The following dictionary has list values that contains strings. Write some code to create a list of every vowel (a, e, i, o, u) that appears in the contained strings, then print it.
 
-Answer:
-
-<details>
-<summary>Show answer</summary>
-
-```python
 dict1 = {
     'first':  ['the', 'quick'],
     'second': ['brown', 'fox'],
     'third':  ['jumped'],
     'fourth': ['over', 'the', 'lazy', 'dog'],
 }
+
+Answer:
+
+<details>
+<summary>Show answer</summary>
+
+```python
+
 
 vowels = ['a','e','i','o','u']
 empty = []
