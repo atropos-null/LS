@@ -1309,6 +1309,66 @@ for outer_key, outer_value in outer_dict.items()
 for inner_key, inner_value in outer_value.items()]
 ```
 
+#### Triangular Iteration
+
+In another very common variation, you don't need to iterate over a nested structure, but you need a nested for loop to do the appropriate iteration. Take for example the following problem:
+
+`Given a list of numbers: [1,2,2,3,4,4,5], return the HIGHEST sum of any consecutive numbers where a number doesn't 
+repeat.`
+
+The core idea is to use a nested loop structure to generate every possible consecutive sublist and then, for each one, check if it meets the criteria. Here’s how you can break down the problem using that pattern:
+
+1.  **​Generate All Consecutive Sublists**​: This is where triangular iteration shines. Just like generating all substrings, you can generate all sublists. The outer loop will set the starting `index (i)`, and the inner loop will set the ending `index (j)`.
+2.  **​Check for Uniqueness**​: For each sublist you generate, you need to see if all its elements are unique. A clever and Pythonic way to do this is to convert the sublist to a set and compare its length to the sublist's length. Since sets only store unique elements, the lengths will be equal only if the sublist had no duplicates.
+3.  **​Calculate the Sum**​: If the sublist contains unique numbers, calculate its sum using the built-in `sum()` function.
+4.  **​Keep Track of the Maximum**​: You'll need a variable to store the highest sum you've found so far. Compare the sum of each valid sublist to this variable and update it if the new sum is higher.
+
+```python
+def highest_sum(numbers):
+    max_sum = 0
+
+    # Triangular iteration to generate all consecutive sublists. `i` is the starting index of the sublist
+    for i in range(len(numbers)):
+        # `j` is the ending index of the sublist
+        for j in range(i, len(numbers)):
+            # Create the sublist using a slice
+            sublist = numbers[i : j+1]
+
+            # 1. Check for uniqueness
+            if len(sublist) == len(set(sublist)):
+                # 2. If unique, calculate the sum
+                current_sum = sum(sublist)
+
+                # 3. Update the maximum sum found so far
+                if current_sum > max_sum:
+                    max_sum = current_sum
+
+    return max_sum
+
+
+my_numbers = [1, 2, 2, 3, 4, 4, 5]
+print(highest_sum([1,2,2,3,4,4,5]) == 9) #True
+print(highest_sum([]) == 0) #True
+print(highest_sum([1,1,1]) == 1) #True
+print(highest_sum([1,1,2,3,4,5,5,6]) == 15) #True
+```
+
+Let's trace the first few steps with your list `[1, 2, 2, ...]`:
+
+•   `​i = 0​`:
+    •   `​j = 0​`: sublist is `[1]`. It's unique. `sum`is `1`. `max_sum` becomes `1`.
+    •   `​j = 1`​: sublist is `[1, 2]`. It's unique. `sum` is `3`. `max_sum` becomes `3`.
+    •   `​j = 2​`: sublist is `[1, 2, 2]`. It's ​not​ unique `(len([1,2,2])` is `3`, but `len(set([1,2,2])) is 2)`. We do nothing.
+•   `​i = 1`​:
+    •   `​j = 1​`: sublist is `[2]`. It's unique. `sum` is `2`. `max_sum` is still `3`.
+    •   `​j = 2`​: sublist is `[2, 2`]. It's ​not​ unique. We do nothing.
+    •   `​j = 3`​: sublist is `[2, 2, 3`]. It's ​not​ unique. We do nothing.
+•   `​i = 2`​:
+    •   `​j = 2`​: sublist is `[2]`. It's unique. `sum` is `2`. `max_sum` is still `3`.
+    •   `​j = 3​`: sublist is `[2, 3]`. It's unique. `sum`is `5`.
+
+`max_sum` becomes `5`.
+
 [Back to the top](#top)
 ***
 

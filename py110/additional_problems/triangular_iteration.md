@@ -1,0 +1,306 @@
+# PY110-119 Triangular Iteration Problems
+
+## 1. Count Subarray Sums
+
+**Difficulty:​ Intermediate**
+
+Create a function that takes a list of integers and a target sum. The function should return the number of contiguous subarrays that sum to the target value.
+
+```python
+def count_subarray_sums(arr, target_sum):
+
+    """
+    Count contiguous subarrays that sum to target.
+    """
+    
+    # Your implementation here
+    pass
+
+# Test cases
+print(count_subarray_sums([1, 2, 3, 4, 5], 9) == 2)     # [4, 5] and [2, 3, 4]
+print(count_subarray_sums([1, 1, 1], 2) == 2)           # [1, 1] occurs twice
+print(count_subarray_sums([1, -1, 1, -1], 0) == 4)      # [1, -1], [1, -1], [-1, 1], [1, -1, 1, -1]
+print(count_subarray_sums([10, 5, 0, 2, 3, -5, 7], 5) == 5)
+print(count_subarray_sums([4, 2, 22, 8, 5], 30) == 0)
+```
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+## 2. Longest Palindrome Length
+
+**Difficulty:​ Intermediate**
+
+Create a function that takes a string as an argument and returns the length of the longest palindrome substring in that string. A palindrome reads the same forward and backward.
+
+```python
+def longest_palindrome(string):
+    """
+    Find the length of the longest palindrome substring.
+    Args:
+        s (str): The input string to analyze
+
+    Returns:
+        int: The length of the longest palindrome substring
+    """
+    # Your implementation here
+    pass
+
+# Test cases
+print(longest_palindrome("babad") == 3) # "bab" or "aba"
+print(longest_palindrome("cbbd") == 2) # "bb"
+print(longest_palindrome("a") == 1) # "a"
+print(longest_palindrome("") == 0)
+print(longest_palindrome("racecar") == 7) # "racecar"
+print(longest_palindrome("programming") == 2) # "mm"
+print(longest_palindrome("launchschool") == 2) # "oo"
+```
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+## 3. Even Substrings Count
+
+**Difficulty:​ Advanced**
+
+Create a function that takes a string of digits as an argument and returns the number of even-numbered substrings that can be formed. If a substring occurs more than once, count each occurrence as a separate substring.
+
+```python
+
+
+def even_substrings(string):
+    """
+    Count the number of even-numbered substrings that can be formed from a string of digits.
+
+    Args:
+        string: A string containing only digits
+
+    Returns:
+        An integer representing the count of even-numbered substrings
+    """
+    # Your solution here
+    pass
+
+# Test cases
+print(even_substrings('1432') == 6)
+print(even_substrings('3145926') == 16)
+print(even_substrings('2718281') == 16)
+print(even_substrings('13579') == 0)
+print(even_substrings('143232') == 12)
+```
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+## 4. Longest Monotonic Substring*
+
+**Difficulty:​ Intermediate**
+
+Create a function called longest_monotonic that takes a list of integers and returns the length of the longest monotonic (either entirely non-increasing or entirely non-decreasing) substring.
+
+```python
+def longest_monotonic(arr):
+    """
+    Find the length of the longest monotonic substring.
+    Args:
+        numbers (list): A list of integers
+
+    Returns:
+        int: The length of the longest monotonic subsequence
+    """
+    # Your implementation here
+    pass
+
+# Test cases
+print(longest_monotonic([1, 2, 3, 4, 3, 2, 1]) == 4) # [1, 2, 3, 4] is monotonic increasing
+print(longest_monotonic([5, 4, 3, 2, 1]) == 5) # The entire array is monotonic decreasing
+print(longest_monotonic([1, 1, 2, 3, 3, 4, 5, 4]) == 7) # [1, 1, 2, 3, 3, 4, 5] is monotonic increasing
+print(longest_monotonic([9, 8, 8, 7, 6, 7, 8]) == 5) # [9, 8, 8, 7, 6] is monotonic decreasing
+print(longest_monotonic([1, 2, 1, 2, 1]) == 2) # Multiple monotonic subarrays of length 2
+print(longest_monotonic([]) == 0) # Empty array
+print(longest_monotonic([5]) == 1) # Single element is always monotonic
+```
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+## 5. 5. Find Sum Pairs
+
+**Difficulty:​ Intermediate**
+
+Write a function that finds all unique pairs in a list that sum to a target value.
+
+```python
+def find_pairs(numbers, target_sum):
+    """
+    Find all unique pairs in a list that sum to a target value.
+
+    Args:
+        lst (list): The list of numbers to search
+        target (int/float): The target sum value
+
+    Returns:
+        list: A list of tuples representing pairs that sum to the target
+    """
+    # Your implementation here
+    pass
+
+# Test cases
+print(find_pairs([1, 2, 3, 4, 5], 6) == [(1, 5), (2, 4)])
+print(find_pairs([5, 5, 5, 5], 10) == [(5, 5)])
+print(find_pairs([1, 2, 3, 4, 5], 10) == [])
+print(find_pairs([-1, 0, 1, 2], 1) == [(-1, 2), (0, 1)])
+```
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+## 6. Longest Palindromic Substring
+
+**Difficulty:​ Advanced**
+
+Implement a function that finds the longest palindromic substring in a given string. A palindrome is a string that reads the same backward as forward.
+
+```python
+def longest_palindromic_substring(string):
+    """
+    Find the longest palindromic substring.
+    Args:
+       s (str): The input string to search for palindromes
+
+    Returns:
+       str: The longest palindromic substring
+    """
+    # Your code here
+    pass
+
+# Test cases
+print(longest_palindromic_substring("babad") == "bab") # "aba" would also be valid
+print(longest_palindromic_substring("cbbd") == "bb")
+print(longest_palindromic_substring("a") == "a")
+print(longest_palindromic_substring("ac") == "a") # Single characters are palindromes
+print(longest_palindromic_substring("racecar") == "racecar")
+print(longest_palindromic_substring("abcdefgfedcba") == "abcdefgfedcba")
+```
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+## 7. Subarray Sum Indices
+**Difficulty:​ Advanced**
+
+Write a function that takes a list of integers and a target sum. Return a list containing the indices of the first subarray found whose elements sum to the target. If no such subarray exists, return an empty list.
+
+```python
+def sub_array_sum(array, target_sum):
+    """
+    Find indices of first subarray that sums to target.
+    """
+    # Your implementation here
+    pass
+
+# Test cases
+print(sub_array_sum([1, 2, 3, 4, 5], 9) == [1, 3])    # elements at indices 1,2,3 (values 2,3,4) sum to 9
+print(sub_array_sum([10, 5, 1, 2, 3, 8], 15) == [0, 1]) # elements at indices 0,1 (values 10,5) sum to 15
+print(sub_array_sum([3, 2, 5, 4, 1], 10) == [0, 2])    # elements at indices 0,1,2 (values 3,2,5) sum to 10
+print(sub_array_sum([1, 2, 3, 4], 20) == [])
+```
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+## 8. Maximum Subarray Sum
+
+**Difficulty:​ Advanced** 
+
+Create a function that finds the contiguous subarray with the largest sum and returns that sum. A subarray must contain at least one element.
+
+```python
+def find_max_subarray_sum(array):
+    """
+    Find the maximum sum of any contiguous subarray.
+    Args:
+       numbers (list): A list of integers
+
+    Returns:
+       int: The sum of the contiguous subarray with the largest sum
+    """
+    # Your implementation here
+    pass
+
+# Test cases
+print(find_max_subarray_sum([-2, 1, -3, 4, -1, 2, 1, -5, 4]) == 6) # subarray [4, -1, 2, 1]
+print(find_max_subarray_sum([1]) == 1)
+print(find_max_subarray_sum([-1, -2, -3]) == -1)
+print(find_max_subarray_sum([5, -3, 5]) == 7)
+```
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+## 9. Longest Unique Substring
+
+**Difficulty:​ Advanced**
+
+Create a function that takes a string and returns the longest substring that contains unique characters (no duplicates). If there are multiple such substrings of the same length, return the one that appears first in the string.
+
+```python
+def longest_unique_substring(string):
+    """
+    Find the longest substring with unique characters.
+    Args:
+       s (str): The input string
+
+    Returns:
+       str: The longest substring with unique characters
+    """
+    # Your implementation here
+    pass
+
+# Test cases
+print(longest_unique_substring("abcabcbb") == "abc")
+print(longest_unique_substring("bbbbb") == "b")
+print(longest_unique_substring("pwwkew") == "wke")
+print(longest_unique_substring("dvdf") == "vdf")
+print(longest_unique_substring("abcdeafbdgcbb") == "eafbdgc")
+```
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+## 10. Closest Numbers
+
+**Difficulty:​ Advanced**
+
+Create a function that takes a list of integers as an argument and returns a tuple of two numbers that are closest together in value. If there are multiple pairs that are equally close, return the pair that occurs first in the list.
+
+```python
+def closest_numbers(numbers):
+    """
+    Find the pair of numbers with the smallest difference.
+    Args:
+       numbers (list): A list of integers
+
+    Returns:
+       tuple: A tuple of two numbers that are closest together in value
+    """
+    # Your implementation here
+    pass
+
+# Test cases
+print(closest_numbers([5, 25, 15, 11, 20]) == (15, 11))
+print(closest_numbers([19, 25, 32, 4, 27, 16]) == (25, 27))
+print(closest_numbers([12, 7, 17]) == (12, 7))
+```
+
+<details>
+<summary>Possible Solution</summary>
+</details>
