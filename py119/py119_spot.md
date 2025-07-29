@@ -336,3 +336,305 @@ def scramble_words(s):
         return " ".join(result)
 ```
 </details>
+
+## 10. Most Frequent Words
+
+Write a function that, given a string of text, returns a list of the top-3 most
+occurring words, in descending order of the number of occurrences.
+
+Assumptions:
+- A word is a string of letters (A to Z) optionally containing one or more apostrophes (').
+- Matches should be case-insensitive.
+- Ties may be broken arbitrarily.
+- If a text contains fewer than three unique words, then either the top-2 or top-1 words should be returned, or an empty list if a text contains no words.
+
+Examples:
+
+```python
+
+top_3_words(" , e .. ") # ["e"]
+top_3_words(" ... ") # []
+top_3_words(" ' ") # []
+top_3_words(" ''' ") # []
+top_3_words("""In a village of La Mancha, the name of which I have no desire to call to
+mind, there lived not long since one of those gentlemen that keep a lance
+in the lance-rack, an old buckler, a lean hack, and a greyhound for
+coursing. An olla of rather more beef than mutton, a salad on most
+nights, scraps on Saturdays, lentils on Fridays, and a pigeon or so extra
+on Sundays, made away with three-quarters of his income.""") # should return ["a", "of", "on"]
+```
+<details>
+<summary>Possible Solution</summary>
+
+def make_dictionary(input_string):
+    to_count = []
+    counts = {}
+    split_elements = input_string.split()
+    
+    for element in split_elements:
+        if element.isalpha():
+            to_count.append(element)
+
+    for element in to_count:
+        if element not in counts:
+            counts[element] = 1
+        else:
+            counts[element] += 1
+    return counts
+
+def top_3_words(counts):
+    final = []
+    count_dicts = make_dictionary(counts) 
+    if not count_dicts:
+        return []
+    for _ in range(3):
+        if len(count_dicts) == 1:
+            for key in count_dicts.keys():
+                final.append(key)
+            break
+        else:
+            max_counts = max(count_dicts, key=count_dicts.get)
+            final.append(max_counts)
+            count_dicts.pop(max_counts)
+    return final
+
+print(top_3_words(" , e .. ")) # ["e"]
+print(top_3_words("hi how are you hi how hi"))
+print(top_3_words(" ... ")) # []
+print(top_3_words(" ' ")) # []
+print(top_3_words(" ''' ")) # []
+print(top_3_words("""In a village of La Mancha, the name of which I have no desire to call to mind, there lived not long since one of those gentlemen that keep a lance in the lance-rack, an old buckler, 
+a lean hack, and a greyhound for coursing. An olla of rather more beef than mutton, a salad on most nights, scraps on Saturdays, lentils on Fridays, and a pigeon or so extra on Sundays, made away with three-quarters of his income.""")) # should return ["a", "of", "on"]
+</details>
+
+## 11. Extract the domain name from a URL
+
+Write a function that, given a URL as a string, parses out just the domain name and returns it.
+
+Examples:
+
+```python
+
+domain_name("http://github.com/carbonfive/raygun") # should return "github"
+domain_name("https://www.cnet.com") # should return "cnet"
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+def domain_name(input_string):
+    half_way = strip_prefix(input_string)
+    final = strip_suffix(half_way)
+    return final
+
+def strip_prefix(input_string):
+    prefixes = ["http://", "https://www."]
+    for prefix in prefixes:
+        if input_string.startswith(prefix):
+            half_cleaned = input_string.removeprefix(prefix)
+    return half_cleaned
+
+def strip_suffix(half_clean_string):
+    listed = half_clean_string.split(".")
+    return listed[0]
+
+print(domain_name("http://github.com/carbonfive/raygun")) # should return "github"
+print(domain_name("https://www.cnet.com")) # should return "cnet"
+```
+</details>
+
+## 12. Detect the Pangram
+A pangram is a sentence that contains every single letter of the alphabet at least once. Given a string, detect whether or not it is a pangram. Return True if it is, False if not. Ignore numbers and punctuation.
+
+Examples:
+```python
+print(is_panagram("The quick brown fox jumps over the lazy dog.")) # should return True
+print(is_panagram("This is not a pangram.")) # should return False
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def is_panagram(input_string):
+    abc = 'abcdefghijklmnopqrstuvwxyz'
+    chars = [char for char in input_string.lower()]
+    collection = []
+    for char in chars:
+        if char in abc:
+            collection.append(char)
+    if set(abc) == set(collection):
+        return True
+    else:
+        return False
+
+print(is_panagram("The quick brown fox jumps over the lazy dog.")) # True
+print(is_panagram("This is not a pangram.")) #False
+
+```
+</details>
+
+## 13. Kebabize a String
+
+Modify the kebabize function so that it converts a camel case string into a kebab case. Kebab case separates words with dashes '-'; camel case identifies separate words by upcasing the first character in each new word.
+
+Examples:
+
+```python
+
+kebabize('camelsHaveThreeHumps') # should return 'camels-have-three-humps'
+kebabize('myCamelHas3Humps') # should return 'my-camel-has-humps'
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+def kebabize(input_string):
+    holding = []
+    split_string = [char for char in input_string]
+    for char in split_string:
+        if char.isupper():
+            holding.append("-")
+        holding.append(char.lower())
+    return "".join(holding)
+
+print(kebabize('camelsHaveThreeHumps')) # 'camels-have-three-humps'
+print(kebabize('myCamelHas3Humps')) #'my-camel-has-humps'
+```
+</details>
+
+## 14. Dubstep
+
+Write a function to decode a dubstep string to its original form. The string may begin and end with one or more "WUB"s and there will be at least one (and possibly more) "WUB"s between each word. The input consists of a single non-empty string, consisting only of uppercase English letters.
+
+Examples:
+```python
+
+print(song_decoder("WUBWEWUBAREWUBWUBTHEWUBCHAMPIONSWUBMYWUBFRIENDWUB")) # should return "WE ARE THE CHAMPIONS MY FRIEND"
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def song_decoder(input_string):
+    return ' '.join(input_string.replace('WUB', ' ').split())
+
+print(song_decoder("WUBWEWUBAREWUBWUBTHEWUBCHAMPIONSWUBMYWUBFRIENDWUB")) #"WE ARE THE CHAMPIONS MY FRIEND"
+```
+
+## 15. Take a Walk
+
+You live in the city of Cartesia where all roads are laid out in a perfect grid. You arrived ten minutes too early to an appointment, so you decided to take the opportunity to go for a short walk. The city provides its citizens with a Walk Generating App on their phones -- every time you press the button it sends you a list of one-letter strings representing directions to walk (e.g., ['n', 's', 'w', 'e']). You always walk only a single block in a direction, and you know it takes you one minute to traverse one city block. Create a function that will return `True` if the walk the app gives you will take you exactly ten minutes (you don't want to be early or late!) and will, of course, return you to your starting point. Return `False` otherwise.
+
+Note: You will always receive a valid list containing a random assortment of direction letters ('n', 's', 'e', or 'w' only). It will never give you an empty list (that's not a walk, that's standing still!).
+
+Examples:
+
+```python
+
+is_valid_walk(['n','s','n','s','n','s','n','s','n','s']) # should return True
+is_valid_walk(['w','e','w','e','w','e','w','e','w','e','w','e']) # should return False
+is_valid_walk(['w']) # should return False
+is_valid_walk(['n','n','n','s','n','s','n','s','n','s']) # should return F
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def is_valid_walk(directions):
+
+    if len(directions) % 10 == 0:
+        if 'n' and 's' in directions:
+            if directions.count('n') == directions.count('s'):
+                return True
+            return False
+        elif 'e' and 'w' in directions:
+            if directions.count('e') == directions.count('w'):
+                return True
+            return False
+    
+    return False
+
+print(is_valid_walk(['n','s','n','s','n','s','n','s','n','s'])) # True
+print(is_valid_walk(['w','e','w','e','w','e','w','e','w','e','w','e'])) # False
+print(is_valid_walk(['w'])) # False
+print(is_valid_walk(['n','n','n','s','n','s','n','s','n','s'])) # False
+```
+
+</details>
+
+## 16. Spin Words
+Write a function that takes in a string of one or more words and returns the same string, but with all words of five or more letters reversed. Strings passed in will consist of only letters and spaces. Spaces will be included only when more than one word is present.
+
+Examples:
+
+```python
+
+spin_words("Hey fellow warriors") # should return "Hey wollef sroirraw"
+spin_words("This is a test") # should return "This is a test"
+spin_words("This is another test") # should return "This is rehtona test"
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def spin_words(input_string):
+    temp = input_string.split()
+    for index, word in enumerate(temp):
+        if len(word) >= 5:
+            new_word = word[::-1]
+            temp.insert(index, new_word)
+            temp.pop(index+1)
+    return " ".join(temp)
+
+
+print(spin_words("Hey fellow warriors")) # "Hey wollef sroirraw"
+print(spin_words("This is a test")) # "This is a test"
+print(spin_words("This is another test")) # "This is rehtona test"
+```
+
+</details>
+
+## 17. Expanded Form of Number
+
+You will be given a number, and you need to return it as a string in expanded form. For example:
+
+```python
+
+expanded_form(12) # should return '10 + 2'
+expanded_form(42) # should return '40 + 2'
+expanded_form(70304) # should return '70000 + 300 + 4'
+```
+
+Note: All numbers will be whole numbers greater than 0.
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def expanded_form(num):
+    digits = [int(num) for num in str(num)]
+    temp = []
+    for i in range(len(digits)):
+        digit = digits[i] * (10**(len(digits) - i - 1))
+        if digit == 0:
+            continue
+        temp.append(str(digit))
+    return " + ".join(temp)
+  
+        
+print(expanded_form(12)) # '10 + 2'
+print(expanded_form(42)) # '40 + 2'
+print(expanded_form(70304)) # '70000 + 300 + 4'
+```
+</details>
