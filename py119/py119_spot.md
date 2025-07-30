@@ -638,3 +638,170 @@ print(expanded_form(42)) # '40 + 2'
 print(expanded_form(70304)) # '70000 + 300 + 4'
 ```
 </details>
+
+## 18. Multiplicative Persistence
+Write a function, persistence, that takes in a positive parameter `num` and returns its multiplicative persistence, which is the number of times you must multiply the digits in `num` until you reach a single digit.
+
+Examples:
+
+```python
+persistence(39) # should return 3, because 3*9=27, 2*7=14, 1*4=4 and 4 has only one digit
+persistence(999) # should return 4, because 9*9*9=729, 7*2*9=126, 1*2*6=12, and finally 1*2=2
+persistence(4) # should return 0, because 4 is already a one-digit number
+persistence(25) # should return 2, because 2*5=10, and 1*0=0
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+def persistence(num):
+
+    digits = [int(num) for num in str(num)]
+    count = 0
+    while len(digits) > 1:
+        product = 1
+        for i in range(len(digits)):
+            product = product * digits[i]
+        digits.clear()
+        digits.append(product)
+        digits = [int(num) for num in str(product)]
+        count +=1
+    return count
+
+print(persistence(39)) # should return 3, because 3*9=27, 2*7=14, 1*4=4 and 4 has only one digit
+print(persistence(999)) # should return 4, because 9*9*9=729, 7*2*9=126, 1*2*6=12, and finally 1*2=2
+print(persistence(4)) # should return 0, because 4 is already a one-digit number
+print(persistence(25)) # should return 2, because 2*5=10, and 1*0=0
+```
+
+</details>
+
+## 19. Title-ize
+
+A string is considered to be in title case if each word in the string is either:
+a) Capitalized (that is, only the first letter of the word is in upper case)
+b) Considered to be an exception and put entirely into lower case unless it is the first word, which is always capitalized.
+
+Write a function that will convert a string into title case, given an optional list of exceptions (minor words). The list of minor words will be given as a string with each word separated by a space. Your function should ignore the case of the minor words string -- it should behave in the same way even if the case of the minor word string is changed.
+
+Examples:
+
+```python
+
+title_case('a clash of KINGS', 'a an the of') # should return 'A Clash of Kings'
+title_case('THE WIND IN THE WILLOWS', 'The In') # should return 'The Wind in the Willows'
+title_case('the quick brown fox') # should return 'The Quick Brown Fox'
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def title_case(input_string, exceptions=''):
+    exceptions = exceptions.lower().split()
+    final = []
+    temp = input_string.lower().split()
+    for word in temp:
+        if word in exceptions:
+            final.append(word)
+        else:
+            final.append(word.capitalize())
+    popped = final.pop(0)
+    final.insert(0, popped.capitalize())
+    return " ".join(final)
+ 
+print(title_case('a clash of KINGS', 'a an the of')) # should return 'A Clash of Kings'
+print(title_case('THE WIND IN THE WILLOWS', 'The In')) # should return 'The Wind in the Willows'
+print(title_case('the quick brown fox')) # should return 'The Quick Brown Fox'
+
+```
+</details>
+
+## 20. Character Count Sorting
+Write a function that takes a string as an argument and groups the number of times each character appears in the string as a dictionary sorted by the highest number of occurrences.
+
+The characters should be sorted alphabetically, and you should ignore spaces, special characters, and count uppercase letters as lowercase ones.
+
+Examples:
+
+```python
+
+get_char_count("Mississippi") # should return {4: ['i', 's'], 2: ['p'], 1: ['m']}
+get_char_count("Hello. Hello? HELLO!!") # should return {6: ['l'], 3: ['e', 'h', 'o']}
+get_char_count("aaa...bb...c!") # should return {3: ['a'], 2: ['b'], 1: ['c']}
+get_char_count("aaabbbccc") # should return {3: ['a', 'b', 'c']}
+get_char_count("abc123") # should return {1: ['1', '2', '3', 'a', 'b', 'c']}
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def get_char_count(input_string):
+    chars = [char for char in input_string.lower() if char.isalnum()]
+    counts = {}
+    final = {}
+    sorted_final = {}
+    for char in chars:
+        counts[char] = counts.get(char, 0) + 1
+    for char, count in counts.items():
+        if count in final:
+            final[count].append(char)
+        else:
+            final[count] = [char]
+    for count in final:
+        final[count].sort(reverse=True)
+    for count in sorted(final.keys(), reverse=True):
+        sorted_final[count] = final[count]
+    
+    return sorted_final
+```
+
+</details>
+
+## 21. Mine Location
+
+You've just discovered a square (NxN) field and you notice a warning sign. The sign states that there's a single bomb in the 2D grid-like field in front of you.
+
+Write a function `mine_location` that accepts a 2D array, and returns the location of the mine. The mine is represented as the integer 1 in the 2D array. Areas in the 2D array that are not the mine will be represented as 0s.
+
+The location returned should be an array where the first element is the row index, and the second element is the column index of the bomb location (both should be 0 based). All 2D arrays passed into your function will be square (NxN), and there will only be one mine in the array.
+
+Examples:
+```python
+
+mine_location([[1, 0, 0], [0, 0, 0], [0, 0, 0]]) # should return [0, 0]
+mine_location([[0, 0, 0], [0, 1, 0], [0, 0, 0]]) # should return [1, 1]
+mine_location([[0, 0, 0], [0, 0, 0], [0, 1, 0]]) # should return [2, 1]
+mine_location([[1, 0], [0, 0]]) # should return [0, 0]
+mine_location([[1, 0, 0], [0, 0, 0], [0, 0, 0]]) # should return [0, 0]
+mine_location([[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 0]]) # should return [2, 2]
+
+```
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def mine_location(matrix):
+    result = []
+    for row_index, lst in enumerate(matrix):
+        if 1 in lst:
+            result.append(row_index)
+        for col_index, item in enumerate(lst):
+            if 1 == item:
+                result.append(col_index)
+    return result 
+               
+print(mine_location([[1, 0, 0], [0, 0, 0], [0, 0, 0]])) # should return [0, 0]
+print(mine_location([[0, 0, 0], [0, 1, 0], [0, 0, 0]])) # should return [1, 1]
+print(mine_location([[0, 0, 0], [0, 0, 0], [0, 1, 0]])) # should return [2, 1]
+print(mine_location([[1, 0], [0, 0]])) # should return [0, 0]
+print(mine_location([[1, 0, 0], [0, 0, 0], [0, 0, 0]])) # should return [0, 0]
+print(mine_location([[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 0]])) # should return [2, 2]
+```
+
+## 

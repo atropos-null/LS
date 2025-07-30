@@ -304,3 +304,42 @@ print(closest_numbers([12, 7, 17]) == (12, 7))
 <details>
 <summary>Possible Solution</summary>
 </details>
+
+## 11. Easy-4 All Substrings from Small Problems.
+
+Write a function that returns a list of all substrings of a string. Order the returned list by where in the string the substring begins. This means that all substrings that start at index position 0 should come first, then all substrings that start at index position 1, and so on. Since multiple substrings will occur at each position, return the substrings at a given index from shortest to longest.
+
+```python
+expected_result = [
+    "a", "ab", "abc", "abcd", "abcde",
+    "b", "bc", "bcd", "bcde",
+    "c", "cd", "cde",
+    "d", "de",
+    "e",
+]
+
+print(substrings('abcde') == expected_result)  # True
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+def substrings(input_string):
+    tmp = []
+    for i in range(len(input_string)):
+        for j in range(i, len(input_string)):
+            tmp.append(input_string[i:j+1])
+    return tmp
+
+expected_result = [
+    "a", "ab", "abc", "abcd", "abcde",
+    "b", "bc", "bcd", "bcde",
+    "c", "cd", "cde",
+    "d", "de",
+    "e",
+]
+
+print(substrings('abcde') == expected_result)  # True
+```
+</details>
