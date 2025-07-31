@@ -722,7 +722,7 @@ print(title_case('the quick brown fox')) # should return 'The Quick Brown Fox'
 ## 20. Character Count Sorting
 Write a function that takes a string as an argument and groups the number of times each character appears in the string as a dictionary sorted by the highest number of occurrences.
 
-The characters should be sorted alphabetically, and you should ignore spaces, special characters, and count uppercase letters as lowercase ones.
+The characters should be sorted alphabetically, and you should ignore spaces, special characters, and count uppercase letters as lowercase ones. Note: Struggled with appending a list to a dictionary value.
 
 Examples:
 
@@ -749,7 +749,7 @@ def get_char_count(input_string):
         counts[char] = counts.get(char, 0) + 1
     for char, count in counts.items():
         if count in final:
-            final[count].append(char)
+            final[count].append(char) #This line
         else:
             final[count] = [char]
     for count in final:
@@ -768,7 +768,7 @@ You've just discovered a square (NxN) field and you notice a warning sign. The s
 
 Write a function `mine_location` that accepts a 2D array, and returns the location of the mine. The mine is represented as the integer 1 in the 2D array. Areas in the 2D array that are not the mine will be represented as 0s.
 
-The location returned should be an array where the first element is the row index, and the second element is the column index of the bomb location (both should be 0 based). All 2D arrays passed into your function will be square (NxN), and there will only be one mine in the array.
+The location returned should be an array where the first element is the row index, and the second element is the column index of the bomb location (both should be 0 based). All 2D arrays passed into your function will be square (NxN), and there will only be one mine in the array. Note: Struggled with this one.
 
 Examples:
 ```python
@@ -804,4 +804,154 @@ print(mine_location([[1, 0, 0], [0, 0, 0], [0, 0, 0]])) # should return [0, 0]
 print(mine_location([[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 0]])) # should return [2, 2]
 ```
 
-## 
+## 22. Substring is Anagram?
+
+Write a function `scramble(str1, str2)` that returns `True` if a portion of `str1` characters can be rearranged to match `str2`, otherwise returns `False`.
+
+Notes:
+- Only lower case letters will be used (a-z). No punctuation or digits will
+	be included.
+- Performance needs to be considered.
+- Input strings `str1` and `str2` are null terminated.
+
+Examples:
+```python
+scramble('rkqodlw', 'world') # should return True
+scramble('cedewaraarossoqqyt', 'carrot') # should return True
+scramble('katas', 'steak') # should return False
+scramble('scriptjava', 'javascript') # should return True
+scramble('scriptingjava', 'javascript') # should return True
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+def scramble(str1, str2):
+    string_1 = [char for char in str1]
+    string_2 = [char for char in str2]
+    length_2 = len(str2)
+    count = 0
+
+    for char in string_2:
+        if char in string_1:
+            count += 1
+
+    if count == length_2:
+        return True
+    else:
+        return False
+
+print(scramble('rkqodlw', 'world')) # should return True
+print(scramble('cedewaraarossoqqyt', 'carrot')) # should return True
+print(scramble('katas', 'steak')) # should return False
+print(scramble('scriptjava', 'javascript')) # should return True
+print(scramble('scriptingjava', 'javascript')) # should return True
+```
+
+</details>
+
+## 23. Longest alphabetical substring
+
+Write a function `longest(s)` that finds and returns the longest substring of `s` where the characters are in alphabetical order. Note: Struggled with this one.
+
+Example:
+```python
+longest('asd')                  # should return 'as'
+longest('nab')                  # should return 'ab'
+longest('abcdeapbcdef')         # should return 'abcde'
+longest('asdfaaaabbbbcttavvfffffdf') # should return 'aaaabbbbctt'
+longest('asdfbyfgiklag')        # should return 'fgikl'
+longest('z')                    # should return 'z'
+longest('zyba')                 # should return 'z'
+```
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def longest(input_string):
+    if not input_string:
+        return ""
+    s = [char for char in input_string]
+    max_sub = [s[0]]
+    curr_sub = [s[0]]
+    for i in range(1, len(s)):
+        if ord(s[i]) >= ord(s[i-1]):
+            curr_sub.append(s[i])
+        else:
+            if len(curr_sub) > len(max_sub):
+                max_sub = curr_sub[:]
+            curr_sub = [s[i]]
+    if len(curr_sub) > len(max_sub):
+        max_sub = curr_sub[:]
+    return ''.join(max_sub)
+
+
+print(longest('asd'))                # should return 'as'
+print(longest('nab'))                 # should return 'ab'
+print(longest('abcdeapbcdef'))        # should return 'abcde'
+print(longest('asdfaaaabbbbcttavvfffffdf')) # should return 'aaaabbbbctt'
+print(longest('asdfbyfgiklag'))       # should return 'fgikl'
+print(longest('z'))                   # should return 'z'
+print(longest('zyba'))                 # should return 'z'
+```
+</details>
+
+
+## 24. Generate Hashtags
+Write a function `generate_hashtag(s)` that generates a hashtag from the given string `s`.
+
+Rules:
+- The hashtag must start with a '#' symbol.
+- All words in the hashtag must start with a capital letter.
+- If the resulting hashtag is longer than 140 characters, the function should return `False`.
+- If the input string or the resulting hashtag is an empty string, the function should return `False`.
+
+Examples:
+
+```python
+
+generate_hashtag("")                       # should return `False`
+generate_hashtag(" " * 200)                # should return `False`
+generate_hashtag("Do We have A Hashtag")   # should return "#DoWeHaveAHashtag"
+generate_hashtag("Nice To Meet You")       # should return "#NiceToMeetYou"
+generate_hashtag("this is a test")         # should return "#ThisIsATest"
+generate_hashtag("this is a very long string" + " " * 140 + "end")  # should return "#ThisIsAVeryLongStringEnd"
+generate_hashtag("a" * 139)                # should return "#A" + "a" * 138
+generate_hashtag("a" * 141)                # should return `False`
+
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+def generate_hashtag(input_string):
+    if not input_string or input_string.isspace():
+        return False
+    else:
+        temp = []
+        new_string = input_string.split()
+        lengths = [char for char in input_string]
+        for char in lengths:
+            if char.isspace():
+                lengths.remove(char)
+        if len(lengths) < 140:
+            for word in new_string:
+                temp.append(word.capitalize())
+            result = "".join(temp)
+            return f"#{result}"
+        else:
+            return False
+        
+print(generate_hashtag(""))                     # should return `False`
+print(generate_hashtag(" " * 200))                # should return `False`
+print(generate_hashtag("Do We have A Hashtag"))   # should return "#DoWeHaveAHashtag"
+print(generate_hashtag("Nice To Meet You"))      # should return "#NiceToMeetYou"
+print(generate_hashtag("this is a test"))         # should return "#ThisIsATest"
+print(generate_hashtag("this is a very long string" + " " * 140 + "end"))  # should return "#ThisIsAVeryLongStringEnd"
+print(generate_hashtag("a" * 139))                # should return "#A" + "a" * 138
+print(generate_hashtag("a" * 140))                # should return `False`
+```
+</details>
