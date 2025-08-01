@@ -354,6 +354,11 @@ car['year'] = 2003
 car['color'] = 'red'
 
 print(car)  # {'type': 'sedan', 'color': 'red', 'mileage': 80_000, 'year': 2003}
+
+#Adding a list as a dictionary value:
+
+dictionary_name[key].append(value to be appended)
+
 ```
 
 2. **Using the `update()` method:** lets you add or update multiple key-value pairs at once

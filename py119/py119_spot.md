@@ -59,7 +59,7 @@ def pairs(lst):
 
 ## 3. Count Substring Instances
 
-Write a function that takes two strings as input, `full_text` and `search_text`, and returns the number of times `search_text` appears in `full_text`.
+Write a function that takes two strings as input, `full_text` and `search_text`, and returns the number of times `search_text` appears in `full_text`. Needed help with this one. 
 
 ```python
 
@@ -175,7 +175,7 @@ print(solve("suoidea"))# should return 3
 
 ## 6. Odd Number Sub-strings
 
-Write a function that takes a string of integers as input and returns the number of substrings that result in an odd number when converted to an integer.
+Write a function that takes a string of integers as input and returns the number of substrings that result in an odd number when converted to an integer. Needed help with this one.
 
 Examples:
 
@@ -235,7 +235,7 @@ print(nth_char(['yoda', 'best', 'has'])) # 'yes'
 
 ## 8. Smallest Substring Repeat
 
-Write a function that takes a non-empty string `s` as input and finds the minimum substring `t` and the maximum number `k`, such that the entire string `s` is equal to `t` repeated `k` times.
+Write a function that takes a non-empty string `s` as input and finds the minimum substring `t` and the maximum number `k`, such that the entire string `s` is equal to `t` repeated `k` times. Had no idea with this one.
 
 Examples:
 
@@ -273,6 +273,8 @@ Write a function that generates text following a pattern where:
 2) characters between the first and last characters are sorted alphabetically
 3) punctuation should remain at the same place as it started
 
+Revisit this one!
+
 Examples:
 ```python
 scramble_words('professionals') #'paefilnoorsss'
@@ -284,7 +286,7 @@ scramble_words("you've gotta dance like there's nobody watching, love like you'l
 
 ```python
 def get_special_char(word):
-    special_char = "" #
+    special_char = "" 
     for char in word:
         if not char.isalnum():
             special_char = char
@@ -366,6 +368,7 @@ on Sundays, made away with three-quarters of his income.""") # should return ["a
 <details>
 <summary>Possible Solution</summary>
 
+```python
 def make_dictionary(input_string):
     to_count = []
     counts = {}
@@ -393,7 +396,7 @@ def top_3_words(counts):
                 final.append(key)
             break
         else:
-            max_counts = max(count_dicts, key=count_dicts.get)
+            max_counts = max(count_dicts, key=count_dicts.get) #This line was hard but everything else was ok.
             final.append(max_counts)
             count_dicts.pop(max_counts)
     return final
@@ -405,6 +408,8 @@ print(top_3_words(" ' ")) # []
 print(top_3_words(" ''' ")) # []
 print(top_3_words("""In a village of La Mancha, the name of which I have no desire to call to mind, there lived not long since one of those gentlemen that keep a lance in the lance-rack, an old buckler, 
 a lean hack, and a greyhound for coursing. An olla of rather more beef than mutton, a salad on most nights, scraps on Saturdays, lentils on Fridays, and a pigeon or so extra on Sundays, made away with three-quarters of his income.""")) # should return ["a", "of", "on"]
+```
+
 </details>
 
 ## 11. Extract the domain name from a URL
@@ -465,7 +470,7 @@ def is_panagram(input_string):
     for char in chars:
         if char in abc:
             collection.append(char)
-    if set(abc) == set(collection):
+    if set(abc) == set(collection): #Needed a reminder about using uniques
         return True
     else:
         return False
@@ -508,7 +513,7 @@ print(kebabize('myCamelHas3Humps')) #'my-camel-has-humps'
 
 ## 14. Dubstep
 
-Write a function to decode a dubstep string to its original form. The string may begin and end with one or more "WUB"s and there will be at least one (and possibly more) "WUB"s between each word. The input consists of a single non-empty string, consisting only of uppercase English letters.
+Write a function to decode a dubstep string to its original form. The string may begin and end with one or more "WUB"s and there will be at least one (and possibly more) "WUB"s between each word. The input consists of a single non-empty string, consisting only of uppercase English letters. Needed help with this one.
 
 Examples:
 ```python
@@ -626,7 +631,7 @@ def expanded_form(num):
     digits = [int(num) for num in str(num)]
     temp = []
     for i in range(len(digits)):
-        digit = digits[i] * (10**(len(digits) - i - 1))
+        digit = digits[i] * (10**(len(digits) - i - 1)) #Needed help with this line
         if digit == 0:
             continue
         temp.append(str(digit))
@@ -662,7 +667,7 @@ def persistence(num):
     while len(digits) > 1:
         product = 1
         for i in range(len(digits)):
-            product = product * digits[i]
+            product = product * digits[i] #Needed help with this line
         digits.clear()
         digits.append(product)
         digits = [int(num) for num in str(product)]
@@ -699,7 +704,7 @@ title_case('the quick brown fox') # should return 'The Quick Brown Fox'
 
 ```python
 
-def title_case(input_string, exceptions=''):
+def title_case(input_string, exceptions=''): #Needed a reminder about defaults
     exceptions = exceptions.lower().split()
     final = []
     temp = input_string.lower().split()
@@ -749,7 +754,7 @@ def get_char_count(input_string):
         counts[char] = counts.get(char, 0) + 1
     for char, count in counts.items():
         if count in final:
-            final[count].append(char) #This line
+            final[count].append(char) #How to append a list as a dictionary value.
         else:
             final[count] = [char]
     for count in final:
@@ -853,7 +858,7 @@ print(scramble('scriptingjava', 'javascript')) # should return True
 
 ## 23. Longest alphabetical substring
 
-Write a function `longest(s)` that finds and returns the longest substring of `s` where the characters are in alphabetical order. Note: Struggled with this one.
+Write a function `longest(s)` that finds and returns the longest substring of `s` where the characters are in alphabetical order. Note: Struggled with this one. Completely whiffed this one.
 
 Example:
 ```python
@@ -953,5 +958,353 @@ print(generate_hashtag("this is a test"))         # should return "#ThisIsATest"
 print(generate_hashtag("this is a very long string" + " " * 140 + "end"))  # should return "#ThisIsAVeryLongStringEnd"
 print(generate_hashtag("a" * 139))                # should return "#A" + "a" * 138
 print(generate_hashtag("a" * 140))                # should return `False`
+```
+</details>
+
+## 25. How many cakes can the baker make?
+
+Pete is baking cakes and needs help calculating how many he can make with his recipes and available ingredients. Write a function `cakes()` that takes two dictionaries: the recipe and the available ingredients. Return the maximum number of cakes Pete can bake. Notes: Some struggle with this one. See below.
+
+Rules:
+- Ingredients not present in the objects can be considered as 0.
+
+```python
+# must return 2
+cakes({"flour"=>500, "sugar"=>200, "eggs"=>1},{"flour"=>1200, "sugar"=>1200, "eggs"=>5, "milk"=>200}) == 2
+
+# must return 11
+cakes({"cream"=>200, "flour"=>300, "sugar"=>150, "milk"=>100, "oil"=>100},{"sugar"=>1700, "flour"=>20000,
+"milk"=>20000, "oil"=>30000, "cream"=>5000}) == 11
+
+# must return 0
+cakes({"apples"=>3, "flour"=>300, "sugar"=>150, "milk"=>100, "oil"=>100},{"sugar"=>500, "flour"=>2000,
+"milk"=>2000}) == 0
+
+# must return 0
+cakes({"apples"=>3, "flour"=>300, "sugar"=>150, "milk"=>100, "oil"=>100},{"sugar"=>500, "flour"=>2000,
+"milk"=>2000, "apples"=>15, "oil"=>20}) == 0
+
+# must return 0
+cakes({"eggs"=>4, "flour"=>400},{}) == 0
+
+# must return 1
+cakes({"cream"=>1, "flour"=>3, "sugar"=>1, "milk"=>1, "oil"=>1, "eggs"=>1},{"sugar"=>1, "eggs"=>1, "flour"=>3,
+"cream"=>1, "oil"=>1, "milk"=>1}) == 1
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+First you have to change all the `=>` to `:` because that was dumb.
+
+```python
+
+def cakes(dict1, dict2):
+    needs = dict(sorted(dict1.items()))
+    haves = dict(sorted(dict2.items()))
+    length_needs = len(needs)
+    length_haves = len(haves)
+    maximums = []
+    for ingredient, amount in needs.items():
+        if length_needs > length_haves:
+            return 0
+        if ingredient in haves:
+            amount2 = haves[ingredient] #was missing this line. See below.
+            if amount:
+                result = amount2 // amount
+                maximums.append(result)
+    if not maximums:
+        return 0
+
+    return min(maximums)
+                
+
+#All return True
+print(cakes({"flour": 500, "sugar": 200, "eggs": 1}, {"flour": 1200, "sugar": 1200, "eggs": 5, "milk": 200}) == 2)
+
+print(cakes({"cream": 200, "flour": 300, "sugar": 150, "milk": 100, "oil": 100}, {"sugar": 1700, "flour": 20000,
+  "milk": 20000, "oil": 30000, "cream": 5000}) == 11)
+
+print(cakes({"apples": 3, "flour": 300, "sugar": 150, "milk": 100, "oil": 100}, {"sugar": 500, "flour": 2000,
+  "milk": 2000}) == 0)
+
+print(cakes({"apples": 3, "flour": 300, "sugar": 150, "milk": 100, "oil": 100}, {"sugar": 500, "flour": 2000,
+   "milk": 2000, "apples": 15, "oil": 20}) == 0)
+
+print(cakes({"eggs": 4, "flour": 400}, {}) == 0)
+
+print(cakes({"cream": 1, "flour": 3, "sugar": 1, "milk": 1, "oil": 1, "eggs": 1}, {"sugar": 1, "eggs": 1, "flour": 3,
+  "cream": 1, "oil": 1, "milk": 1}) == 1)
+```
+
+That line looks up the value in haves that corresponds to the current key (which you are iterating over, usually from needs). It assigns that value to the variable amount2, so you can use it in calculations or comparisons.
+
+</details>
+
+## 26. Mean Square
+
+Create a function that takes two integer arrays of equal length, compares the value of each member in one array to the corresponding member in the other, squares the absolute value difference between those two values, and returns the average of those squared absolute value differences between each member pair.
+
+Examples:
+
+[1, 2, 3], [4, 5, 6] --> 9 because (9 + 9 + 9) / 3
+[10, 20, 10, 2], [10, 25, 5, -2] --> 16.5 because (0 + 25 + 25 + 16) / 4
+[-1, 0], [0, -1] --> 1 because (1 + 1) / 2
+
+```python
+solution([1, 2, 3], [4, 5, 6]) == 9
+solution([10, 20, 10, 2], [10, 25, 5, -2]) == 16.5
+solution([-1, 0], [0, -1]) == 1
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def solution(lst1, lst2):
+  tmp = [abs(lst1[i] - lst2[i]) ** 2 for i in range(len(lst1))]
+  return sum(tmp) / len(tmp)
+
+#All print True
+print(solution([1, 2, 3], [4, 5, 6]) == 9)
+print(solution([10, 20, 10, 2], [10, 25, 5, -2]) == 16.5)
+print(solution([-1, 0], [0, -1]) == 1)
+```
+
+</details>
+
+## 27. Write a function that finds all the anagrams of a word from a list. Two words are anagrams of each other if they both contain the same letters.
+
+Examples
+
+```python
+'abba' & 'baab' == true
+'abba' & 'bbaa' == true
+'abba' & 'abbba' == false
+'abba' & 'abca' == false
+```
+
+print(anagrams('abba', ['aabb', 'abcd', 'bbaa', 'dada']) == ['aabb', 'bbaa'])
+print(anagrams('racer', ['crazer', 'carer', 'racar', 'caers', 'racer']) == ['carer', 'racer'])
+print(anagrams('laser', ['lazing', 'lazy', 'lacer']) == [])
+
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def anagrams(input_string, lst):
+    
+    result = []
+
+    s_chars = [char for char in input_string]
+    input_dict = {}
+    for char in s_chars:
+        count = s_chars.count(char)
+        input_dict[char] = count
+    sorted_input = dict(sorted(input_dict.items()))
+   
+    for element in lst:
+      lst_dict = {}
+      for char in element:
+        element_count = element.count(char)
+        lst_dict[char] = element_count
+      sorted_lst = dict(sorted(lst_dict.items()))    
+
+      if sorted_input == sorted_lst:
+        result.append(element)
+        
+    return result
+            
+print(anagrams('abba', ['aabb', 'abcd', 'bbaa', 'dada']) == ['aabb', 'bbaa'])
+print(anagrams('racer', ['crazer', 'carer', 'racar', 'caers', 'racer']) == ['carer', 'racer'])
+print(anagrams('laser', ['lazing', 'lazy', 'lacer']) == [])
+
+```
+</details>
+
+## 28. Group by 2 chars
+
+Write a function that splits the string into pairs of two characters. If the string contains an odd number of characters, replace the missing second character of the final pair with an underscore `('_')`.
+
+Examples:
+
+```python
+
+solution('abc') == ['ab', 'c_']
+solution('abcdef') == ['ab', 'cd', 'ef']
+solution("abcdef") == ["ab", "cd", "ef"]
+solution("abcdefg") == ["ab", "cd", "ef", "g_"]
+solution("") == []
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def solution(input_string):
+    result = []
+    if not input_string:
+        return []
+    
+    else:
+        if len(input_string) % 2 == 0:
+            for char in range(0,len(input_string)-1, 2):
+                pair = input_string[char]+input_string[char+1]
+                result.append(pair)
+        else:
+            chars = [char for char in input_string]
+            chars.append("_")
+            for char in range(0, len(chars)-1, 2) :
+                pair = chars[char]+chars[char+1]
+                result.append(pair)
+    return result
+
+print(solution('abc') == ['ab', 'c_'])
+print(solution('abcdef') == ['ab', 'cd', 'ef'])
+print(solution("abcdef") == ["ab", "cd", "ef"])
+print(solution("abcdefg") == ["ab", "cd", "ef", "g_"])
+print(solution("") == [])
+
+```
+</details>
+
+## 29. Anagram Difference Count
+
+Given two words, determine the number of letters you need to remove from them to make them anagrams.
+
+Example:
+
+```python
+anagram_difference('', '') == 0
+anagram_difference('a', '') == 1
+anagram_difference('', 'a') == 1
+anagram_difference('ab', 'a') == 1
+anagram_difference('ab', 'ba') == 0
+anagram_difference('ab', 'cd') == 4
+anagram_difference('aab', 'a') == 2
+anagram_difference('a', 'aab') == 2
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+# The first was my successfull but bloated solution. 
+
+def anagram_difference(str1, str2):
+    needed_chars = []
+    count = 0
+
+    if not str1:
+        for char in str2:
+            needed_chars.append(char)
+        return len(needed_chars)
+    elif not str2:
+        for char in str1:
+            needed_chars.append(char)
+        return len(needed_chars)   
+    
+    elif len(str1) > len(str2) and str1[0] != str1[1]:
+        for char in str1:
+            if char not in str2:
+                needed_chars.append(char)
+    
+    elif len(str2) > len(str1) and str2[0] != str2[1]:
+        for char in str2:
+            if char not in str1:
+                needed_chars.append(char)         
+
+    elif len(str1) > len(str2) and str1[0] == str1[1]:
+        for char in str1:
+            if char not in str2:
+                needed_chars.append(char)
+                needed_chars.append(str1[1])
+    
+    elif len(str2) > len(str1) and str2[0] == str2[1]:
+        for char in str2:
+            if char not in str1:
+                needed_chars.append(char)
+                needed_chars.append(str2[1])
+
+    else:
+        if set(str1) == set(str2):
+            return 0
+        else:
+            for char in str1:
+                if char not in str2:
+                    needed_chars.append(char) 
+            for char in str2:
+                if char not in str1:
+                    needed_chars.append(char) 
+
+    return len(needed_chars)
+    
+print(anagram_difference('', '') == 0)
+print(anagram_difference('a', '') == 1)
+print(anagram_difference('', 'a') == 1)
+print(anagram_difference('ab', 'a') == 1)
+print(anagram_difference('ab', 'ba') == 0)
+print(anagram_difference('ab', 'cd') == 4)
+print(anagram_difference('aab', 'a') == 2)
+print(anagram_difference('a', 'aab') == 2)
+
+#Co Pilot's solution that's significantly less terrible
+
+def anagram_difference(str1, str2):
+    # Convert to lists for mutability
+    l1 = list(str1)
+    l2 = list(str2)
+    
+    # Remove matching characters one by one
+    i = 0
+    while i < len(l1):
+        char = l1[i]
+        if char in l2:
+            l2.remove(char)
+            l1.pop(i)
+            # Do not increment i, as the next char shifted into position i
+        else:
+            i += 1
+    # The leftovers are the difference
+    return len(l1) + len(l2)
+```
+
+</details>
+
+## 30. Is anagram?
+
+Write a function to determine if two words are anagrams of each other.
+
+Examples:
+
+```python
+is_anagram('Creative', 'Reactive') == true
+is_anagram("foefet", "toffee") == true
+is_anagram("Buckethead", "DeathCubeK") == true
+is_anagram("Twoo", "WooT") == true
+is_anagram("dumble", "bumble") == false
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+def is_anagram(str1, str2):
+    if set(str1.lower()) == set(str2.lower()):
+        return True
+    else:
+        return False
+    
+
+print(is_anagram('Creative', 'Reactive') == True)
+print(is_anagram("foefet", "toffee") == True)
+print(is_anagram("Buckethead", "DeathCubeK") == True)
+print(is_anagram("Twoo", "WooT") == True)
+print(is_anagram("dumble", "bumble") == False)
 ```
 </details>
