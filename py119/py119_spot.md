@@ -1308,3 +1308,138 @@ print(is_anagram("Twoo", "WooT") == True)
 print(is_anagram("dumble", "bumble") == False)
 ```
 </details>
+
+## 31. Highest Scoring Word
+
+Find the highest scoring word in a string. Each letter scores points based on its position in the alphabet: a = 1, b = 2, c = 3, ... z = 26. Return the highest scoring word. If two words score the same, return the word that appears earliest in the string.
+
+Examples:
+
+```python
+
+high('man i need a taxi up to ubud') == 'taxi'
+high('what time are we climbing up the volcano') == 'volcano'
+high('take me to semynak') == 'semynak'
+high('aaa b') == 'aaa'
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+def high(string):
+   
+    alphabet = 'abcdefghijklmnopqrstuvwxyz'
+    abc_values = {}
+    count = 1
+    for char in alphabet:
+        abc_values[char] = count
+        count += 1
+    
+    split_str = string.split()
+    word_values = {}
+    for word in split_str:
+        value_tmp = []
+        for char in word:
+            value_tmp.append(abc_values.get(char))
+        total = sum(value_tmp)
+        word_values[word] = total    
+    highest = max(word_values, key=word_values.get)
+    return highest
+
+
+print(high('man i need a taxi up to ubud') == 'taxi')
+print(high('what time are we climbing up the volcano') == 'volcano')
+print(high('take me to semynak') == 'semynak')
+print(high('aaa b') == 'aaa')
+```
+
+</details>
+
+## 32. Replace Char with Score
+
+Given a string, replace every letter with its position in the alphabet. If anything in the text isn't a letter, ignore it and don't return it.
+
+Examples:
+
+```python
+alphabet_position("The sunset sets at twelve o' clock.") == "20 8 5 19 21 14 19 5 20 19 5 20 19 1 20 20 23 5 12 22 5 15 3 12 15 3 11"
+alphabet_position("-.-'") == ""
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+def alphabet_position(string):
+   
+    alphabet = 'abcdefghijklmnopqrstuvwxyz'
+    abc_values = {}
+    count = 1
+    for char in alphabet:
+        abc_values[char] = count
+        count += 1
+    
+    cleaned = [char for char in string.lower() if char.isalpha()]
+    value_tmp = []
+    for char in cleaned:
+            value_tmp.append(str(abc_values.get(char)))
+    return " ".join(value_tmp)
+
+print(alphabet_position("The sunset sets at twelve o' clock.") == "20 8 5 19 21 14 19 5 20 19 5 20 19 1 20 20 23 5 12 22 5 15 3 12 15 3 11")
+print(alphabet_position("-.-'") == "")
+
+```
+
+</details>
+
+## 33. Find the Suspect
+
+Sherlock has to find suspects on his latest case. He will use your method. Suspect in this case is a person which has something not allowed in his/her pockets. Allowed items are defined by an array of numbers. Pockets contents are defined by map entries where key is a person and value is one or few things represented by an array of numbers (can be nil or empty array if empty).
+
+Restated: If an item is in the allowed items array (the second argument), then it is allowed. If a person has only allowed items in their pockets, they are not a suspect. If a number is not in the allowed items array (the second argument), but it is in the dictionary, then it is not allowed, and the person is a suspect. The allowed items array defines which items are allowed, and any item not in that array is considered not allowed.
+
+```python
+pockets = {
+    'bob': [1],
+    'tom': [2, 5],
+    'jane': [7]
+}
+
+find_suspects(pockets, [1, 2]) == ['tom', 'jane']
+find_suspects(pockets, [1, 7, 5, 2]) == None
+find_suspects(pockets, []) == ['bob', 'tom', 'jane']
+find_suspects(pockets, [7]) == ['bob', 'tom']
+
+```
+
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+pockets = {
+    'bob': [1],
+    'tom': [2, 5],
+    'jane': [7]
+}
+
+
+def find_suspects(possessed_contents, allowed_items):
+    suspects = []
+    for candidate, contents in possessed_contents.items():
+        for content in contents:
+            if content not in allowed_items and candidate not in suspects:
+                suspects.append(candidate)
+    if not suspects:
+        return None
+    return suspects
+    
+print(find_suspects(pockets, [1, 2]) == ['tom', 'jane'])
+print(find_suspects(pockets, [1, 7, 5, 2]) == None)
+print(find_suspects(pockets, []) == ['bob', 'tom', 'jane'])
+print(find_suspects(pockets, [7]) == ['bob', 'tom'])
+```
+
+</details>
