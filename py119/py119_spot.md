@@ -205,6 +205,7 @@ print(solve("1341")) #7
 print(solve("1357")) #10
 
 ```
+</details>
 
 ## 7. The Nth Char
 
