@@ -15,7 +15,7 @@
 - [Conditional Statements and Control Flow](#conditional-statements-and-control-flow)
 - [Sorting](#sorting)
 - [Comprehensions](#comprehensions)
-- [Nested Data Structures and Iteration](#nested-data-structure-and-iteration)
+- [Nested Data Structures and Iteration](#nested-data-structurse-and-iteration)
 - [Shallow and Deep Copy](#shallow-and-deep-copy)
 - [User-level Synergy](#user-level-synergy)
 - [Further practice](#further-practice)
@@ -983,6 +983,32 @@ lambda x: 42 * x
 Notice that `def do_boring_stuff(x):` and then `return` are covered by `lambda x:`.
 
 The limitation of Lambda is that you can only have a single expression that evaluates to a value. This is the value returned by the lambda function. Therefore, you can't have complex algorithms in a lambda function, just whatever you can fit in a single expression!
+
+
+### Sorting case insensitive: Because you will see this again.
+
+To sort case insensitive:
+
+```python
+
+def sortme(lst1):
+   
+   return sorted(lst1, key=str.lower)
+              
+print(sortme(["Hello", "there", "I'm", "fine"]) == ["fine", "Hello", "I'm", "there"])
+print(sortme(["C", "d", "a", "Ba", "be"]) == ["a", "Ba", "be", "C", "d"])
+
+```
+
+### So you have to write your own sorting criteria to be used in keyword=
+
+When using your own code as a key function in sorted, there are a few key elements to keep in mind:
+
+Key Function: The key function should take a single element from the list and return a value that will be used for sorting. This value can be a single value or a tuple, depending on your sorting criteria.
+
+Return Value: The return value of the key function determines the sorting order. For example, if you want to sort elements in ascending order, the return value should be smaller for elements that should come first.
+
+Sorting Criteria: The key function should implement the specific sorting criteria you want. For example, if you want to sort uppercase letters before lowercase letters, the key function should return a value that reflects this order.
 
 [Back to the top](#top)
 ***

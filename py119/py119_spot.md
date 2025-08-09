@@ -1443,3 +1443,628 @@ print(find_suspects(pockets, [7]) == ['bob', 'tom'])
 ```
 
 </details>
+
+## 34. Do the Wave
+
+Create a function that turns a string into a Wave. You will be passed a string and you must return that string in an array where an uppercase letter is a person standing up.
+
+Example:
+```python 
+
+wave("hello") == ["Hello", "hEllo", "heLlo", "helLo", "hellO"]
+wave("") == []
+wave("two words") == ["Two words", "tWo words", "twO words", "two Words", "two wOrds", "two woRds", "two worDs", "two wordS"]
+wave(" gap ") == [" Gap ", " gAp ", " gaP "]
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+def wave(input_str):
+    if not input_str:
+        return []
+    else:
+        result = []
+        for i in range(len(input_str)):
+            if input_str[i].isspace():
+                continue
+            element = input_str[:i] + input_str[i].upper() + input_str[i+1:]    
+            result.append(element)
+        return result
+
+
+print(wave("hello") == ["Hello", "hEllo", "heLlo", "helLo", "hellO"])
+print(wave("") == [])
+print(wave("two words") == ["Two words", "tWo words", "twO words", "two Words", "two wOrds", "two woRds", "two worDs", "two wordS"])
+print(wave(" gap ") == [" Gap ", " gAp ", " gaP "])
+```
+
+
+</details>
+
+## 35. Delete a Digit
+
+Given an integer n, find the maximal number you can obtain by deleting exactly one digit of the given number.
+
+Examples:
+
+```python
+
+delete_digit(152) == 52
+delete_digit(1001) == 101
+delete_digit(10) == 1
+
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def delete_digit(num):
+    str_digits = [digit for digit in str(num)]
+    digits = [int(digit) for digit in str_digits]
+    minimum = min(digits)
+    digits.remove(minimum)
+    restring = [str(digit) for digit in digits]
+    result = "".join(restring)
+    return int(result)
+
+
+print(delete_digit(152) == 52)
+print(delete_digit(1001) == 101)
+print(delete_digit(10) == 1)
+
+```
+</details>
+
+## 36. Largest Product in a series
+
+Complete the greatest_product method so that it'll find the greatest product of five consecutive digits  in the given string of digits.
+
+Example:
+
+```python
+
+greatest_product("123834539327238239583") == 3240
+greatest_product("395831238345393272382") == 3240
+greatest_product("92494737828244222221111111532909999") == 5292
+greatest_product("92494737828244222221111111532909999") == 5292
+greatest_product("02494037820244202221011110532909999") == 0
+
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+Note! First use of sliding window technique.
+
+```python
+
+def greatest_product(str_num):
+
+    products = []
+    holding = []
+    str_digits = [digit for digit in str_num]
+    digits = [int(digit) for digit in str_digits]
+    k = 5
+    for i in range(len(digits) - k + 1):
+        holding.append(digits[i:i+k])
+
+    for sublst in holding:
+        product = 1
+        for digit in sublst:
+            product = product * digit
+        products.append(product)
+    
+    return max(products)
+
+print(greatest_product("123834539327238239583") == 3240)
+print(greatest_product("395831238345393272382") == 3240)
+print(greatest_product("92494737828244222221111111532909999") == 5292)
+print(greatest_product("92494737828244222221111111532909999") == 5292)
+print(greatest_product("02494037820244202221011110532909999") == 0)
+
+```
+
+</details>
+
+## 37. Encode Duplicates
+
+The goal of this exercise is to convert a string to a new string where each character in the new string is `(` if that character appears only once in the original string, or `)` if that character appears more than once in the original string. Ignore capitalization when determining if a character is a duplicate.
+
+Examples:
+
+duplicate_encode("din") == "((("
+duplicate_encode("recede") == "()()()"
+duplicate_encode("Success") == ")())())"
+duplicate_encode("(( @") == "))(("
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def duplicate_encode(input_str):
+    tmp = []
+    counts = {}
+    chars = [char for char in input_str.lower()]
+    for char in chars:
+        counts[char] = counts.get(char, 0) + 1
+
+    for char in chars:
+        if counts[char] == 1:
+            tmp.append('(')
+        else:
+            tmp.append(')')
+
+    return "".join(tmp)
+
+print(duplicate_encode("din") == "(((")
+print(duplicate_encode("recede") == "()()()")
+print(duplicate_encode("Success") == ")())())")
+print(duplicate_encode("(( @") == "))((")
+
+```
+
+</details>
+
+## 38. Update string
+
+Assume `#` is like a backspace in string. This means that string `"a#bc#d"` actually is `"bd"`. Your task is to process a string with `#` symbols and return the final state of the string.
+
+Examples:
+
+```python
+clean_string('abc#d##c') == "ac"
+clean_string('abc####d##c#') == ""
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def clean_string(input_string):
+    result = []
+    chars = [char for char in input_string]
+    for char in chars:
+        if char.isalpha():
+            result.append(char)
+        else:
+            if len(result) > 0:
+                result.pop()
+            else:
+                return ""
+    
+    return "".join(result)
+   
+print(clean_string('abc#d##c') == "ac")
+print(clean_string('abc####d##c#') == "")
+
+```
+</details>
+
+## 39. Sort Arrays (Case-Insensitive)
+
+Sort the given strings in alphabetical order, case insensitive.
+
+Example:
+
+```python
+sortme(["Hello", "there", "I'm", "fine"]) == ["fine", "Hello", "I'm", "there"]
+sortme(["C", "d", "a", "Ba", "be"]) == ["a", "Ba", "be", "C", "d"]
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def sortme(lst1):
+   
+   return sorted(lst1, key=str.lower)
+              
+print(sortme(["Hello", "there", "I'm", "fine"]) == ["fine", "Hello", "I'm", "there"])
+print(sortme(["C", "d", "a", "Ba", "be"]) == ["a", "Ba", "be", "C", "d"])
+
+```
+</details>
+
+
+## 40. Difference of Sum from Next Prime Number
+
+Given a List `[]` of `n` integers, find the minimum number to be inserted in the list, so that the sum of all elements of the list should equal the closest prime number.
+
+```python
+
+minimum_number([3,1,2]) == 1
+minimum_number([5,2]) == 0
+minimum_number([1,1,1]) == 0
+minimum_number([2,12,8,4,6]) == 5
+minimum_number([50,39,49,6,17,28]) == 2
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+ PRIMES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199]
+    current_sum = sum(lst1)
+    for number in PRIMES:
+        if number >= current_sum:
+            difference = number - current_sum
+            break
+    
+    return difference
+
+#Note: Prime is not found dynamically. If it needs to be, research "Sieve of Eratosthenes"
+```
+</details>
+
+## 41. Counting Duplicate
+
+Write a function that will return the count of distinct case-insensitive, alphabetic characters and numeric digits that occur more than once in the input string.
+
+```python
+
+duplicate_count("") == 0
+duplicate_count("abcde") == 0
+duplicate_count("abcdeaa") == 1
+duplicate_count("abcdeaB") == 2
+duplicate_count("Indivisibilities") == 2
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def duplicate_count(input_str):
+
+    if not input_str:
+        return 0
+    else:
+        counts = {}
+        chars = [char for char in input_str.lower()]
+        for char in chars:
+            counts[char] = counts.get(char, 0) + 1
+        
+        number_dupes = 0
+        for value in counts.values():
+            if value > 1:
+                number_dupes += 1
+        return number_dupes
+    
+print(duplicate_count("") == 0)
+print(duplicate_count("abcde") == 0)
+print(duplicate_count("abcdeaa") == 1)
+print(duplicate_count("abcdeaB") == 2)
+print(duplicate_count("Indivisibilities") == 2)
+
+```
+</details>
+
+## 42. Find the Parents
+
+Originally stated problem:
+
+Mothers arranged a dance party for the children in school. At that party, there are only mothers and their children. All are having great fun on the dance floor when suddenly all the lights went out. It's a dark night and no one can see each other. But you were flying nearby and you can see in the dark and have ability to teleport people anywhere you want.
+
+Legend:
+
+- Uppercase letters stands for mothers, lowercase stand for their children, i.e. "A" mother's children are "aaaa".
+- Function input: String contains only letters, uppercase letters are unique.
+
+What to actually do: The problem is asking you to sort the input string in a specific way. The uppercase letters (mothers) should come first, followed by their corresponding lowercase letters (children). The letters should be sorted alphabetically, with the uppercase letter followed by all its corresponding lowercase letters.
+
+For example, in the string "abBA", the sorted string would be "AaBb". The uppercase 'A' comes first, followed by its lowercase 'a', then the uppercase 'B', followed by its lowercase 'b'.
+
+Example:
+
+```python
+find_children("abBA") == "AaBb"
+find_children("AaaaaZazzz") == "AaaaaaZzzz"
+find_children("CbcBcbaA") == "AaBbbCcc"
+find_children("xXfuUuuF") == "FfUuuuXx"
+find_children("") == ""
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def find_children(input_str):
+    if not input_str:
+        return ""
+
+    else:
+        chars = [char for char in input_str]
+        new_chars = sorted(chars, key=sort_the_kids)
+        return "".join(new_chars)
+    
+def sort_the_kids(lst):
+    for element in lst:
+        return (element.upper(), element)
+
+print(find_children("abBA") == "AaBb")
+print(find_children("AaaaaZazzz") == "AaaaaaZzzz")
+print(find_children("CbcBcbaA") == "AaBbbCcc")
+print(find_children("xXfuUuuF") == "FfUuuuXx")
+print(find_children("") == "")
+
+```
+</details>
+
+## 43. Digit Play
+
+Some numbers have funny properties. For example:
+```
+89 --> 8¹ + 9² = 89 * 1
+695 --> 6² + 9³ + 5⁴= 1390 = 695 * 2
+46288 --> 4³ + 6⁴+ 2⁵ + 8⁶ + 8⁷ = 2360688 = 46288 * 51
+```
+Given a positive integer n written as abcd... (a, b, c, d... being digits) and a positive integer p we want to find a positive integer k, if it exists, such as the sum of the digits of n taken to the successive powers of p is equal to k * n.
+
+In other words:
+Is there an integer `k` such as : `(a ^ p + b ^ (p+1) + c ^(p+2) + d ^ (p+3) + ...) = n * k`? If it is the case we will return `k`, if not return `-1`. Note: `n` and `p` will always be given as strictly positive integers.
+
+I gave it to the duck, because what?
+
+It sounds like the problem is asking you to find a specific integer ( `k` ) given two positive integers ( `n` ) and ( `p` ). **The problem involves the digits of ( `n` ) and powers of ( `p `)**.
+
+Here's a breakdown of the problem:
+
+You have a number ( `n` ) with digits.
+You also have a positive integer ( `p` ).
+
+You need to calculate the sum of the digits of ( `n` ), each raised to successive powers starting from ( `p` ). For example, the first digit is raised to the power of ( `p` ), the second digit to the power of ( `p+1` ), and so on.
+You then check if this sum is equal to ( n ) multiplied by some integer ( `k` ).
+If such a ( `k` ) exists, you return it. If not, you return `-1`.
+
+```python
+dig_pow(89, 1) == 1
+dig_pow(92, 1) == -1
+dig_pow(46288, 3) == 51
+dig_pow(695, 2) == 2
+```
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def dig_pow(number, power):
+    temp = []
+    digits = [int(char) for char in str(number)]
+    power_count = 0
+    for digit in digits:
+        temp.append(digit ** (power+power_count))
+        power_count += 1
+    result = sum(temp)
+    k = result // number
+    if result == k * number:
+        return k
+    else:
+        return -1
+
+
+print(dig_pow(89, 1) == 1)
+print(dig_pow(92, 1) == -1)
+print(dig_pow(46288, 3) == 51)
+print(dig_pow(695, 2) == 2)
+
+```
+</details>
+
+## 44. Squared Array Check
+
+Given two arrays `a` and `b` write a function `comp(a, b)` that checks whether the two arrays have the "same" elements, with the same multiplicities. "Same" means, here, that the elements in `b` are the elements in `a` squared, regardless of the order.
+
+``` python
+comp([121, 144, 19, 161, 19, 144, 19, 11], [121, 14641, 20736, 361, 25921, 361, 20736, 361]) == True
+comp([121, 144, 19, 161, 19, 144, 19, 11], [132, 14641, 20736, 361, 25921, 361, 20736, 361]) == False
+comp(None, [1, 2, 3]) == False
+comp([1, 2], []) == False
+comp([1, 2], [1, 4, 4]) == False
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def comp(a, b):
+    if not a or not b:
+        return False
+    else:
+        if len(a) == len(b):
+            comparison = [number ** 2 for number in a]
+            if set(comparison) == set(b):
+                return True
+            return False
+        return False
+
+print(comp([121, 144, 19, 161, 19, 144, 19, 11], [121, 14641, 20736, 361, 25921, 361, 20736, 361]) == True)
+print(comp([121, 144, 19, 161, 19, 144, 19, 11], [132, 14641, 20736, 361, 25921, 361, 20736, 361]) == False)
+print(comp(None, [1, 2, 3]) == False)
+print(comp([1, 2], []) == False)
+print(comp([1, 2], [1, 4, 4]) == False)
+
+```
+</details>
+
+## 45. Count Digit Occurences
+
+Your goal is to write the `group_and_count` method, which should receive a list as a unique parameter and return a hash. Empty or no input must return `None` instead of a hash. This hash returned must contain as keys the unique values of the list, and as values the counting of each value.
+
+```python
+group_and_count([1,1,2,2,2,3]) == {1: 2, 2: 3, 3: 1}
+group_and_count([]) == None
+group_and_count(None) == None
+group_and_count([1, 7, 5, -1]) == {1: 1, 7: 1, 5: 1, -1: 1}
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def group_and_count(lst1):
+    if not lst1 or None:
+        return None
+    else:
+        counts = {}
+        for number in lst1:
+            counts[number] = counts.get(number, 0) + 1
+        return counts
+
+print(group_and_count([1,1,2,2,2,3]) == {1: 2, 2: 3, 3: 1})
+print(group_and_count([]) == None)
+print(group_and_count(None) == None)
+print(group_and_count([1, 7, 5, -1]) == {1: 1, 7: 1, 5: 1, -1: 1})
+
+```
+</details>
+
+
+## 46. Triple double
+
+Write a function `triple_double(num1, num2)` which takes numbers `num1` and num2 and returns `1` if there is a straight triple of a number at any place in `num1` and also a straight double of the same number in `num2`. If this isn't the case, return 0.
+
+```python
+triple_double(12345, 12345) == 0
+triple_double(666789, 12345667) == 1 # 3 straight 6's in num1, 2 straight 6's in num2
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def triple_double(num1, num2):
+    
+    digits1 = [int(char) for char in str(num1)]
+    digits2 = [int(char) for char in str(num2)]
+    temp = []
+    
+    for i in range(len(digits1) - 2):
+        if digits1[i] == digits1[i+1] == digits1[i+2]:
+            temp.append(1)
+            break
+    for i in range(len(digits2) - 1):
+        if digits2[i] == digits2[i+1]:
+            temp.append(1)
+            break
+    if temp:
+        return temp[0]
+    else:
+        return 0
+print(triple_double(12345, 12345) == 0)
+print(triple_double(666789, 12345667) == 1) # 3 straight 6's in num1, 2 straight 6's in num2
+
+```
+</details>
+
+## 47. Find the missing letter
+
+Write a method that takes a list of consecutive (increasing) letters as input and that returns the missing letter in the list. You will always get a valid list. And it will be always exactly one letter be missing. The length of the array will always be at least 2. The array will always contain letters in only one case.
+
+Example:
+
+```
+['a','b','c','d','f'] -> 'e'
+['O','Q','R','S'] -> 'P'
+```
+```python
+p find_missing_letter(['a','b','c','d','f']) == 'e'
+p find_missing_letter(['O','Q','R','S']) == 'P'
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def find_missing_letter(abc_lst):
+    abc_lower = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z')
+    abc_upper = ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z')
+    
+    temp = []
+    k = len(abc_lst)
+    start_value = abc_lst[0]
+
+    if abc_lst[0].islower():
+        start_index = abc_lower.index(start_value)
+        temp.extend(abc_lower[start_index: start_index + k +1])
+        for char in temp:
+            if char not in abc_lst:
+                return char
+    
+    elif abc_lst[0].isupper():
+        start_index = abc_upper.index(start_value)
+        temp.extend(abc_upper[start_index: start_index + k + 1])
+   
+        for char in temp:
+            if char not in abc_lst:
+                return char
+
+print(find_missing_letter(['a','b','c','d','f']) == 'e')
+print(find_missing_letter(['O','Q','R','S']) == 'P')
+```
+
+</details>
+
+## 48. Reverse and combine text
+
+Your task is to Reverse and Combine Words. Input: String containing different "words" separated by spaces
+
+1. More than one word? Reverse each word and combine first with second, third with fourth and so on...
+(odd number of words => last one stays alone, but has to be reversed too)
+
+2. Start it again until there's only one word without spaces
+3. Return your result…
+
+Struggled with this one!
+
+```python
+reverse_and_combine_text("abc def") == "cbafed"
+reverse_and_combine_text("abc def ghi jkl") == "defabcjklghi"
+reverse_and_combine_text("dfghrtcbafed") == "dfghrtcbafed"
+reverse_and_combine_text("234hh54 53455 sdfqwzrt rtteetrt hjhjh lllll12 44") ==
+"trzwqfdstrteettr45hh4325543544hjhjh21lllll"
+reverse_and_combine_text("sdfsdf wee sdffg 342234 ftt") == "gffds432243fdsfdseewttf"
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def reverse_and_combine_text(input_str):
+    words = input_str.split()
+    while len(words) > 1:
+        # Reverse each word
+        words = [word[::-1] for word in words]
+        # Combine each pair of words
+        combined = []
+        i = 0
+        while i < len(words):
+            if i + 1 < len(words):
+                combined.append(words[i] + words[i+1])
+            else:
+                combined.append(words[i])
+            i += 2
+        words = combined
+    return words[0]
+
+
+print(reverse_and_combine_text("abc def") == "cbafed")
+print(reverse_and_combine_text("abc def ghi jkl") == "defabcjklghi")
+print(reverse_and_combine_text("dfghrtcbafed") == "dfghrtcbafed")
+print(reverse_and_combine_text("234hh54 53455 sdfqwzrt rtteetrt hjhjh lllll12 44") == "trzwqfdstrteettr45hh4325543544hjhjh21lllll")
+print(reverse_and_combine_text("sdfsdf wee sdffg 342234 ftt") == "gffds432243fdsfdseewttf")
+
+```
+</details>
