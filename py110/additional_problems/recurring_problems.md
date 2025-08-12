@@ -1,4 +1,4 @@
-# Reoccuring struggles with other PY110/PY119 problems
+# Reoccuring struggles with PY110/PY119 problems
 
 ## Sorting with Extra Steps Part 1
 
@@ -80,6 +80,8 @@ def transform_item(item):
 
 result = [transform_item(item) for item in dict1.values()]
 print(result) 
+
+
 ```
 
 </details>
@@ -111,4 +113,40 @@ def all_even(dictionary):
 
 result = [d for d in lst if all_even(d)]
 ```
+</details>
+
+## Sorting with Extra Steps, Part 4
+
+Given the following dictionary, create a new dictionary where each key maps to a list of words from the original value that have more than 4 characters.
+
+Expected result: `{'morning': ['quick', 'brown', 'jumps'], 'afternoon': ['sleeping'], 'evening': ['under', 'bright', 'starry']}`
+
+```python
+sentences = {
+    'morning': 'the quick brown fox jumps',
+    'afternoon': 'over the lazy dog sleeping',
+    'evening': 'under the bright starry sky'
+}
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def get_4(dict1):
+    result = {}
+    for key, values in sentences.items():
+        tmp = []
+        words = values.split()
+        for word in words:
+            if len(word) >= 4:
+                tmp.append(word)
+    return tmp
+
+new_dict = {key: get_4(value) for key, value in sentences.items()}
+print(new_dict)
+
+```
+
 </details>

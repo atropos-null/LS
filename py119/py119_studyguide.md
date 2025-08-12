@@ -909,6 +909,37 @@ print(sorted_people)
 
 Here, `person_key` returns `(age, name)`. The list is first sorted by age. If two people have the same age (e.g., Betty and John, or Anna and Jack), their names are then used as the secondary sorting criterion.
 
+Here are all the built-in ways you can use for the key= argument (i.e., built-in functions, operators, or callables that come with Python and can be passed to `key=`):
+
+
+| Built-in Callable | Example Usage                          | Description                       |
+|-------------------|----------------------------------------|------------------------------------|
+| `str`             | `sorted(items, key=str)`               | String representation              |
+| `int`, `float`    | `sorted(items, key=int)`               | Numeric conversion                 |
+| `len`             | `sorted(items, key=len)`               | Length                             |
+| `abs`             | `sorted(items, key=abs)`               | Absolute value                     |
+| `repr`            | `sorted(items, key=repr)`              | Object representation string       |
+| `ord`             | `sorted(chars, key=ord)`               | Unicode code point                 |
+| `bool`            | `sorted(items, key=bool)`              | Boolean value                      |
+| `id`              | `sorted(items, key=id)`                | Object identity                    |
+| `hash`            | `sorted(items, key=hash)`              | Hash value                         |
+| `round`           | `sorted(items, key=round)`             | Round numbers                      |
+| `str.lower`       | `sorted(words, key=str.lower)`         | Lowercase string                   |
+| `str.upper`       | `sorted(words, key=str.upper)`         | Uppercase string                   |
+| `str.title`       | `sorted(words, key=str.title)`         | Title case string                  |
+| `str.capitalize`  | `sorted(words, key=str.capitalize)`    | Capitalize string                  |
+| `str.casefold`    | `sorted(words, key=str.casefold)`      | Casefold string (for caseless cmp) |
+| `str.swapcase`    | `sorted(words, key=str.swapcase)`      | Swap case                          |
+| `str.strip`       | `sorted(words, key=str.strip)`         | Strip whitespace                   |
+| `str.lstrip`      | `sorted(words, key=str.lstrip)`        | Strip left whitespace              |
+| `str.rstrip`      | `sorted(words, key=str.rstrip)`        | Strip right whitespace             |
+| `str.zfill`       | `sorted(words, key=lambda x: x.zfill(5))` | Zero-fill to width (needs arg)  |
+| `str.isdigit`     | `sorted(words, key=str.isdigit)`       | Is digit (bool result)             |
+| `str.isalpha`     | `sorted(words, key=str.isalpha)`       | Is alpha (bool result)             |
+| `str.islower`     | `sorted(words, key=str.islower)`       | Is lowercase (bool result)         |
+| `str.isupper`     | `sorted(words, key=str.isupper)`       | Is uppercase (bool result)         |
+| `str.istitle`     | `sorted(words, key=str.istitle)`       | Is title case (bool result)        |
+| ...               | ...                                    | Any other one-argument built-in    |
 
 ### What are some practical considerations or useful rules to remember when working with character and string sorting in Python?
 
