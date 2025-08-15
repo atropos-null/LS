@@ -1418,17 +1418,17 @@ print(highest_sum([1,1,2,3,4,5,5,6]) == 15) #True
 
 Let's trace the first few steps with your list `[1, 2, 2, ...]`:
 
-•   `​i = 0​`:
-    •   `​j = 0​`: sublist is `[1]`. It's unique. `sum`is `1`. `max_sum` becomes `1`.
-    •   `​j = 1`​: sublist is `[1, 2]`. It's unique. `sum` is `3`. `max_sum` becomes `3`.
-    •   `​j = 2​`: sublist is `[1, 2, 2]`. It's ​not​ unique `(len([1,2,2])` is `3`, but `len(set([1,2,2])) is 2)`. We do nothing.
-•   `​i = 1`​:
-    •   `​j = 1​`: sublist is `[2]`. It's unique. `sum` is `2`. `max_sum` is still `3`.
-    •   `​j = 2`​: sublist is `[2, 2`]. It's ​not​ unique. We do nothing.
-    •   `​j = 3`​: sublist is `[2, 2, 3`]. It's ​not​ unique. We do nothing.
-•   `​i = 2`​:
-    •   `​j = 2`​: sublist is `[2]`. It's unique. `sum` is `2`. `max_sum` is still `3`.
-    •   `​j = 3​`: sublist is `[2, 3]`. It's unique. `sum`is `5`.
+* `​i = 0​`:
+    *  `​j = 0​`: sublist is `[1]`. It's unique. `sum`is `1`. `max_sum` becomes `1`.
+    *   `​j = 1`​: sublist is `[1, 2]`. It's unique. `sum` is `3`. `max_sum` becomes `3`.
+    *   `​j = 2​`: sublist is `[1, 2, 2]`. It's ​not​ unique `(len([1,2,2])` is `3`, but `len(set([1,2,2])) is 2)`. We do nothing.
+*   `​i = 1`​:
+    *   `​j = 1​`: sublist is `[2]`. It's unique. `sum` is `2`. `max_sum` is still `3`.
+    *   `​j = 2`​: sublist is `[2, 2`]. It's ​not​ unique. We do nothing.
+    *   `​j = 3`​: sublist is `[2, 2, 3`]. It's ​not​ unique. We do nothing.
+*   `​i = 2`​:
+    *   `​j = 2`​: sublist is `[2]`. It's unique. `sum` is `2`. `max_sum` is still `3`.
+    *   `​j = 3​`: sublist is `[2, 3]`. It's unique. `sum`is `5`.
 
 `max_sum` becomes `5`.
 
