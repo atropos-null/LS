@@ -1377,8 +1377,7 @@ for inner_key, inner_value in outer_value.items()]
 
 In another very common variation, you don't need to iterate over a nested structure, but you need a nested for loop to do the appropriate iteration. Take for example the following problem:
 
-`Given a list of numbers: [1,2,2,3,4,4,5], return the HIGHEST sum of any consecutive numbers where a number doesn't 
-repeat.`
+`Given a list of numbers: [1,2,2,3,4,4,5], return the HIGHEST sum of any consecutive numbers where a number doesn't repeat.`
 
 The core idea is to use a nested loop structure to generate every possible consecutive sublist and then, for each one, check if it meets the criteria. Here’s how you can break down the problem using that pattern:
 
@@ -1432,6 +1431,150 @@ Let's trace the first few steps with your list `[1, 2, 2, ...]`:
     •   `​j = 3​`: sublist is `[2, 3]`. It's unique. `sum`is `5`.
 
 `max_sum` becomes `5`.
+
+#### More on Triangular Iteration
+
+Triangular iteration is a common algorithmic pattern used to enumerate all pairs, subarrays, substrings, or combinations in collections such as lists or strings. Although not a formal term in most literature, it describes the way nested loops create a "triangle" of iterations—where the inner loop starts at the current position of the outer loop.
+
+
+##### 1. Enumerating All Pairs (i, j), i < j
+
+Useful for problems where you need to consider every pair of elements, such as finding the closest pair, checking for duplicates, or comparing elements.
+
+```python
+arr = [1, 2, 3, 4]
+for i in range(len(arr)):
+    for j in range(i + 1, len(arr)):
+        print(f"Pair: ({arr[i]}, {arr[j]})")
+```
+
+**Output:**
+```
+Pair: (1, 2)
+Pair: (1, 3)
+Pair: (1, 4)
+Pair: (2, 3)
+Pair: (2, 4)
+Pair: (3, 4)
+```
+
+##### 2. Generating All Subarrays (Contiguous Slices)
+
+For array-based problems where you need to consider all possible contiguous subarrays.
+
+```python
+arr = [1, 2, 3]
+for start in range(len(arr)):
+    for end in range(start, len(arr)):
+        print(arr[start:end+1])
+```
+
+**Output:**
+```
+[1]
+[1, 2]
+[1, 2, 3]
+[2]
+[2, 3]
+[3]
+```
+
+
+##### 3. Enumerating All Substrings
+
+For string-based problems (such as palindromes, substring search, etc.), this pattern generates every possible substring.
+
+```python
+s = "abc"
+for i in range(len(s)):
+    for j in range(i + 1, len(s) + 1):
+        print(s[i:j])
+```
+
+**Output:**
+```
+a
+ab
+abc
+b
+bc
+c
+```
+
+
+#### 4. Triangular Iteration in 2D Arrays (Upper Triangle)
+
+Useful for matrix problems, such as traversing only the upper triangle of a square matrix.
+
+```python
+matrix = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+]
+n = len(matrix)
+for i in range(n):
+    for j in range(i, n):
+        print(f"matrix[{i}][{j}] =", matrix[i][j])
+```
+
+**Output:**
+```
+matrix[0][0] = 1
+matrix[0][1] = 2
+matrix[0][2] = 3
+matrix[1][1] = 5
+matrix[1][2] = 6
+matrix[2][2] = 9
+```
+
+
+##### 5. Brute-Force Search for Special Subarrays (e.g., Subarray Sum)
+
+Suppose you want to find all subarrays whose sum is a specific value.
+
+```python
+arr = [1, 2, 3, 4]
+target = 5
+for start in range(len(arr)):
+    total = 0
+    for end in range(start, len(arr)):
+        total += arr[end]
+        if total == target:
+            print(arr[start:end+1])
+```
+
+**Output:**
+```
+[2, 3]
+[5]
+```
+
+
+#### General Pattern
+
+Triangular iteration always looks like this:
+
+```python
+for i in range(N):
+    for j in range(i, N):
+        # Do something with elements[i:j+1] or (i, j)
+```
+
+Where `N` is the length of your sequence.
+
+---
+
+### When to Use Triangular Iteration
+
+- When you need all pairs, all subarrays, or all substrings.
+- For brute-force solutions before optimizing (often replaced with sliding window or dynamic programming).
+- When exploring a "triangle-shaped" space (e.g., upper triangle of a matrix).
+
+### Performance Note
+
+Triangular iteration is **O(N²)**, which is fine for small inputs but may be slow for large datasets.
+
 
 [Back to the top](#top)
 ***
