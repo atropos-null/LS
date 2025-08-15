@@ -330,6 +330,8 @@ def new_dictionary(old_dictionary):   #creating a new dictionary from an old dic
   * Returns `None` (or a specified default value) if the key is not found.
   * Does **not** modify the dictionary.
 
+This comes up ALOT: **`count_dicts[char] = count_dicts.get(char, 0) + 1`** where the syntax is `dictionary-name[thing being iterated over] = dictionary_name.get(thing being iterated over, 0) + 1`.
+
 * **`setdefault()`**:  
   * Also retrieves the value for a given key.
   * If the key exists, returns its value (no change).
