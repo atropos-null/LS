@@ -15,7 +15,7 @@
 - [Conditional Statements and Control Flow](#conditional-statements-and-control-flow)
 - [Sorting](#sorting)
 - [Comprehensions](#comprehensions)
-- [Nested Data Structures and Iteration](#nested-data-structurse-and-iteration)
+- [Nested Data Structures and Iteration](#nested-data-structures-and-iteration)
 - [Shallow and Deep Copy](#shallow-and-deep-copy)
 - [User-level Synergy](#user-level-synergy)
 - [Further practice](#further-practice)
