@@ -1373,7 +1373,7 @@ for outer_key, outer_value in outer_dict.items()
 for inner_key, inner_value in outer_value.items()]
 ```
 
-#### Triangular Iteration
+### Nested For Loops: Triangular Iteration
 
 In another very common variation, you don't need to iterate over a nested structure, but you need a nested for loop to do the appropriate iteration. Take for example the following problem:
 
@@ -1432,12 +1432,12 @@ Let's trace the first few steps with your list `[1, 2, 2, ...]`:
 
 `max_sum` becomes `5`.
 
-#### More on Triangular Iteration
+### More on Triangular Iteration
 
 Triangular iteration is a common algorithmic pattern used to enumerate all pairs, subarrays, substrings, or combinations in collections such as lists or strings. Although not a formal term in most literature, it describes the way nested loops create a "triangle" of iterations—where the inner loop starts at the current position of the outer loop.
 
 
-##### 1. Enumerating All Pairs (i, j), i < j
+#### 1. Enumerating All Pairs (i, j), i < j
 
 Useful for problems where you need to consider every pair of elements, such as finding the closest pair, checking for duplicates, or comparing elements.
 
@@ -1458,15 +1458,15 @@ Pair: (2, 4)
 Pair: (3, 4)
 ```
 
-##### 2. Generating All Subarrays (Contiguous Slices)
+#### 2. Generating All Subarrays (Contiguous Slices)
 
 For array-based problems where you need to consider all possible contiguous subarrays.
 
 ```python
 arr = [1, 2, 3]
-for start in range(len(arr)):
-    for end in range(start, len(arr)):
-        print(arr[start:end+1])
+for i in range(len(arr)):
+    for j in range(i, len(arr)):
+        print(arr[i:j+1])
 ```
 
 **Output:**
@@ -1479,8 +1479,7 @@ for start in range(len(arr)):
 [3]
 ```
 
-
-##### 3. Enumerating All Substrings
+#### 3. Enumerating All Substrings
 
 For string-based problems (such as palindromes, substring search, etc.), this pattern generates every possible substring.
 
@@ -1501,8 +1500,7 @@ bc
 c
 ```
 
-
-#### 4. Triangular Iteration in 2D Arrays (Upper Triangle)
+### 4. Triangular Iteration in 2D Arrays (Upper Triangle)
 
 Useful for matrix problems, such as traversing only the upper triangle of a square matrix.
 
@@ -1512,9 +1510,9 @@ matrix = [
     [4, 5, 6],
     [7, 8, 9]
 ]
-n = len(matrix)
-for i in range(n):
-    for j in range(i, n):
+
+for i in range(len(matrix)):
+    for j in range(i, len(matrix)):
         print(f"matrix[{i}][{j}] =", matrix[i][j])
 ```
 
@@ -1529,19 +1527,19 @@ matrix[2][2] = 9
 ```
 
 
-##### 5. Brute-Force Search for Special Subarrays (e.g., Subarray Sum)
+#### 5. Brute-Force Search for Special Subarrays (e.g., Subarray Sum)
 
 Suppose you want to find all subarrays whose sum is a specific value.
 
 ```python
 arr = [1, 2, 3, 4]
 target = 5
-for start in range(len(arr)):
+for i in range(len(arr)):
     total = 0
-    for end in range(start, len(arr)):
-        total += arr[end]
+    for j in range(i, len(arr)):
+        total += arr[j]
         if total == target:
-            print(arr[start:end+1])
+            print(arr[i:j+1])
 ```
 
 **Output:**
@@ -1556,20 +1554,52 @@ for start in range(len(arr)):
 Triangular iteration always looks like this:
 
 ```python
-for i in range(N):
-    for j in range(i, N):
+for i in range(len(sequence)):
+    for j in range(i, len(sequence)):
         # Do something with elements[i:j+1] or (i, j)
 ```
 
-Where `N` is the length of your sequence.
+### How to Set Boundaries in Nested Loops for Generating Substrings
 
----
+The main challenge is getting the `range()` values correct so that you generate every possible substring, including single-character ones and the full string itself.
+
+**Key Python Principles**:
+
+1.  `​range(start, stop)` is Exclusive​: The `stop value` is ​not included​ in the sequence. `range(1, 4)` produces `1, 2, 3`.
+2.  `​Slicing [start:stop]` is Exclusive​: The character at the `stop index` is ​not included​ in the slice. `string[1:4]` gets characters at indices 1, 2, and 3.
+
+**Applying the Principles to Substrings**
+
+Let's use the `string "abc"` (length = 3) as an example.
+
+* ​Outer Loop (Start of Substring): `for i in range(len(string))`
+    * This loop determines the starting character of the substring.
+    * `range(3)` gives us i = 0, 1, 2. This correctly covers every possible starting position.
+
+* ​Inner Loop (End of Substring): `for j in range(i + 1, len(string) + 1)`
+    * This loop determines the stop index for our slice `string[i:j]`.
+    * **​Why `i + 1`?**​ To get the shortest possible substring (one character), the slice must be string[i:i+1]. So, j must start at i + 1.
+    * **​Why len(string) + 1?**​ To get the longest possible substring (the whole string), the slice must be `string[0:len(string)]`. For j to be able to equal len(string), the range must go up to `len(string) + 1`.
+
+* Comparison of Inner Loop `range()` Variations
+
+Let's see what happens when `i = 0` for the `string "abc"` (`len = 3`). We need `j` to be `1, 2, 3 `to get the slices `string[0:1]` ("a"), `string[0:2]` ("ab"), and `string[0:3] `("abc").
+
+| range() variation           | Generated j values   | Substrings string[0:j]   | Result                                                            |
+| :-------------------------- | :------------------- | :----------------------- | :---------------------------------------------------------------- |
+| range(i, len(string))       | 0, 1, 2              | "", "a", "ab"            | **Incorrect.** Misses the full string and creates empty strings.  |
+| range(i+1, len(string))     | 1, 2                 | "a", "ab"                | **Incorrect.** Misses the full string ("abc").                    |
+| range(i+1, len(string)+1)   | 1, 2, 3              | "a", "ab", "abc"         | **Correct.** Generates all non-empty substrings starting at index i. |
+
+**Rule of Thumb**
+
+When using a loop variable as the ​exclusive stop index​ for a slice, and you need that slice to potentially include the very last element of the sequence, the range for that loop must go up to len(sequence) + 1.
 
 ### When to Use Triangular Iteration
 
-- When you need all pairs, all subarrays, or all substrings.
-- For brute-force solutions before optimizing (often replaced with sliding window or dynamic programming).
-- When exploring a "triangle-shaped" space (e.g., upper triangle of a matrix).
+* When you need all pairs, all subarrays, or all substrings.
+* For brute-force solutions before optimizing (often replaced with sliding window or dynamic programming).
+*  When exploring a "triangle-shaped" space (e.g., upper triangle of a matrix).
 
 ### Performance Note
 
@@ -1578,7 +1608,6 @@ Triangular iteration is **O(N²)**, which is fine for small inputs but may be sl
 
 [Back to the top](#top)
 ***
-
 
 ## Shallow and Deep Copy
 
