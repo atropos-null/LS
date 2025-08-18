@@ -78,6 +78,36 @@ print(longest_palindrome("launchschool") == 2) # "oo"
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def longest_palindrome(string):
+    if not string:
+        return 0
+    
+    elif len(string) == 1:
+        return len(string)
+    
+    else:
+        temp = []
+      
+        for i in range(len(string)):
+            for j in range(i+1, len(string)+1):
+                if string[i:j] == string[i:j][::-1]:
+                    temp.append(string[i:j])
+        
+        max_length = len(max(temp, key=len))
+        return max_length
+
+
+print(longest_palindrome("babad") == 3) # "bab" or "aba"
+print(longest_palindrome("cbbd") == 2) # "bb"
+print(longest_palindrome("a") == 1) # "a"
+print(longest_palindrome("") == 0)
+print(longest_palindrome("racecar") == 7) # "racecar"
+print(longest_palindrome("programming") == 2) # "mm"
+print(longest_palindrome("launchschool") == 2) # "oo"
+```
+
 </details>
 
 ## 3. Even Substrings Count
