@@ -1581,7 +1581,7 @@ Let's use the `string "abc"` (length = 3) as an example.
     * **​Why `i + 1`?**​ To get the shortest possible substring (one character), the slice must be string[i:i+1]. So, j must start at i + 1.
     * **​Why len(string) + 1?**​ To get the longest possible substring (the whole string), the slice must be `string[0:len(string)]`. For j to be able to equal len(string), the range must go up to `len(string) + 1`.
 
-* Comparison of Inner Loop `range()` Variations
+### Comparison of Inner Loop `range()` Variations
 
 Let's see what happens when `i = 0` for the `string "abc"` (`len = 3`). We need `j` to be `1, 2, 3 `to get the slices `string[0:1]` ("a"), `string[0:2]` ("ab"), and `string[0:3] `("abc").
 
