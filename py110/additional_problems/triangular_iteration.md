@@ -20,8 +20,8 @@ def count_subarray_sums(arr, target_sum):
 print(count_subarray_sums([1, 2, 3, 4, 5], 9) == 2)     # [4, 5] and [2, 3, 4]
 print(count_subarray_sums([1, 1, 1], 2) == 2)           # [1, 1] occurs twice
 print(count_subarray_sums([1, -1, 1, -1], 0) == 4)      # [1, -1], [1, -1], [-1, 1], [1, -1, 1, -1]
-print(count_subarray_sums([10, 5, 0, 2, 3, -5, 7], 5) == 5)
-print(count_subarray_sums([4, 2, 22, 8, 5], 30) == 0)
+print(count_subarray_sums([10, 5, 0, 2, 3, -5, 7], 6) == 6)
+print(count_subarray_sums([4, 2, 22, 8, 5], 30) == 1)
 ```
 
 <details>
