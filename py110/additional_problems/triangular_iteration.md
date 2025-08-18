@@ -142,6 +142,27 @@ print(even_substrings('143232') == 12)
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def even_substrings(string):
+    evens = []
+    str_digits = [char for char in string]
+    for i in range(len(str_digits) + 1 ):
+        for j in range(i+1, len(str_digits) + 1):
+            slice = str_digits[i:j]
+            joined = "".join(slice)
+            digits = int(joined)
+            if digits % 2 == 0:
+                evens.append(digits)
+    return len(evens)
+   
+print(even_substrings('1432') == 6)
+print(even_substrings('3145926') == 16)
+print(even_substrings('2718281') == 16)
+print(even_substrings('13579') == 0)
+print(even_substrings('143232') == 12)
+```
+
 </details>
 
 ## 4. Longest Monotonic Substring*
