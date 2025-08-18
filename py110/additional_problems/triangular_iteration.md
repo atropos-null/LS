@@ -26,6 +26,25 @@ print(count_subarray_sums([4, 2, 22, 8, 5], 30) == 1)
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def count_subarray_sums(arr, target_sum):
+    
+    count = 0
+    for i in range(len(arr)):
+        current_sum = 0
+        for j in range(i, len(arr)):
+            current_sum += arr[j]
+            if current_sum == target_sum:
+                count += 1
+    return count
+                
+print(count_subarray_sums([1, 2, 3, 4, 5], 9) == 2)     # [4, 5] and [2, 3, 4]
+print(count_subarray_sums([1, 1, 1], 2) == 2)           # [1, 1] occurs twice
+print(count_subarray_sums([1, -1, 1, -1], 0) == 4)      # [1, -1], [1, -1], [-1, 1], [1, -1, 1, -1] 
+print(count_subarray_sums([10, 5, 0, 2, 3, -5, 7], 5) == 6)
+print(count_subarray_sums([4, 2, 22, 8, 5], 30) == 1)
+```
 </details>
 
 ## 2. Longest Palindrome Length
