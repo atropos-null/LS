@@ -48,7 +48,7 @@ Page Reference: [Study Guide](https://launchschool.com/lessons/5638850f/assignme
 *   Demonstrating your thought process as you code
 *   Adapting when your initial approach needs refinement
 
-**What They're NOT Testing:
+**What They're NOT Testing**:
 *   Perfect code on the first attempt
 *   Memorization of obscure syntax
 *   Writing flawless algorithms without iteration
@@ -145,90 +145,102 @@ Lists are flexibile due to their mutability and introduces several built-in meth
   ```
 
 * `list.index(object, start=0, end=len(list))`: Returns the index of the first occurrence of a specified object. Can search within a specified range using `start` and `end` arguments. Raises a `ValueError` if the object is not found.  
-  **Example:**  
-  ```python
-  fruits = ['apple', 'orange', 'banana', 'apple', 'grape']
-  fruits.index('apple')  # 0
-  ```
+
+**Example:**  
+
+```python
+fruits = ['apple', 'orange', 'banana', 'apple', 'grape']
+fruits.index('apple')  # 0
+```
 
 * `list.append(object)`: Adds an object to the end of the list.  
-  **Example:**  
-  ```python
-  numbers = [1, 2, 3]
-  numbers.append(4)
-  numbers  # [1, 2, 3, 4]
-  ```
+
+**Example:**  
+
+```python
+numbers = [1, 2, 3]
+numbers.append(4)
+numbers  # [1, 2, 3, 4]
+```
 
 * `list.insert(index, object)`: Inserts an object prior to a specific index position.  
-  **Example:**  
-  ```python
-  numbers = [1, 2, 3, 4]
-  numbers.insert(2, 'two-point-five')
-  numbers  # [1, 2, 'two-point-five', 3, 4]
-  ```
+
+**Example:**  
+
+```python
+numbers = [1, 2, 3, 4]
+numbers.insert(2, 'two-point-five')
+numbers  # [1, 2, 'two-point-five', 3, 4]
+```
 
 In the above example, the insert call inserts the string `'two-point-five'` between index positions 1 and 2 in the list.
 
 * `list.extend(iterable)`: Appends all elements from an iterable (like another list, tuple, or set) to the end of the current list.  
-  **Example:**  
-  ```python
-  numbers = [1, 2, 3]
-  numbers.extend([4, 5, 6, 7])
-  numbers  # [1, 2, 3, 4, 5, 6, 7]
-  ```
+
+**Example:**  
+
+```python
+numbers = [1, 2, 3]
+numbers.extend([4, 5, 6, 7]) # [1, 2, 3, 4, 5, 6, 7]
+```
 
 Keep in mind that sets are unordered, so objects added from a set may not be in the expected order.
 
 * `list.remove(value)`: Removes the first occurrence of a specified value from the list. Raises a `ValueError` if the element is not found.  
-  **Example:**  
-  ```python
-  numbers = [1, 2, 'two-point-five', 3, 4]
-  numbers.remove('two-point-five')
-  numbers  # [1, 2, 3, 4]
-  ```
+
+**Example:**  
+
+```python
+numbers = [1, 2, 'two-point-five', 3, 4]
+numbers.remove('two-point-five')   # [1, 2, 3, 4]
+```
 
 If the element we are trying to remove doesn't exist in the list, `list.remove` raises a `ValueError`.
 
 * `list.pop(index=-1)`: Removes and returns the object at a specific index. If no index is specified, it removes and returns the last item. Raises an `IndexError` if the list is empty or the index is out of range.  
-  **Example:**  
-  ```python
-  numbers = [1, 2, 'two-point-five', 3, 4]
-  numbers.pop(2)  #'two-point-five'
-  ```
+
+**Example:**  
+
+```python
+numbers = [1, 2, 'two-point-five', 3, 4]
+numbers.pop(2)  #'two-point-five'
+```
 
 Similarly, if the list is empty, `list.pop` will raise an `IndexError`.
 
 * `list.reverse()`: Reverses the order of the list's elements in-place.  
-  **Example:**  
-  ```python
-  numbers = [1, 2, 3, 4, 5, 6]
-  numbers.reverse()
-  numbers  # [6, 5, 4, 3, 2, 1]
-  ```
+
+**Example:**  
+
+```python
+numbers = [1, 2, 3, 4, 5, 6]
+numbers.reverse() # [6, 5, 4, 3, 2, 1]
+```
 
 * `list.sort(key=None, reverse=False)`: Sorts the list's elements in-place. Can sort various data types as long as elements can be compared. Raises a `TypeError` if elements cannot be compared. The `key` argument can be used for customized sorting (e.g., case-insensitive using `str.casefold` or sorting numeric strings using `int`). The `reverse=True` argument sorts in descending order.  
-  **Example:**  
-  ```python
-  numbers = [61, 103, 525, 10100, 25, 3]
-  numbers.sort()
-  numbers  # [3, 25, 61, 103, 525, 10100]
-  ```
 
-  **Example with key:**  
-  ```python
-  animals = ['Cat', 'aarDVARK', 'HORSE', 'Python', 'orangutan']
-  animals.sort(key=str.casefold)
-  animals  # ['aarDVARK', 'Cat', 'HORSE', 'orangutan', 'Python']
-  ```
+**Example:**  
+
+```python
+numbers = [61, 103, 525, 10100, 25, 3]
+numbers.sort() # [3, 25, 61, 103, 525, 10100]
+```
+
+**Example with key:**  
+
+```python
+animals = ['Cat', 'aarDVARK', 'HORSE', 'Python', 'orangutan']
+animals.sort(key=str.casefold) #['aarDVARK', 'Cat', 'HORSE', 'orangutan', 'Python']
+```
 
 ### Adding Elements to a Python List
 
 1. `.append(item)`: Adds a single item to the end of the list.
 2. `.insert(index, item)`: Inserts an item at a specified index.
 3. `.extend(iterable)`: Adds all items from another iterable (list, tuple, set, etc.) to the end of the list.
-   * Note: Adding from an unordered iterable like a set may result in unpredictable order.
 
----
+**Note**: Adding from an unordered iterable like a set may result in unpredictable order.
+
 
 ### Removing Elements from a Python List
 
@@ -260,6 +272,7 @@ Similarly, if the list is empty, `list.pop` will raise an `IndexError`.
 ### Methods of creating a dictionary
 
 1. Using Curly Braces (Dictionary Literal). Standard!
+
 ```python
 # Dictionary with initial key-value pairs
 empty_dict = {}  # Empty dictionary
@@ -272,6 +285,7 @@ car = {
 ```
 
 2.  Using the `dict()` Constructor
+
 ```python
 # Empty dictionary
 empty_dict = dict()
@@ -398,7 +412,8 @@ dictionary_name[key].append(value to be appended)
 
 ```
 
-2. **Using the `update()` method:** lets you add or update multiple key-value pairs at once
+2. **Using the `update()` method:** lets you add or update multiple key-value pairs at once.
+
 ```python
 
 car = {
@@ -505,14 +520,16 @@ print(car)  # {}
 * `<` and `>`: Check for proper subset/superset (not equal).
 
 **Set Operations:**
-* `union()` or `|`: Combine elements from two sets (all unique elements, original sets unchanged).  
+* `union()` or `|`: Combine elements from two sets (all unique elements, original sets unchanged).
+
 ```python
 fruits1.union(fruits2)
 # or
 fruits1 | fruits2
 ```
 
-* `intersection()` or `&`: Common elements between two sets (original sets unchanged).  
+* `intersection()` or `&`: Common elements between two sets (original sets unchanged). 
+
 ```python
 fruits1.intersection(fruits2)
 # or
@@ -520,6 +537,7 @@ fruits1 & fruits2
 ```
 
 * `difference()` or `-`: Elements in the first set but not the second (original sets unchanged).  
+
 ```python
 fruits1.difference(fruits2)
 # or
@@ -527,38 +545,45 @@ fruits1 - fruits2
 ```
 
 * **Disjoint Sets:**  `isdisjoint()` checks if sets have no common elements.  
+
 ```python
 fruits1.isdisjoint(fruits2)
 ```
 
 * **Copying:**   The `copy()` method creates a new distinct set.  
+
 ```python
 fruits_copy = fruits1.copy()
 ```
 
 **Adding and Removing Members (sets are mutable):**
 * `add()`: Adds a single new member (no effect if already present).  
+
 ```python
 fruits.add('cherry')
 ```
 
 * `remove()`: Removes a specified element (raises `KeyError` if not found).  
+
 ```python
 fruits.remove('cherry')
 ```
 
 * `discard()`: Removes a specified element (no error if not found).  
+
 ```python
 fruits.discard('orange')
 ```
 > "If you don't care whether the element is in the set, you can use discard instead."
 
 * `clear()`: Removes all elements, leaving an empty set.  
+
 ```python
 fruits.clear()
 ```
 
 * `pop()`: Removes and returns an arbitrary element (raises `KeyError` if empty).  
+
 ```python
 fruits.pop()
 ```
@@ -566,6 +591,7 @@ fruits.pop()
 **Conversion:**   
 
 Sequences and collections can be converted to sets using `set()`. Order is not maintained. Converting a dictionary to a set results in a set of its keys.  
+
 ```python
 set('apple')
 set(['apple', 'banana'])
@@ -618,6 +644,7 @@ Tuples are immutable, which means their content cannot be changed after creation
 * **Tuple Unpacking:**  A concise way to assign values from a tuple to multiple variables simultaneously. The number of variables must match the number of elements in the tuple.
 
 **Example:**  
+
 ```python
 shades = ('crimson', 'emerald', 'azure')
 r, g, b = shades
@@ -628,6 +655,7 @@ The beauty of tuple unpacking lies in its simplicity and readability. While othe
 * `tuple.count(object)`: Identical to `list.count`, counts occurrences of an object in a tuple.  
 
 **Example:**  
+
 ```python
 nums = (1, 2, 2, 3, 3, 3)
 nums.count(3)  # 3
@@ -636,6 +664,7 @@ nums.count(3)  # 3
 * `tuple.index(object, start=0, end=len(tuple))`: Identical to `list.index`, returns the index of the first occurrence of an object in a tuple. Raises a `ValueError` if the object is not found.  
 
 **Example:**  
+
 ```python
 fruits = ('apple', 'orange', 'banana', 'apple', 'grape')
 fruits.index('apple')  # 0
@@ -785,6 +814,7 @@ Everything else is truthy.
 `for` Loops with Different Iterables
 
 Python's for loops work with any iterable object:
+
 ```python
 # Lists
 names = ['Chris', 'Max', 'Karis', 'Victor']
@@ -892,6 +922,7 @@ Python determines the order of characters and strings based on their Unicode cod
 Yes, both the `sorted()` function and the `list.sort()` method support reverse (descending) sorting. This is achieved by using the `reverse` keyword argument. By default, `reverse` is set to `False` (ascending order). To sort in descending order, you set `reverse=True`.
 
 **Example:**
+
 ```python
 sorted(numbers, reverse=True)  # sorts numbers from largest to smallest
 ```
@@ -918,6 +949,7 @@ The `sorted()` function and `list.sort()` method are higher-order functions beca
 The `key` keyword argument in `sorted()` and `list.sort()` allows for custom sorting criteria. It takes a function as its value. This function is called once for each item in the collection, and its return value is used by the sorting algorithm for comparison. 
 
 **Example: Sorting words by length**
+
 ```python
 words = ["apple", "pie", "shortcake"]
 sorted_words = sorted(words, key=len)
@@ -932,6 +964,7 @@ Here, `len` (the built-in length function) is passed as the key. The `sorted()` 
 To achieve multi-criteria sorting, the function passed to the `key` argument should return a tuple of values. Python's sorting mechanism compares tuples element by element. It will first compare the first elements of the tuples, and if they are equal, it moves on to compare the second elements, and so on.
 
 **Example: Sorting people by age, then by name**
+
 ```python
 people = [("Jack", 30), ("John", 25), ("Betty", 25), ("Anna", 30)]
 
@@ -944,7 +977,7 @@ print(sorted_people)
 # Output: [('Betty', 25), ('John', 25), ('Anna', 30), ('Jack', 30)]
 ```
 
-Here, `person_key` returns `(age, name)`. The list is first sorted by age. If two people have the same age (e.g., Betty and John, or Anna and Jack), their names are then used as the secondary sorting criterion.
+We see `person_key` returns `(age, name)`. The list is first sorted by age. If two people have the same age (e.g., Betty and John, or Anna and Jack), their names are then used as the secondary sorting criterion.
 
 Here are all the built-in ways you can use for the key= argument (i.e., built-in functions, operators, or callables that come with Python and can be passed to `key=`):
 
@@ -1068,7 +1101,7 @@ print(sortme(["C", "d", "a", "Ba", "be"]) == ["a", "Ba", "be", "C", "d"])
 
 ```
 
-### So you have to write your own sorting criteria to be used in keyword=
+### So you have to write your own sorting criteria to be used in keyword
 
 When using your own code as a key function in sorted, there are a few key elements to keep in mind:
 
@@ -1109,6 +1142,7 @@ print(squared) # [1, 4, 9, 16, 25]
 * Filtering: By including the optional if condition part, list comprehensions can select only certain objects from a list that satisfy the condition. For instance, `[num for num in nums if num % 2 == 0]` will create a new list containing only the even numbers from nums. You can also combine both, like `[num**2 for num in nums if num % 2 == 0]` to get the squares of only the even numbers.
 
 Example (Filtering):  
+
 ```python
 nums = [1, 2, 3, 4, 5]
 evens = [num for num in nums if num % 2 == 0]
@@ -1124,6 +1158,7 @@ print(evens) # [2, 4]
 * Important Note: Even without explicit filtering, a set comprehension can result in "fewer items than the original list" due to the elimination of duplicates.
 
 Example:  
+
 ```python
 nums = [1, 1, 2, 3, 4, 4, 5]
 distinct_squares = {num**2 for num in nums}
@@ -1137,6 +1172,7 @@ print(distinct_squares) # {1, 4, 9, 16, 25}
 * The output_expression is a key_expression: value_expression pair.
 
 Example:  
+
 ```python
 fruits = ['apple', 'banana', 'cherry']
 fruit_length = {fruit: len(fruit) for fruit in fruits}
@@ -1145,6 +1181,7 @@ print(fruit_length) # {'apple': 5, 'banana': 6, 'cherry': 6}
 
 
 ### Can comprehensions be used with other iterable types beyond lists, sets, and dictionaries?  
+
 Yes, comprehensions (list, set, and dictionary) can be used in conjunction with any iterable data type in Python. This includes tuples, ranges, strings, frozen sets, files, and more. The examples provided demonstrate their use with tuples, ranges, sets, and strings to create new collections.
 
 ### While useful, comprehensions can be overused. 
@@ -1190,13 +1227,15 @@ for num in nums:
 
 Nested data structures in Python refer to collections that contain other collections. For example, a list can contain other lists, dictionaries, tuples, sets, or frozensets. To access elements within a nested structure, you chain element references using bracket notation. Each level of nesting requires another set of brackets with the corresponding index or key.  
 
-Example:  
+Example: 
+
 ```python
 lst = [[1, 3], [2]]
 lst[0][1]  # Accesses the second element of the first inner list (value: 3)
 ```
   
-If you have a list containing a dictionary:  
+If you have a list containing a dictionary: 
+
 ```python
 lst = [{"a": "ant"}]
 lst[0]["a"]  # Accesses the value "ant"
@@ -1207,12 +1246,14 @@ lst[0]["a"]  # Accesses the value "ant"
 Updating elements in nested structures also involves chained actions, where the first part references the element, and the second part performs the reassignment or modification.
  
 Example:  
+
 ```python
 lst = [[1, 3], [2]]
 lst[0][1] = 5  # Changes the second element of the first inner list to 5
 ```
 
 **To insert a new key-value pair into a dictionary nested within a list:**  
+
 ```python
 lst = [{"a": "ant"}]
 lst[0]["c"] = "cat"  # Adds a new key-value pair to the first dictionary
@@ -1221,6 +1262,7 @@ lst[0]["c"] = "cat"  # Adds a new key-value pair to the first dictionary
 **Replacing an entire inner collection:**  You can replace an inner collection with a new value (e.g., a string) by directly assigning to its index in the outer list. This is a "destructive action."  
 
 Example:  
+
 ```python
 lst = [[1, 3], [2]]
 lst[1] = 'hi there' # lst is now [[1, 3], 'hi there']
@@ -1229,6 +1271,7 @@ lst[1] = 'hi there' # lst is now [[1, 3], 'hi there']
 **Modifying a value within a nested list:**  This is a "chained action" where `lst[0]` returns the inner list, and then `[1] = 5` reassigns the element within that inner list.  
 
 Example:
+
 ```python
 lst = [[1, 3], [2]]
 lst[0][1] = 5 # lst is now [[1, 5], [2]]
@@ -1237,6 +1280,7 @@ lst[0][1] = 5 # lst is now [[1, 5], [2]]
 **Inserting elements into an inner list:**  The `append()` method can be chained with an element reference to add new elements to an inner list.  
 
 Examples:  
+
 ```python
 lst = [[1], [2]]
 lst[0].append(7)   # lst is now [[1, 7], [2]]
@@ -1247,6 +1291,7 @@ lst[0].append([9])  # lst is now [[1, 7, [9]], [2]]
 **Inserting key/value pairs into nested dictionaries:**  Similar to lists, you reference the inner dictionary first, then use standard dictionary key/value creation syntax.  
 
 Example:  
+
 ```python
 lst = [{"a": "ant"}, {"b": "bear"}]
 lst[0]["c"] = "cat" # lst is now [{'a': 'ant', 'c': 'cat'}, {'b': 'bear'}]
@@ -1260,6 +1305,7 @@ lst[0]["c"] = "cat" # lst is now [{'a': 'ant', 'c': 'cat'}, {'b': 'bear'}]
 * Caution: "Be careful with nested comprehensions. They can be incredibly difficult to read and debug. Sometimes, you just want to use regular loops."
 
 Pattern:
+
 ```python
 [output_expression for sublist in outer_list
                    if condition1
@@ -1268,6 +1314,7 @@ Pattern:
 ```
 
 Example:
+
 ```python
 matrix = [
     [1, 2, 3],
@@ -1316,7 +1363,7 @@ A crucial concept when working with nested collections is understanding that **v
 
 **Modifying a referenced object affects all references:**  
 
-*Example:*  
+**Example:**  
 ```python
 a = [1, 3]
 lst = [a]
@@ -1325,7 +1372,8 @@ a[1] = 5 # lst[0] is now [1, 5]
 
 **Modifying through different references:**  
 
-*Example:*  
+**Example:**  
+
 ```python
 a = [1, 3]
 lst = [a]
@@ -1348,6 +1396,7 @@ When you create nested collections by adding existing variables (which are thems
 ### Nested Loops and Control Flow
 
 You can nest loops within other loops:
+
 ```python
 suits = ['Clubs', 'Diamonds', 'Hearts', 'Spades']
 ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
@@ -1402,6 +1451,7 @@ print(new_lst)
 ```
 
 The pattern for list comprehensions for dictionaries are:
+
 ```python
 [expression 
 for outer_key, outer_value in outer_dict.items() 
@@ -1642,6 +1692,7 @@ Triangular iteration is **O(N²)**, which is fine for small inputs but may be sl
 
 
 [Back to the top](#top)
+
 ***
 
 ## Shallow and Deep Copy
