@@ -4,6 +4,7 @@
 
 ## Table of Contents
 
+- [What You Are Actually Being Tested On](#what-you-are-actually-being-tested-on)
 - [String Methods](#string-methods)
 - [List Methods](#list-methods)
 - [Dictionary Methods](#dictionary-methods)
@@ -21,6 +22,40 @@
 - [Further practice](#further-practice)
 
 Page Reference: [Study Guide](https://launchschool.com/lessons/5638850f/assignments/e420c96a)
+
+***
+
+## What You Are Actually Being Tested On
+
+1. Programming Fluency
+* Comfort with Python syntax, operators, and built-in methods
+* Working confidently with data structures (lists, dictionaries, sets, tuples, frozensets)
+* (Understanding iteration, control flow (break, continue), and comprehensions
+
+2. Problem-Solving Process
+*   Your ability to decompose problems into manageable parts
+*   Using the PEDAC process to work through problems systematically
+*   Breaking down complex requirements into technical concepts
+
+3. Communication Skills
+*   Speaking clearly and with precision while coding
+*   Explaining your thought process as you work
+*   Using correct vocabulary when discussing concepts
+*   How you recover when you make mistakes
+
+4. Live Coding Ability
+*   Working through problems in real-time under mild pressure
+*   Demonstrating your thought process as you code
+*   Adapting when your initial approach needs refinement
+
+**What They're NOT Testing:
+*   Perfect code on the first attempt
+*   Memorization of obscure syntax
+*   Writing flawless algorithms without iteration
+
+The assessment recognizes that real programming involves iteration, debugging, and refining your approach. Your ability to recognize issues, adapt your strategy, and work through problems methodically is actually what demonstrates strong programming skills.
+
+[Back to the top](#top)
 
 ***
 

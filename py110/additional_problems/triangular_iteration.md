@@ -118,7 +118,6 @@ Create a function that takes a string of digits as an argument and returns the n
 
 ```python
 
-
 def even_substrings(string):
     """
     Count the number of even-numbered substrings that can be formed from a string of digits.
@@ -169,7 +168,7 @@ print(even_substrings('143232') == 12)
 
 **Difficulty:​ Intermediate**
 
-Create a function called longest_monotonic that takes a list of integers and returns the length of the longest monotonic (either entirely non-increasing or entirely non-decreasing) substring.
+Create a function called `longest_monotonic` that takes a list of integers and returns the length of the longest monotonic (either entirely non-increasing or entirely non-decreasing) substring.
 
 ```python
 def longest_monotonic(arr):
@@ -196,9 +195,40 @@ print(longest_monotonic([5]) == 1) # Single element is always monotonic
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+
+def longest_monotonic(arr):
+    if not arr:
+        return 0
+
+    non_decreasing = 1
+    non_increasing = 1
+    max_length = 1
+
+    for i in range(1,len(arr)):
+        if arr[i] > arr[i-1]:
+            non_decreasing += 1
+            non_increasing = 1
+        elif arr[i] < arr[i-1]:
+            non_increasing += 1
+            non_decreasing = 1
+        elif arr[i] == arr[i-1]:
+            non_increasing += 1
+            non_decreasing += 1
+
+        if max_length < non_decreasing:
+            max_length = non_decreasing
+
+        elif max_length < non_increasing:
+            max_length = non_increasing
+
+    return max_length
+```
+
 </details>
 
-## 5. 5. Find Sum Pairs
+## 5. Find Sum Pairs
 
 **Difficulty:​ Intermediate**
 
@@ -228,6 +258,25 @@ print(find_pairs([-1, 0, 1, 2], 1) == [(-1, 2), (0, 1)])
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def find_pairs(numbers, target_sum):
+
+    tupled = []
+    for i in range(len(numbers)):
+        for j in range(i+1, len(numbers)):
+            if numbers[i] + numbers[j] == target_sum:
+                pair = (numbers[i], numbers[j])
+                if pair not in tupled:
+                    tupled.append(pair)
+    return tupled
+
+print(find_pairs([1, 2, 3, 4, 5], 6) == [(1, 5), (2, 4)])
+print(find_pairs([5, 5, 5, 5], 10) == [(5, 5)])
+print(find_pairs([1, 2, 3, 4, 5], 10) == [])
+print(find_pairs([-1, 0, 1, 2], 1) == [(-1, 2), (0, 1)])
+```
+
 </details>
 
 ## 6. Longest Palindromic Substring
@@ -260,6 +309,36 @@ print(longest_palindromic_substring("abcdefgfedcba") == "abcdefgfedcba")
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def longest_palindromic_substring(string):
+
+    if not string:
+        return 0
+    
+    elif len(string) == 1 or len(string) == 2:
+        return string[0]
+    
+    else:
+        temp = []
+      
+        for i in range(len(string)):
+            for j in range(i+1, len(string)+1):
+                if string[i:j] == string[i:j][::-1]:
+                    temp.append(string[i:j])
+        
+        max_length = max(temp, key=len)
+        return max_length
+
+   
+print(longest_palindromic_substring("babad") == "bab") # "aba" would also be valid
+print(longest_palindromic_substring("cbbd") == "bb")
+print(longest_palindromic_substring("a") == "a")
+print(longest_palindromic_substring("ac") == "a") # Single characters are palindromes
+print(longest_palindromic_substring("racecar") == "racecar")
+print(longest_palindromic_substring("abcdefgfedcba") == "abcdefgfedcba")
+```
+
 </details>
 
 ## 7. Subarray Sum Indices
@@ -277,13 +356,33 @@ def sub_array_sum(array, target_sum):
 
 # Test cases
 print(sub_array_sum([1, 2, 3, 4, 5], 9) == [1, 3])    # elements at indices 1,2,3 (values 2,3,4) sum to 9
-print(sub_array_sum([10, 5, 1, 2, 3, 8], 15) == [0, 1]) # elements at indices 0,1 (values 10,5) sum to 15
+print(sub_array_sum([10, 5, 1, 2, 3, 4], 15) == [0, 1]) # elements at indices 0,1 (values 10,5) sum to 15
 print(sub_array_sum([3, 2, 5, 4, 1], 10) == [0, 2])    # elements at indices 0,1,2 (values 3,2,5) sum to 10
 print(sub_array_sum([1, 2, 3, 4], 20) == [])
 ```
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+
+def sub_array_sum(array, target_sum):
+    indices = []
+   
+    for i in range(len(array)):
+        current_sum = 0
+        for j in range(i, len(array)):
+            current_sum += array[j]
+            if current_sum == target_sum:
+                indices.append(i)
+    return indices
+   
+print(sub_array_sum([1, 2, 3, 4, 5], 9) == [1, 3])    # elements at indices 1,2,3 (values 2,3,4) sum to 9
+print(sub_array_sum([10, 5, 1, 2, 3, 4], 15) == [0, 1]) # elements at indices 0,1 (values 10,5) sum to 15
+print(sub_array_sum([3, 2, 5, 4, 1], 10) == [0, 2])    # elements at indices 0,1,2 (values 3,2,5) sum to 10
+print(sub_array_sum([1, 2, 3, 4], 20) == [])
+```
+
 </details>
 
 ## 8. Maximum Subarray Sum
@@ -313,13 +412,33 @@ print(find_max_subarray_sum([5, -3, 5]) == 7)
 ```
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def find_max_subarray_sum(array):
+    max_sum = 0
+    for i in range(len(array)):
+        current_sum = 0
+        for j in range(i, len(array)):
+            current_sum += array[j]
+            if abs(current_sum) > abs(max_sum):
+                max_sum = current_sum
+
+    return max_sum
+
+# Test cases
+print(find_max_subarray_sum([-2, 1, -3, 4, -1, 2, 1, -5, 4]) == 6) # subarray [4, -1, 2, 1]
+print(find_max_subarray_sum([1]) == 1)
+print(find_max_subarray_sum([-1, -2, -3]) == -6)
+print(find_max_subarray_sum([5, -3, 5]) == 7)
+```
+
 </details>
 
 ## 9. Longest Unique Substring
 
 **Difficulty:​ Advanced**
 
-Create a function that takes a string and returns the longest substring that contains unique characters (no duplicates). If there are multiple such substrings of the same length, return the one that appears first in the string.
+Create a function that takes a string and returns the longest substring that contains unique characters (no duplicates). If there are multiple such substrings of the same length, return the one that appears first in the string. Struggled with this one!
 
 ```python
 def longest_unique_substring(string):
@@ -344,6 +463,39 @@ print(longest_unique_substring("abcdeafbdgcbb") == "eafbdgc")
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def has_unique_characters(substring):
+    return len(set(substring)) == len(substring)
+
+def substrings(string):
+    results = []
+    for i in range(len(string)):
+        for j in range(i, len(string)):
+            results.append(string[i:j+1])
+    return results
+
+def longest_unique_substring(string):
+    if not string:
+        return ""
+
+    all_substrings = substrings(string)
+    longest_so_far = ''
+
+    for sub in all_substrings:
+        if has_unique_characters(sub):
+            if len(sub) > len(longest_so_far):
+                longest_so_far = sub
+    
+    return longest_so_far
+
+print(longest_unique_substring("abcabcbb") == "abc")
+print(longest_unique_substring("bbbbb") == "b")
+print(longest_unique_substring("pwwkew") == "wke")
+print(longest_unique_substring("dvdf") == "vdf")
+print(longest_unique_substring("abcdeafbdgcbb") == "eafbdgc")
+```
+
 </details>
 
 ## 10. Closest Numbers
@@ -373,6 +525,24 @@ print(closest_numbers([12, 7, 17]) == (12, 7))
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def closest_numbers(numbers):
+    
+    lookups = {}
+    for i in range(len(numbers)):
+        for j in range(i+1, len(numbers)):
+            difference = abs(numbers[i] - numbers[j])
+            pair = (numbers[i], numbers[j])
+            lookups[pair] = difference
+
+    minimums = min(lookups, key=lookups.get)
+    return minimums
+
+print(closest_numbers([5, 25, 15, 11, 20]) == (15, 11))
+print(closest_numbers([19, 25, 32, 4, 27, 16]) == (25, 27))
+print(closest_numbers([12, 7, 17]) == (12, 7))
+```
 </details>
 
 ## 11. Easy-4 All Substrings from Small Problems.
