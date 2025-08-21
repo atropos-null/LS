@@ -18,7 +18,6 @@
 - [Comprehensions](#comprehensions)
 - [Nested Data Structures and Iteration](#nested-data-structures-and-iteration)
 - [Shallow and Deep Copy](#shallow-and-deep-copy)
-- [User-level Synergy](#user-level-synergy)
 - [Further practice](#further-practice)
 
 Page Reference: [Study Guide](https://launchschool.com/lessons/5638850f/assignments/e420c96a)
@@ -30,7 +29,7 @@ Page Reference: [Study Guide](https://launchschool.com/lessons/5638850f/assignme
 1. Programming Fluency
 * Comfort with Python syntax, operators, and built-in methods
 * Working confidently with data structures (lists, dictionaries, sets, tuples, frozensets)
-* (Understanding iteration, control flow (break, continue), and comprehensions
+* Understanding iteration, control flow (break, continue), and comprehensions
 
 2. Problem-Solving Process
 *   Your ability to decompose problems into manageable parts
@@ -54,6 +53,10 @@ Page Reference: [Study Guide](https://launchschool.com/lessons/5638850f/assignme
 *   Writing flawless algorithms without iteration
 
 The assessment recognizes that real programming involves iteration, debugging, and refining your approach. Your ability to recognize issues, adapt your strategy, and work through problems methodically is actually what demonstrates strong programming skills.
+
+You will be expected to be able to describe the actions performed at "User-Level Syngergy". 
+
+"User-Level Syngery" is a way to discuss a function's use and purpose (a "user-level" description) instead of its implementation. This line means you should be able to explain what a function does and why you would use it—focusing on its role or effect—without needing to describe the code inside the function or how it works step-by-step. It's about understanding and communicating the function’s purpose clearly from a user's perspective.
 
 [Back to the top](#top)
 
@@ -138,11 +141,12 @@ Syntax: `str.replace(old, new, count)`
 Lists are flexibile due to their mutability and introduces several built-in methods for manipulating list content:
 
 * `list.count(object)`: Counts the number of occurrences of a specific object within the list. Returns `0` if the object is not present.  
-  **Example:**  
-  ```python
-  nums = [1, 2, 2, 3, 3, 3]
-  nums.count(3)  # 3
-  ```
+
+**Example:**  
+```python
+nums = [1, 2, 2, 3, 3, 3]
+nums.count(3)  # 3
+```
 
 * `list.index(object, start=0, end=len(list))`: Returns the index of the first occurrence of a specified object. Can search within a specified range using `start` and `end` arguments. Raises a `ValueError` if the object is not found.  
 
@@ -175,7 +179,7 @@ numbers  # [1, 2, 'two-point-five', 3, 4]
 
 In the above example, the insert call inserts the string `'two-point-five'` between index positions 1 and 2 in the list.
 
-* `list.extend(iterable)`: Appends all elements from an iterable (like another list, tuple, or set) to the end of the current list.  
+* `list.extend(iterable)`: Appends all elements from an iterable (like another list, tuple, or set) to the end of the current list. The list stays flat. No nesting occurs.
 
 **Example:**  
 
@@ -934,9 +938,9 @@ For more complex sorting criteria, both `sorted()` and `list.sort()` accept a `k
 #### What are "first-class functions" and "higher-order functions" in Python, and how do they relate to custom sorting?
 
 * **First-Class Functions:** In Python, functions are considered "first-class objects." This means they can be:
-* Assigned to variables.
-* Passed as arguments to other functions.
-* Returned as the result of other functions.
+    * Assigned to variables.
+    * Passed as arguments to other functions.
+    * Returned as the result of other functions.
 
 * **Higher-Order Functions:** These are functions that either take one or more functions as arguments or return a function as their result.
 
@@ -979,7 +983,7 @@ print(sorted_people)
 
 We see `person_key` returns `(age, name)`. The list is first sorted by age. If two people have the same age (e.g., Betty and John, or Anna and Jack), their names are then used as the secondary sorting criterion.
 
-Here are all the built-in ways you can use for the key= argument (i.e., built-in functions, operators, or callables that come with Python and can be passed to `key=`):
+Here are all the built-in ways you can use for the `key= argument` (i.e., built-in functions, operators, or callables that come with Python and can be passed to `key=`):
 
 
 | Built-in Callable | Example Usage                          | Description                       |
@@ -1105,11 +1109,11 @@ print(sortme(["C", "d", "a", "Ba", "be"]) == ["a", "Ba", "be", "C", "d"])
 
 When using your own code as a key function in sorted, there are a few key elements to keep in mind:
 
-Key Function: The key function should take a single element from the list and return a value that will be used for sorting. This value can be a single value or a tuple, depending on your sorting criteria.
+**Key Function**: The key function should take a single element from the list and return a value that will be used for sorting. This value can be a single value or a tuple, depending on your sorting criteria.
 
-Return Value: The return value of the key function determines the sorting order. For example, if you want to sort elements in ascending order, the return value should be smaller for elements that should come first.
+**Return Value**: The return value of the key function determines the sorting order. For example, if you want to sort elements in ascending order, the return value should be smaller for elements that should come first.
 
-Sorting Criteria: The key function should implement the specific sorting criteria you want. For example, if you want to sort uppercase letters before lowercase letters, the key function should return a value that reflects this order.
+**Sorting Criteria**: The key function should implement the specific sorting criteria you want. For example, if you want to sort uppercase letters before lowercase letters, the key function should return a value that reflects this order.
 
 [Back to the top](#top)
 ***
@@ -1120,8 +1124,9 @@ Comprehensions in Python are a concise and readable shorthand for creating colle
 
 ### What is the basic structure of a list comprehension and its components?  
 
-* Structure: The basic structure is `[output_expression for item in existing_list if condition]`.
-* Components:  
+* **Structure**: The basic structure is `[output_expression for item in existing_list if condition]`.
+
+* **Components**:  
     * `output_expression`: Determines values in the returned list.  
     * `for item in existing_list`: Describes the looping action.  
     * `if condition`: Optional part for selection criteria (filtering).  
@@ -1154,8 +1159,8 @@ print(evens) # [2, 4]
 
 "Nearly identical to list comprehensions," but the output is a "set, an unordered collection with no duplicate values."
 
-* Uses "curly braces" {} instead of square brackets.
-* Important Note: Even without explicit filtering, a set comprehension can result in "fewer items than the original list" due to the elimination of duplicates.
+* Uses "curly braces" `{}` instead of square brackets.
+* **Important Note**: Even without explicit filtering, a set comprehension can result in "fewer items than the original list" due to the elimination of duplicates.
 
 Example:  
 
@@ -1188,13 +1193,9 @@ Yes, comprehensions (list, set, and dictionary) can be used in conjunction with 
 
 While comprehensions are powerful, there are specific situations where they should be avoided:  
 
-* When you don't use the return value: If your primary goal is to perform an action like printing values (e.g., `[print(num) for num in nums]`), comprehensions are not appropriate because the print function returns None, resulting in a list of `None` values that you don't need. A regular for loop is much better for such side effects.  
+* When you don't use the return value: If your primary goal is to perform an action like printing values (e.g., `[print(num) for num in nums]`), comprehensions are not appropriate because the print function returns `None`, resulting in a list of `None` values that you don't need. A regular `for` loop is much better for such side effects.  
 
 * For identity transformations with constructors: If a comprehension simply copies elements without transformation (e.g., `[x for x in some_iterable]`), it's more idiomatic and efficient to use the collection's constructor directly, such as `list(string)` to convert a string to a list of characters. In general, if a comprehension becomes too complex or difficult to read, it's often better to revert to a traditional loop for improved clarity and maintainability.
-
-* **Side Effects (e.g., printing)**:
-
-Do not use comprehensions if you are "not using the return value." For example, using `[print(num) for num in nums]` will create a list of `None` values because the print function returns None. A regular for loop is more appropriate for actions with side effects.
 
 * Incorrect Use Example:  
 ```python
@@ -1213,8 +1214,6 @@ for num in nums:
 
 * Identity Transformations:  If the comprehension is a simple identity transformation (e.g., `[x for x in some_iterable]`), it's better to use the collection's constructor directly, such as `list(string)` instead of `[c for c in string]`.
 
-
-**In short, don't use comprehensions if you aren't using the return value**
 
 [Back to the top](#top)
 ***
@@ -1460,7 +1459,7 @@ for inner_key, inner_value in outer_value.items()]
 
 ### Nested For Loops: Triangular Iteration
 
-In another very common variation, you don't need to iterate over a nested structure, but you need a nested for loop to do the appropriate iteration. Take for example the following problem:
+In another very common variation, you don't need to iterate over a nested structure, but you need a nested `for` loop to do the appropriate iteration. Take for example the following problem:
 
 `Given a list of numbers: [1,2,2,3,4,4,5], return the HIGHEST sum of any consecutive numbers where a number doesn't repeat.`
 
@@ -1655,7 +1654,7 @@ The main challenge is getting the `range()` values correct so that you generate 
 
 **Applying the Principles to Substrings**
 
-Let's use the `string "abc"` (length = 3) as an example.
+Let's use the `string = "abc"` (length = 3) as an example.
 
 * ​Outer Loop (Start of Substring): `for i in range(len(string))`
     * This loop determines the starting character of the substring.
@@ -1663,8 +1662,8 @@ Let's use the `string "abc"` (length = 3) as an example.
 
 * ​Inner Loop (End of Substring): `for j in range(i + 1, len(string) + 1)`
     * This loop determines the stop index for our slice `string[i:j]`.
-    * **​Why `i + 1`?**​ To get the shortest possible substring (one character), the slice must be string[i:i+1]. So, j must start at i + 1.
-    * **​Why len(string) + 1?**​ To get the longest possible substring (the whole string), the slice must be `string[0:len(string)]`. For j to be able to equal len(string), the range must go up to `len(string) + 1`.
+    * **​Why** `i + 1`**?**​ To get the shortest possible substring (one character), the slice must be `string[i:i+1]`. So, j must start at `i + 1`.
+    * **​Why** `len(string) + 1`**?**​ To get the longest possible substring (the whole string), the slice must be `string[0:len(string)]`. For j to be able to equal len(string), the range must go up to `len(string) + 1`.
 
 ### Comparison of Inner Loop `range()` Variations
 
@@ -1752,12 +1751,6 @@ new_lst = copy.deepcopy(lst)
 
 Understanding nested data structures, variable references, and the nuances of shallow vs. deep copying is crucial for effective and predictable manipulation of complex data in Python. Mastering these concepts **clarifies our understanding of collections and how to work with them**, enabling developers to implement robust solutions.
 
-[Back to the top](#top)
-***
-
-## User-level Synergy
-
-Discuss a function's use and purpose (a "user-level" description) instead of its implementation. This line means you should be able to explain what a function does and why you would use it—focusing on its role or effect—without needing to describe the code inside the function or how it works step-by-step. It's about understanding and communicating the function’s purpose clearly from a user's perspective.
 
 [Back to the top](#top)
 ***
@@ -1769,7 +1762,6 @@ Discuss a function's use and purpose (a "user-level" description) instead of its
 [Atropos-Null. (n.d.-b). LS/py110/lesson_2/py110_practiceproblems2.md at main · atropos-null/LS. GitHub.](https://github.com/atropos-null/LS/blob/main/py110/lesson_2/py110_practiceproblems2.md)
 
 [The-Spot-Hub. (n.d.). SPOT-Wiki/Lesson Materials & Code/PY110/Python110_ProblemSets.md at main · The-SPOT-Hub/SPOT-Wiki. GitHub.](https://github.com/The-SPOT-Hub/SPOT-Wiki/blob/main/Lesson%20Materials%20%26%20Code/PY110/Python110_ProblemSets.md)
-
 
 
 [Back to the top](#top)
