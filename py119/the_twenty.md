@@ -206,7 +206,7 @@ print(count_substrings('bbbaabbbbaabb', 'bbbaabb') == 1) #True
 
 ### Problem 10
 
-Create a function that takes a string of digits as an argument and returns the number of even-numbered substrings that can be formed. For example, in the case of `'1432'`, the even-numbered substrings are `'14'`, `'1432'`, `'4'`, `'432'`, `'32'`, and `'2'`, for a total of 6 substrings.
+Create a function that takes a string of digits as an argument and returns the number of even-numbered substrings that can be formed. For example, in the case of `'1432'`, the even-numbered substrings are `'14'`, `'1432'`, `'4'`, `'432'`, `'32'`, and `'2'`, for a total of 6 substrings. Identical to Triangular Iteration #3.
 
 If a substring occurs more than once, you should count each occurrence as a separate substring.
 
@@ -227,7 +227,7 @@ print(even_substrings('143232') == 12) #True
 
 ### Problem 11
 
-Create a function that takes a nonempty string as an argument and returns a tuple consisting of a string and an integer. If we call the string argument s, the string component of the returned tuple t, and the integer component of the tuple k, then s, t, and k must be related to each other such that `s == t * k`. The values of `t` and `k` should be the shortest possible substring and the largest possible repeat count that satisfies this equation.
+Create a function that takes a nonempty string as an argument and returns a tuple consisting of a string and an integer. If we call the string argument s, the string component of the returned tuple t, and the integer component of the tuple k, then s, t, and k must be related to each other such that `s == t * k`. The values of `t` and `k` should be the shortest possible substring and the largest possible repeat count that satisfies this equation. Identical to SPOT Wiki #8.
 
 You may assume that the string argument consists entirely of lowercase alphabetic letters.
 
