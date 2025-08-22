@@ -1087,11 +1087,12 @@ Examples
 'abba' & 'bbaa' == true
 'abba' & 'abbba' == false
 'abba' & 'abca' == false
-```
+
 
 print(anagrams('abba', ['aabb', 'abcd', 'bbaa', 'dada']) == ['aabb', 'bbaa'])
 print(anagrams('racer', ['crazer', 'carer', 'racar', 'caers', 'racer']) == ['carer', 'racer'])
 print(anagrams('laser', ['lazing', 'lazy', 'lacer']) == [])
+```
 
 
 <details>
@@ -1579,11 +1580,12 @@ print(greatest_product("02494037820244202221011110532909999") == 0)
 The goal of this exercise is to convert a string to a new string where each character in the new string is `(` if that character appears only once in the original string, or `)` if that character appears more than once in the original string. Ignore capitalization when determining if a character is a duplicate.
 
 Examples:
-
+```python
 duplicate_encode("din") == "((("
 duplicate_encode("recede") == "()()()"
 duplicate_encode("Success") == ")())())"
 duplicate_encode("(( @") == "))(("
+```
 
 <details>
 <summary>Possible Solution</summary>
