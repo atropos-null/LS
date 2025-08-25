@@ -511,3 +511,25 @@ print(group_by_frequency([]) == [])
 <summary>Possible Solution</summary>
 
 </details>
+
+## 16. Bouncy Count
+
+Some numbers have only ascending digits, like 123, 3445, 2489, etc. Some numbers have only descending digits, like 321, 5443, 9842, etc.
+
+A number is "bouncy" if it has both ascending and descending digits, like 313, 92543, etc.
+Write a method that takes a list of numbers and counts how many of them are bouncy.
+
+Problem: determine if an integer is neither descending nor ascending, 
+but increase in number value or decrease in number value as we iterate over it
+
+```python
+print(bouncy_count([]) == 0)
+print(bouncy_count([11, 0, 345, 21]) == 0)
+print(bouncy_count([121, 4114]) == 2)
+print(bouncy_count([176, 442, 80701644]) == 2)
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
