@@ -1770,7 +1770,7 @@ digits = [] #You'll have to reverse this list later.
 while number > 0:
     digit = number % 10 #This "slices" off right most first. 
     digits.append(digit) #This line adds the "slice" to the digits list
-    number = number // 10  #This list "slices" the digit off of the number to continue.
+    number = number // 10  #This line "slices" the digit off of the number to continue.
 ```
 
 What if you need to convert back to a string numeral, but you still can't use `str()`?
@@ -1779,9 +1779,9 @@ What if you need to convert back to a string numeral, but you still can't use `s
 #Continued from above
 
 for digit in digits:
-            char = chr(48 + digit) #chr(48) is 0
-            chars.append(char) 
-        result = "".join(chars[::-1])
+    char = chr(48 + digit) #chr(48) is 0
+    chars.append(char) 
+result = "".join(chars[::-1])
 ```
 
 Ok now reverse it. What if you need to go from string to number without using `int()`?
