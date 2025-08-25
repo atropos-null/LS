@@ -18,7 +18,9 @@
 - [Comprehensions](#comprehensions)
 - [Nested Data Structures and Iteration](#nested-data-structures-and-iteration)
 - [Shallow and Deep Copy](#shallow-and-deep-copy)
+- [Misc Stuff That May Come In Handy](#misc-stuff-that-may-come-in-handy)
 - [Further practice](#further-practice)
+
 
 Page Reference: [Study Guide](https://launchschool.com/lessons/5638850f/assignments/e420c96a)
 
@@ -1755,6 +1757,45 @@ Understanding nested data structures, variable references, and the nuances of sh
 [Back to the top](#top)
 ***
 
+## Misc Stuff That May Come In Handy
+
+Because it has happened before.
+
+Problem: You are required to divy up a number into its corresponding digits. Unfortunately, you are not allowed to convert to string.
+
+```python
+
+number = 1234
+digits = [] #You'll have to reverse this list later. 
+while number > 0:
+    digit = number % 10 #This "slices" off right most first. 
+    digits.append(digit) #This line adds the "slice" to the digits list
+    number = number // 10  #This list "slices" the digit off of the number to continue.
+```
+
+What if you need to convert back to a string numeral, but you still can't use `str()`?
+
+```python
+#Continued from above
+
+for digit in digits:
+            char = chr(48 + digit) #chr(48) is 0
+            chars.append(char) 
+        result = "".join(chars[::-1])
+```
+
+Ok now reverse it. What if you need to go from string to number without using `int()`?
+
+```python
+
+result = 0
+for char in text: #Because the input is a string
+    digit = ord(char) - ord('0') #You'll get the int number by subtracting it from ord('0')
+    result = result * 10 + digit #Uses place value to add the digit back into the number
+```
+
+
+***
 ## Further Practice
 
 [Atropos-Null. (n.d.). LS/py110/lesson_2/py110_comprehensions.md at main · atropos-null/LS. GitHub.](https://github.com/atropos-null/LS/blob/main/py110/lesson_2/py110_comprehensions.md)
