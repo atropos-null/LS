@@ -659,7 +659,7 @@ def either_end(string):
     for i in range(len(string)//2):
         slice = string[i]+ string[-(i+1)]
         final.append(slice)
-    print(final)
+ 
     return final
 ```
 </details>
