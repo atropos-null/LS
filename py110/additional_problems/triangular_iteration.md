@@ -651,6 +651,7 @@ print(either_end(string) == [])
 
 <details>
 <summary>Possible Solution</summary>
+
 ```python
 
 def either_end(string):
@@ -660,7 +661,5 @@ def either_end(string):
         final.append(slice)
     print(final)
     return final
-
 ```
-
 </details>
