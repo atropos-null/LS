@@ -39,12 +39,6 @@ Algorithm:
 
 """
 
-def palindromes(string):
-      return [substring for substring in substrings(string) if is_palindrome(substring)]
- 
-
-def is_palindrome(word):
-    return len(word) > 1 and word == word[::-1]
 
 def substrings(string):
 
@@ -83,3 +77,31 @@ print(palindromes('knitting cassettes') ==
                       'nittin', 'itti', 'tt', 'ss',
                       'settes', 'ette', 'tt',
                   ])    # True
+
+
+"""
+
+Official Answer:
+
+def palindromes(string):
+      return [substring for substring in substrings(string) if is_palindrome(substring)]
+ 
+
+def is_palindrome(word):
+    return len(word) > 1 and word == word[::-1]
+    
+
+My latest Answer:
+
+def palindromes(string):
+    temp = []
+    result = []
+    for i in range(len(string)):
+        for j in range(i, len(string)):
+            temp.append(string[i:j+1])
+    for element in temp:
+        if len(element) > 1 and element == element[::-1]:
+            result.append(element)
+    return result
+    
+    """

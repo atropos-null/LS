@@ -27,3 +27,15 @@ def order_by_value(a_dict):
 my_dict = {'p': 8, 'q': 2, 'r': 6}
 keys = ['q', 'r', 'p']
 print(order_by_value(my_dict) == keys)  # True
+
+""" 
+Refined answer:
+
+def order_by_value(dct):
+    return sorted(dct, key=lambda x: dct[x])
+
+my_dict = {'p': 8, 'q': 2, 'r': 6}
+keys = ['q', 'r', 'p']
+print(order_by_value(my_dict) == keys)  # True
+
+"""

@@ -583,3 +583,84 @@ expected_result = [
 print(substrings('abcde') == expected_result)  # True
 ```
 </details>
+
+## 12. Lo Numbers
+
+Write a function that accepts a string and outputs a list of strings. 
+
+* The first string in the output list should be the concatenation of the first and 
+* last letter of the string.  Each subsequent string should 'move inwards' 
+* towards the center of the string. 
+
+```python
+LO_NUMBERS = {
+    'pa' : '1',
+    'vo' : '4',
+    'ze' : '7',
+    're' : '2',
+    'mu' : '5',
+    'bi' : '8',
+    'ci' : '3',
+    'xa' : '6',
+    'so' : '9',
+    'no' : '0',
+}
+
+print(convert_lojban('renonore') == 2002)  # 2002
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+```python
+
+def convert_lojban(string):
+    temp = []
+    final = []
+    k = 2
+    for i in range(len(string)-1):
+        temp.append(string[i:i+k])
+    
+    for element in temp:
+        for keys in LO_NUMBERS.keys():
+            if element in keys:
+                final.append(LO_NUMBERS[keys])
+        
+    return int("".join(final))
+```
+</details>
+
+## 13. Either Ends
+
+Write a function that slices off the first and last letters of a string and combines them into a returned list. Note: This does not use a nested for loop. But its important to know when to use one and when not to. And when not to, how to slice appropriately. 
+
+```python
+
+string = 'lorem ipsum'
+print(either_end(string) == ['lm', 'ou', 'rs', 'ep', 'mi', ' '])
+
+string = 'helloworld'
+print(either_end(string) == ['hd', 'el', 'lr', 'lo', 'ow',])
+
+string = '1234'
+print(either_end(string) == ['14', '23'])
+
+string = ''
+print(either_end(string) == [])
+```
+
+<details>
+<summary>Possible Solution</summary>
+```python
+
+def either_end(string):
+    final = []
+    for i in range(len(string)//2):
+        slice = string[i]+ string[-(i+1)]
+        final.append(slice)
+    print(final)
+    return final
+
+```
+
+</details>
