@@ -47,13 +47,43 @@ print(sort_by_average(students) == expected)
 <details>
 <summary>Possible Solution</summary>
 
+```python
+
+def sort_by_average(students_dict):
+    return sorted(students_dict, key=lambda student: sum(student['grades'])/len(student['grades']), reverse=True)
+
+
+# Test cases
+students = [
+    {'name': 'Alice', 'grades': [85, 90, 88]},
+    {'name': 'Bob', 'grades': [70, 80, 75]},
+    {'name': 'Charlie', 'grades': [90, 92, 91]}
+]
+expected = [
+    {'name': 'Charlie', 'grades': [90, 92, 91]},
+    {'name': 'Alice', 'grades': [85, 90, 88]},
+    {'name': 'Bob', 'grades': [70, 80, 75]}
+]
+print(sort_by_average(students) == expected)
+
+students = [
+    {'name': 'David', 'grades': [100, 95]},
+    {'name': 'Eve', 'grades': [100, 95]}
+]
+expected = [
+    {'name': 'David', 'grades': [100, 95]},
+    {'name': 'Eve', 'grades': [100, 95]}
+]
+print(sort_by_average(students) == expected)
+```
+
 </details>
 
 ### 2. Longest Consecutive Sequence
 
 **Difficulty**:​ Intermediate
 
-Create a function that takes a list of integers and returns the length of the longest consecutive elements sequence. The sequence doesn't need to be sorted.
+Create a function that takes a list of integers and returns the length of the longest consecutive elements sequence. 
 
 ```python
 def longest_consecutive(arr):
@@ -77,6 +107,30 @@ print(longest_consecutive([1, 1, 2, 2, 3, 3]) == 3)
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+
+def longest_consecutive(arr):
+
+    if not arr:
+       return 0
+    else:
+       
+        temp = []
+        sorted_list = sorted(arr)
+        temp.append(sorted_list[0])
+        for i in range(1, len(sorted_list)):
+            if sorted_list[i] - 1 == sorted_list[i-1]:
+                temp.append(sorted_list[i])
+        return len(temp)
+
+# Test cases
+print(longest_consecutive([100, 4, 200, 1, 3, 2]) == 4) # The sequence is [1, 2, 3, 4]
+print(longest_consecutive([0, 3, 7, 2, 5, 8, 4, 6, 9, 1]) == 10)
+print(longest_consecutive([]) == 0)
+print(longest_consecutive([1, 1, 2, 2, 3, 3]) == 3)
+
+```
 
 </details>
 
@@ -108,6 +162,25 @@ print(smaller_numbers_than_current([6, 5, 4, 8]) == [2, 1, 0, 3])
 <details>
 <summary>Possible Solution</summary>
 
+```python
+def smaller_numbers_than_current(arr):
+
+    result = []
+    count = 0
+    for i in range(len(arr)):
+        for j in range(len(arr)):
+            if arr[i] > arr[j] and arr[j] != arr[j-1]:
+                count += 1
+        result.append(count)
+        count = 0
+
+    return result   
+
+
+# Test cases
+print(smaller_numbers_than_current([8, 1, 2, 2, 3]) == [3, 0, 1, 1, 2])
+print(smaller_numbers_than_current([6, 5, 4, 8]) == [2, 1, 0, 3])
+```
 </details>
 
 ### Closest Numbers
@@ -137,6 +210,27 @@ print(closest_numbers([12, 7, 17]) == (12, 7))
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+
+def closest_numbers(numbers):
+    difference = {}
+    for i in range(len(numbers)):
+        for j in range(i, len(numbers)):
+            if numbers[i] != numbers[j]:
+                closest = abs(numbers[i] - numbers[j])
+                if closest not in difference:
+                    difference[closest] = (numbers[i], numbers[j])
+
+    min_key = min(difference)
+  
+    return difference[min_key]
+    
+# Test cases
+print(closest_numbers([5, 25, 15, 11, 20]) == (15, 11))
+print(closest_numbers([19, 25, 32, 4, 27, 16]) == (25, 27))
+print(closest_numbers([12, 7, 17]) == (12, 7))
+```
 
 </details>
 
@@ -514,6 +608,8 @@ print(group_by_frequency([]) == [])
 
 ## 16. Bouncy Count
 
+**Difficulty:** Intermediate
+
 Some numbers have only ascending digits, like 123, 3445, 2489, etc. Some numbers have only descending digits, like 321, 5443, 9842, etc.
 
 A number is "bouncy" if it has both ascending and descending digits, like 313, 92543, etc.
@@ -533,3 +629,5 @@ print(bouncy_count([176, 442, 80701644]) == 2)
 <summary>Possible Solution</summary>
 
 </details>
+
+
