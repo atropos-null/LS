@@ -506,6 +506,68 @@ print(car)  # {}
   * `|` creates a new merged dictionary: `merged = dict1 | dict2`
   * `|=` merges in place (like `update()`): `dict1 |= dict2`
 
+### `dict.keys()` and Set Methods
+
+When you use `dict.keys()` it returns a view object of `type dict_keys`. In fact, both `.keys()` and `.items()` views support several set operations, allowing you to perform common set logic on dictionary keys or key-value pairs. This view behaves similarly to a set and supports set operations like `intersection` (`&`), `union` (`|`), `difference` (`-`), etc.
+
+This is especially useful when comparing dictionaries to each other!
+
+#### On dict.keys() and dict.items() views:
+
+1. Intersection (`&`)
+
+Find keys (or key-value pairs) common to both dictionaries.
+```python
+dict1.keys() & dict2.keys()       # Common keys
+dict1.items() & dict2.items()     # Common key-value pairs
+```
+
+2. Union (`|`)
+
+Get all unique keys (or key-value pairs) from both dictionaries.
+```python
+dict1.keys() | dict2.keys()
+dict1.items() | dict2.items()
+```
+
+3. Difference (`-`)
+
+Get keys (or key-value pairs) in the first dictionary that are not in the second.
+
+```python
+dict1.keys() - dict2.keys()
+dict1.items() - dict2.items()
+```
+
+4. Symmetric Difference (`^`)
+
+Get keys (or key-value pairs) that are in either dictionary, but not in both.
+
+```python
+dict1.keys() ^ dict2.keys()
+dict1.items() ^ dict2.items()
+```
+
+Example:
+
+```python
+dict1 = {'a': 1, 'b': 2, 'c': 3}
+dict2 = {'b': 2, 'c': 4, 'd': 5}
+
+print(dict1.keys() & dict2.keys())      # {'b', 'c'}
+print(dict1.keys() | dict2.keys())      # {'a', 'b', 'c', 'd'}
+print(dict1.keys() - dict2.keys())      # {'a'}
+print(dict1.keys() ^ dict2.keys())      # {'a', 'd'}
+
+print(dict1.items() & dict2.items())    # {('b', 2)}
+print(dict1.items() ^ dict2.items())    # {('a', 1), ('c', 3), ('c', 4), ('d', 5)}
+```
+
+#### On dict.values() views
+
+`dict.values()` views do not support set operations directly, because values are not guaranteed to be unique or hashable.
+
+
 [Back to the top](#top)
 ***
 
