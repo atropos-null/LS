@@ -266,11 +266,37 @@ print(sorted([sorted(group) for group in result2]) == sorted([sorted(group) for 
 <details>
 <summary>Possible Solution</summary>
 
+```python
+def group_anagrams(words):
+    groups = []
+
+    for word in words:
+        groups_found = False
+        for group in groups:
+            if set(word) == set(group[0]):
+                group.append(word)
+                groups_found = True
+                break
+        if not groups_found:
+            groups.append([word])
+    print(groups)
+    return groups
+
+# Test cases
+result1 = group_anagrams(["eat", "tea", "tan", "ate", "nat", "bat"])
+expected1 = [["eat", "tea", "ate"], ["tan", "nat"], ["bat"]]
+print(sorted([sorted(group) for group in result1]) == sorted([sorted(group) for group in expected1]))
+
+result2 = group_anagrams(["listen", "silent", "enlist"])
+expected2 = [["listen", "silent", "enlist"]]
+print(sorted([sorted(group) for group in result2]) == sorted([sorted(group) for group in expected2]))
+```
+
 </details>
 
 ## 6. Unscramble Words
 
-**Difficulty**:​ Advanced
+**Difficulty**:​ Beginner
 
 Create a function that determines if the first string can be rearranged to form the second string.
 
@@ -297,6 +323,17 @@ print(unscramble('boldface', 'coalfbmd') == False)
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def unscramble(string1, string2):
+    return set(string1) == set(string2)
+
+# Test cases
+print(unscramble('ansucchlohlo', 'launchschool') == True)
+print(unscramble('phyarunstole', 'pythonrules') == False)
+print(unscramble('puelyontshr', 'pythonrules') == True)
+print(unscramble('boldface', 'coalfbmd') == False)
+```
 
 </details>
 
@@ -329,6 +366,27 @@ print(longest_common_prefix(["throne"]) == "throne")
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def longest_common_prefix(strings):
+    if not strings:
+        prefix = ""
+    else:
+        prefix = strings[0]
+        for string in strings[1:]:
+            while not string.startswith(prefix):
+                prefix = prefix[:-1]
+                if not prefix:
+                    break
+    return prefix
+
+# Test cases
+print(longest_common_prefix(["flower", "flow", "flight"]) == "fl")
+print(longest_common_prefix(["dog", "racecar", "car"]) == "")
+print(longest_common_prefix(["interspecies", "interstellar", "interstate"]) == "inters")
+print(longest_common_prefix(["throne", "dungeon"]) == "")
+print(longest_common_prefix(["throne"]) == "throne")
+```
 
 </details>
 
@@ -363,6 +421,32 @@ print(symmetric_difference([1, 2, 3], [1, 2, 3]) == [])
 <details>
 <summary>Possible Solution</summary>
 
+```python
+
+def symmetric_difference(arr1, arr2):
+
+    if not arr1 or not arr2:
+        return arr2 or arr1
+
+    elif arr1 == arr2:
+       return []
+    
+    else:
+      commonalites = set(arr1) & set(arr2)
+      for item in commonalites:
+        if item in arr1:
+           list1 = [number for number in arr1 if number != item] 
+        if item in arr2:
+            list2 = [number for number in arr2 if number != item]
+        return list(set(list1) | set(list2)) 
+   
+# Test cases
+print(symmetric_difference([1, 2, 3], [3, 4, 5]) == [1, 2, 4, 5])
+print(symmetric_difference([1, 2, 2, 3], [3, 3, 4, 5]) == [1, 2, 4, 5])
+print(symmetric_difference([], [1, 2, 3]) == [1, 2, 3])
+print(symmetric_difference([1, 2, 3], [1, 2, 3]) == [])
+```
+
 </details>
 
 ## 9. All Palindromic Substrings
@@ -386,22 +470,47 @@ def palindromic_substrings(string):
     pass
 
 # Test cases
-print(palindromic_substrings('abcd') == ['a', 'c', 'b', 'd'])
-print(palindromic_substrings('madam') == ['m', 'a', 'd', 'ada', 'madam'])
-print(palindromic_substrings('hello') == ['l', 'o', 'e', 'h', 'll'])
-print(palindromic_substrings('knitting') == ['g', 'i', 'n', 'k', 't', 'tt', 'itti', 'nittin'])
-print(palindromic_substrings('racecar') == ['r', 'c', 'e', 'a', 'cec', 'aceca', 'racecar'])
+print(palindromic_substrings('abcd') == ['a', 'b', 'c', 'd'])
+print(palindromic_substrings('madam') == ['a', 'd', 'm', 'ada', 'madam'])
+print(palindromic_substrings('hello') == ['e', 'h', 'l', 'o', 'll'])
+print(palindromic_substrings('knitting') == ['g', 'i', 'k', 'n', 't', 'tt', 'itti', 'nittin'])
+print(palindromic_substrings('racecar') == ['a', 'c', 'e', 'r', 'cec', 'aceca', 'racecar'])
 
 ```
 
 <details>
 <summary>Possible Solution</summary>
 
+```python
+
+def palindromic_substrings(string):
+    temp = []
+    result = []
+    for i in range(len(string)):
+        for j in range(i, len(string)):
+            if string[i:j+1] == string[i:j+1][::-1]:
+                temp.append(string[i:j+1])
+
+    for element in temp:
+        if element and element not in result:
+            result.append(element)
+
+    final = sorted(result, key=lambda x: (len(x), x))
+    return final
+
+print(palindromic_substrings('abcd') == ['a', 'b', 'c', 'd'])
+print(palindromic_substrings('madam') == ['a', 'd', 'm', 'ada', 'madam'])
+print(palindromic_substrings('hello') == ['e', 'h', 'l', 'o', 'll'])
+print(palindromic_substrings('knitting') == ['g', 'i', 'k', 'n', 't', 'tt', 'itti', 'nittin'])
+print(palindromic_substrings('racecar') == ['a', 'c', 'e', 'r', 'cec', 'aceca', 'racecar'])
+
+```
+
 </details>
 
 ## 10. Most Common Word
 
-**Difficulty**:​ Advanced
+**Difficulty**:​ Intermediate
 
 Create a function that takes a list of strings and returns the most common word. If there's a tie, return the word that appears first in the list.
 
@@ -436,13 +545,29 @@ print(most_common_word(['one', 'two', 'three']) == 'one')
 <details>
 <summary>Possible Solution</summary>
 
+```python
+def most_common_word(words):
+  
+    counts = {}
+    for word in words:
+        counts[word] = counts.get(word, 0) + 1
+    
+    return max(counts, key=counts.get)
+
+# Test cases
+print(most_common_word(['apple', 'orange', 'apple', 'banana']) == 'apple')
+print(most_common_word(['a', 'b', 'c', 'a', 'b', 'a']) == 'a')
+print(most_common_word(['Hello', 'hello', 'HELLO']) == 'Hello')
+print(most_common_word(['one', 'two', 'three']) == 'one')
+```
+
 </details>
 
 ## 11. Count Identical Pairs
 
 **Difficulty**:​ Intermediate
 
-Create a function that takes a list of integers as an argument and returns the number of identical pairs of integers in that list. For instance, the number of identical pairs in `[1, 2, 3, 2, 1]` is 2: occurrences each of both 2 and 1. If the list is empty or contains exactly one value, return 0.bIf a certain number occurs more than twice, count each complete pair once.
+Create a function that takes a list of integers as an argument and returns the number of identical pairs of integers in that list. For instance, the number of identical pairs in `[1, 2, 3, 2, 1]` is 2: occurrences each of both 2 and 1. If the list is empty or contains exactly one value, return 0. If a certain number occurs more than twice, count each complete pair once.
 
 ```python
 
@@ -460,7 +585,7 @@ def pairs(lst):
 
 # Test cases
 print(pairs([3, 1, 4, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7]) == 3)
-print(pairs([2, 7, 1, 8, 2, 8, 1, 8, 2, 8, 4]) == 4)
+print(pairs([2, 7, 1, 8, 2, 8, 1, 8, 2, 8, 4]) == 3)
 print(pairs([]) == 0)
 print(pairs([23]) == 0)
 print(pairs([997, 997]) == 1)
@@ -472,7 +597,31 @@ print(pairs([7, 7, 7, 7, 7, 7, 7]) == 3)
 <details>
 <summary>Possible Solution</summary>
 
+```python
+def pairs(lst):
+    
+    if not lst or len(lst) == 1:
+        return 0
+    
+    else:
+        counts = {}
+        for num in lst:
+            counts[num] = counts.get(num, 0) + 1
+        return sum([value // 2 for value in counts.values()])
+    
+# Test cases
+print(pairs([3, 1, 4, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7]) == 3)
+print(pairs([2, 7, 1, 8, 2, 8, 1, 8, 2, 8, 4]) == 4)
+print(pairs([]) == 0)
+print(pairs([23]) == 0)
+print(pairs([997, 997]) == 1)
+print(pairs([32, 32, 32]) == 1)
+print(pairs([7, 7, 7, 7, 7, 7, 7]) == 3)
+```
+
 </details>
+
+
 
 ## 12. Odd Fellow
 
@@ -503,6 +652,23 @@ print(odd_fellow([25, 10, -6, 10, 25, 10, -6, 10, -6]) == -6)
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def odd_fellow(arr):
+
+    counts = {}
+    for number in arr:
+        counts[number] = counts.get(number, 0) + 1
+   
+    for key, value in counts.items():
+        if value % 2 == 1:
+            return key
+
+# Test cases
+print(odd_fellow([7, 99, 7, 51, 99]) == 51)
+print(odd_fellow([7, 99, 7, 51, 99, 7, 51]) == 7)
+print(odd_fellow([25, 10, -6, 10, 25, 10, -6, 10, -6]) == -6)
+```
 
 </details>
 
@@ -538,6 +704,28 @@ print(find_doubles([5, 10, 15, 10, 5, 15, 10, 5]) == [15])
 <details>
 <summary>Possible Solution</summary>
 
+```python
+def find_doubles(array):
+    
+    counts = {}
+    result = []
+
+    for number in array:
+        counts[number] = counts.get(number, 0) + 1
+   
+    for key, value in counts.items():
+        if value == 2:
+            result.append(key)
+    return result
+
+# Test cases
+print(find_doubles([1, 2, 3, 1, 2, 3, 4, 5]) == [1, 2, 3])
+print(find_doubles([1, 2, 3, 4, 5]) == [])
+print(find_doubles([1, 1, 2, 2, 3, 3, 4, 4, 5, 5]) == [1, 2, 3, 4, 5])
+print(find_doubles([1, 1, 1, 2, 2, 3]) == [2])
+print(find_doubles([5, 10, 15, 10, 5, 15, 10, 5]) == [15])
+```
+
 </details>
 
 ## 14. Find Sum Pairs
@@ -570,6 +758,26 @@ print(find_pairs([-1, 0, 1, 2], 1) == [(-1, 2), (0, 1)])
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def find_pairs(numbers, target_sum):
+
+    result = []
+
+    for i in range(len(numbers)):
+        for j in range(i+1, len(numbers)):
+            to_compare = (numbers[i], numbers[j])
+            if sum(to_compare) == target_sum and to_compare not in result:
+                result.append(to_compare)
+
+    return result
+
+# Test cases
+print(find_pairs([1, 2, 3, 4, 5], 6) == [(1, 5), (2, 4)])
+print(find_pairs([5, 5, 5, 5], 10) == [(5, 5)])
+print(find_pairs([1, 2, 3, 4, 5], 10) == [])
+print(find_pairs([-1, 0, 1, 2], 1) == [(-1, 2), (0, 1)])
+```
 
 </details>
 
@@ -604,6 +812,35 @@ print(group_by_frequency([]) == [])
 <details>
 <summary>Possible Solution</summary>
 
+```python
+
+def group_by_frequency(array):
+
+    if not array:
+        return []
+
+    # Pass 1: Count frequency of each number
+    frequencies = {}
+    for num in array:
+        frequencies[num] = frequencies.get(num, 0) + 1
+
+    # Pass 2: Group numbers based on their frequency
+    groups = {}
+    for num, freq in frequencies.items():
+        if freq not in groups:
+            groups[freq] = []
+        
+        groups[freq].extend([num] * freq)
+
+    return list(groups.values())
+
+# Test cases
+print(group_by_frequency([1, 2, 2, 3, 3, 3]) == [[1], [2, 2], [3, 3, 3]])
+print(group_by_frequency([5, 5, 5, 8, 8, 9, 2, 1]) == [[5, 5, 5], [8, 8], [9, 2, 1]])
+print(group_by_frequency([1, 1, 2, 2, 3, 3]) == [[1, 1, 2, 2, 3, 3]])
+print(group_by_frequency([]) == [])
+```
+
 </details>
 
 ## 16. Bouncy Count
@@ -627,6 +864,47 @@ print(bouncy_count([176, 442, 80701644]) == 2)
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+#version with sorted()
+
+def is_bouncy(n):
+    s = list(str(n))
+    return s != sorted(s) and s != sorted(s, reverse=True)
+
+def bouncy_count(numbers):
+    return sum(1 for num in numbers if is_bouncy(num))
+
+#version without sorted
+
+def is_bouncy(n):
+    s = str(n)
+    if len(s) <= 2:
+        return False
+
+    has_increased = False
+    has_decreased = False
+
+    for i in range(len(s) - 1):
+        if s[i] < s[i+1]:
+            has_increased = True
+        elif s[i] > s[i+1]:
+            has_decreased = True
+
+        # If we've found both an increase and a decrease,
+        # we know it's bouncy and can stop early.
+        if has_increased and has_decreased:
+            return True
+
+    return False
+
+def bouncy_count(numbers):
+    count = 0
+    for num in numbers:
+        if is_bouncy(num):
+            count += 1
+    return count
+```
 
 </details>
 
