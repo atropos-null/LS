@@ -18,8 +18,7 @@ letter_count('launchschool') #Expected Result:  {'l': 2, 'a': 1, 'u': 1, 'n': 1,
 ```python
 def letter_count(input_string):
     result = {}
-    working = [character for character in input_string]
-    for character in working:
+    for character in input_string:
         result[character] = result.get(character, 0) + 1
     return result
 ```
@@ -54,12 +53,25 @@ def pairs(lst):
         else:
             continue
     return len(lst) - len(temp)
+
+# Another Version:
+
+def pairs(lst):
+    counts = {}
+    for item in lst:
+        counts[item] = counts.get(item, 0) +1
+    
+    total = 0
+    for value in counts.values():
+        if value >= 2:
+            total += value // 2
+    return total
 ```
 </details>
 
 ## 3. Count Substring Instances
 
-Write a function that takes two strings as input, `full_text` and `search_text`, and returns the number of times `search_text` appears in `full_text`. Needed help with this one. 
+Write a function that takes two strings as input, `full_text` and `search_text`, and returns the number of times `search_text` appears in `full_text`. 
 
 ```python
 
@@ -99,42 +111,42 @@ print(solve(["abide","ABc","xyz"])) # [4, 3, 0]
 def solve(lst):
 
     alpha_positions = {
-    "a": 1,
-    "b": 2,
-    "c": 3,
-    "d": 4,
-    "e": 5,
-    "f": 6,
-    "g": 7,
-    "h": 8,
-    "i": 9,
-    "j": 10,
-    "k": 11,
-    "l": 12,
-    "m": 13,
-    "n": 14,
-    "o": 15,
-    "p": 16,
-    "q": 17,
-    "r": 18,
-    "s": 19,
-    "t": 20,
-    "u": 21,
-    "v": 22,
-    "w": 23,
-    "x": 24,
-    "y": 26,
-    "z": 26
+    "a": 0,
+    "b": 1,
+    "c": 2,
+    "d": 3,
+    "e": 4,
+    "f": 5,
+    "g": 6,
+    "h": 7,
+    "i": 8,
+    "j": 9,
+    "k": 10,
+    "l": 11,
+    "m": 12,
+    "n": 13,
+    "o": 14,
+    "p": 15,
+    "q": 16,
+    "r": 17,
+    "s": 18,
+    "t": 19,
+    "u": 20,
+    "v": 21,
+    "w": 22,
+    "x": 23,
+    "y": 24,
+    "z": 25
 }
-    result = []
    
-    for string in lst:
-        count = 0
-        for index, char in enumerate(string.casefold()):
-            if index + 1 == alpha_positions.get(char):
-                count += 1
-        result.append(count)
-    return result
+   result = []
+   for word in lst:
+      count = 0
+      for index, char in enumerate(word.lower()):
+            if index == alpha_positions.get(char):
+               count += 1
+      result.append(count)
+   return result
 ```
 
 </details>
@@ -169,19 +181,43 @@ def solve(input_string):
 
 print(solve("roadwarriors"))# should return 2
 print(solve("suoidea"))# should return 3
+
+#Another Version:
+
+def solve(string):
+   vowels = 'aeiou'
+   substring = ''
+   substrings = []
+   
+   for char in string:
+      if char in vowels:
+            substring += char
+      else:
+         if substring:
+            substrings.append(substring)
+         substring = ""
+    
+   substrings.append(substring) #appends the last substring since there's no ending consonant
+
+   final = [len(item) for item in substrings]
+   return max(final)
+      
+
+print(solve("roadwarriors") == 2) # should return 2
+print(solve("suoidea")  == 3) # should return 3
 ```
 
 </details>
 
 ## 6. Odd Number Sub-strings
 
-Write a function that takes a string of integers as input and returns the number of substrings that result in an odd number when converted to an integer. Needed help with this one.
+Write a function that takes a string of integers as input and returns the number of substrings that result in an odd number when converted to an integer. 
 
 Examples:
 
 ```python
 
-solve("1341") # should return 7
+solve("1341") # should return 6
 solve("1357") # should return 10
 
 ```
@@ -201,8 +237,28 @@ def solve(string):
                 temp.append(substring)
     return len(temp)
 
-print(solve("1341")) #7
+print(solve("1341")) #7 This gives 7 because 1 is counted twice
 print(solve("1357")) #10
+
+#Another Version
+
+def solve(str_number):
+   result = []
+   temp = []
+   str_digits = [number for number in str_number]
+   for i in range(len(str_digits)+1):    
+      for j in range(i+1, len(str_digits)+1):
+         temp.append("".join(str_number[i:j]))
+   
+   for number in temp:
+      converted_number = int(number)
+      if converted_number % 2 == 1 and converted_number not in result:
+         result.append(converted_number)
+ 
+   return len(result)
+
+print(solve("1341") == 6) # should return 7
+print(solve("1357") == 10) # should return 10
 
 ```
 </details>
@@ -230,6 +286,18 @@ def nth_char(lst):
 
 
 print(nth_char(['yoda', 'best', 'has'])) # 'yes'
+
+#Another Version:
+
+def nth_char(lst):
+    
+   result = ""
+   for i in range(len(lst)):
+      result += lst[i][i]
+   return result
+   
+print(nth_char(['yoda', 'best', 'has'])) # should return 'yes'
+
 ```
 
 </details>
@@ -241,7 +309,10 @@ Write a function that takes a non-empty string `s` as input and finds the minimu
 Examples:
 
 ```python
-print(f("ababab")) # should return ["ab", 3]
+print(smallest_substring("ababab")) # should return ["ab", 3]
+print(smallest_substring("aaaaaa"))  # Output: ['a', 6]
+print(smallest_substring("abcabcabc"))  # Output: ['abc', 3]
+print(smallest_substring("abcdef"))  #Output: ['abcdef', 1]
 ```
 
 <details>
@@ -264,6 +335,22 @@ print(smallest_substring("ababab"))  # Output: ['ab', 3]
 print(smallest_substring("aaaaaa"))  # Output: ['a', 6]
 print(smallest_substring("abcabcabc"))  # Output: ['abc', 3]
 print(smallest_substring("abcdef")) 
+
+#Another Version
+
+def smallest_substring(s):
+    
+    for i in range(len(s)):
+      t = s[:i+1]
+      k = len(s) // len(t)
+      if s == t * k:
+        return [t, k]
+
+print(smallest_substring("ababab")== ["ab", 3]) #True
+print(smallest_substring("aaaaaa") == ['a', 6])  #True
+print(smallest_substring("abcabcabc") == ['abc', 3])  #True
+print(smallest_substring("abcdef") == ['abcdef', 1]) #True
+
 ```
 </details>
 
@@ -286,57 +373,62 @@ scramble_words("you've gotta dance like there's nobody watching, love like you'l
 <summary>Possible Solution</summary>
 
 ```python
-def get_special_char(word):
-    special_char = "" 
-    for char in word:
-        if not char.isalnum():
-            special_char = char
-    return special_char
+def scramble_words(sentence):
+    tokens = sentence.split(' ')
+    scrambled_tokens = [process_token(token) for token in tokens]
+    return ' '.join(scrambled_tokens)
 
-def get_special_char_index(word, special_char):
-    return word.index(special_char)
+def process_token(token):
+    # Find the indices of the first and last alphabetic characters
+    first_letter_idx = -1
+    for i, char in enumerate(token):
+        if char.isalpha():
+            first_letter_idx = i
+            break
 
-def clean_word(word):
-    cleaned_word = ""
-    for char in word:
-        if char.isalnum():
-            cleaned_word += char
+    # If no letters, return token as is
+    if first_letter_idx == -1:
+        return token
 
-    return cleaned_word
+    last_letter_idx = -1
+    for i in range(len(token) - 1, -1, -1):
+        if token[i].isalpha():
+            last_letter_idx = i
+            break
 
+    # Extract prefix, core word, and suffix
+    prefix = token[:first_letter_idx]
+    core_word = token[first_letter_idx : last_letter_idx + 1]
+    suffix = token[last_letter_idx + 1 :]
 
-def process_word(word):
+    scrambled_core = scramble_core(core_word)
+    return prefix + scrambled_core + suffix
+
+def scramble_core(word):
+    # A word needs at least 4 letters to have a middle part to scramble.
     if len(word) < 4:
         return word
-    elif word.isalnum():
-            beginning, middle, end = word[0], word[1:-1], word[-1]
-            sorted_middle = sorted(list(middle))
-            word = list(beginning) + sorted_middle + list(end)
-            return "".join(word)
-    elif not word.isalnum():
-        special_char = get_special_char(word)
-        special_char_idx = get_special_char_index(word, special_char)
-        cleaned_word = clean_word(word)
-        beginning = list(cleaned_word[0])
-        middle = list(cleaned_word[1:-1])
-        end = list(cleaned_word[-1])
-        sorted_middle = sorted(middle)
-        word = beginning + sorted_middle + end
-        word.insert(special_char_idx, special_char)
-        return "".join(word)
-            
-def scramble_words(s):
-    if " " not in s:
-        result = process_word(s)
-        return result
-    else:
-        list_of_words = s.split(" ")
-        result = []
-        for one_word in list_of_words:
-            processed_word = process_word(one_word)
-            result.append(processed_word)
-        
-        return " ".join(result)
+
+    first_char = word[0]
+    last_char = word[-1]
+    middle_part = word[1:-1]
+
+    # Extract and sort only the letters from the middle part
+    middle_letters = sorted([
+        char for char in middle_part if char.isalpha()
+    ])
+
+    # Reconstruct the middle, preserving non-alphabetic characters
+    new_middle = ""
+    letter_idx = 0
+    for char in middle_part:
+        if char.isalpha():
+            new_middle += middle_letters[letter_idx]
+            letter_idx += 1
+        else:
+            new_middle += char
+
+    return first_char + new_middle + last_char
 ```
 </details>
 
@@ -409,6 +501,23 @@ print(top_3_words(" ' ")) # []
 print(top_3_words(" ''' ")) # []
 print(top_3_words("""In a village of La Mancha, the name of which I have no desire to call to mind, there lived not long since one of those gentlemen that keep a lance in the lance-rack, an old buckler, 
 a lean hack, and a greyhound for coursing. An olla of rather more beef than mutton, a salad on most nights, scraps on Saturdays, lentils on Fridays, and a pigeon or so extra on Sundays, made away with three-quarters of his income.""")) # should return ["a", "of", "on"]
+
+#Another Version
+
+def top_3_words(string):
+   counts = {}
+   result = []
+   words = string.split()
+   for word in words:
+      if word.isalpha():
+         counts[word] = counts.get(word, 0) +1
+   
+   top3 = sorted(counts.items(), key=lambda item: item[1], reverse=True)[:3]
+
+   for item in top3:
+      result.append(item[0])
+   return result
+
 ```
 
 </details>
@@ -447,6 +556,25 @@ def strip_suffix(half_clean_string):
 
 print(domain_name("http://github.com/carbonfive/raygun")) # should return "github"
 print(domain_name("https://www.cnet.com")) # should return "cnet"
+
+#Another Version:
+
+def domain_name(link):
+    prefixes = ["http://",  "https://www."]
+    suffixes = [".com"]
+    for item in prefixes:
+        if item in link:
+            mid_process = link.replace(item, "")
+   
+    for item in suffixes:
+      if item in mid_process:
+         index = mid_process.find(item)
+
+    return mid_process[:index]
+
+print(domain_name("http://github.com/carbonfive/raygun")) # should return "github"
+print(domain_name("https://www.cnet.com")) # should return "cnet"
+
 ```
 </details>
 
@@ -498,17 +626,22 @@ kebabize('myCamelHas3Humps') # should return 'my-camel-has-humps'
 <summary>Possible Solution</summary>
 
 ```python
-def kebabize(input_string):
-    holding = []
-    split_string = [char for char in input_string]
-    for char in split_string:
+def kebabize(string):
+    final = []
+    chars = [char for char in string]
+    for char in chars:
         if char.isupper():
-            holding.append("-")
-        holding.append(char.lower())
-    return "".join(holding)
+            final.append("-")
+            final.append(char.lower())
+        elif not char.isalpha():
+            continue
+        else:
+            final.append(char)
+    
+    return "".join(final)
 
-print(kebabize('camelsHaveThreeHumps')) # 'camels-have-three-humps'
-print(kebabize('myCamelHas3Humps')) #'my-camel-has-humps'
+print(kebabize('camelsHaveThreeHumps') == 'camels-have-three-humps') # should return 'camels-have-three-humps'
+print(kebabize('myCamelHas3Humps') == 'my-camel-has-humps') # should return 'my-camel-has-humps'
 ```
 </details>
 
@@ -529,6 +662,16 @@ print(song_decoder("WUBWEWUBAREWUBWUBTHEWUBCHAMPIONSWUBMYWUBFRIENDWUB")) # shoul
 
 def song_decoder(input_string):
     return ' '.join(input_string.replace('WUB', ' ').split())
+
+print(song_decoder("WUBWEWUBAREWUBWUBTHEWUBCHAMPIONSWUBMYWUBFRIENDWUB")) #"WE ARE THE CHAMPIONS MY FRIEND"
+
+#Longer Version:
+
+def song_decoder(string):   
+    sliced = "WUB"
+    new = string.replace(sliced, " ")
+    split_new = new.split()
+    return " ".join(split_new)
 
 print(song_decoder("WUBWEWUBAREWUBWUBTHEWUBCHAMPIONSWUBMYWUBFRIENDWUB")) #"WE ARE THE CHAMPIONS MY FRIEND"
 ```
@@ -574,6 +717,27 @@ print(is_valid_walk(['n','s','n','s','n','s','n','s','n','s'])) # True
 print(is_valid_walk(['w','e','w','e','w','e','w','e','w','e','w','e'])) # False
 print(is_valid_walk(['w'])) # False
 print(is_valid_walk(['n','n','n','s','n','s','n','s','n','s'])) # False
+
+#Another Version:
+
+def is_valid_walk(directions):
+    
+    counts = {}
+    for direction in directions:
+        counts[direction] = counts.get(direction, 0) +1
+    
+    values = list(counts.values())
+    if sum(values) == 10 and values[0] == values[1]:
+        return True
+    return False
+
+#All return True
+print(is_valid_walk(['n','s','n','s','n','s','n','s','n','s'])  == True) 
+print(is_valid_walk(['w','e','w','e','w','e','w','e','w','e','w','e']) == False) 
+print(is_valid_walk(['w']) == False) 
+print(is_valid_walk(['n','n','n','s','n','s','n','s','n','s']) == False) 
+
+
 ```
 
 </details>
@@ -608,6 +772,25 @@ def spin_words(input_string):
 print(spin_words("Hey fellow warriors")) # "Hey wollef sroirraw"
 print(spin_words("This is a test")) # "This is a test"
 print(spin_words("This is another test")) # "This is rehtona test"
+
+#Another Version
+
+def spin_words(string):
+
+    result = []
+    words = string.split()
+    for word in words:
+        if len(word) >= 5:
+            result.append(word[::-1])
+        else:
+            result.append(word)
+    return " ".join(result)
+
+
+#All return True
+print(spin_words("Hey fellow warriors") == "Hey wollef sroirraw") 
+print(spin_words("This is a test") == "This is a test") 
+print(spin_words("This is another test") == "This is rehtona test") 
 ```
 
 </details>
@@ -644,6 +827,24 @@ def expanded_form(num):
 print(expanded_form(12)) # '10 + 2'
 print(expanded_form(42)) # '40 + 2'
 print(expanded_form(70304)) # '70000 + 300 + 4'
+
+#Another Version
+
+def expanded_form(number):
+
+    temp = []
+    stringed_number = str(number)
+    int_digits = [int(digit) for digit in stringed_number]
+    for i in range(len(int_digits)-1, -1, -1):
+        temp.append(int_digits[len(int_digits) - 1 - i] * 10**i)
+
+    stringed_list = [str(integer) for integer in temp if integer]
+    return " + ".join(stringed_list)
+    
+#All return True
+print(expanded_form(12) == '10 + 2') 
+print(expanded_form(42) == '40 + 2') 
+print(expanded_form(70304) == '70000 + 300 + 4')
 ```
 </details>
 
@@ -681,6 +882,28 @@ print(persistence(39)) # should return 3, because 3*9=27, 2*7=14, 1*4=4 and 4 ha
 print(persistence(999)) # should return 4, because 9*9*9=729, 7*2*9=126, 1*2*6=12, and finally 1*2=2
 print(persistence(4)) # should return 0, because 4 is already a one-digit number
 print(persistence(25)) # should return 2, because 2*5=10, and 1*0=0
+
+#Another Version
+def persistence(number):
+    
+    working_number = number
+    holder = 1
+    count = 0
+    while len(str(working_number)) != 1:
+        digits = [int(digit) for digit in str(working_number)]
+        for digit in digits:
+            holder = holder * digit
+        working_number = holder
+        holder = 1
+        count += 1
+        
+    return count
+
+
+print(persistence(39) == 3)# should return 3, because 3*9=27, 2*7=14, 1*4=4 and 4 has only one digit
+print(persistence(999) == 4) # should return 4, because 9*9*9=729, 7*2*9=126, 1*2*6=12, and finally 1*2=2
+print(persistence(4) == 0) # should return 0, because 4 is already a one-digit number
+print(persistence(25) == 2)# should return 2, because 2*5=10, and 1*0=0
 ```
 
 </details>
@@ -724,13 +947,38 @@ print(title_case('a clash of KINGS', 'a an the of')) # should return 'A Clash of
 print(title_case('THE WIND IN THE WILLOWS', 'The In')) # should return 'The Wind in the Willows'
 print(title_case('the quick brown fox')) # should return 'The Quick Brown Fox'
 
+#Another Version:
+
+def title_case(string, exceptions=[]):
+
+    if not exceptions:
+        all_caps = [word.capitalize() for word in string.split()]
+        return " ".join(all_caps)
+    
+    else:
+        new_exceptions = [word.lower() for word in exceptions.split()]
+        result = []
+        split_string = string.split()
+        result.append(split_string[0].capitalize())
+        for i in range(1, len(split_string)):
+            if split_string[i].casefold() in new_exceptions:
+                result.append(split_string[i].lower())
+            else:
+                result.append(split_string[i].capitalize())
+    
+        return " ".join(result)
+                          
+print(title_case('a clash of KINGS', 'a an the of') == 'A Clash of Kings') # should return 'A Clash of Kings'
+print(title_case('THE WIND IN THE WILLOWS', 'The In') == 'The Wind in the Willows') # should return 'The Wind in the Willows'
+print(title_case('the quick brown fox') == 'The Quick Brown Fox') # should return 'The Quick Brown Fox'
+
 ```
 </details>
 
 ## 20. Character Count Sorting
 Write a function that takes a string as an argument and groups the number of times each character appears in the string as a dictionary sorted by the highest number of occurrences.
 
-The characters should be sorted alphabetically, and you should ignore spaces, special characters, and count uppercase letters as lowercase ones. Note: Struggled with appending a list to a dictionary value.
+The characters should be sorted alphabetically, and you should ignore spaces, special characters, and count uppercase letters as lowercase ones. Note: Good to revisit for sorting practice.
 
 Examples:
 
@@ -766,6 +1014,36 @@ def get_char_count(input_string):
         sorted_final[count] = final[count]
     
     return sorted_final
+
+#Another Version:
+
+def get_char_count(string):
+    counts = {}
+    for char in [char for char in string.lower() if char.isalnum()]: 
+        counts[char] = counts.get(char, 0) +1
+    
+    final = {}
+    for key, value in counts.items():
+        if value in final:
+            final[value].append(key)
+        else:
+            final[value] = [key]
+
+    sorted_final = {}
+    sorting_keys = sorted(final.keys(), reverse= True)
+    
+    for value in sorting_keys:
+        sorted_final[value] = sorted(final[value], reverse=False)
+    
+    print(sorted_final)
+    return sorted_final
+
+print(get_char_count("Mississippi") == {4: ['i', 's'], 2: ['p'], 1: ['m']}) # should return {4: ['i', 's'], 2: ['p'], 1: ['m']}
+print(get_char_count("Hello. Hello? HELLO!!") == {6: ['l'], 3: ['e', 'h', 'o']}) # should return {6: ['l'], 3: ['e', 'h', 'o']}
+print(get_char_count("aaa...bb...c!") == {3: ['a'], 2: ['b'], 1: ['c']}) # should return {3: ['a'], 2: ['b'], 1: ['c']}
+print(get_char_count("aaabbbccc") == {3: ['a', 'b', 'c']}) # should return {3: ['a', 'b', 'c']}
+print(get_char_count("abc123") == {1: ['1', '2', '3', 'a', 'b', 'c']}) # should return {1: ['1', '2', '3', 'a', 'b', 'c']}
+
 ```
 
 </details>
@@ -810,6 +1088,24 @@ print(mine_location([[0, 0, 0], [0, 0, 0], [0, 1, 0]])) # should return [2, 1]
 print(mine_location([[1, 0], [0, 0]])) # should return [0, 0]
 print(mine_location([[1, 0, 0], [0, 0, 0], [0, 0, 0]])) # should return [0, 0]
 print(mine_location([[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 0]])) # should return [2, 2]
+
+#Another Version:
+
+def mine_location(matrix):
+
+    for i in range(len(matrix)):
+        for j in range(len(matrix)):
+            if matrix[i][j] == 1:
+                return [i, j]
+            
+#All return True
+print(mine_location([[1, 0, 0], [0, 0, 0], [0, 0, 0]]) == [0, 0]) 
+print(mine_location([[0, 0, 0], [0, 1, 0], [0, 0, 0]]) == [1, 1]) 
+print(mine_location([[0, 0, 0], [0, 0, 0], [0, 1, 0]]) == [2, 1]) 
+print(mine_location([[1, 0], [0, 0]]) == [0, 0]) 
+print(mine_location([[1, 0, 0], [0, 0, 0], [0, 0, 0]]) == [0, 0]) 
+print(mine_location([[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 0]]) == [2, 2]) 
+
 ```
 </details>
 
@@ -856,13 +1152,26 @@ print(scramble('cedewaraarossoqqyt', 'carrot')) # should return True
 print(scramble('katas', 'steak')) # should return False
 print(scramble('scriptjava', 'javascript')) # should return True
 print(scramble('scriptingjava', 'javascript')) # should return True
+
+# Another Version:
+
+def scramble(str1, str2):
+
+    return set(str2).issubset(set(str1))
+
+#All should return True
+print(scramble('rkqodlw', 'world') == True) 
+print(scramble('cedewaraarossoqqyt', 'carrot') == True) 
+print(scramble('katas', 'steak') == False) 
+print(scramble('scriptjava', 'javascript') == True)
+print(scramble('scriptingjava', 'javascript') == True) 
 ```
 
 </details>
 
 ## 23. Longest alphabetical substring
 
-Write a function `longest(s)` that finds and returns the longest substring of `s` where the characters are in alphabetical order. Note: Struggled with this one. Completely whiffed this one.
+Write a function `longest(s)` that finds and returns the longest substring of `s` where the characters are in alphabetical order. Note: Completely whiffed this one.
 
 Example:
 ```python
@@ -873,6 +1182,8 @@ longest('asdfaaaabbbbcttavvfffffdf') # should return 'aaaabbbbctt'
 longest('asdfbyfgiklag')        # should return 'fgikl'
 longest('z')                    # should return 'z'
 longest('zyba')                 # should return 'z'
+
+
 ```
 <details>
 <summary>Possible Solution</summary>
@@ -904,6 +1215,36 @@ print(longest('asdfaaaabbbbcttavvfffffdf')) # should return 'aaaabbbbctt'
 print(longest('asdfbyfgiklag'))       # should return 'fgikl'
 print(longest('z'))                   # should return 'z'
 print(longest('zyba'))                 # should return 'z'
+
+#Another Version, still a slog
+
+def longest(string):
+
+    if not string:
+        return ""
+
+    max_substring = string[0]
+    current_substring = string[0]
+    for i in range(1,len(string)):
+        if ord(string[i]) >= ord(string[i-1]):
+            current_substring += string[i]
+        else:
+            if len(current_substring) > len(max_substring):
+                max_substring = current_substring
+            current_substring = string[i]
+    
+    if len(current_substring) > len(max_substring):
+        max_substring = current_substring
+            
+    return max_substring
+
+print(longest('asd') == 'as')   
+print(longest('nab')  == 'ab')                
+print(longest('abcdeapbcdef') == 'abcde')     
+print(longest('asdfaaaabbbbcttavvfffffdf') == 'aaaabbbbctt')
+print(longest('asdfbyfgiklag') ==  'fgikl')
+print(longest('z') ==  'z')
+print(longest('zyba') == 'z')
 ```
 </details>
 
@@ -962,6 +1303,25 @@ print(generate_hashtag("this is a test"))         # should return "#ThisIsATest"
 print(generate_hashtag("this is a very long string" + " " * 140 + "end"))  # should return "#ThisIsAVeryLongStringEnd"
 print(generate_hashtag("a" * 139))                # should return "#A" + "a" * 138
 print(generate_hashtag("a" * 140))                # should return `False`
+
+#Another Version
+
+def generate_hashtag(string):
+
+    TAG = "#"
+    split_text = string.split()
+
+    if not string or not split_text:
+        return False
+    
+    capped_text = [word.capitalize() for word in split_text]
+    joined_text = "".join(capped_text)
+    complete_text = TAG+joined_text
+    
+    if len(complete_text) <= 140:
+        return complete_text
+    return False 
+
 ```
 </details>
 
@@ -1051,9 +1411,11 @@ Create a function that takes two integer arrays of equal length, compares the va
 
 Examples:
 
+```python
 [1, 2, 3], [4, 5, 6] --> 9 because (9 + 9 + 9) / 3
 [10, 20, 10, 2], [10, 25, 5, -2] --> 16.5 because (0 + 25 + 25 + 16) / 4
 [-1, 0], [0, -1] --> 1 because (1 + 1) / 2
+```
 
 ```python
 solution([1, 2, 3], [4, 5, 6]) == 9
@@ -1071,6 +1433,20 @@ def solution(lst1, lst2):
   return sum(tmp) / len(tmp)
 
 #All print True
+print(solution([1, 2, 3], [4, 5, 6]) == 9)
+print(solution([10, 20, 10, 2], [10, 25, 5, -2]) == 16.5)
+print(solution([-1, 0], [0, -1]) == 1)
+
+#Another Version
+
+def solution(lst1, lst2):
+    
+    temp = []
+    for i in range(len(lst1)):
+        working_number = abs(lst1[i] - lst2[i]) ** 2
+        temp.append(working_number)
+    return sum(temp) / len(temp)
+
 print(solution([1, 2, 3], [4, 5, 6]) == 9)
 print(solution([10, 20, 10, 2], [10, 25, 5, -2]) == 16.5)
 print(solution([-1, 0], [0, -1]) == 1)
@@ -1127,6 +1503,20 @@ print(anagrams('abba', ['aabb', 'abcd', 'bbaa', 'dada']) == ['aabb', 'bbaa'])
 print(anagrams('racer', ['crazer', 'carer', 'racar', 'caers', 'racer']) == ['carer', 'racer'])
 print(anagrams('laser', ['lazing', 'lazy', 'lacer']) == [])
 
+#Another Version:
+
+def anagrams(string, lst):
+    
+    result = []
+    for element in lst:
+        if set(string) == set(element):
+            result.append(element)
+    return result
+
+print(anagrams('abba', ['aabb', 'abcd', 'bbaa', 'dada']) == ['aabb', 'bbaa'])
+print(anagrams('racer', ['crazer', 'carer', 'racar', 'caers', 'racer']) == ['carer', 'racer'])
+print(anagrams('laser', ['lazing', 'lazy', 'lacer']) == [])
+
 ```
 </details>
 
@@ -1166,6 +1556,26 @@ def solution(input_string):
             for char in range(0, len(chars)-1, 2) :
                 pair = chars[char]+chars[char+1]
                 result.append(pair)
+    return result
+
+print(solution('abc') == ['ab', 'c_'])
+print(solution('abcdef') == ['ab', 'cd', 'ef'])
+print(solution("abcdef") == ["ab", "cd", "ef"])
+print(solution("abcdefg") == ["ab", "cd", "ef", "g_"])
+print(solution("") == [])
+
+#Another Version
+
+def solution(string):
+    
+    result = []
+    chars = [char for char in string]
+    if len(chars) % 2 == 1:
+        chars.append("_")
+    
+    for i in range(0, len(chars), 2):
+        sliced = chars[i] + chars[i+1]
+        result.append(sliced)
     return result
 
 print(solution('abc') == ['ab', 'c_'])
@@ -1258,25 +1668,31 @@ print(anagram_difference('ab', 'cd') == 4)
 print(anagram_difference('aab', 'a') == 2)
 print(anagram_difference('a', 'aab') == 2)
 
-#Co Pilot's solution that's significantly less terrible
+
+#Another Version
 
 def anagram_difference(str1, str2):
-    # Convert to lists for mutability
-    l1 = list(str1)
-    l2 = list(str2)
+
+    set1 = set(str1)
+    set2 = set(str2)
+
+    if set1 == set2:
+        return 0
     
-    # Remove matching characters one by one
-    i = 0
-    while i < len(l1):
-        char = l1[i]
-        if char in l2:
-            l2.remove(char)
-            l1.pop(i)
-            # Do not increment i, as the next char shifted into position i
-        else:
-            i += 1
-    # The leftovers are the difference
-    return len(l1) + len(l2)
+    elif set1 != set2:
+        length_diff = abs(len(str1) - len(str2))
+        if set1.isdisjoint(set2) is True:
+            return len(str1) + len(str2)
+        return length_diff 
+
+print(anagram_difference('', '') == 0)
+print(anagram_difference('a', '') == 1)
+print(anagram_difference('', 'a') == 1)
+print(anagram_difference('ab', 'a') == 1)
+print(anagram_difference('ab', 'ba') == 0)
+print(anagram_difference('ab', 'cd') == 4)
+print(anagram_difference('aab', 'a') == 2)
+print(anagram_difference('a', 'aab') == 2)
 ```
 
 </details>

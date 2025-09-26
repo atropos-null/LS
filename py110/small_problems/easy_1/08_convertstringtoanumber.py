@@ -62,4 +62,21 @@ def string_to_integer(text):
         result = result * 10 + digit
     return result
 
+
+Another version:
+
+def string_to_integer(str_number):
+    temp = 0
+    final = 0
+    place_value = 1
+
+    for char in [char for char in str_number][-1::-1]:
+        number = ord(char) - ord('0')
+        temp = number * place_value
+        final += temp
+        place_value = place_value * 10
+    return final
+
+print(string_to_integer("4321") == 4321)  # True
+print(string_to_integer("570") == 570)    # True
 """

@@ -49,4 +49,25 @@ Optimization:
        midpoint = (len(my_lst) + 1) // 2  # This handles both odd and even lengths
        return [my_lst[:midpoint], my_lst[midpoint:]]
     
+Another version:
+
+import math
+
+def halvsies(lst):
+    if len(lst) <= 1:
+        return [lst, []]
+    else:
+        final = []
+        temp1 = []
+        temp2 = []
+        half_point = math.ceil(len(lst) / 2)
+        for index, item in enumerate(lst):
+            if index < half_point:
+                temp1.append(item)
+            else:
+                temp2.append(item)
+        final.append(temp1)
+        final.append(temp2)
+
+        return final
 """
