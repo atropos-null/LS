@@ -1773,6 +1773,52 @@ print(high('man i need a taxi up to ubud') == 'taxi')
 print(high('what time are we climbing up the volcano') == 'volcano')
 print(high('take me to semynak') == 'semynak')
 print(high('aaa b') == 'aaa')
+
+def high(string):
+    
+    points = {"a": 1, 
+              "b": 2, 
+              "c": 3, 
+              "d": 4, 
+              "e": 5, 
+              "f": 6, 
+              "g": 7, 
+              "h": 8, 
+              "i": 9, 
+              "j": 10, 
+              "k": 11, 
+              "l": 12, 
+              "m": 13,
+              "n": 14,
+              "o": 15,
+              "p": 16,
+              "q": 17,
+              "r": 18,
+              "s": 19,
+              "t": 20,
+              "u": 21,
+              "v": 22,
+              "w": 23,
+              "x": 24,
+              "y": 25,
+              "z": 26
+              }
+    
+    counts = {}
+    words = string.split()
+    for word in words:
+        count = 0
+        for char in word:
+            if char in points.keys():
+                count += points[char]
+        counts[word] = count
+    
+    return max(counts, key=counts.get)
+
+print(high('man i need a taxi up to ubud') == 'taxi')
+print(high('what time are we climbing up the volcano') == 'volcano')
+print(high('take me to semynak') == 'semynak')
+print(high('aaa b') == 'aaa')
 ```
 
 </details>
@@ -1809,6 +1855,45 @@ def alphabet_position(string):
 
 print(alphabet_position("The sunset sets at twelve o' clock.") == "20 8 5 19 21 14 19 5 20 19 5 20 19 1 20 20 23 5 12 22 5 15 3 12 15 3 11")
 print(alphabet_position("-.-'") == "")
+
+#Another Version:
+
+def alphabet_position(string):
+    
+    position = {"a": 1, 
+              "b": 2, 
+              "c": 3, 
+              "d": 4, 
+              "e": 5, 
+              "f": 6, 
+              "g": 7, 
+              "h": 8, 
+              "i": 9, 
+              "j": 10, 
+              "k": 11, 
+              "l": 12, 
+              "m": 13,
+              "n": 14,
+              "o": 15,
+              "p": 16,
+              "q": 17,
+              "r": 18,
+              "s": 19,
+              "t": 20,
+              "u": 21,
+              "v": 22,
+              "w": 23,
+              "x": 24,
+              "y": 25,
+              "z": 26
+              }
+    
+    result = ""
+    chars = [char.lower() for char in string if char.isalpha()]
+    for char in chars:
+        if char in position:
+            result += str(position[char]) + " "
+    return result.rstrip()
 
 ```
 
@@ -1924,13 +2009,10 @@ delete_digit(10) == 1
 ```python
 
 def delete_digit(num):
-    str_digits = [digit for digit in str(num)]
-    digits = [int(digit) for digit in str_digits]
+    digits = [int(digit) for digit in str(num)]
     minimum = min(digits)
     digits.remove(minimum)
-    restring = [str(digit) for digit in digits]
-    result = "".join(restring)
-    return int(result)
+    return int("".join([str(digit) for digit in digits]))
 
 
 print(delete_digit(152) == 52)
@@ -1967,7 +2049,6 @@ def greatest_product(str_num):
 
     products = []
     holding = []
-    str_digits = [digit for digit in str_num]
     digits = [int(digit) for digit in str_digits]
     k = 5
     for i in range(len(digits) - k + 1):
@@ -2008,25 +2089,28 @@ duplicate_encode("(( @") == "))(("
 
 ```python
 
-def duplicate_encode(input_str):
-    tmp = []
+def duplicate_encode(string):
+
+    result = ""
+
+    cleaned_string = [char.lower() for char in string]
     counts = {}
-    chars = [char for char in input_str.lower()]
-    for char in chars:
-        counts[char] = counts.get(char, 0) + 1
+    for char in cleaned_string:
+        counts[char] = counts.get(char, 0) +1
 
-    for char in chars:
+    for char in cleaned_string:
         if counts[char] == 1:
-            tmp.append('(')
-        else:
-            tmp.append(')')
-
-    return "".join(tmp)
+            result += "("
+        elif counts[char] > 1:
+            result += ")"
+ 
+    return result
 
 print(duplicate_encode("din") == "(((")
 print(duplicate_encode("recede") == "()()()")
 print(duplicate_encode("Success") == ")())())")
 print(duplicate_encode("(( @") == "))((")
+
 
 ```
 
@@ -2062,6 +2146,30 @@ def clean_string(input_string):
     
     return "".join(result)
    
+print(clean_string('abc#d##c') == "ac")
+print(clean_string('abc####d##c#') == "")
+
+#Another Version:
+def clean_string(string):
+    
+    result = []
+    chars = [char for char in string]
+    counts = {}
+    for char in chars:
+        counts[char] = counts.get(char, 0)+1
+   
+    if counts["#"] > abs(len(string) - counts["#"]):
+        return ""
+    
+    else:
+        for i in range(len(chars)):
+            if chars[i].isalpha():
+                result.append(chars[i])
+            else:
+                if len(result) > 0:
+                    result.pop()
+        return "".join(result)
+    
 print(clean_string('abc#d##c') == "ac")
 print(clean_string('abc####d##c#') == "")
 
