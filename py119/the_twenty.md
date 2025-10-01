@@ -45,6 +45,23 @@ print(smaller_numbers_than_current([1]) == [0]) #True
 my_list = [1, 4, 6, 8, 13, 2, 4, 5, 4]
 result   = [0, 2, 4, 5, 6, 1, 2, 3, 2]
 print(smaller_numbers_than_current(my_list) == result) #True
+
+#Another Version:
+
+def smaller_numbers_than_current(lst):
+
+    result = []
+    setted_lst = set(lst)
+    for element in lst:
+        count = 0
+        for set_element in setted_lst:
+            if element > set_element:
+                count+= 1
+        result.append(count)
+        
+    return result  
+
+Completion time: 5:31
 ```
 
 </details>
@@ -88,6 +105,8 @@ print(minimum_sum([1, 2, 3, 4, 5, -5]) == 9) #True
 print(minimum_sum([1, 2, 3, 4, 5, 6]) == 15) #True
 print(minimum_sum([55, 2, 6, 5, 1, 2, 9, 3, 5, 100]) == 16) #True
 print(minimum_sum([-1, -5, -3, 0, -1, 2, -4]) == -10) #True
+
+Completion time: 8:30
 ```
 
 </details>
@@ -150,6 +169,31 @@ print(to_weird_case('aaA bB c') == 'aaA bB c') #True
 original = "Mary Poppins' favorite word is supercalifragilisticexpialidocious"
 expected = "Mary Poppins' fAvOrItE word is sUpErCaLiFrAgIlIsTiCeXpIaLiDoCiOuS"
 print(to_weird_case(original) == expected) #True
+
+#Another Version:
+
+def to_weird_case(string):
+    
+    result = []
+    split_string = string.split()
+    result.append(split_string[0])
+    
+    for i in range(1, len(split_string)):
+        if len(split_string[i]) >= 2 and i % 3 == 2:
+            new_word = ""
+            for char in range(len(split_string[i])):
+                if char % 2 == 1:
+                    new_word += split_string[i][char].upper()
+                else: 
+                    new_word += split_string[i][char]
+
+            result.append(new_word)
+        else:
+            result.append(split_string[i])
+
+    return  " ".join(result)
+
+22:38
 ```
 
 </details>
@@ -183,7 +227,12 @@ def closest_numbers(lst):
 print(closest_numbers([5, 25, 15, 11, 20]) == (15, 11)) #True
 print(closest_numbers([19, 25, 32, 4, 27, 16]) == (25, 27)) #True
 print(closest_numbers([12, 22, 7, 17]) == (12, 7)) #True
+
+18:41
+
 ```
+
+
 
 </details>
 
