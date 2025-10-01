@@ -61,7 +61,7 @@ def smaller_numbers_than_current(lst):
         
     return result  
 
-Completion time: 5:31
+5:31
 ```
 
 </details>
@@ -106,7 +106,7 @@ print(minimum_sum([1, 2, 3, 4, 5, 6]) == 15) #True
 print(minimum_sum([55, 2, 6, 5, 1, 2, 9, 3, 5, 100]) == 16) #True
 print(minimum_sum([-1, -5, -3, 0, -1, 2, -4]) == -10) #True
 
-Completion time: 8:30
+8:30
 ```
 
 </details>
@@ -261,15 +261,15 @@ print(most_common_char(my_str) == 'e') #True
 
 ```python
 
-def most_common_char(text):
+def most_common_char(string):
+
     counts = {}
-    chars = [char.lower() for char in text if char.isalpha()]
-    for char in chars:
-        count = chars.count(char)
-        counts.setdefault(count, (char))
+    cleaned_chars = [char.lower() for char in string if char.isalpha()]
+    for char in cleaned_chars:
+        counts[char] = counts.get(char, 0) +1
     
-    max_key = max(counts.keys())
-    return counts[max_key]
+    max_letter = max(counts, key=counts.get)
+    return max_letter
 
 
 print(most_common_char('Hello World') == 'l') #True
@@ -282,6 +282,9 @@ print(most_common_char(my_str) == 'p') #True
 
 my_str = 'Peter Piper repicked a peck of repickled peppers. He did!'
 print(most_common_char(my_str) == 'e') #True
+
+7:20
+
 ```
 
 </details>
@@ -334,6 +337,8 @@ print(count_letters('W. E. B. Du Bois') == expected) #True
 print(count_letters('x') == {'x': 1}) #True
 print(count_letters('') == {}) #True
 print(count_letters('!!!') == {}) #True
+
+5:15
 ```
 
 </details>
@@ -383,6 +388,23 @@ print(pairs([23]) == 0) #True
 print(pairs([997, 997]) == 1) #True
 print(pairs([32, 32, 32]) == 1) #True
 print(pairs([7, 7, 7, 7, 7, 7, 7]) == 3) #True
+
+#Slightly Different Version
+
+def pairs(lst):
+    
+    counts = {}
+    count = 0
+    for number in lst:
+        counts[number] = counts.get(number, 0) + 1
+    
+    for value in counts.values():
+        if value >= 2:
+            count += value // 2
+    return count
+
+6:03
+
 ```
 
 </details>
@@ -435,6 +457,25 @@ print(longest_vowel_substring('beauteous') == 3) #True
 print(longest_vowel_substring('sequoia') == 4) #True
 print(longest_vowel_substring('miaoued') == 5) #True
 
+#Another Version
+
+def longest_vowel_substring(string):
+    
+    substrings = []
+    vowels = ["a", "e", "i", "o","u"]
+    substring = ""
+    for i in range(len(string)):
+        if string[i] in vowels:
+            substring += string[i]
+        else:
+            substrings.append(substring)
+            substring = ""
+    substrings.append(substring)
+        
+    lengths = [len(substring) for substring in substrings]
+    return max(lengths)
+
+8:18
 ```
 
 </details>
@@ -478,6 +519,9 @@ print(count_substrings('', 'x') == 0) #True
 print(count_substrings('bbbaabbbbaab', 'baab') == 2) #True
 print(count_substrings('bbbaabbbbaab', 'bbaab') == 2) #True
 print(count_substrings('bbbaabbbbaabb', 'bbbaabb') == 1) #True
+
+2:19
+
 ```
 </details>
 
@@ -518,6 +562,8 @@ print(even_substrings('3145926') == 16) #True
 print(even_substrings('2718281') == 16) #True
 print(even_substrings('13579') == 0) #True
 print(even_substrings('143232') == 12) #True
+
+10:20 
 ```
 
 </details>
@@ -537,6 +583,7 @@ print(repeated_substring('xyxy') == ('xy', 2)) #True
 print(repeated_substring('xyz') == ('xyz', 1)) #True
 print(repeated_substring('aaaaaaaa') == ('a', 8)) #True
 print(repeated_substring('superduper') == ('superduper', 1)) #True
+
 ```
 
 <details>
@@ -558,6 +605,18 @@ print(repeated_substring('xyxy') == ('xy', 2)) #True
 print(repeated_substring('xyz') == ('xyz', 1)) #True
 print(repeated_substring('aaaaaaaa') == ('a', 8)) #True
 print(repeated_substring('superduper') == ('superduper', 1)) #True
+
+#Another Version
+
+def repeated_substring(s):
+
+    for i in range(len(s)+1):
+        t = s[:i+1]
+        k = len(s) // len(t)
+        if s == t * k:
+            return (t, k)
+
+8:06
 ```
 
 </details>
@@ -593,8 +652,7 @@ def is_pangram(text):
     for char in chars:
         char_counts[char] = char_counts.get(char, 0) + 1
     
-    key_counts = len(char_counts.keys())
-    if key_counts == 26:
+    if len(counts) == 26:
         return True
     return False
 
@@ -606,6 +664,9 @@ print(is_pangram("A wizard’s job is to vex chumps quickly in golf.") == True) 
 
 my_str = 'Sixty zippers were quickly picked from the woven jute bag.'
 print(is_pangram(my_str) == True) #True
+
+3:28
+
 ```
 </details>
 
@@ -649,6 +710,8 @@ print(unscramble('phyarunstole', 'pythonrules') == True) #True
 print(unscramble('phyarunstola', 'pythonrules') == False) #True
 print(unscramble('boldface', 'coal') == True) #True
 print(unscramble('olc', 'cool') == False) #True
+
+15:00 - derped it.
 ```
 
 </details>
@@ -697,6 +760,22 @@ print(seven_eleven(25) == 75) #True
 print(seven_eleven(100) == 1153) #True
 print(seven_eleven(0) == 0) #True
 print(seven_eleven(-100) == 0) #True
+
+#Another Version
+
+def seven_eleven(number):
+
+    if not number:
+        return 0
+
+    temp = []
+    for i in range(1, number):
+       if i % 7 == 0 or i % 11 == 0:
+            temp.append(i)
+    return sum(temp)
+
+12:50
+
 ```
 
 </details>
@@ -735,6 +814,28 @@ def greatest_product(str_num):
         results.append(temp)
     max_product = max(results)
     return max_product[0]
+
+#Another Version:
+
+def greatest_product(str_num):
+    
+    results = []
+    digits = [int(char) for char in str_num]
+    snippet = 4
+    for i in range(len(digits)):
+        temp = []
+        product = 1
+        snippet = digits[i:i+4]
+        if len(snippet) == 4:
+            for digit in snippet:
+                product *= digit
+            temp.append(product)
+        if temp:
+            results.append(temp[0])
+
+    return max(results)
+
+7:19
 ```
 
 </details>
@@ -782,6 +883,24 @@ print(distinct_multiples('multiplicity') == 3)      # l, t, i #True
 print(distinct_multiples('7657') == 1)              # 7 #True
 print(distinct_multiples('3141592653589793') == 4)  # 3, 1, 5, 9 #True
 print(distinct_multiples('2718281828459045') == 5)  # 2, 1, 8, 4, 5 #True
+
+#Another version
+
+def distinct_multiples(string):
+    
+    results = []
+    counts = {}
+    chars = [char.lower() for char in string]
+    for char in chars:
+        counts[char] = counts.get(char, 0) +1
+    
+    for key, value in counts.items():
+        if value > 1:
+            results.append(key)
+    
+    return len(results)
+
+4:50 
 ```
 
 </details>
@@ -834,6 +953,8 @@ print(nearest_prime_sum([2, 12, 8, 4, 6]) == 5) # Nearest prime to 32 is 37
 
 # Nearest prime to 163 is 167
 print(nearest_prime_sum([50, 39, 49, 6, 17, 2]) == 4)
+
+4:45
 ```
 
 </details>
@@ -857,6 +978,7 @@ print(equal_sum_index([0, 2, 4, 4, 2, 3, 2]) == -1) #True
 # return value is 0.
 print(equal_sum_index([0, 20, 10, -60, 5, 25]) == 0) #True
 
+ 
 ```
 <details>
 <summary>Possible Solution</summary>
@@ -882,6 +1004,7 @@ print(equal_sum_index([0, 2, 4, 4, 2, 3, 2]) == -1) #True
 # return value is 0.
 print(equal_sum_index([0, 20, 10, -60, 5, 25]) == 0) #True
 
+7:05
 ```
 
 </details>
@@ -919,6 +1042,8 @@ print(odd_fellow([7, 99, 7, 51, 99]) == 51) #True
 print(odd_fellow([7, 99, 7, 51, 99, 7, 51]) == 7) #True
 print(odd_fellow([25, 10, -6, 10, 25, 10, -6, 10, -6]) == -6) #True
 print(odd_fellow([0, 0, 0]) == 0) #True
+
+3:18
 ```
 
 </details>
@@ -957,6 +1082,8 @@ print(what_is_different([7, 7, 7, 7.7, 7]) == 7.7) #True
 print(what_is_different([1, 1, 1, 1, 1, 1, 1, 11, 1, 1, 1, 1]) == 11) #True
 print(what_is_different([3, 4, 4, 4]) == 3) #True
 print(what_is_different([4, 4, 4, 3]) == 3) #True
+
+2:43
 ```
 
 </details>
