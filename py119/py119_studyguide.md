@@ -1648,7 +1648,7 @@ bc
 c
 ```
 
-### 4. Triangular Iteration in 2D Arrays (Upper Triangle)
+#### 4. Triangular Iteration in 2D Arrays (Upper Triangle)
 
 Useful for matrix problems, such as traversing only the upper triangle of a square matrix.
 
@@ -1696,6 +1696,49 @@ for i in range(len(arr)):
 [5]
 ```
 
+#### 6. First and Last Character
+
+```python
+
+""" Iterate over a string taking the first and last character and creating a new substring, appending to a list. Then move inwards towards the center until you run out of string. Return the list. """
+
+def either_end(input_str):
+    
+    if not input_str:
+        return []
+
+    result = []
+  
+    for i in range((len(input_str) + 1) // 2):
+        if len(input_str) %2 == 1:
+            if i == (len(input_str) - 1) // 2:
+                result.append(input_str[i])
+            else:
+                snippet = input_str[i]+input_str[-(i+1)]
+                result.append(snippet)
+
+        else:
+            snippet = input_str[i]+input_str[-(i+1)]
+            result.append(snippet)
+    return result
+
+# TESTS
+string = 'cavt'
+print(either_end(string) == ['ct', 'av'])
+
+# LS tests
+string = 'lorem ipsum'
+print(either_end(string) == ['lm', 'ou', 'rs', 'ep', 'mi', ' '])
+
+string = 'helloworld'
+print(either_end(string) == ['hd', 'el', 'lr', 'lo', 'ow',])
+
+string = '1234'
+print(either_end(string) == ['14', '23'])
+
+string = ''
+print(either_end(string) == [])
+```
 
 #### General Pattern
 
