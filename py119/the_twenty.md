@@ -563,7 +563,19 @@ print(even_substrings('2718281') == 16) #True
 print(even_substrings('13579') == 0) #True
 print(even_substrings('143232') == 12) #True
 
-10:20 
+#Another Version
+
+def even_substrings(str_num):
+    
+    results = []
+    for i in range(len(str_num)+1):
+        for j in range(i+1, len(str_num)+1):
+            snippet = int(str_num[i:j])
+            if snippet % 2 == 0:
+                results.append(snippet)
+ 
+    return len(results)
+6:18
 ```
 
 </details>
@@ -712,6 +724,19 @@ print(unscramble('boldface', 'coal') == True) #True
 print(unscramble('olc', 'cool') == False) #True
 
 15:00 - derped it.
+
+#Another Version
+
+def unscramble(string1, string2):
+  
+    set1 = set(string1)
+    set2 = set(string2)
+
+    if set2.issubset(set1) and len(string2) <= len(string1):
+        return True
+    else:
+        return False
+
 ```
 
 </details>
