@@ -1714,7 +1714,7 @@ def either_end(input_str):
             if i == (len(input_str) - 1) // 2:
                 result.append(input_str[i])
             else:
-                snippet = input_str[i]+input_str[-(i+1)]
+                snippet = input_str[i]+input_str[-(i+1)] #Note the method to go backwards
                 result.append(snippet)
 
         else:
