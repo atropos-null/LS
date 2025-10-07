@@ -17,24 +17,37 @@ print(either_end(string) == [])
 
 def either_end(input_str):
     
-    if not input_str:
-        return []
+    # if not input_str:
+    #     return []
 
-    result = []
+    # result = []
   
-    for i in range((len(input_str) + 1) // 2):
-        if len(input_str) %2  == 1:
-            if i == (len(input_str) - 1) // 2:
-                result.append(input_str[i])
-            else:
-                snippet = input_str[i]+input_str[-(i+1)]
-                result.append(snippet)
+    # for i in range((len(input_str) + 1) // 2):
+    #     if len(input_str) %2  == 1:
+    #         if i == (len(input_str) - 1) // 2:
+    #             result.append(input_str[i])
+    #         else:
+    #             snippet = input_str[i]+input_str[-(i+1)]
+    #             result.append(snippet)
 
-        else:
-            snippet = input_str[i]+input_str[-(i+1)]
-            result.append(snippet)
-    return result
+    #     else:
+    #         snippet = input_str[i]+input_str[-(i+1)]
+    #         result.append(snippet)
+    # return result
 
+    list_result = []
+    split_words = [char for char in input_str]
+    while len(split_words) > 1:
+        front = split_words[0]
+        back = split_words[-1]
+        list_result.append(front+back)
+        split_words.pop(0)
+        split_words.pop(-1)
+    
+    if len(split_words) == 1:
+        list_result.append(split_words[0])
+    
+    return list_result
    
 # TESTS
 string = 'cavt'
@@ -58,13 +71,16 @@ print(either_end(string) == [])
 def either_end(input_str):
 
     list_result = []
-    split_words = input_str.split()
-    while len(split_words) > 0:
+    split_words = [char for char in input_str]
+    while len(split_words) > 1:
         front = split_words[0]
         back = split_words[-1]
         list_result.append(front+back)
         split_words.pop(0)
         split_words.pop(-1)
+    
+    if len(split_words) == 1:
+        list_result.append(split_words[0])
     
     return list_result
 
