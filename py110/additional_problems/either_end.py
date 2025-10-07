@@ -23,7 +23,7 @@ def either_end(input_str):
     result = []
   
     for i in range((len(input_str) + 1) // 2):
-        if len(input_str) %2 == 1:
+        if len(input_str) %2  == 1:
             if i == (len(input_str) - 1) // 2:
                 result.append(input_str[i])
             else:
@@ -35,6 +35,7 @@ def either_end(input_str):
             result.append(snippet)
     return result
 
+   
 # TESTS
 string = 'cavt'
 print(either_end(string) == ['ct', 'av'])
@@ -51,3 +52,20 @@ print(either_end(string) == ['14', '23'])
 
 string = ''
 print(either_end(string) == [])
+
+
+"""
+def either_end(input_str):
+
+    list_result = []
+    split_words = input_str.split()
+    while len(split_words) > 0:
+        front = split_words[0]
+        back = split_words[-1]
+        list_result.append(front+back)
+        split_words.pop(0)
+        split_words.pop(-1)
+    
+    return list_result
+
+"""
