@@ -1797,6 +1797,10 @@ When using a loop variable as the ​exclusive stop index​ for a slice, and yo
 Triangular iteration is **O(N²)**, which is fine for small inputs but may be slow for large datasets.
 
 
+Further References:
+
+[Andy's Data Generation Patterns](https://github.com/andy-berger/Launch-School-Core/blob/main/02_PY110/PY119_patterns/README.md)
+
 [Back to the top](#top)
 
 ***
