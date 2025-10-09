@@ -476,6 +476,25 @@ def longest_vowel_substring(string):
     return max(lengths)
 
 8:18
+
+#A Better version
+
+def longest_vowel_substring(string):
+    vowels = 'aeiou'
+    current = 0
+    longest = 0
+    
+    for char in string:
+        if char in vowels:
+            current += 1
+            if current > longest:
+                longest = current
+        else:
+            current = 0
+    
+    return longest
+
+
 ```
 
 </details>
@@ -1028,6 +1047,14 @@ print(equal_sum_index([0, 2, 4, 4, 2, 3, 2]) == -1) #True
 # supposed to return the smallest correct index, the correct
 # return value is 0.
 print(equal_sum_index([0, 20, 10, -60, 5, 25]) == 0) #True
+
+#A Cleaner Version
+def equal_sum_index(lst):
+
+    for i in range(len(lst)):
+        if sum(lst[:i+1]) == sum(lst[i:]):
+            return i
+    return -1
 
 7:05
 ```

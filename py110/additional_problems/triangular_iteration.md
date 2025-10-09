@@ -20,7 +20,7 @@ def count_subarray_sums(arr, target_sum):
 print(count_subarray_sums([1, 2, 3, 4, 5], 9) == 2)     # [4, 5] and [2, 3, 4]
 print(count_subarray_sums([1, 1, 1], 2) == 2)           # [1, 1] occurs twice
 print(count_subarray_sums([1, -1, 1, -1], 0) == 4)      # [1, -1], [1, -1], [-1, 1], [1, -1, 1, -1]
-print(count_subarray_sums([10, 5, 0, 2, 3, -5, 7], 6) == 6)
+print(count_subarray_sums([10, 5, 0, 2, 3, -5, 7], 5) == 6)
 print(count_subarray_sums([4, 2, 22, 8, 5], 30) == 1)
 ```
 
@@ -44,6 +44,18 @@ print(count_subarray_sums([1, 1, 1], 2) == 2)           # [1, 1] occurs twice
 print(count_subarray_sums([1, -1, 1, -1], 0) == 4)      # [1, -1], [1, -1], [-1, 1], [1, -1, 1, -1] 
 print(count_subarray_sums([10, 5, 0, 2, 3, -5, 7], 5) == 6)
 print(count_subarray_sums([4, 2, 22, 8, 5], 30) == 1)
+
+#Another Version:
+
+def count_subarray_sums(arr, target_sum):
+
+    final = []
+    for i in range(len(arr)):
+        for j in range(i, len(arr)):
+            if sum(arr[i:j+1]) == target_sum:
+                final.append(arr[i:j+1])   
+    return len(final)
+
 ```
 </details>
 
@@ -106,6 +118,24 @@ print(longest_palindrome("") == 0)
 print(longest_palindrome("racecar") == 7) # "racecar"
 print(longest_palindrome("programming") == 2) # "mm"
 print(longest_palindrome("launchschool") == 2) # "oo"
+
+## Another Version
+
+def longest_palindrome(string):
+  
+    if not string:
+        return 0
+    
+    result = []
+
+    for i in range(len(string)):
+        for j in range(i, len(string)):
+            if string[i:j+1] == string[i:j+1][::-1]:
+                result.append(string[i:j+1])
+    
+    lengths = [len(substring) for substring in result]
+    return max(lengths)
+
 ```
 
 </details>
@@ -160,6 +190,18 @@ print(even_substrings('3145926') == 16)
 print(even_substrings('2718281') == 16)
 print(even_substrings('13579') == 0)
 print(even_substrings('143232') == 12)
+
+##Another Version
+
+def even_substrings(string):
+
+    result = []
+    for i in range(len(string)):
+        for j in range(i, len(string)):
+            if int(string[i:j+1]) % 2 == 0:
+                result.append(string[i:j+1])
+    return len(result)
+
 ```
 
 </details>
@@ -224,6 +266,41 @@ def longest_monotonic(arr):
             max_length = non_increasing
 
     return max_length
+
+## Another Version
+
+def longest_monotonic(arr):
+    if len(arr) <= 1:
+        return len(arr)
+
+    max_len = 1
+    for i in range(len(arr)):
+        for j in range(i + 1, len(arr)):
+            subarray = arr[i:j+1]
+
+            is_non_decreasing = True
+            is_non_increasing = True
+            for k in range(len(subarray) - 1):
+                # Check for non-decreasing condition
+                if subarray[k] > subarray[k+1]:
+                    is_non_decreasing = False
+                
+                # Check for non-increasing condition
+                if subarray[k] < subarray[k+1]:
+                    is_non_increasing = False
+
+            # A subarray is monotonic if it's either non-decreasing OR non-increasing
+            is_monotonic = is_non_decreasing or is_non_increasing
+            # --- End of replacement logic ---
+
+            if is_monotonic:
+                if len(subarray) > max_len:
+                    max_len = len(subarray)
+            else:
+                # The same optimization still applies
+                break
+                
+    return max_len
 ```
 
 </details>
@@ -305,6 +382,8 @@ print(longest_palindromic_substring("a") == "a")
 print(longest_palindromic_substring("ac") == "a") # Single characters are palindromes
 print(longest_palindromic_substring("racecar") == "racecar")
 print(longest_palindromic_substring("abcdefgfedcba") == "abcdefgfedcba")
+
+
 ```
 
 <details>
@@ -337,6 +416,20 @@ print(longest_palindromic_substring("a") == "a")
 print(longest_palindromic_substring("ac") == "a") # Single characters are palindromes
 print(longest_palindromic_substring("racecar") == "racecar")
 print(longest_palindromic_substring("abcdefgfedcba") == "abcdefgfedcba")
+
+## Slightly different version:
+
+def longest_palindromic_substring(string):
+ 
+    result = []
+    for i in range(len(string)):
+        for j in range(i, len(string)):
+            if string[i:j+1] == string[i:j+1][::-1]:
+                result.append(string[i:j+1])
+
+    max_length = max(result, key=len)
+   
+    return max_length
 ```
 
 </details>
@@ -381,6 +474,22 @@ print(sub_array_sum([1, 2, 3, 4, 5], 9) == [1, 3])    # elements at indices 1,2,
 print(sub_array_sum([10, 5, 1, 2, 3, 4], 15) == [0, 1]) # elements at indices 0,1 (values 10,5) sum to 15
 print(sub_array_sum([3, 2, 5, 4, 1], 10) == [0, 2])    # elements at indices 0,1,2 (values 3,2,5) sum to 10
 print(sub_array_sum([1, 2, 3, 4], 20) == [])
+
+## Another Version
+
+def sub_array_sum(array, target_sum):
+
+    indices = []
+   
+    for i in range(len(array)):
+        for j in range(i, len(array)):
+            if sum(array[i:j+1]) == target_sum:
+                indices.append(i)
+                indices.append(j)
+                return indices
+    
+    if not indices:
+        return []
 ```
 
 </details>
@@ -430,6 +539,19 @@ print(find_max_subarray_sum([-2, 1, -3, 4, -1, 2, 1, -5, 4]) == 6) # subarray [4
 print(find_max_subarray_sum([1]) == 1)
 print(find_max_subarray_sum([-1, -2, -3]) == -6)
 print(find_max_subarray_sum([5, -3, 5]) == 7)
+
+# Another Version:
+
+def find_max_subarray_sum(array):
+
+    current_max = array[0]
+    for i in range(len(array)):
+        for j in range(i, len(array)):
+            summed = sum(array[i:j+1])
+            if summed > current_max:
+                current_max = summed
+    
+    return current_max
 ```
 
 </details>
