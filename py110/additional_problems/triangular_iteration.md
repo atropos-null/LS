@@ -281,26 +281,51 @@ def longest_monotonic(arr):
             is_non_decreasing = True
             is_non_increasing = True
             for k in range(len(subarray) - 1):
-                # Check for non-decreasing condition
                 if subarray[k] > subarray[k+1]:
                     is_non_decreasing = False
                 
-                # Check for non-increasing condition
                 if subarray[k] < subarray[k+1]:
                     is_non_increasing = False
 
-            # A subarray is monotonic if it's either non-decreasing OR non-increasing
             is_monotonic = is_non_decreasing or is_non_increasing
-            # --- End of replacement logic ---
+        
 
             if is_monotonic:
                 if len(subarray) > max_len:
                     max_len = len(subarray)
             else:
-                # The same optimization still applies
                 break
                 
     return max_len
+
+#A third version:
+
+def _find_longest_run(arr, comparison):
+
+    if not arr:
+        return 0
+
+    max_len = 1
+    current_len = 1
+    for i in range(1, len(arr)):
+        if comparison(arr[i], arr[i-1]):
+            current_len += 1
+        else:
+            current_len = 1
+        max_len = max(max_len, current_len)
+    return max_len
+
+def longest_monotonic(arr):
+    if not arr:
+        return 0
+        
+    # Longest non-decreasing (e.g., [1, 2, 2, 3])
+    longest_non_decreasing = _find_longest_run(arr, lambda a, b: a >= b)
+    
+    # Longest non-increasing (e.g., [5, 4, 4, 2])
+    longest_non_increasing = _find_longest_run(arr, lambda a, b: a <= b)
+
+    return max(longest_non_decreasing, longest_non_increasing)
 ```
 
 </details>
@@ -537,7 +562,7 @@ def find_max_subarray_sum(array):
 # Test cases
 print(find_max_subarray_sum([-2, 1, -3, 4, -1, 2, 1, -5, 4]) == 6) # subarray [4, -1, 2, 1]
 print(find_max_subarray_sum([1]) == 1)
-print(find_max_subarray_sum([-1, -2, -3]) == -6)
+print(find_max_subarray_sum([-1, -2, -3]) == -1)
 print(find_max_subarray_sum([5, -3, 5]) == 7)
 
 # Another Version:
@@ -616,6 +641,19 @@ print(longest_unique_substring("bbbbb") == "b")
 print(longest_unique_substring("pwwkew") == "wke")
 print(longest_unique_substring("dvdf") == "vdf")
 print(longest_unique_substring("abcdeafbdgcbb") == "eafbdgc")
+
+#Another Version:
+
+def longest_unique_substring(string):
+    
+    result = []
+    for i in range(len(string)):
+        for j in range(i, len(string)):
+            substring = string[i:j+1]
+            if len(substring) == len(set(substring)):
+                result.append(substring)
+    return max(result, key=len)
+
 ```
 
 </details>
@@ -664,6 +702,20 @@ def closest_numbers(numbers):
 print(closest_numbers([5, 25, 15, 11, 20]) == (15, 11))
 print(closest_numbers([19, 25, 32, 4, 27, 16]) == (25, 27))
 print(closest_numbers([12, 7, 17]) == (12, 7))
+
+#Another Version:
+
+def closest_numbers(numbers):
+  
+    counts = {}
+    for i in range(len(numbers)):
+        for j in range(i+1, len(numbers)):
+            difference = abs(numbers[i] - numbers[j])
+            counts[difference] = counts.get(difference, (numbers[i], numbers[j]))
+    
+    min_key = min(counts.keys())
+    return counts[min_key]
+
 ```
 </details>
 
@@ -776,12 +828,42 @@ print(either_end(string) == [])
 
 ```python
 
-def either_end(string):
-    final = []
-    for i in range(len(string)//2):
-        slice = string[i]+ string[-(i+1)]
-        final.append(slice)
- 
-    return final
+def either_end(input_str):
+
+    if not input_str:
+        return []
+
+    result = []
+  
+    for i in range((len(input_str) + 1) // 2):
+        if len(input_str) %2  == 1:
+            if i == (len(input_str) - 1) // 2:
+                result.append(input_str[i])
+            else:
+                snippet = input_str[i]+input_str[-(i+1)]
+                result.append(snippet)
+
+        else:
+            snippet = input_str[i]+input_str[-(i+1)]
+            result.append(snippet)
+    return result
+
+#Another Version
+
+def either_end(input_str):
+    list_result = []
+    split_words = [char for char in input_str]
+    while len(split_words) > 1:
+        front = split_words[0]
+        back = split_words[-1]
+        list_result.append(front+back)
+        split_words.pop(0)
+        split_words.pop(-1)
+    
+    if len(split_words) == 1:
+        list_result.append(split_words[0])
+    
+    return list_result
+
 ```
 </details>
