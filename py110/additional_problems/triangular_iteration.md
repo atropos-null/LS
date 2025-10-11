@@ -801,6 +801,37 @@ def convert_lojban(string):
                 final.append(LO_NUMBERS[keys])
         
     return int("".join(final))
+
+#Another Version:
+
+def convert_lojban(string):
+
+    LO_NUMBERS = {
+        'pa' : '1',
+        'vo' : '4',
+        'ze' : '7',
+        're' : '2',
+        'mu' : '5',
+        'bi' : '8',
+        'ci' : '3',
+        'xa' : '6',
+        'so' : '9',
+        'no' : '0',
+    }
+
+    result = []
+    temp = []
+    for i in range(len(string)+1):
+        if i % 2 == 0:
+            sliced = string[i:i+2]
+            temp.append(sliced)
+
+    for item in temp:
+        if item in LO_NUMBERS.keys():
+                result.append(LO_NUMBERS[item])
+    
+    return int("".join(result))
+
 ```
 </details>
 
@@ -836,7 +867,7 @@ def either_end(input_str):
     result = []
   
     for i in range((len(input_str) + 1) // 2):
-        if len(input_str) %2  == 1:
+        if len(input_str) % 2  == 1:
             if i == (len(input_str) - 1) // 2:
                 result.append(input_str[i])
             else:
@@ -851,19 +882,20 @@ def either_end(input_str):
 #Another Version
 
 def either_end(input_str):
-    list_result = []
-    split_words = [char for char in input_str]
-    while len(split_words) > 1:
-        front = split_words[0]
-        back = split_words[-1]
-        list_result.append(front+back)
-        split_words.pop(0)
-        split_words.pop(-1)
+
+    result = []
+    chars = [char for char in input_str]
     
-    if len(split_words) == 1:
-        list_result.append(split_words[0])
-    
-    return list_result
+    while len(chars) > 1:
+        substring = chars[0] + chars[-1]
+        result.append(substring)
+        chars.pop(0)
+        chars.pop(-1)    
+
+    if len(chars) == 1:
+        result.append(chars[0])
+
+    return result
 
 ```
 </details>
