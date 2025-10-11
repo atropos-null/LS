@@ -267,35 +267,32 @@ def longest_monotonic(arr):
 
     return max_length
 
-## Another Version
+# Another Version
 
 def longest_monotonic(arr):
-    if len(arr) <= 1:
-        return len(arr)
+    if not arr:
+        return 0
 
     max_len = 1
-    for i in range(len(arr)):
-        for j in range(i + 1, len(arr)):
-            subarray = arr[i:j+1]
+    current_increasing = 1
+    current_decreasing = 1
 
-            is_non_decreasing = True
-            is_non_increasing = True
-            for k in range(len(subarray) - 1):
-                if subarray[k] > subarray[k+1]:
-                    is_non_decreasing = False
-                
-                if subarray[k] < subarray[k+1]:
-                    is_non_increasing = False
+    for i in range(1, len(arr)):
+        # Check for non-decreasing sequence
+        if arr[i] >= arr[i-1]:
+            current_increasing += 1
+        else:
+            current_increasing = 1
 
-            is_monotonic = is_non_decreasing or is_non_increasing
+        # Check for non-increasing sequence
+        if arr[i] <= arr[i-1]:
+            current_decreasing += 1
+        else:
+            current_decreasing = 1
         
-
-            if is_monotonic:
-                if len(subarray) > max_len:
-                    max_len = len(subarray)
-            else:
-                break
-                
+        # Update the max length found so far
+        max_len = max(max_len, current_increasing, current_decreasing)
+        
     return max_len
 
 #A third version:
