@@ -300,32 +300,19 @@ def longest_monotonic(arr):
 
 #A third version:
 
-def _find_longest_run(arr, comparison):
-
-    if not arr:
-        return 0
-
-    max_len = 1
-    current_len = 1
-    for i in range(1, len(arr)):
-        if comparison(arr[i], arr[i-1]):
-            current_len += 1
-        else:
-            current_len = 1
-        max_len = max(max_len, current_len)
-    return max_len
-
 def longest_monotonic(arr):
-    if not arr:
-        return 0
-        
-    # Longest non-decreasing (e.g., [1, 2, 2, 3])
-    longest_non_decreasing = _find_longest_run(arr, lambda a, b: a >= b)
     
-    # Longest non-increasing (e.g., [5, 4, 4, 2])
-    longest_non_increasing = _find_longest_run(arr, lambda a, b: a <= b)
-
-    return max(longest_non_decreasing, longest_non_increasing)
+    current = 0
+    maxed = 0
+    for i in range(len(arr)):
+        for j in range(i, len(arr)):
+            snippet = arr[i:j+1]
+            if snippet == sorted(snippet) or snippet == sorted(snippet, reverse=True):
+                current += 1
+                if current > maxed:
+                    maxed = current
+        current = 0
+    return maxed
 ```
 
 </details>
