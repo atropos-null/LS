@@ -305,7 +305,7 @@ def longest_monotonic(arr):
         for j in range(i, len(arr)):
             snippet = arr[i:j+1]
             if snippet == sorted(snippet) or snippet == sorted(snippet, reverse=True):
-                current += 1
+                current = len(snippet)
                 if current > maxed:
                     maxed = current
         current = 0
