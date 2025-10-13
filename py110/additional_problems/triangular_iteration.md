@@ -845,22 +845,14 @@ print(either_end(string) == [])
 
 def either_end(input_str):
 
-    if not input_str:
-        return []
-
     result = []
-  
-    for i in range((len(input_str) + 1) // 2):
-        if len(input_str) % 2  == 1:
-            if i == (len(input_str) - 1) // 2:
-                result.append(input_str[i])
-            else:
-                snippet = input_str[i]+input_str[-(i+1)]
-                result.append(snippet)
-
-        else:
-            snippet = input_str[i]+input_str[-(i+1)]
-            result.append(snippet)
+    chars = [char for char in input_str]
+    for i in range(len(chars) // 2):
+        snippet = chars[i] + chars[-(i+1)]
+        result.append(snippet)
+           
+    if len(chars) % 2 == 1:
+        result.append(" ")
     return result
 
 #Another Version
