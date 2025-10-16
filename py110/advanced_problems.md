@@ -1,4 +1,4 @@
-# PY110/119 Practice Problems that were tricky and need further review.
+# PY110/119 Palindrome Specific Practice Problems
 
 ## 1. Almost a Palindrome
 
