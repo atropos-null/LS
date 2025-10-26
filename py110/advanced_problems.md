@@ -34,6 +34,10 @@ print(almost_a_palindrome("ab") == True)
 
 <details>
 <summary>Show answer</summary>
+
+```python
+
+```
 </details>
 
 
@@ -238,3 +242,32 @@ print(shortest_palindrome_prefix("race") == "ecarace")     # Add "eca" to the fr
 print(shortest_palindrome_prefix("a") == "a")
 print(shortest_palindrome_prefix("level") == "level")
 ```
+
+<details>
+<summary>All rights reserved</summary>
+
+```python
+
+def to_palindrome(string):
+
+    if string.lower() == string[::-1].lower():
+            return string
+    
+    for i in range(len(string)):
+        front = string[:i]
+        back = string[i+1:]
+        snippet = front + back
+        if snippet.lower() == snippet[::-1].lower():
+             return snippet
+
+    
+print(to_palindrome('reviver') == 'reviver')
+print(to_palindrome('wow!') == 'wow')
+print(to_palindrome('woW') == 'woW')
+print(to_palindrome('madame') == 'madam')
+print(to_palindrome('abcdEFGgfedccbA') == 'abcdEFGgfedcbA')
+print(to_palindrome('00 11 22 33 44 33 22 191 00') == '00 11 22 33 44 33 22 11 00')
+print(to_palindrome('Step On Not Pets') == 'Step On No Pets')
+print(to_palindrome('Clearly this cannot be a palindrome') == None)
+```
+</details>
