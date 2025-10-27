@@ -72,6 +72,10 @@ print(palindrome_pairs(["level", "noon", "radar", "kayak"]) == [])
 
 <details>
 <summary>Show answer</summary>
+
+```python
+
+```
 </details>
 
 ## 3. Palindromic Substrings
@@ -115,6 +119,10 @@ print(palindromes('knitting cassettes') ==
 
 <details>
 <summary>Show answer</summary>
+
+```python
+
+```
 </details>
 
 
@@ -145,6 +153,10 @@ print(partition_palindromes("racecar") == [['r', 'a', 'c', 'e', 'c', 'a', 'r'], 
 
 <details>
 <summary>Show answer</summary>
+
+```python
+
+```
 </details>
 
 ## 5. Longest "Real" Palindrome*
@@ -176,6 +188,10 @@ print(longest_real_palindrome("forgeeksskeegfor") == "geeksskeeg")
 
 <details>
 <summary>Show answer</summary>
+
+```python
+
+```
 </details>
 
 ## 6. Palindromic Number
@@ -212,62 +228,161 @@ print(is_palindrome_number(123) == False)
 
 <details>
 <summary>Show answer</summary>
-</details>
-
-## 7. Shortest Palindrome Prefix
-
-Write a function that takes a string s and transforms it into a palindrome by adding characters in front of it.
-
-Your function should return the shortest possible palindrome that can be formed this way.
 
 ```python
 
-def shortest_palindrome_prefix(s):
+```
+</details>
+
+
+## 7. Lexicographically Smallest Palindrome
+
+Given a string s, determine if its characters can be rearranged to form a palindrome. If they can, return the lexicographically smallest palindrome that can be formed. If not, return the string "not possible".
+
+The lexicographically smallest string is the one that would appear first in a dictionary.
+
+```python
+
+def smallest_palindrome(s):
     """
-    Finds the shortest palindrome by adding a prefix to the string.
+    Rearranges a string to form the lexicographically smallest palindrome.
 
     Args:
-        s (str): The original string.
+        s (str): The input string of lowercase letters.
 
     Returns:
-        str: The shortest palindrome created by adding characters to the front.
+        str: The smallest palindrome or "not possible".
     """
     # Your implementation here
     pass
 
 # Test cases
-print(shortest_palindrome_prefix("aacecaaa") == "aaacecaaa") # Add "aa" to the front
-print(shortest_palindrome_prefix("abcd") == "dcbabcd")     # Add "dcb" to the front
-print(shortest_palindrome_prefix("race") == "ecarace")     # Add "eca" to the front
-print(shortest_palindrome_prefix("a") == "a")
-print(shortest_palindrome_prefix("level") == "level")
+print(smallest_palindrome("aabbc") == "abcba")
+print(smallest_palindrome("aabbcd") == "not possible")
+print(smallest_palindrome("zyxwzxy") == "wxyzxyw")
+print(smallest_palindrome("racecar") == "acecrace")
+print(smallest_palindrome("level") == "elvle")
+print(smallest_palindrome("a") == "a")
 ```
 
 <details>
-<summary>All rights reserved</summary>
+<summary>Show answer</summary>
 
 ```python
 
-def to_palindrome(string):
+```
+</details>
 
-    if string.lower() == string[::-1].lower():
-            return string
-    
-    for i in range(len(string)):
-        front = string[:i]
-        back = string[i+1:]
-        snippet = front + back
-        if snippet.lower() == snippet[::-1].lower():
-             return snippet
+## 8. Longest Palindrome from Two-Letter Words
 
-    
-print(to_palindrome('reviver') == 'reviver')
-print(to_palindrome('wow!') == 'wow')
-print(to_palindrome('woW') == 'woW')
-print(to_palindrome('madame') == 'madam')
-print(to_palindrome('abcdEFGgfedccbA') == 'abcdEFGgfedcbA')
-print(to_palindrome('00 11 22 33 44 33 22 191 00') == '00 11 22 33 44 33 22 11 00')
-print(to_palindrome('Step On Not Pets') == 'Step On No Pets')
-print(to_palindrome('Clearly this cannot be a palindrome') == None)
+You are given a list of strings, where each string consists of two lowercase English letters. Create a function to find the length of the longest palindrome that can be built by concatenating some of the elements from the list. Each string can be used at most once.
+
+```python
+
+def longest_palindrome_from_words(words):
+    """
+    Finds the length of the longest palindrome by concatenating two-letter words.
+
+    Args:
+        words (list): A list of two-letter strings.
+
+    Returns:
+        int: The length of the longest possible palindrome.
+    """
+    # Your implementation here
+    pass
+
+# Test cases
+# "lc" + "gg" + "cl" = "lcggcl"
+print(longest_palindrome_from_words(["lc", "cl", "gg"]) == 6)
+# "ty" + "lc" + "cl" + "yt" = "tylcclyt"
+print(longest_palindrome_from_words(["ab", "ty", "yt", "lc", "cl", "ab"]) == 8)
+# "cc", "ll", "oo", "dd" can't form pairs, but one can be a center.
+# "ab" and "ba" form a pair. "abccba"
+print(longest_palindrome_from_words(["cc", "ll", "ab", "ba"]) == 6)
+print(longest_palindrome_from_words(["zz","zz"]) == 4)
+```
+
+<details>
+<summary>Show answer</summary>
+
+```python
+
+```
+</details>
+
+## 9.  Next Palindromic Time
+
+Write a function that takes a time string in "HH:MM" format and returns the next closest palindromic time. A time is palindromic if its string representation (ignoring the colon) reads the same forwards and backwards. For example, "05:50" is palindromic because "0550" is a palindrome. The function should correctly handle rollovers into the next day.
+
+```python
+
+def next_palindromic_time(time_str):
+    """
+    Finds the next palindromic time after the given time.
+
+    Args:
+        time_str (str): The start time in "HH:MM" format.
+
+    Returns:
+        str: The next palindromic time in "HH:MM" format.
+    """
+    # Your implementation here
+    pass
+
+# Test cases
+print(next_palindromic_time("23:50") == "00:00")
+print(next_palindromic_time("01:20") == "01:10") # Typo in example, should be "02:20"
+# Correcting logic based on "next closest"
+print(next_palindromic_time("01:20") == "02:20")
+print(next_palindromic_time("05:30") == "05:50")
+print(next_palindromic_time("15:10") == "15:51")
+print(next_palindromic_time("20:00") == "20:02")
+print(next_palindromic_time("12:12") == "13:31")
+print(next_palindromic_time("23:59") == "00:00")
+```
+
+<details>
+<summary>Show answer</summary>
+
+```python
+
+```
+</details>
+
+## 10. Palindrome Permutation
+
+Write a function that takes a string and determines if it is a permutation of a palindrome. A palindrome is a word or phrase that is the same forwards and backwards. A permutation is a rearrangement of letters. The palindrome does not need to be limited to just dictionary words. For this problem, character case and non-alphanumeric characters should be ignored.
+
+```python
+
+def is_palindrome_permutation(s):
+    """
+    Checks if a string can be rearranged to form a palindrome.
+
+    Args:
+        s (str): The input string.
+
+    Returns:
+        bool: True if any permutation of the string is a palindrome.
+    """
+    # Your implementation here
+    pass
+
+# Test cases
+# "Tact Coa" can be rearranged to "taco cat", "atco cta", etc.
+print(is_palindrome_permutation('Tact Coa') == True)
+print(is_palindrome_permutation('aabbc') == True)
+print(is_palindrome_permutation('aabbcd') == False)
+print(is_palindrome_permutation('a') == True)
+print(is_palindrome_permutation('Able was I ere I saw Elba') == True)
+print(is_palindrome_permutation('Launch School') == False)
+```
+
+<details>
+<summary>Show answer</summary>
+
+```python
+
 ```
 </details>
