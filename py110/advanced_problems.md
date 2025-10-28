@@ -386,3 +386,76 @@ print(is_palindrome_permutation('Launch School') == False)
 
 ```
 </details>
+
+## 11. Numerical Palindrome
+
+A palindrome is a word, phrase, number, or other sequence of characters which reads the same backward as forward. 
+Examples of numerical palindromes are:
+
+```
+2332 
+110011 
+54322345
+```
+
+You'll be given 2 numbers as arguments: `(num, s)`. 
+
+Write a function which returns a list of `s` number of numerical palindromes that come after `num`. If `num` is a palindrome itself, it should be included in the count. 
+
+Single digit numbers will NOT be considered numerical palindromes. 
+
+```python
+
+def palindrome(num, s):
+    ...
+
+print(palindrome(6,4) == [11,22,33,44]) # True
+print(palindrome(75,1) == [77]) # True
+print(palindrome(101,2) == [101,111]) # True
+print(palindrome(0,4) == [11,22,33,44]) # True
+```
+
+<details>
+<summary>Show answer</summary>
+
+```python
+
+def palindrome(num, s):
+
+    if not s:
+        return []
+    
+    result = []
+    while len(result) < s:
+        converted = str(num)
+        if len(converted) > 1 and converted == converted[::-1]:
+            result.append(num)
+        num += 1
+    
+    return result
+
+print(palindrome(6,4) == [11,22,33,44]) # True
+print(palindrome(75,1) == [77]) # True
+print(palindrome(101,2) == [101,111]) # True
+print(palindrome(0,4) == [11,22,33,44]) # True
+
+#Version 2:
+
+def is_palindrome(n):
+    converted = str(n)
+    return len(converted) > 1 and converted == converted[::-1]
+
+def palindrome(num, s):
+    if not s:
+        return []
+    
+    result = []
+    while len(result) < s:
+        if is_palindrome(num):
+            result.append(num)
+        num += 1
+    
+    return result
+
+```
+</details>

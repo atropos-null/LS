@@ -307,6 +307,480 @@ Page Reference: [The Object Model](https://launchschool.com/books/oo_python/read
 
 ### Classes and Objects
 
+#### States and Behaviors
+
+**State** refers to the data associated with an individual class instance. **Behavior** is what class instance objects can do, i.e., what methods an object can call. Two instances from the same class will have the same behaviors, but the states within them may be different. **Instance variables** keep track of the state, while **instance methods** expose behavior for objects. 
+
+
+#### Object Scope
+
+**Object scope** refers to the methods and instance variables an object can access. This is akin to discussing global and local scope instead of identifier scope. 
+
+Object scope has two main components:
+
+1) The methods in the class. This includes any methods acquired by the class via inheritance or mix-ins. 
+2) The instance variables associated with the object. This includes any instance variables acquired via inheritance.
+
+Instance variables, however, belong to objects. The methods give values to the instance variables, but those values belong to the object. Any object can call any method the class provides; every method can access the object's instance variables. Thus, all instances of the same type can access the same methods. However, an object can only access its own state.
+
+#### Object Instantiation 
+
+```python
+class GoodDog:
+
+    def __init__(self):
+        print('This object was initialized!')
+
+sparky = GoodDog() # This object was initialized!
+```
+
+The `__init__ ` method gets called every time you create a new object. As you may recall, that's the final step when instantiating an object. The first step is to call the constructor, e.g., `GoodDog()`. The constructor first calls the static method `__new__`.  This method allocates memory for the object and returns an uninitialized object to the constructor. The constructor next initializes the object by calling `__init__`.  In our GoodDog example, we call `GoodDog()`, which, in turn, calls `GoodDog.__new__.` The `__new__` method returns the new object, which the constructor subsequently uses to call `__init__`. `__init__` is frequently called the constructor. However, a better name may be the initializer or the instance constructor. 
+
+Putting setup in` __init__ `ensures every instance is fully initialized at creation time—you can’t forget to run setup—so objects are always in a valid, uniform state. It also makes required data explicit via `__init__ `parameters and works cleanly with inheritance.
+
+#### Instance Variables
+
+```python
+
+class GoodDog:
+
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+sparky = GoodDog('Sparky', 5)
+```
+
+Adding parameters to `__init__ `means you must provide arguments corresponding to those parameters when calling the constructor. `self.name` and `self.age` are instance variables. Every GoodDog object will have appropriate values for these variables. Instance variables keep track of information about the state of an object.
+
+`__init__(self, name, age)` receives:
+
+self → the newly created GoodDog instance (auto-supplied by Python)
+name → 'Sparky' (supplied by you)
+age → 5 (supplied by you)
+
+
+#### Instance Methods
+
+```python
+
+class GoodDog:
+
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def speak(self):
+        return 'Arf!'
+
+sparky = GoodDog('Sparky', 5)
+print(sparky.speak())
+```
+
+All instance methods must have a `self `parameter. Again, all instances of a class have the same behaviors, though they may contain different states.
+
+**Question: Why can't we just write return f'{name} says arf!' inside the speak method? Why do we need to use self.name instead?**
+
+
+Without `self`, Python looks for a variable named name in the current scope (locals, then globals). There isn’t one inside speak, so name would raise a `NameError`. Instance variables live on the object, not in the method’s local scope. So we must access them through the object reference (self).
+
+
+#### Privacy
+
+Warning: Instance variables can be reassigned, and if mutable, an instance variable can be mutated.
+
+You can view or change any object's instance variables by just referencing the variable name. You can even delete or change methods. This can lead to all kinds of problems, such as:
+
+* Unexpected instance variable values can lead to incorrect or unexpected behavior of the class instances.
+* The class developer may change the implementation in the future, which may break your code.
+* Incorrect or modified attributes can lead to unanticipated security problems.
+
+The simplest approach  to discouraging users from using one's "private" attributes is to rely on the convention of marking instance variables and methods for internal use by naming them with a single leading underscore:
+
+```python
+class GoodDog:
+
+    def __init__(self, name, age):
+        self._name = name
+        self._age = age
+
+    def speak(self):
+        return f'{self._name} says arf!'
+
+    def _dog_years(self):
+        return self._age * 7
+
+    def show_age(self):
+        print(f'My age in dog years is {self._dog_years()}')
+
+# Omitted code
+```
+
+This doesn't prevent messing around with these internal use attributes, but it's a clear signal to the user that they're playing with fire. The single underscore convention tells the user they're messing with something they shouldn't. If they go ahead and do so anyway, it's at their own risk.
+
+
+#### Getters and Setters
+
+Since we can't prevent unrestricted access to instance variables, the next best approach is to provide getter and setter methods for the instance variables a user might want to access or modify. **Getters** and **setters** are common in OOP; they are methods that provide controlled access to an object's attributes. Getters retrieve attribute values, while setters assign attributes to new values.
+
+```python
+class GoodDog:
+
+    def __init__(self, name, age):
+        self._name = name
+        self._age = age
+
+    def speak(self):
+        return f'{self._name} says arf!'
+
+    def name(self):
+        return self._name
+
+    def set_name(self, new_name):
+        if not isinstance(new_name, str):
+            raise TypeError('Name must be a string')
+        self._name = new_name
+
+    def age(self):
+        return self._age
+
+    def set_age(self, new_age):
+        if not isinstance(new_age, int):
+            raise TypeError('Age must be an integer')
+        if new_age < 0:
+            raise ValueError("Age can't be negative")
+        self._age = new_age
+
+sparky = GoodDog('Sparky', 5)
+print(sparky.name())          # Sparky
+print(sparky.age())           # 5
+sparky.set_name('Fireplug')
+print(sparky.name())          # Fireplug
+sparky.set_age(6)
+print(sparky.age())           # 6
+
+sparky.set_name(42)
+# TypeError: Name must be a string
+
+sparky.set_age(-1)
+# ValueError: Age can't be negative
+```
+
+In this code, we've used the underscore conventions to mark `self._name` and `self._age `for internal use. However, we've created getter methods name and age to retrieve the `self._name` and `self._age` values, respectively. We've also defined setter methods named `set_name` and `set_age` to change a GoodDog's name and age. To avoid unexpected values being submitted, we raise an exception if the name isn't a string or the age isn't a non-negative integer.
+
+Users of your class can still choose to ignore the underscore convention. However, they no longer need it for any legitimate purpose. They can use the getters and setters. Getters conventionally have the same name as the associated instance variable without leading underscores. Setters conventionally prefix the same name with `set_`.
+
+**Disregarding setters, if our name getter simply returns self._name, how is this approach any better than using a name variable directly?**
+
+Even if the getter is just returning self._name today, it still buys you a few things:
+
+Encapsulation and a stable interface: outside code uses name (getter) as the public way to read the value. You’re free to change how the value is stored (rename _name, compute it dynamically, fetch from elsewhere) without breaking callers.
+Read-only access: by exposing only a getter (no setter), you communicate “this should not be reassigned,” while still allowing reads.
+
+Room for future logic: you can easily add validation, transformation, caching, or logging later without changing callers.
+Clear separation of public vs internal: _name is marked “internal use” by convention; name is part of the class’s public API.
+If you later switch to properties (@property), callers can still write obj.name, but you retain all the above flexibility.
+
+#### Properties
+
+A more Pythonic way to create getters and setters is to use the `@property` decorator: Decorators are a fairly advanced concept in Python. They are, in fact, methods that modify other methods (the name and age methods seen above).
+
+The `@property `decorator is used to create getter methods for an instance variable. When you apply `@property` to a method named foo, `@property` creates a secondary decorator named `@foo.setter`; this secondary decorator is used to create setter methods. (Thus, you can have a getter without a setter, but you can't have a setter without a getter.)
+
+```python
+class GoodDog:
+
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def speak(self):
+        return f'{self.name} says arf!'
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        if not isinstance(name, str):
+            raise TypeError('Name must be a string')
+
+        self._name = name
+
+    @property
+    def age(self):
+        return self._age
+
+    @age.setter
+    def age(self, age):
+        if not isinstance(age, int):
+            raise TypeError('Age must be an integer')
+
+        if age < 0:
+            raise ValueError("Age can't be negative")
+
+        self._age = age
+
+sparky = GoodDog('Sparky', 5)
+print(sparky.name)          # Sparky
+print(sparky.age)           # 5
+sparky.name = 'Fireplug'
+
+print(sparky.name)          # Fireplug
+sparky.age = 6
+
+print(sparky.age)           # 6
+
+sparky.name = 42  # TypeError: Name must be a string
+
+sparky.age = -1   # ValueError: Age can't be negative
+```
+
+With this code, we seem to have two different methods called name and two more named age. The decorators, `@property`, `@name.setter`, and `@age.setter`, make them distinct. The `@property` prior to the first name method creates the @name.setter decorator, while the one prior to the first age method creates the `@age.setter` decorator.
+
+Using these decorators means we no longer need `()` when accessing the getter and setter. We can also use standard assignment syntax to give an instance variable a new value.
+
+Getters created with the `@property` decorator are known as properties. A setter is simply a property whose value can be reassigned.
+
+
+#### When to Use Properties
+
+Use properties when:
+
+* you want to strongly discourage misuse of the instance variables.
+* you want to validate data when your instance variables receive new values.
+* you have dynamically computed attributes.
+* you need to refactor your code in a manner incompatible with the existing interface.
+* you want to improve your code readability, and properties can help.
+
+If you don't need properties to satisfy a specific problem, you shouldn't use them.
+
+When you use properties, use the single or double underscore convention for the associated instance variables.
+
+Remember! There are no guardrails. Without properties (or your own getters/setters), Python doesn’t enforce types or values on instance variables at runtime.
+
+#### Class Methods
+
+Thus far, all the methods we've created are instance methods. They are methods that pertain to a class instance. There are also class-level methods called class methods.
+
+Class methods provide general services for the class as a whole rather than the individual objects. We usually use the class to invoke the method. However, Python also lets you invoke class methods with instance objects. That's a little confusing, though, so you should use the class if possible.
+
+```python
+
+ class GoodCat():
+
+    @classmethod
+    def what_am_i(cls):
+        print("I'm a GoodCat class!")
+
+GoodCat.what_am_i()    # I'm a GoodCat class!
+
+```
+
+Class methods are where we usually put functionality that doesn't deal with class instances. Since our method has no reason to use the instance variables, we use a class method instead.
+
+There are a variety of ways to call class methods:
+
+* if you need to call a class method from within another class method of the same class, you can use the `cls` argument as the caller for the second method.
+
+```python
+class Foo:
+
+    @classmethod
+    def bar(cls):
+        print('this is bar')
+
+    @classmethod
+    def qux(cls):
+        print('this is qux')
+        cls.bar()
+
+Foo.qux()
+# this is qux
+# this is bar
+```
+* When you want to call a specific class method from outside the class that contains the class method, use the class's name to call it, as we did with Foo.qux() above. If you call a class method without using the explicit class name, Python will use the inferred class and the method resolution order (MRO) to determine which class method it should use. 
+
+* If you have an instance object, obj, of a class that has a class method, you can invoke that method by using t`ype(obj), obj.__class__`, or even obj as the caller. You can also use self inside a method, as we show below:
+
+```python
+class Foo1:
+
+    @classmethod
+    def bar(cls):
+        print('this is bar in Foo1')
+
+    def qux(self):
+        type(self).bar()
+        self.__class__.bar()
+        self.bar()
+        Foo1.bar()
+
+class Foo2(Foo1):
+
+    @classmethod
+    def bar(cls):
+        print('this is bar in Foo2')
+
+foo1 = Foo1()
+foo1.qux()
+# this is bar in Foo1
+# this is bar in Foo1
+# this is bar in Foo1
+# this is bar in Foo1
+
+foo2 = Foo2()
+foo2.qux()
+# this is bar in Foo2
+# this is bar in Foo2
+# this is bar in Foo2
+# this is bar in Foo1
+```
+
+We strongly discourage using the `obj.bar() `syntax for class methods. You lose any indication that you're calling a class method.
+
+**When is a class variable initialized?**
+
+At class definition time, in the class body (e.g., counter = 0 at the top of the class). It exists before any instances are created and is shared by the class and its instances. 
+
+**How is it different from an instance variable?**
+
+Class variables:
+* Lives on the class, shared by all instances.
+* Typically defined in the class body.
+* Same storage for every instance unless shadowed.
+
+Instance variable:
+* Lives on each individual object, not shared.
+* Usually created/initialized in init via s`elf.attr = value`.
+* Each instance can have different values (object state).
+
+
+#### Class Variables
+
+Instance variables capture information related to specific class instances. Similarly, class variables capture information about the class. We initialize class variables in the main class body, usually at the top of the class. We can access and manipulate them with both instance and class methods.
+
+```python
+
+class GoodCat:
+
+    counter = 0                  # class variable
+
+    def __init__(self):
+        GoodCat.counter += 1
+
+    @classmethod
+    def number_of_cats(cls):
+        return GoodCat.counter
+
+class ReallyGoodCat(GoodCat):
+    pass
+
+cat1 = GoodCat()
+cat2 = GoodCat()
+cat3 = ReallyGoodCat()
+
+print(GoodCat.number_of_cats())        # 3
+print(GoodCat.counter)                 # 3
+print(ReallyGoodCat.number_of_cats())  # 3
+print(ReallyGoodCat.counter)           # 3
+```
+
+In GoodCat, we have a class variable name, counter, which we initialize to 0. We want to use this variable to keep track of how many cats we have, so on line 6, we increment it by 1. Since Python calls `__init__ `every time we instantiate a new object, it's a great place to increment counter.
+
+If we want to count all GoodCat objects, including any instances of `ReallyGoodCat` or other subclasses, we need to increment `GoodCat.counter` explicitly instead of `self.__class__.counter`. Otherwise, we'll end up incrementing a counter variable in the subclass. For the same reason, we also refer to `GoodCat.counter` in the number_of_cats method.
+
+**Why is tracking how many instances have been created a good use case for a class variable?**
+
+Because the count is a single piece of information about the class as a whole, not about any one object. A class variable lives on the class and is shared by all instances, so each time an object is created you can increment the same counter and get an aggregate total. 
+
+#### Class Constants
+
+Some classes have variables you never want to change once the class is defined. For this, you can use class constants. Class constants have the same naming conventions as ordinary constants. Like those constants, they are only constant by convention. Python doesn't enforce constancy.
+
+As with class methods, you can use `cls.CONSTANT`, `type(obj).CONSTANT`, `obj.__class__.CONSTANT`, and `obj.CONSTANT` to access class constants. Once again, you should use the explicit class name syntax if you want to make sure you're accessing a class constant in a specific class.
+
+#### More about `self`
+
+`self` is that it always represents an object. What object, though? It's the calling object for a method. 
+
+```python
+
+class Pet:
+
+    def __init__(self, name):
+        self.name = name
+
+    def speak(self, sound):
+        print(f'{self.name} says {sound}!')
+
+class Cat(Pet):
+
+    def speak(self):
+        super().speak('meow')
+
+cheddar = Cat('Cheddar')
+cheddar.speak()
+```
+
+The actual calling object is a Cat object. It's that object that self refers to on line 7. It happens that a Cat object is also a Pet object, which explains our first sentence.
+
+This also applies to line 4, though we never directly called the `__init__` method from the Cat class. However, Python uses a Cat object to call `__init__`.
+
+By the way, that invocation of `super()` on line 12 returns an object that lets you call methods from the superclass of an object. Thus `super().speak('meow')` calls the speak method from the Pet class.
+
+A reminder:  The first parameter defined for any instance method always represents the calling object, no matter what name you use.
+
+**Can we also use self to call an instance method? Why or why not?**
+
+es. Inside an instance method, self is the calling object, so you can invoke other instance methods on that same object with self.other_method(...).
+
+Why it works:
+
+* Methods belong to the class but are available to all instances. Accessing a method via an instance (like `self.speak`) creates a bound method that will automatically pass self as the first argument when called.
+* Since self is “the current object,” `self.some_method()` is just like calling obj.some_method() from the outside, but on the current instance.
+
+#### More About `cls`
+
+The first parameter of a class method, conventionally named `cls`, always represents a class. Usually, that's the class used to invoke the method. For instance, if we call the `GoodCat.number_of_cats` method from earlier, we're using the GoodCat class to call the method. Thus, when we access `cls.counter` in the method, it refers to the number of GoodCat objects created.
+
+`cls` is nearly identical to self in almost all respects. However, it conventionally references a class rather than an ordinary object. In Python, though, classes are instance objects, too! They are instantiated from the type class. Theoretically, there is no difference between `cls` and `self`. Nevertheless, use `cls` when defining a class method and self for instance methods.
+
+```python
+class Animal:
+
+    @classmethod
+    def make_sound(cls):
+        print(f'{cls.__name__}: A generic sound')
+
+class Dog(Animal):
+
+    @classmethod
+    def make_sound(cls):
+        super().make_sound()
+        print(f'{cls.__name__}: Bark')
+
+Dog.make_sound()
+# Dog: A generic sound
+# Dog: Bark
+```
+
+Inside a class method, cls refers to the calling class, so you can access class variables with `cls.variable`. That’s conventional and works fine.
+
+Be mindful of inheritance: cls will be the subclass when invoked via a subclass, so you’ll read/write that subclass’s variable (or create/shadow one). If you need to target a specific class’s variable, use the explicit class name.
+
+#### Static Methods
+
+You'll often encounter methods that belong to a class, but don't need access to any class or instance attributes. As a result, they don't make sense as either class or instance methods. Instead, they usually provide utility services to the instance or class methods, or to the users of the class. These methods are called **static methods**.
+
+To define a static method, you use the @staticmethod decorator followed by a function definition that doesn't use a `self` or `cls` parameter.
+
+Not all methods that can be made into static methods should be. For instance, a static method can't be easily converted to an instance method without requiring code changes elsewhere. If there's a reasonable chance that a static method may one day require access to instance or class state, then the method may not be suitable for use as a static method.
+
+Static methods are often meant for internal use only, i.e., helper methods for your class's instance and class methods. They are also suitable for clarifying intent: use a static method when you want to be clear that the method doesn't use or modify the object or class state.
+
+
 
 Page Reference: [Classes and Objects](https://launchschool.com/books/oo_python/read/classes_objects)
 
