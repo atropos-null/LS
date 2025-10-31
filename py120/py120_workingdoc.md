@@ -1517,7 +1517,159 @@ This naming convention also reflects Python's philosophy of being explicit and r
 
 It's worth noting that this convention extends beyond just variables. As you've seen throughout the chapter, dunder methods like `__init__`, `__str__`, `__eq__`, etc., follow the same pattern for the same reasons: they're special methods that Python calls automatically, and the naming convention makes that clear.
 
-
 Page Reference: [Magic Methods](https://launchschool.com/books/oo_python/read/magic_methods)
+
+[Back to the top](#top)
+***
+
+### Inheritance
+
+**Inheritance** is a fundamental principle of object-oriented programming that lets classes acquire (**inherit** or **subclass**) attributes from another class. When a class named D inherits from a class named B, D is called a **subclass** or **derived** class of B. In contrast, class B is called a **superclass** or **base** class of D. We sometimes refer to the relationships between subclasses and superclasses as a hierarchy; it describes the "is-a" relationships between classes. 
+
+Technically, instance variables belong to an object. Thus, they can't be inherited from a class. However, subclass objects acquire the same instance variables as superclass instances.
+
+Note that subclasses and superclasses have an ancestor/descendant relationship; it's not strictly one-to-one, as the above description may suggest. Suppose class Y subclasses class X and class Z subclasses class Y. Then Y and Z are both subclasses of X, and X and Y are superclasses of Z. Instances of the Z class are considered instances of Z, Y, and X all at the same time. 
+
+Here's the reasoning: when Z inherits from Y, it acquires all of Y's attributes and behaviors. Similarly, since Y inherits from X, Z indirectly inherits from X as well. This creates what we call an inheritance hierarchy or a chain of "is-a" relationships.
+
+We say that a Z object is a Z, but it's also is a Y and is a X. This might seem like just semantics, but it's actually fundamental to how object-oriented programming works. It means you can use a Z instance anywhere a Y or X instance is expected. This principle is crucial for polymorphism and flexible code design.
+
+The key insight is that inheritance is transitive—if Z inherits from Y and Y inherits from X, then Z automatically inherits from X too, even though there's no direct inheritance declaration between Z and X.
+
+This kind of relationship sometimes leads to terms like **child class**, **parent class**, **grandparent class**, **grandchild class**, and so on when we need to be more specific about the immediate relationship between two types.
+
+Inheritance lets us extract common behaviors from classes that share those behaviors and move them to a superclass. Thus, we can keep code and logic in one place. Let's look at an example. We'll start with a Car and a Truck class:
+
+```python
+class Car:
+
+    def drive(self):
+        print('I am driving.')
+
+class Truck:
+
+    def drive(self):
+        print('I am driving.')
+
+car = Car()
+car.drive()               # I am driving.
+
+truck = Truck()
+truck.drive()             # I am driving.
+```
+
+Kinda pointless, both are doing the same thing. Instead:
+
+```python
+
+class Vehicle:
+
+    def drive(self):
+        print('I am driving.')
+
+class Car(Vehicle):
+    pass
+
+class Truck(Vehicle):
+    pass
+
+class Motorcycle(Vehicle):
+    # pass deleted
+
+    def drive(self):
+        print('I am riding!')
+
+class Harley(Motorcycle):
+    def drive(self):
+        super().drive()
+        print('  Vroom! Vroom!')
+
+car = Car()
+car.drive()               # I am driving.
+
+truck = Truck()
+truck.drive()             # I am driving.
+
+motorcycle = Motorcycle()
+motorcycle.drive()  # I am riding.
+
+harley = Harley()
+harley.drive()  # I am riding!
+                # Vroom! Vroom!
+```
+
+Here, we're overriding the drive method in the Motorcycle class. Python first checks for a drive method in the Motorcycle class; since it finds one, it invokes that method instead of checking the Vehicle class.
+
+Inheritance can be a great way to remove duplication in your code base.
+
+
+#### The Super Function
+
+Python provides the `super` function to call methods in the superclass. You don't need to know which class is the superclass, though that's easy to determine. Instead, `super` returns a placeholder object that acts like an instance of the current object's superclass. We sometimes call this placeholder a `proxy object`.
+
+In the above Vehicles example, the `Motorcycle.drive` method first calls super to retrieve the appropriate proxy object, then uses the proxy to call `Vehicle.drive`. Once `Vehicle.drive` does its thing, `Motorcycle.drive` can do what it must.
+
+A different way to do the Vehicles with the use of `__init__` would be:
+
+```python
+class Vehicle:
+
+    def __init__(self, wheels):
+        self._wheels = wheels
+        print(f'I have {self._wheels} wheels.')
+
+    def drive(self):
+        print('I am driving.')
+
+class Car(Vehicle):
+
+    def __init__(self):
+        print('Creating a car.')
+        super().__init__(4)
+
+class Truck(Vehicle):
+
+    def __init__(self):
+        print('Creating a truck.')
+        super().__init__(18)
+
+class Motorcycle(Vehicle):
+
+    def __init__(self):
+        print('Creating a motorcycle.')
+        super().__init__(2)
+
+    def drive(self):
+        super().drive()
+        print('No! I am riding!')
+
+car = Car()               # Creating a car.
+                          # I have 4 wheels
+car.drive()               # I am driving.
+print()
+
+truck = Truck()           # Creating a truck.
+                          # I have 18 wheels
+truck.drive()             # I am driving.
+print()
+
+motorcycle = Motorcycle() # Creating a motorcycle.
+                          # I have 2 wheels
+
+motorcycle.drive()        # I am driving.
+                          # No! I am riding!
+```
+
+Notice that `Vehicle.__init__ `requires a wheel count argument. The subclass `__init__` methods must therefore call `super().__init__` to provide that argument.
+
+You can omit a subclass's `__init__` method if all it needs to do is call `super().__init__` with the same arguments that were provided to the subclass's `__init__` method. All other subclasses should have a `__init__` method that calls `super().__init__`, even if the superclass lacks a `__init__` method.
+
+ If your subclass doesn't need to do anything special during initialization and neither does the superclass, you can omit the `__init__` method entirely. But if you prefer to be explicit about it, defining an `__init__` that only calls `super().__init__()` is also fine. It's really a style choice rather than a functional one.
+
+A subclass's `__init__` method, if it exists, should almost always call `super().__init__` before it does anything else. The superclass usually needs to complete initializing the superclass part of the object before the subclass does anything that might rely on it. The above example doesn't stick to that rule, but the print statements are only for demonstration purposes; they don't initialize anything.
+
+When you create an instance of a class that doesn't define an `__init__` method, Python automatically calls the `__init__` method from the superclass (if one exists). You don't need to define `__init__` if you don't need custom initialization logic. Python will handle it for you by using whatever `__init__` exists in the inheritance chain.
+
+Page Reference: [Inheritance](https://launchschool.com/books/oo_python/read/inheritance)
 
 [Back to the top](#top)
