@@ -2043,7 +2043,7 @@ This pseudocode falls apart if any mix-ins are listed after a superclass or if t
 
 Recall that every Python class has object as its ultimate superclass, but the object class itself has no superclass. That means the while loop in the above pseudocode keeps running until the method is found or the object class has been searched without finding the method. Note that the current class will be `None` after the object class is searched.
 
-
+And No, the MRO rules are not different when a class includes mixins—mixins follow the same MRO as any other class in the inheritance chain.
 
 Page Reference: [Inheritance](https://launchschool.com/books/oo_python/read/inheritance)
 
