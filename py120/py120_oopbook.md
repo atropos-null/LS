@@ -1,4 +1,4 @@
-# Python 120 Working Document
+# Python 120 OOP Book
 
 <a name="top"></a>
 
