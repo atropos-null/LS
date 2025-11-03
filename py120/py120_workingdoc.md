@@ -1670,6 +1670,381 @@ A subclass's `__init__` method, if it exists, should almost always call `super()
 
 When you create an instance of a class that doesn't define an `__init__` method, Python automatically calls the `__init__` method from the superclass (if one exists). You don't need to define `__init__` if you don't need custom initialization logic. Python will handle it for you by using whatever `__init__` exists in the inheritance chain.
 
+
+#### Multiple Inheritance
+
+
+**Multiple inheritance** (MI) refers to the ability of a class to inherit from multiple superclasses, allowing it to inherit attributes from each of those classes. This feature enables the creation of a new class that combines the attributes of multiple classes.
+
+Suppose we have a program with Pet and Predator classes. We want to create a Cat class with attributes of Pet and Predator. We might end up with code that looks like this:
+
+```python
+class Pet:
+
+    def play(self):
+        print('I am playing')
+
+class Predator:
+
+    def hunt(self):
+        print('I am hunting')
+
+class Cat(Pet, Predator):
+
+    def purr(self):
+        print('I am purring')
+
+cat = Cat()
+cat.purr()          # I am purring
+cat.play()          # I am playing
+cat.hunt()          # I am hunting
+```
+
+There are rules regarding how Python resolves these problems, but, in the end, multiple inheritance is tricky. As a rule, you should avoid it until you have a lot of experience. Even expert programmers are known to sidestep MI. They know all about the pitfalls of MI and choose to stay away.
+
+#### Mix-Ins
+
+**Mix-ins** are another way to achieve polymorphism in Python. They are classes that are never instantiated. Typically, they provide common behaviors to classes that have no apparent hierarchy. For instance, cars, smart lights, and houses all have colors you can change. However, no reasonable inheritance relationship exists that provides the necessary color behaviors: getting and setting the color.
+
+A **mix-in** is a class that provides behaviors to other classes. They are interface only -- a standard set of methods that can be used wherever needed. We often describe this as interface inheritance; we're inheriting interfaces (behaviors), not object types.
+
+Mix-ins are typically small and focused on providing specific functionality. Technically, mix-ins take advantage of multiple inheritance. While MI has many pitfalls, the mix-in concept avoids most of them. The key is that mix-in classes are behavior-based; they aren't a more general form of the classes that use them.
+
+A mix-in is mixed into a class by adding it to the class statement as though you inherited it. Suppose we have a Car class that has a color that can be changed. This requires another file that is then imported into the program you are writing.
+
+```python
+#File: color_mixin.py
+
+class ColorMixin:
+
+    def set_color(self, color):
+        self._color = color
+
+    def get_color(self):
+        return self._color
+
+```
+```python
+#File: car.py
+
+from color_mixin import ColorMixin
+
+class Car(ColorMixin):
+
+    def __init__(self, color):
+        self.set_color(color)
+
+car = Car('red')
+print(car.get_color())           # red
+
+car.set_color('green')
+print(car.get_color())           # green
+```
+
+```python
+#File: smart_light.py
+class SmartLight:
+
+    def __init__(self, color):
+        self.set_color(color)
+
+    def set_color(self, color):
+        self._color = color
+
+    def get_color(self):
+        return self._color
+
+smart_light = SmartLight('cool white')
+print(smart_light.get_color())   # cool white
+
+smart_light.set_color('goldenrod')
+print(smart_light.get_color())   # goldenrod
+```
+
+```python
+#File: house.py
+
+from color_mixin import ColorMixin
+
+class House(ColorMixin):
+
+    def __init__(self, color):
+        self.set_color(color)
+
+house = House('sky blue')
+print(house.get_color())         # sky blue
+
+house.set_color('lavender')
+print(house.get_color())         # lavender
+```
+
+It's worth noting that we've named our mix-in class with a Mixin suffix. This is a common Python convention. It ensures that users of the mix-in know that it's a mix-in, not an ordinary class that can be instantiated.
+
+##### What could we do if we wanted set_color to behave differently for House instances? Would it still make sense to use the ColorMixin?
+
+If you wanted set_color to behave differently for House instances, you'd have a few options:
+
+**Option 1**: Override set_color in the House class. You could still use ColorMixin and override its set_color method in House:
+
+```python
+from color_mixin import ColorMixin
+
+class House(ColorMixin):
+    def __init__(self, color):
+        self.set_color(color)
+
+    def set_color(self, color):
+        # Custom behavior for houses
+        if color == 'lavender':
+            print(f'Painting house a lovely {color}')
+        self._color = color
+
+house = House('lavender')
+house.set_color('sky blue')
+```
+
+This still makes sense to use ColorMixin because you're reusing the get_color method and the basic color storage mechanism. You're just customizing the setter behavior.
+
+Option 2: Use `super()` to extend the mixin's behavior
+
+```python
+class House(ColorMixin):
+    def __init__(self, color):
+        self.set_color(color)
+
+    def set_color(self, color):
+        # Do house-specific logic first
+        print(f'Preparing house exterior for {color}')
+        # Then call the mixin's version
+        super().set_color(color)
+```
+
+**Does it still make sense to use ColorMixin?** Yes, absolutely! The mixin is still valuable because:
+
+* `Car` and `SmartLight` can continue using the standard behavior
+* House gets the code reuse from get_color without duplication
+* You only override what's different, following the DRY principle
+
+The mixin pattern shines in this scenario—it provides a foundation that most classes use as-is, while allowing specific classes to customize their behavior when needed.
+
+##### Someone suggests replacing the ColorMixin with a ColorfulObject superclass and having all three classes inherit from it. While this might technically work, what are some reasons this approach could be problematic?
+
+While replacing ColorMixin with a ColorfulObject superclass might seem to work, it introduces several design problems:
+
+* **Problem 1**: _Forced inheritance hierarchy that doesn't reflect reality_
+
+A `Car`, `SmartLight`, and `House` don't share a natural common ancestor. They're fundamentally different things. By making them all inherit from `ColorfulObject`, you're creating an artificial hierarchy that says "these things are kinds of `**`s," which is misleading. A car isn't really a type of colorful object—it's a vehicle that happens to have a color. This violates good object-oriented design principles.
+
+* **Problem 2**: _Rigid and inflexible design_
+
+With inheritance, each class can only inherit from one direct superclass (in single inheritance). If `Car` needs to inherit from both a `ColorfulObject` superclass and a `Vehicle` superclass, you'd be forced into multiple inheritance, which introduces complexity and potential conflicts.
+
+* **Problem 3**: _Mixing different concerns_
+
+The mixin approach clearly separates concerns: vehicles are vehicles, and the ability to change color is a separate, reusable behavior. Using `ColorfulObject` as a superclass blurs this distinction and makes the codebase harder to understand and maintain.
+
+* **Problem 4**: _Scalability issues_
+
+As mentioned in the chapter, this principle is called **Composition Over Inheritance (COI)**. Imagine you need to add another behavior—say, the ability to be recycled (RecyclableMixin). With the mixin approach, you simply add it wherever needed. With a superclass approach, you'd need to create new superclasses or deal with multiple inheritance complexity.
+
+The mixin approach is better because mix-ins are behavior-based rather than type-based. They're designed specifically to add functionality to unrelated classes without forcing them into a contrived inheritance hierarchy.
+
+#### "Is-a" vs "Has-a"
+
+We typically use nouns when discussing classes; they represent concrete (non-abstract) things. The objects we create from classes are specific instances of those things. If we create a `my_car` object from the `Car` class, we say that `my_car` **is a** Car. This is shorthand for saying that the object referenced by `my_car` **is an** instance of the `Car` class.
+
+We also use the **is-a** terminology to describe inheritance relationships. For instance, if our `Car` class inherits from a `Vehicle` class, then a `Car` object **is a** `Vehicle` object, or, more succinctly, a `Car` **is a** `Vehicle`.
+
+Classes and mix-ins are often said to have a `has-a `or `have-a` relationship. In our `ColorMixin` example earlier, we can say that cars, smart lights, and houses `have a` color property that we can get and set.
+
+The `has-a` relationship is also used with instance variables. A `Person` class might **have a** `name` and an `age`. That is, a person **has a**`name` and `age`.
+
+##### The Is-A Relationship
+
+Let's look a little closer at the `is-a` relationship with a class hierarchy. Cars are a particular kind of vehicle; a car is a vehicle. That means a `Car` class can subclass a `Vehicle` class. Likewise, trucks are another kind of vehicle, so we can add a `Truck` class that also inherits from `Vehicle`.
+
+
+```python
+
+class Vehicle:
+    pass
+
+class Car(Vehicle):
+    pass
+
+class Truck(Vehicle):
+    pass
+
+car = Car()
+print(isinstance(car, Car))       # True
+print(isinstance(car, Vehicle))   # True
+print(isinstance(car, Truck))     # False
+
+truck = Truck()
+print(isinstance(truck, Vehicle)) # True
+print(isinstance(truck, Car))     # False
+```
+
+The `isinstance` calls show that a Car object is a `Car` and it is also a `Vehicle`. However, a `Car` object is not a `Truck` even though a `Truck` is a `Vehicle`.
+
+##### Given that both Car and Truck inherit from Vehicle, why does isinstance(car, Truck) evaluate to False?
+
+Even though both Car and Truck inherit from Vehicle, they are separate, unrelated classes to each other. Inheritance only goes in one direction—up the hierarchy. Both classes inherit from the same superclass, but that shared parent doesn't make them instances of each other. They're siblings in the hierarchy, not parent-child relationships to one another.
+
+##### The Has-A Relationship
+
+
+Suppose you're writing a class that doesn't have an is-a relationship with a class you wish to inherit from. In that case, you should consider whether it has a has-a relationship instead. If it does, you may want to explore the possibilities of using a mix-in or composition.
+
+**Composition** is a design principle where a class uses one or more objects of other classes to provide some of the composing class's functionality. This lets the programmer create more modular, manageable, and adaptable code by favoring a **"has-a"** relationship (composition) over an **"is-a"** relationship (inheritance). In composition, the composing class can access and use the functionalities of composited objects. Thus, the composing class can delegate specific responsibilities to the composited objects.
+
+We often speak of composition as a form of collaboration. Collaborators are objects a class interacts with to perform its responsibilities and functionality.
+
+Merely having an object inside your class isn't collaboration. At least one of the class's instance methods must use that object to aid the containing class's behavior.
+
+A container class such as a list can be a collaborator in one of your classes if your class uses the list in some way in service of its functions. However, the members of that list may or may not be collaborators themselves; that depends on whether your class uses them to perform additional actions.
+
+Object relationships that use collaborators or mix-ins should have a "has-a" relationship. Suppose class A uses a mix-in called B and a collaborator object of class C. We can say that an object of class A has the behaviors provided by the B mix-in. We can also say that an object of type A has a collaborator object of class C.
+
+Many developers prefer has-a relationships to is-a relationships. This principle is called Composition Over Inheritance (COI). It suggests that using mix-ins and composition in preference to inheritance is more flexible and safer.
+
+As with questionable inheritance hierarchies, many OOP coding examples ignore the COI principle. The mechanics of inheritance are fundamental, though that importance in everyday programming is lessening over time. However, you can't appreciate the COI until you've seen and wrestled with inheritance.
+
+##### When designing your classes, what are some specific questions you could ask yourself about the relationship between two objects in order to decide whether to use inheritance or composition? 
+
+**Question 1: Is there a true "is-a" relationship?**
+
+Ask yourself: "Is class A truly a type of class B?" For example, "Is a Car a Vehicle?" Yes. "Is a Square a Rectangle?" Mathematically yes, but in code it's problematic because they have different interfaces. If the answer is a clear "yes" and the classes have compatible interfaces, inheritance may be appropriate. If it's unclear or forced, composition might be better.
+
+**Question 2: Would a subclass need to override most methods?**
+
+If you find yourself thinking "I'd need to override almost everything from the superclass," that's a red flag. It suggests the classes aren't truly a parent-child relationship. For example, if you had a ColorfulObject superclass and House needed to override set_color significantly, it signals that composition might be better. Inheritance works best when subclasses can reuse most of the superclass's behavior as-is.
+
+**Question 3: Does the relationship make sense from a user's perspective?**
+
+Think about how users of your code will think about these classes. If it feels natural to say "a Car is a Vehicle," inheritance is likely right. If it feels more natural to say "a Car has color-changing ability" or "a Car has an engine," you're describing composition, and that's probably the better design.
+
+**Question 4: Could this object belong to multiple categories?**
+
+If an object could logically be multiple types of things (like a Cat being both a Pet and a Predator), inheritance becomes problematic because you'd need multiple inheritance. Composition handles this elegantly—a Cat can have behaviors from different mix-ins without forcing an artificial hierarchy.
+
+The key principle from the chapter is Composition Over Inheritance (COI). When in doubt, composition is often the safer, more flexible choice.
+
+| Inheritance                     | Composition                      |
+|----------------------------------|----------------------------------|
+| "Is a" relationship             | "Has a" relationship             |
+| Tight coupling, rigid trees      | Loose coupling, more flexibility |
+| Reuses superclass code           | Reuses through delegation        |
+| Hard to change in large hierarchies | Easy to extend and modify     |
+
+
+Using Inheritance:
+
+```python
+class Bird:
+    def fly(self):
+        print("I can fly!")
+
+class Sparrow(Bird):
+    pass
+
+class Penguin(Bird):
+    def fly(self):
+        print("I can't fly.")
+
+sparrow = Sparrow()
+penguin = Penguin()
+
+sparrow.fly()  # Output: I can fly!
+penguin.fly()  # Output: I can't fly.
+```
+
+Using Composition:
+```python
+class FlyWithWings:
+    def fly(self):
+        print("I can fly!")
+
+class CannotFly:
+    def fly(self):
+        print("I can't fly.")
+
+class Bird:
+    def __init__(self, fly_behavior):
+        self.fly_behavior = fly_behavior
+    def fly(self):
+        self.fly_behavior.fly()
+
+sparrow = Bird(FlyWithWings())
+penguin = Bird(CannotFly())
+
+sparrow.fly()  # Output: I can fly!
+penguin.fly()  # Output: I can't fly.
+```
+
+#### Method Resolution Order (MRO)
+
+When you call a method, how does Python know where to look for that method? Python has a distinct lookup path that it follows each time a method is called. It's called the **Method Resolution Order**, or MRO.
+
+```python
+class LandDwellingMixin:
+    pass
+
+class LanguageMixin:
+    pass
+
+class BipedalismMixin:
+    pass
+
+class Creature:
+    pass
+
+class Mammal(Creature):
+    pass
+
+class Primate(LandDwellingMixin, Mammal):
+    pass
+
+class Human(BipedalismMixin,
+            LanguageMixin,
+            Primate):
+    pass
+
+print(Human.mro())
+
+## Pretty printed for clarity
+#[
+#    <class '__main__.Human'>,
+#    <class '__main__.BipedalismMixin'>,
+#    <class '__main__.LanguageMixin'>,
+#    <class '__main__.Primate'>,
+#    <class '__main__.LandDwellingMixin'>,
+#    <class '__main__.Mammal'>,
+#    <class '__main__.Creature'>,
+#    <class 'object'>
+#]
+```
+
+All Python classes are instances of the type **metaclass**. A metaclass is a class that creates other classes. As a result, classes can call methods defined on type. mro is a class method defined by the type metaclass.
+
+This output shows us how Python searches for a method when we use the `Human` class to invoke a method. Note that the search ends only when the method is found or Python can't find it.
+
+The search is a modified "depth first" search that considers all items listed in the inheritance list, even those that are being used as mix-ins. The resulting search is recursive and difficult to describe clearly. If we assume that mix-ins are listed first in the inheritance list, and no more than one superclass is listed, you can describe the process with pseudocode:
+
+* set the current class to the class of the calling object
+* while the current class is not `None`:
+    * if the current class has the method, stop searching
+    * for each mix-in in the current class's inheritance list:
+        * if the mix-in has the method, stop searching
+    * set the current class to the superclass of the current class
+* raise an AttributeError
+
+This pseudocode falls apart if any mix-ins are listed after a superclass or if the inheritance list has multiple superclasses. However, the MRO is determined by going through the items in the inheritance list from left-to-right, and for each item in the list, exploring all of that items superclasses and mix-ins.
+
+Recall that every Python class has object as its ultimate superclass, but the object class itself has no superclass. That means the while loop in the above pseudocode keeps running until the method is found or the object class has been searched without finding the method. Note that the current class will be `None` after the object class is searched.
+
+
+
 Page Reference: [Inheritance](https://launchschool.com/books/oo_python/read/inheritance)
 
 [Back to the top](#top)
