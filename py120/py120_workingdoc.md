@@ -108,7 +108,7 @@ Getter and setter methods provide controlled access:
 class GoodDog:
     def __init__(self, name, age):
         self._name = name
-        self.set_age(age)
+        self._age = age
 
     def name(self):
         return self._name
@@ -362,13 +362,20 @@ Python uses the **Method Resolution Order (MRO)** to determine which method to e
 Use `.mro()` to inspect order:
 
 ```python
-class Creature: pass
-class Mammal(Creature): pass
-class LandDwellingMixin: pass
-class Primate(LandDwellingMixin, Mammal): pass
-class LanguageMixin: pass
-class BipedalismMixin: pass
-class Human(BipedalismMixin, LanguageMixin, Primate): pass
+class Creature: 
+    pass
+class Mammal(Creature): 
+    pass
+class LandDwellingMixin: 
+    pass
+class Primate(LandDwellingMixin, Mammal): 
+    pass
+class LanguageMixin: 
+    pass
+class BipedalismMixin: 
+    pass
+class Human(BipedalismMixin, LanguageMixin, Primate): 
+    pass
 
 print(Human.mro())
 # [
@@ -448,9 +455,7 @@ class Penguin(Bird):
         print("I can't fly.")
 ```
 
-Here, the `Penguin` class is forced to override the `fly` method to negate a behavior that does not apply to it. This is a significant "red flag" in object-oriented design because it violates the Liskov Substitution Principle (LSP). This principle states that objects of a superclass should be replaceable with objects of its subclasses without affecting the correctness of the program. By changing the fundamental meaning of `fly`, the `Penguin` class breaks the contract of the `Bird` superclass. A piece of code expecting any `Bird` to be able to fly will fail if it receives a `Penguin`. This scenario reveals a key weakness of inheritance: any change to a base class can have cascading and unexpected effects on its subclasses. This inflexibility makes the system harder to maintain and extend, as developers must constantly account for exceptions and overrides throughout the hierarchy.
-
-#### Section Conclusion
+Here, the `Penguin` class is forced to override the `fly` method to negate a behavior that does not apply to it. This is a significant "red flag" in object-oriented design because it violates the **Liskov Substitution Principle (LSP)**. This principle states that objects of a superclass should be replaceable with objects of its subclasses without affecting the correctness of the program. By changing the fundamental meaning of `fly`, the `Penguin` class breaks the contract of the `Bird` superclass. A piece of code expecting any `Bird` to be able to fly will fail if it receives a `Penguin`. This scenario reveals a key weakness of inheritance: any change to a base class can have cascading and unexpected effects on its subclasses. This inflexibility makes the system harder to maintain and extend, as developers must constantly account for exceptions and overrides throughout the hierarchy.
 
 The limitations exposed by rigid "is-a" hierarchies necessitate a more adaptable approach to software design, paving the way for the flexible alternatives offered by composition.
 
@@ -527,8 +532,6 @@ class SmartLight(ColorMixin):
 
 By adding `ColorMixin`, `Car`, `House`, and `SmartLight` all gain the ability to get and set a color without being forced into an artificial hierarchy. This approach contrasts sharply with the anti-pattern of a `ColorfulObject` superclass. Such a design is architecturally flawed for several reasons. First, it creates a logical inconsistency by forcing an "is-a" relationship where none exists; a car is not a type of colorful object, but a vehicle that has a color. Second, it leads to a rigid and inflexible design. Single inheritance would force a `Car` to choose between being a `ColorfulObject` and a `Vehicle`, creating unnecessary complexity. Finally, it blurs concerns by conflating an object's core identity with one of its many possible capabilities. Mix-ins avoid these pitfalls by separating behaviors into reusable, pluggable components, embodying the flexibility of the "has-a" philosophy.
 
-#### Section Conclusion
-
 The "has-a" relationship, realized through composition and mix-ins, provides a powerful toolkit for building modular and adaptable systems, offering a clear and compelling alternative to the rigidity of classical inheritance.
 
 ***
@@ -557,9 +560,7 @@ The distinctions outlined in the table have profound implications for the lifecy
 - **Coupling and Flexibility:** Inheritance creates a strong, compile-time bond between a parent and child class. This coupling is static; a Dog is always a Pet and cannot change this relationship. In contrast, composition establishes relationships between objects, often at runtime. A Bird can be initialized with different `fly_behavior` objects, making its capabilities dynamic and configurable. This loose coupling makes the system far more flexible and adaptable to new requirements.
 - **Reuse and Maintainability:** Inheritance promotes code reuse by directly sharing the implementation of a superclass. While this appears efficient, it is also risky, as a change in the superclass implementation can break an unknown number of subclasses in unforeseen ways. Composition, on the other hand, promotes reuse of interfaces through delegation. The composing class does not need to know the internal details of its components, only the public methods they expose. This makes components much safer to modify or swap out, as changes are encapsulated and do not cause ripple effects. Consequently, compositional designs are generally easier to reason about, test, and maintain.
 
-#### Section Conclusion
-
-This direct comparison reveals that while inheritance can be a simple solution for stable, clear hierarchies, composition offers a fundamentally more robust and flexible foundation for building complex, evolving systems.
+While inheritance can be a simple solution for stable, clear hierarchies, composition offers a fundamentally more robust and flexible foundation for building complex, evolving systems.
 
 ***
 
@@ -581,8 +582,6 @@ When faced with a design choice, asking the following questions can clarify whet
     - If an object could logically have multiple identities (e.g., a Cat is both a Pet and a Predator), attempting to model this with inheritance leads to the complexities of multiple inheritance. Composition, through mix-ins or collaborator objects, handles these multi-faceted identities much more elegantly by allowing a class to simply have the behaviors of each category.
 4. **Does the relationship feel more like "has-a" than "is-a"?**
     - Ultimately, the most intuitive question is often the most revealing. If the relationship describes a capability, property, or component that an object possesses (e.g., "a car has a color"), composition is the natural and correct choice. This framing aligns with building objects from independent, reusable parts.
-
-#### Section Conclusion
 
 These guiding questions provide a pragmatic toolset for navigating design decisions, encouraging a thoughtful approach that prioritizes flexibility and conceptual clarity over dogmatic adherence to a single pattern.
 

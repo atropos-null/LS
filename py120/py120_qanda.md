@@ -612,3 +612,43 @@ The MRO acts as the map or blueprint for the inheritance chain, defining the rul
 
 
 </details>
+
+### Which dunder method corresponds to the == operator for equality comparison?"
+
+<details>
+<summary>Show answer</summary>
+
+"The __eq__ method."
+
+Dunder methods are specifically designed to be called implicitly by Python in response to specific language constructs. You generally do not call these methods directly yourself (e.g., you do not write `my_object.__eq__(other_object)`), although you absolutely can.
+
+When you use the `==` operator to compare two instances, such as `fluffy == fluffy2`, Python automatically looks for and invokes the `__eq__` method defined within the object's class. The use of the operator is considered "syntactic sugar" for calling the method directly (e.g., fluffy.__eq__(fluffy2)).
+
+The `__eq__` method is part of a family of comparison dunder methods that allow custom objects to integrate with standard Python comparison operators.
+
+| Operator | Dunder Method | Description                 |
+|:--------:|:-------------:|:----------------------------|
+| `== `      | `__eq__`      | Equal to                    |
+| `!= `      | `__ne__`      | Not equal to                |
+| `<`        | `__lt__`      | Less than                   |
+| `<=`       | `__le__`      | Less than or equal to       |
+| `>`        | `__gt__`      | Greater than                |
+| `>=`       | `__ge__`      | Greater than or equal to    |
+
+You only need to define the ordering methods (`__lt__`, `__gt__`, etc.) if it makes logical sense for instances of your class to be ordered (e.g., sorting a list of objects alphabetically by name).
+
+If you do not define an `__eq__` method for your custom class, Python uses the default behavior inherited from the base object class. The default `object.__eq__` checks whether two objects are the same object in memory (i.e., object identity), which is similar to using the is operator. Therefore, two distinct instances of the same class—even if they have identical instance variables (state)—will default to being unequal because they are separate objects. When defining `__eq__(self, other)`, you decide what combination of attributes makes two instances equivalent within the context of your application.
+
+When Python evaluates an equality expression like `a == b`, especially when a and b are instances of different classes, a specific protocol is followed. This protocol is critical for ensuring that comparisons are symmetrical (i.e., `a == b` should always equal `b == a`).
+
+1. First Attempt: Python calls `a.__eq__(b)`.
+2. Symmetrical Check:
+    * `If a.__eq__(b)` returns a definite boolean (True or False), the process stops, and that value is used.
+    * `If a.__eq__(b)` determines it cannot perform the comparison (e.g., because b is an unexpected or incompatible type), it should return the special constant NotImplemented.
+3. Second Attempt (Reversed): If `NotImplemented` is returned, Python signals that it couldn't complete the comparison and tries the reverse call: `b.__eq__(a)`.
+4. Final Default: If the reversed call also returns `NotImplemented`, the comparison defaults to checking object identity (a is b), which usually results in `False`.
+
+**The importance of `NotImplemented`**: If you define `__eq__` to return `False` instead of `NotImplemented` when faced with an unknown type, you short-circuit Python's logic. This prevents the second object (b) from attempting to perform the comparison from its perspective, leading to potential non-symmetrical results (where `a == b` might be `True` but `b == a` is `False`).
+
+
+</details>
