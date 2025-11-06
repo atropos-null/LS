@@ -338,7 +338,7 @@ print(next_palindromic_time("01:20") == "02:20")
 print(next_palindromic_time("05:30") == "05:50")
 print(next_palindromic_time("15:10") == "15:51")
 print(next_palindromic_time("20:00") == "20:02")
-print(next_palindromic_time("12:12") == "13:31")
+print(next_palindromic_time("12:12") == "12:21")
 print(next_palindromic_time("23:59") == "00:00")
 ```
 

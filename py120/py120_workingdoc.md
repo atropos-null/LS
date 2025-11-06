@@ -7,6 +7,7 @@
 - [Notes from Object Oriented Programming with Python Book](#notes-from-object-oriented-programming-with-Python-Book)
 - [Flexible by Design: Advocating Composition Over Inheritance in Python](#flexible-by-design-advocating-composition-over-inheritance-in-python)
 - [Attributes and Properties](#attributes-and-properties)
+- [Problem Sets: Classes and Objects](#problem-sets:-classes-and-objects)
 
 ## Notes from Object Oriented Programming with Python Book
 
@@ -703,4 +704,115 @@ The most critical long-term benefit of properties is API contract stability. An 
 Properties are the superior architectural mechanism, providing a controlled public interface that empowers an object to enforce its invariants, guarantee its integrity, and evolve gracefully over time. They are the enabler of validation, computed values, side effects, and, most critically, a stable API contract. For long-lived, business-critical objects, encapsulate all instance variables with properties by default. This discipline is a strategic investment that ensures your objects are robust, your system is maintainable, and your codebase is future-proof, reflecting the principles of sound, professional software architecture.
 
 Page Reference: [Attributes and Properties](https://launchschool.com/lessons/50ed1d17/assignments/e3750536)
+[Back to the top](#top)
+
+***
+## Problem Sets: Classes and Objects
+
+
+### 1. Introduction: The Blueprint for a Person
+
+In object-oriented programming, classes serve as the strategic blueprints for creating objects that model real-world entities. This approach allows us to bundle data and the logic that operates on that data into a single, cohesive unit. The `Person` class, while simple, provides a powerful and clear example of a fundamental Pythonic pattern for managing object data. It demonstrates how to use an initializer (`__init__`), a property getter (`@property`), and a setter (`@name.setter`) to create a robust and intuitive interface for an object.
+
+For clear reference, here is the complete `Person` class and the example code that uses it:
+
+```python
+# The class definition
+class Person:
+    def __init__(self, name):
+        self.name = name
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        self._name = name
+
+# The example usage
+bob = Person('bob')
+print(bob.name)
+bob.name = 'Robert'
+print(bob.name)
+```
+
+This walkthrough will dissect each component of the `Person` class, starting with the crucial role of the initializer method in bringing an object to life.
+
+---
+
+## 2. The Constructor: Initializing an Instance with `__init__`
+
+The `__init__` method is the foundational entry point for any Python object. Often called the "constructor," this special method is automatically invoked by Python the moment a new instance of a class is created. Its primary responsibility is to set the initial state of the new object, ensuring it is ready for use with all necessary starting data.
+
+Let's break down the `__init__` method from the `Person` class:
+
+- `def __init__(self, name):`: This defines the constructor, which Python calls automatically when we create a new `Person` object (e.g., `Person('bob')`). The `self` parameter is a reference to the new instance being created and is passed automatically by Python. The `name` parameter is the argument provided during instantiation (the string `'bob'` in our example).
+- `self.name = name`: This line is more sophisticated than a simple attribute assignment. When this code executes, it doesn't just create a `name` variable on the instance. Instead, it invokes the `@name.setter` method, which we will analyze later. This demonstrates a key design principle: class methods are interconnected and can be leveraged from the very moment of an object's creation to ensure data is handled correctly.
+
+With the object now created and initialized, we can explore how its data is accessed in a controlled manner using a property getter.
+
+---
+
+## 3. The Getter: Controlled Data Access with `@property`
+
+Using a property getter instead of a public attribute is a strategic choice that promotes encapsulation. The `@property` decorator allows us to define a method that can be accessed like a simple attribute, providing a clean, public interface (e.g., `bob.name`). Behind the scenes, however, we maintain complete control over how the data is retrieved, protecting the internal state of the object.
+
+Dissecting the getter implementation reveals this design:
+
+- `@property`: This is a Python decorator that transforms the `name` method that follows it into a "getter." This means that when a user accesses `instance.name`, Python will execute this method and return its result, rather than requiring the user to call it with parentheses like `instance.name()`.
+- `return self._name`: This line reveals the relationship between the public-facing property and the internal attribute. The leading underscore in `_name` is a widely respected Python convention indicating that this attribute is an internal implementation detail. The property acts as a managed facade for this internal data. While this getter simply returns the internal value, it provides a crucial control point. In a more complex class, this getter could format the name (e.g., `return self._name.upper()`) or log access attempts without changing how the user interacts with `bob.name`.
+
+Now that we understand how to get the name in a controlled way, the next logical step is to explore how we can set or change it.
+
+---
+
+## 4. The Setter: Controlled Data Modification with `@name.setter`
+
+A setter method is crucial for maintaining data integrity and control. It provides a hook that is executed every time an attribute's value is modified. This gives the class author the power to implement data validation, perform transformations, or trigger other actions. This control is impossible with a simple public attribute. For example, with a setter, we could add a check to prevent a name from being set to an empty string (`if not name: raise ValueError("Name cannot be empty")`) or automatically capitalize the name (`self._name = name.capitalize()`), ensuring data integrity from the moment of assignment.
+
+The setter for the `name` property is implemented as follows:
+
+- `@name.setter`: This decorator links the method directly to the `name` property we defined earlier with `@property`. It specifically designates this method to handle assignments to the `name` property. This is what allows standard assignment syntax (e.g., `bob.name = 'Robert'`) to trigger our custom logic.
+- `def name(self, name):`: It is essential that the setter method shares the same name as the property it controls—in this case, `name`.
+- `self._name = name`: This is the core action of the setter. The value provided on the right side of the assignment (e.g., `'Robert'`) is passed into the setter as the `name` argument, which is then assigned to the internal `_name` attribute. It is critical to assign to `self._name` here, **not** `self.name`. Attempting to assign to `self.name` inside the setter would cause the setter to call itself again, leading to an infinite recursion and a `RecursionError`. This distinction between the public property (`name`) and the internal storage attribute (`_name`) is the key to the pattern's success.
+
+With all the individual components explained, we can now trace the complete execution flow to see how they work together seamlessly.
+
+---
+
+## 5. Synthesis: A Step-by-Step Execution Trace
+
+To solidify our understanding, let's synthesize these concepts by tracing the exact sequence of events in the example usage code. This step-by-step walkthrough reveals the elegant interaction between the initializer, getter, and setter, which together create a robust and intuitive class interface.
+
+1. `bob = Person('bob')`
+    - This line instantiates a new `Person` object, which triggers a call to the `__init__` method.
+    - Inside `__init__`, the line `self.name = 'bob'` is executed. This is not a direct assignment; it invokes the `@name.setter` method.
+    - The setter receives `'bob'` as its `name` argument and assigns it to the internal `self._name` attribute. The `bob` object is now initialized with `self._name = 'bob'`.
+2. `print(bob.name)`
+    - Accessing `bob.name` invokes the `@property` getter method.
+    - The getter executes `return self._name`, reads the current value (`'bob'`), and returns it. The `print` function then outputs `bob`.
+3. `bob.name = 'Robert'`
+    - This assignment syntax again invokes the `@name.setter` method.
+    - The value `'Robert'` is passed as the `name` argument to the setter.
+    - The setter's code, `self._name = name`, updates the internal attribute. `self._name` now holds the value `'Robert'`.
+4. `print(bob.name)`
+    - Accessing `bob.name` a second time calls the `@property` getter again.
+    - The getter returns the current value of `self._name`, which is now `'Robert'`. The `print` function outputs `Robert`.
+
+This trace shows how the property pattern provides a simple external API while managing all data interactions through controlled internal methods.
+
+---
+
+## 6. Conclusion: The Power of Pythonic Properties
+
+Mastering the property-setter pattern is a critical step towards writing clean, robust, and truly Pythonic classes. It gracefully bridges the gap between simple attribute access and the robust control offered by methods. By using this pattern, developers can create classes that are both easy to use and easy to maintain.
+
+The key advantages can be distilled into the following points:
+
+- **Clean Public Interface**: Users of the class can interact with attributes naturally (e.g., `bob.name` and `bob.name = 'Robert'`) without needing to know that methods are being executed behind the scenes.
+- **Encapsulation and Control**: The class author retains full control over how data is accessed and modified. This allows for future enhancements, such as adding validation logic to the setter, without changing the public interface and breaking existing code.
+- **Maintainability**: The code is more organized and easier to understand because the logic for getting and setting an attribute is co-located with its definition, making the class self-contained and easier to reason about.
+
+Page Reference: [Problem Sets: Classes and Objects](https://launchschool.com/lessons/14df5ba5/assignments/b66c7da8)
 [Back to the top](#top)
