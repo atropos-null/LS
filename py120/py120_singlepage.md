@@ -31,7 +31,7 @@ class Laptop:
 
     @memory.setter
     def memory(self, memory):
-        self._memory = memory
+`        self._memory = memory
 
 laptop = Laptop('8GB')
 print(laptop.memory)          # 8GB
@@ -100,4 +100,4 @@ Other reasons properties are useful:
 
 * Future flexibility: You can add logic later without changing how the code that uses your class looks from the outside
 
-So while you can access instance variables directly, properties give you a way to enforce rules and maintain the object's consistency.
+So while you can access instance variables directly, properties give you a way to enforce rules and maintain the object's consistency.`

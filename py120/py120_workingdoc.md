@@ -6,6 +6,7 @@
 
 - [Notes from Object Oriented Programming with Python Book](#notes-from-object-oriented-programming-with-Python-Book)
 - [Flexible by Design: Advocating Composition Over Inheritance in Python](#flexible-by-design-advocating-composition-over-inheritance-in-python)
+- [Attributes and Properties](#attributes-and-properties)
 
 ## Notes from Object Oriented Programming with Python Book
 
@@ -394,6 +395,35 @@ The MRO is a modified depth-first, left-to-right search through parent classes a
 
 By mastering class design, encapsulation, dunder methods, inheritance, composition, and the MRO, you can build robust and maintainable object-oriented systems in Python. These best practices form the foundation of professional, idiomatic Python code that is clear, flexible, and built to last.
 
+### Summary 
+
+At this point, you should be familiar with the basics of OOP in Python. You should understand these concepts:
+
+* The relationship between a class and an object
+* The idea that a class groups behaviors (ie, methods)
+* The idea that an object has a state that is modeled by its instance variables
+
+**Object level**
+
+Objects do not share state with other objects, but do share behaviors. Put another way, the values in the objects' instance variables (states) are different, but they can call the same instance methods (behaviors) defined by the class.
+
+**Class level**
+
+Classes also have behaviors not intended for objects (class methods).
+
+**Inheritance**
+
+Subclasses can have multiple parent classes due to multiple inheritance (MI). We will not explore MI very much in this course, so we will mostly ignore it going forward.
+
+* Ignoring MI, we can say that subclasses have exactly one parent class.
+* If an explicit parent class is not defined, Python uses the object class.
+* The parent class is often called the superclass.
+* The parent class of a parent class is also a superclass of the subclass. All ancestor classes of a subclass are superclasses of the subclass.
+* We can use carefully constructed classes as mix-ins; this is the safe way to use MI.
+* Mix-ins aren't used for instantiating objects.
+* You should understand the method resolution order (MRO).
+* The real magic of OOP is that we can create custom objects. The Python core library works the same way: there are classes, and there are objects instantiated from those classes. When we create our own classes, you can almost think of it as adding additional functionality into the Python core library (not quite, though).
+
 Page Reference: [Object Oriented Programming with Python](https://launchschool.com/books/oo_python)
 
 [Back to the top](#top)
@@ -585,11 +615,92 @@ When faced with a design choice, asking the following questions can clarify whet
 
 These guiding questions provide a pragmatic toolset for navigating design decisions, encouraging a thoughtful approach that prioritizes flexibility and conceptual clarity over dogmatic adherence to a single pattern.
 
-***
-
 ### Conclusion
 
 While classical inheritance is a fundamental concept in object-oriented programming and a useful tool for modeling stable, clear hierarchies, it is not a universal solution. This paper has argued that the "Composition Over Inheritance" principle should be the default guiding philosophy for building robust, scalable, and maintainable software in Python. By favoring "has-a" relationships over "is-a" relationships, we design systems with loosely coupled components, clear separation of concerns, and enhanced flexibility. Embracing composition and its related patterns, such as mix-ins and delegation, leads to systems that are not only easier to reason about and test but are also fundamentally more adaptable to the inevitable reality of future change.
 
 [Back to the top](#top)
+
 ***
+
+## Attributes and Properties
+
+In software engineering, precise terminology is not an academic exercise but a prerequisite for effective system design and clear team communication. While terms like '**attribute**' and '**property**' are often used interchangeably in casual discourse, their loose application can obscure critical design decisions. To build a robust mental model, this guide will adhere to a set of precise working definitions, acknowledging that in the wider industry, these terms can be ambiguous.
+
+* **Attribute**: The broad umbrella term encompassing everything "belonging" to an object. This includes both the data it stores (instance variables) and its behaviors (methods).
+* **Instance Variable**: The raw data stored within an object instance that represents its internal state. By convention, this is often prefixed with an underscore (e.g., `_balance`) to signify it is not part of the public interface.
+* **Property**: A specialized public interface, created using decorators like `@property` and `@name.setter`, that provides controlled access to an object's underlying state.
+
+Thus, a property acts as a controlled gateway, or public interface, to a private instance variable, and both are types of attributes. With these definitions established, we can now analyze the practical consequences of failing to distinguish between an object's public interface and its internal state.
+
+### The Danger of Direct Attribute Access
+
+One of the most pervasive anti-patterns in object-oriented design is allowing uncontrolled modification of an object's internal state. This practice, while expedient, creates a critical vulnerability that is a frequent source of system fragility. It effectively turns an object into a passive data structure, abdicating its core responsibility to manage its own consistency.
+
+Consider a simple `BankAccount` class:
+
+```python
+class BankAccount:
+    def __init__(self, balance):
+        self.balance = balance
+```
+
+By exposing `self.balance` directly, we allow any external code to modify it at will. This leads to a catastrophic failure of integrity:
+
+```python
+account = BankAccount(100)
+account.balance = -5000  # Violation of a core business rule
+```
+
+This single assignment has corrupted the object, placing it into an invalid state by violating a fundamental state invariant—that a balance cannot be negative. The core problem is architectural: the `BankAccount` object has no power to defend its own encapsulation boundary. It has abdicated its responsibility for consistency to external, un-trusted code that lacks the necessary context to uphold the object's rules.
+
+This vulnerability requires a professional solution that empowers the object to enforce its own invariants. That solution is the property.
+
+###  Enforcing Integrity with Properties
+
+Properties are the primary mechanism for achieving true encapsulation. They allow an object to present a clean public interface while retaining absolute control over how its internal data is accessed and modified. By intercepting read and write operations, properties transform an object from a passive container into an active guardian of its own state.
+
+Let's refactor our `BankAccount` class to properly encapsulate its state, transforming it into a robust, self-regulating entity:
+
+```python
+class BankAccount:
+    def __init__(self, balance):
+        self.balance = balance  # The initial assignment is routed through the setter
+
+    @property
+    def balance(self):
+        return self._balance
+
+    @balance.setter
+    def balance(self, amount):
+        if amount < 0:
+            raise ValueError("Balance cannot be negative")
+        self._balance = amount
+```
+
+This robust design implements a powerful pattern by combining three components that work in concert:
+
+* **The Internal State**: The actual data is stored in `self._balance`, the backing field. The leading underscore is not a privacy feature enforced by the language, but a deeply respected convention signaling to other developers that this variable is part of the internal implementation and must not be accessed directly.
+
+* **The Public Read Interface**: The method decorated with `@property` defines the "getter." When external code accesses `account.balance`, this method is transparently invoked, providing read access to the internal state.
+
+* **The Public Write Interface**: The method decorated with `@balance.setter` defines the "setter." It acts as a gatekeeper, intercepting any attempt to assign a value to `account.balance`. This is where we place our validation logic, guarding the backing field and ensuring the object's state invariants are never violated.
+
+With this architecture, an attempt to set a negative balance is intercepted by the setter, which raises a `ValueError` and prevents the object from ever entering an invalid state. The object now successfully defends its own integrity. While this validation is a primary benefit, the strategic advantages of properties extend far beyond simple rule enforcement.
+
+### The Strategic Advantages of Properties Beyond Validation
+
+Mastering properties means understanding their full range of architectural benefits. They are far more than a defensive tool; they provide crucial flexibility that allows a class to evolve without altering its public interface—the cornerstone of long-term maintainability.
+
+A property can compute and return a value on the fly rather than retrieving a stored variable. This is ideal for derived data, as it enforces a single source of truth and prevents data desynchronization. For example, if an object stores `width` and `height`, an `area` property can calculate `width * height` on each access, ensuring it is always correct without the risk of becoming stale if the dimensions change.
+
+A property's setter provides a reliable and centralized hook for triggering secondary actions. This is immensely powerful for logging changes, sending notifications, invalidating a cache, or updating other parts of the system in response to a state change. The setter guarantees that these side effects are executed consistently, without requiring the calling code to have any knowledge of them.
+
+### Ensuring Future Flexibility
+
+The most critical long-term benefit of properties is API contract stability. An architect can design a class with simple attributes initially, and later, refactor one into a property with sophisticated logic. This evolution is a non-breaking change. Because the external access pattern (`object.name`) remains identical, no client code that uses the class needs to be modified. This principle is what allows large teams to work in parallel and enables libraries and frameworks to evolve without causing cascading failures across dependent systems. It minimizes maintainability costs by ensuring an object's public interface remains stable even as its internal implementation changes.
+
+Properties are the superior architectural mechanism, providing a controlled public interface that empowers an object to enforce its invariants, guarantee its integrity, and evolve gracefully over time. They are the enabler of validation, computed values, side effects, and, most critically, a stable API contract. For long-lived, business-critical objects, encapsulate all instance variables with properties by default. This discipline is a strategic investment that ensures your objects are robust, your system is maintainable, and your codebase is future-proof, reflecting the principles of sound, professional software architecture.
+
+Page Reference: [Attributes and Properties](https://launchschool.com/lessons/50ed1d17/assignments/e3750536)
+[Back to the top](#top)
