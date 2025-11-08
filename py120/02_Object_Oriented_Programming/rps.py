@@ -46,3 +46,32 @@ def play_game():
 
 if __name__ == "__main__":
      play_game()
+
+
+"""
+
+A bare bones approach:
+
+def rps(p1, p2):
+
+    choices = ['rock', 'paper', 'scissors']
+    
+    if p1 not in choices and p2 not in choices:
+        return "Draw!"    
+    if p1 not in choices:
+        return "Player 2 won!"
+    if p2 not in choices:
+        return "Player 1 won!"
+
+    # Draw
+    if p1 == p2:
+        return "Draw!"
+    # All possible win conditions
+    if (p1 == 'rock' and p2 == 'scissors') or \
+       (p1 == 'scissors' and p2 == 'paper') or \
+       (p1 == 'paper' and p2 == 'rock'):
+        return "Player 1 won!"
+    else:
+        return "Player 2 won!"
+
+"""

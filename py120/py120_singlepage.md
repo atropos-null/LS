@@ -1,103 +1,237 @@
-## Attributes and Properties
+# Problem Sets: Classes and Objects
 
-The nomenclature of OOP can be quite tricky. There's no rigid standard all programmers agree upon, and even expert programmers can disagree on how to distinguish certain terms. Moreover, some terms have different meanings in different contexts and languages. As a result, it's often difficult to provide definitive definitions.
+As you know by now, classes are the blueprints for objects. Below are some practice problems that test your knowledge of the connection between classes and objects.
 
-Consider the term **attribute**. As a general programming concept, attributes are the different characteristics that make up an object. For example, the attributes of a Laptop object might include: make, color, dimensions, display, processor, memory, storage, battery life, etc. Generally, these attributes can be accessed and manipulated from outside the object. When we talk of attributes, we might be referring to just the names, or the names and the values attributed to the object. The meaning is typically clear from the context.
-
-A related term is property, which is often used synonymously with attribute and instance variable. However, a more precise definition of property is a combination of an instance variable, a getter method, and an optional setter method. These methods provide controlled access to the attributes of an object.
-
-How attributes are implemented depends on the programming language. In some languages, there is a clear and definitive way to define attributes. For example, in JavaScript, attributes are defined by setting the property of an object.
-
-```javascript
-let laptop = {
-  memory: '8GB',
-}
-
-console.log(laptop.memory);       // '8GB'
-laptop.memory = '16GB';
-console.log(laptop.memory);       // '16GB'
-```
-
-Achieving the same effect in Python is a more involved process. It involves initializing instance variables and can also include defining properties that "wrap" the instance variables.
+1. Given the following code, create the Person class needed to make the code work as shown:
 
 ```python
-class Laptop:
-    def __init__(self, memory):
-        self.memory = memory
+bob = Person('bob')
+print(bob.name)           # bob
+bob.name = 'Robert'
+print(bob.name)           # Robert
+```
+
+Possible Solution: 
+
+```python
+class Person:
+    def __init__(self, name):
+        self.name = name
 
     @property
-    def memory(self):
-        return self._memory
+    def name(self):
+        return self._name
 
-    @memory.setter
-    def memory(self, memory):
-`        self._memory = memory
-
-laptop = Laptop('8GB')
-print(laptop.memory)          # 8GB
-
-laptop.memory = '16GB'
-print(laptop.memory)          # 16GB
+    @name.setter
+    def name(self, name):
+        self._name = name
 ```
 
-There are often subtle nuances involved when talking about attributes, properties, and instance variables. For instance, in JavaScript, all methods and instance variables defined by an object are called properties, while in Python, properties are special methods that provide controlled access to instance variables. Furthermore, properties in both languages don't need to be associated with instance variables; they can be dynamic.
-
-In Python, we often need to speak of methods and instance variables collectively. It would be inconvenient and a little annoying to constantly use both terms. Fortunately, Python methods are simply callable objects, so we can talk of methods as being attributes. Since instance variables are also attributes, we can include both things under the attribute umbrella.
-
-In summary, it can be difficult to provide absolute definitions for OOP nomenclature. As a mental model, you can think of these terms like this:
-
-* Attributes include both methods and instance variables.
-* Properties are the getters and setters defined by the `@property` and `@name.setter` decorators. Properties don't require an associated instance variable, though they usually do have one.
-
-We'll use the terms method and instance variable when the term attribute is too broad.
-The terminology and mental model isn't perfect, but it gets the job done.
-
-**If we can already access and modify instance variables directly, why would we go through the trouble of defining a property instead?**
-
-
-The key benefit is controlled access. When you allow direct access to instance variables, you're letting anything outside the object modify them however it wants—without any validation or logic. Properties let you intercept those reads and writes to add restrictions or side effects.
-
-Here's a practical example. Imagine a `BankAccount` class with a balance:
+2. Modify the class definition from above to facilitate the following methods. Note that there is no name= setter method now.
 
 ```python
-class BankAccount:
-    def __init__(self, balance):
-        self.balance = balance
+bob = Person('Robert')
+print(bob.name)             # Robert
+print(bob.first_name)       # Robert
+print(repr(bob.last_name))  # ''
+bob.last_name = 'Smith'
+print(bob.name)             # Robert Smith
 ```
 
-With direct access, someone could do this:
+Possible Solution:
 
 ```python
-account = BankAccount(100)
-account.balance = -5000  # Oops, negative balance!
+
+bob = Person('Robert')
+print(bob.name)             # Robert
+print(bob.first_name)       # Robert
+print(repr(bob.last_name))  # ''
+bob.last_name = 'Smith'
+print(bob.name)             # Robert Smith
+
 ```
+Hint: let first_name and last_name be "states" and create a property that uses those states.
 
-Now with a property:
+Possible Solution:
+
+This class has three properties, two of which have a setter. The name property constructs the full name from the first_name and last_name properties.
 
 ```python
-class BankAccount:
-    def __init__(self, balance):
-        self._balance = balance
+class Person:
+    def __init__(self, name):
+        parts = name.split()
+        self.first_name = parts[0]
+        self.last_name = ''
+        if len(parts) > 1:
+            self.last_name = parts[1]
 
     @property
-    def balance(self):
-        return self._balance
+    def name(self):
+        return f'{self.first_name} {self.last_name}'.strip()
 
-    @balance.setter
-    def balance(self, amount):
-        if amount < 0:
-            raise ValueError("Balance cannot be negative")
-        self._balance = amount
+    @property
+    def first_name(self):
+        return self._first_name
+
+    @first_name.setter
+    def first_name(self, first_name):
+        self._first_name = first_name
+
+    @property
+    def last_name(self):
+        return self._last_name
+
+    @last_name.setter
+    def last_name(self, last_name):
+        self._last_name = last_name
+```
+There are two items of note here besides the property definitions:
+
+* The __init__ method parses the first and last name from the input name argument. Things get mildly tricky if name doesn't contain both a first and last name.
+
+* The name property applies the strip method to the returned name. Once again, this code is in play if both names aren't available.
+
+3. Add a new setter property for name that takes either a first name or full name, and knows how to set the first_name and last_name properties appropriately. Use the following code to test your code:
+
+```python
+bob = Person('Robert')
+print(bob.name)             # Robert
+print(bob.first_name)       # Robert
+print(repr(bob.last_name))  # ''
+bob.last_name = 'Smith'
+print(bob.name)             # Robert Smith
+
+bob.name = 'Prince'
+print(bob.first_name)       # Prince
+print(repr(bob.last_name))  # ''
+
+bob.name = 'John Adams'
+print(bob.first_name)       # John
+print(bob.last_name)        # Adams
 ```
 
-Now you've added validation that prevents invalid states. The object protects its own data integrity.
+Possible Solution:
 
-Other reasons properties are useful:
+We actually already did this in __init__, so we can just repeat it for the name property's setter.
 
-* Computed values: A property can calculate a value on the fly instead of storing it
+```python
+class Person:
+    def __init__(self, name):
+        parts = name.split()
+        self.first_name = parts[0]
+        self.last_name = ''
+        if len(parts) > 1:
+            self.last_name = parts[1]
 
-* Side effects: Setting a property might trigger other updates (like logging or notifications)
+    @property
+    def name(self):
+        return f'{self.first_name} {self.last_name}'.strip()
 
-* Future flexibility: You can add logic later without changing how the code that uses your class looks from the outside
+    @name.setter
+    def name(self, name):
+        parts = name.split()
+        self.first_name = parts[0]
+        self.last_name = ''
+        if len(parts) > 1:
+            self.last_name = parts[1]
 
-So while you can access instance variables directly, properties give you a way to enforce rules and maintain the object's consistency.`
+    @property
+    def first_name(self):
+        return self._first_name
+
+    @first_name.setter
+    def first_name(self, first_name):
+        self._first_name = first_name
+
+    @property
+    def last_name(self):
+        return self._last_name
+
+    @last_name.setter
+    def last_name(self, last_name):
+        self._last_name = last_name
+```
+
+Note the redundant code in the __init__ method and the name property setter. We can remove that code from __init__ and replace it with an assignment to the name property:
+
+```python
+class Person:
+    def __init__(self, name):
+        self.name = name
+
+    # Remaining code omitted for brevity.
+```
+
+This code should provide identical results to Solution 1.
+
+4. Using the class definition from problem 3, let's create some more people (Person objects):
+
+```python
+bob = Person('Robert Smith')
+rob = Person('Robert Smith')
+```
+
+Without adding any code to the Person class, we want to compare bob and rob to see whether they both have the same name. How can we make this comparison?
+
+Possible Solution:
+
+`bob == rob` won't work correctly since `==` only checks whether the two Person objects are the same object. It doesn't check that they have the same name. We have to be more precise and compare the names directly:
+
+```python
+print(bob.name == rob.name)         # True
+```
+
+The above code compares a string with a string. But aren't strings also just objects of the str class? If we can't compare two Person objects with each other with ==, why can we compare two different str objects with ==
+
+```python
+str1 = 'hello world'
+str2 = 'hello world'
+
+print(str1 == str2)            # True
+```
+
+What about lists, dictionaries, and integers? It seems like Python treats some core library objects differently. For now, memorize this behavior. We'll explain the underlying reason in a future lesson.
+
+
+5. Continuing with our Person class definition, what do you think the following code prints?
+
+```python
+bob = Person('Robert Smith')
+print(f"The person's name is: {bob}")
+```
+
+See output: ```The person's name is: <__main__.Person object at 0x100385f90>```
+
+We're using string interpolation in this code, as opposed to string concatenation. Python automatically calls the str function on the expression between the {}. Every object in Python responds to the str function which, by default, is inherited from the object class. By default, it prints out some gibberish, which represents the object's place in memory.
+
+Until we learn how to override str's behavior, we must construct the output string in some other way. For instance, we can use:
+
+```python
+print("The person's name is: " + bob.name)
+# The person's name is: Robert Smith
+
+#or
+
+print(f"The person's name is: {bob.name}")
+# The person's name is: Robert Smith
+```
+
+Let's override the str function for Person objects by defining a magic method, __str__, in the Person class:
+
+```python
+class Person:
+   # Code omitted for brevity.
+
+    def __str__(self):
+        return self.name
+```
+
+Now, what does the below output?
+
+```python
+bob = Person('Robert Smith')
+print(f"The person's name is: {bob}")
+```
+
+This time it works as expected, due to the __str__ method!
+```The person's name is: Robert Smith```
