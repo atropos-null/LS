@@ -2023,7 +2023,6 @@ With this understanding, you are ready to start using mix-ins to make your own c
 
 Mix-ins are a powerful pattern for writing clean, reusable, and maintainable code in Python. They provide a disciplined way to use multiple inheritance, giving you the best of both worlds. By following a few simple conventions, you can share specific behaviors across unrelated classes without creating the complex, hard-to-debug hierarchies that traditional multiple inheritance can sometimes cause. Start using mix-ins as your precision tool for injecting capabilities exactly where they're needed, and watch your code become cleaner and more powerful.
 
-
 Page Reference: [Mix-Ins](https://launchschool.com/lessons/14df5ba5/assignments/181b615f)
 [Back to the top](#top)
 
