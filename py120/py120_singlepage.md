@@ -1,148 +1,87 @@
-# Collaborators
+# Mix-Ins
 
-## Objects as State
+A limitation of class inheritance in many languages is that classes can only subclass directly from one superclass. We call this single inheritance. Python, on the other hand, supports multiple inheritance: classes can subclass as many superclasses as needed.
 
-By now, you should know that classes group common behaviors and objects encapsulate state. An object's state is saved in the object's instance variables. Instance methods can operate on the instance variables. The state is often a string or number. For example, a Person object's my_name attribute is likely to contain a string:
+This isn't necessarily good news. **Multiple inheritance** (MI) is fraught with pitfalls, and should normally be left to the domain of expert programmers. In practice, MI is rarely needed. If you think you need MI, you may need to reconsider your design choices.
 
-```python
-class Person:
-    def __init__(self, my_name):
-        self.my_name = my_name
+As far as most beginners are concerned, you can think of Python and other MI languages as supporting only **single inheritance** (SI).
 
-    def name(self):
-        return self.my_name
-
-joe = Person('Joe')
-print(joe.name())             # Joe
-print(type(joe.name()))       # <class 'str'>
-```
-
-Notice that `self.my_name` holds a string object. That is, '`Joe`' is an object of the `str` class. There's nothing special about the `str` class. Instance variables can hold any object. For instance, it can hold data structures, like lists or dictionaries:
+Using SI, though, imposes limitations on what you can do to accurately model a problem domain. For instance, suppose we want to add a `Fish` class to the following class hierarchy:
 
 ```python
-class Person:
-    def __init__(self):
-        self._heroes = ['Superman', 'Spiderman', 'Batman']
-        self.cash = {
-            1:   12,  # The key is bill value, value is count
-            2:   1,
-            5:   2,
-            10:  3,
-            20:  2,
-            50:  1,
-            100: 1,
-        }
-
-    def cash_on_hand(self):
-        return sum([bill_value * count
-                    for (bill_value, count) in self.cash.items()])
-
-    def heroes(self):
-        return ', '.join(self._heroes)
-
-joe = Person()
-print(joe.cash_on_hand())  # 244
-print(joe.heroes())        # Superman, Spiderman, Batman
-```
-
-In the above example, you can see that we have used a list and a dictionary to represent the object's state. Instance variables can be set to any object, even an object of a custom class you've created. Suppose we have a `Person` that has a `Pet`, like this:
-
-```python
-class Person:
-    def __init__(self, name):
-        self.name = name
-
-class Dog:
+class Pet:
     def speak(self):
-        return 'bark!'
-
-    def fetch(self):
-        return 'fetching!'
-
-class Bulldog(Dog):
-    pass
-
-bob = Person('Robert')
-bud = Bulldog()
-
-bob.pet = bud
-print(bob.pet)      # <__main__.Bulldog object at 0x105001f50>
-```
-
-Those last two lines are something we haven't seen yet, but it's a perfectly valid OO code. We've created a brand new `self.pet` instance variable in bob, and assigned it to the Bulldog object, bud. Thus, when we reference bob.pet on the last line, it returns a Bulldog object.
-
-Since `bob.pet` returns a Bulldog object, we can chain any Bulldog methods to the return value:
-
-```python
-print(bob.pet.speak())        # bark!
-print(bob.pet.fetch())        # fetching!
-```
-
-## Collaboration
-
-In OOP, if object A calls any methods or accesses any instance variables of object B, then object B is a **collaborator** of object A. If object A just holds on to object B for some time, but doesn't do anything with it other than print or return it, then object B is not a collaborator of object A. There are many other ways in which collaboration is defined, but this explanation is perhaps the easiest to understand.
-
-In the above example, bob has a Bulldog collaborator object stored in the `self.pet` instance variable. When we need that Bulldog object to perform some action (i.e., we want to access some behavior of the bulldog), we can go through bob and call the method on the object stored in `self.pet`, such as speak or fetch.
-
-Here's another example:
-
-```python
-class Engine:
-    def start(self):
         pass
 
-class Car:
-    def __init__(self, engine):
-        self.engine = engine
+    def run(self):
+        return 'running!'
 
-    def start(self):
-        return self.engine.start()
-
-class Driver:
-    def __init__(self, car):
-        self.car = car
-
-    def drive(self):
-        return self.car.start()
-
-engine = Engine()
-car = Car(engine)
-driver = Driver(car)
-```
-
-In this code, a `Car` object is a collaborator of a `Driver` object since a driver needs a car to drive. Likewise, an Engine object is a collaborator of a `Car` object; a car needs an engine or it won't run.
-
-Collaboration can also take place inside a class's methods by using method arguments and instance variables as collaborators:
-
-```python
-class Foo:
-    def __init__(self, obj):
-        self.obj = obj
-
-    def bar(self, qux):
-        return self.obj.name() + qux.name()
-```
-
-In this code, `self.obj` and `qux` are both collaborators of the Foo class's instance objects.
-
-Collaborators are usually custom objects (e.g. defined by the programmer and not inherited from the Python core library). For example, driver is an example of a custom object. However, collaborator objects aren't strictly custom objects. Even the string object stored in `bob.name` might be considered a collaborator object were the Person object to use the string in some way to carry out its functionality. This usually involves something more than just printing or returning the value.
-
-Collaborator objects play an important role in object-oriented design, since they represent the connections between various actors in your program. When working on an object-oriented program be sure to consider what collaborators your classes will have and if those associations make sense, both from a technical standpoint and in terms of modeling the problem your program aims to solve.
-
-In essence, collaborator objects in OOP let objects work together, each handling specific responsibilities and creating a well-structured, maintainable, and efficient application.
-
-Next, let's change our Person/Dog/Bulldog program from the 3rd code block on this page to let a person have many pets. How should we implement this? How about a list of pets?
-
-```python
-class Person:
-    def __init__(self, name):
-        self.name = name
-
-class Pet:
     def jump(self):
-        return 'How high?'
+        return 'jumping!'
 
 class Dog(Pet):
+    def speak(self):
+        return 'bark!'
+
+    def fetch(self):
+        return 'fetching!'
+
+    def swim(self):
+        return 'swimming!'
+
+class Cat(Pet):
+    def speak(self):
+        return 'meow!'
+
+```
+
+Note that the `Pet` class has `speak`, `run`, and `jump` methods.
+
+Fish can swim, live in a small bowl, eat, etc. However, they can't speak, run, or jump. (Okay, they can sometimes jump, but that's not always a wise life choice by the fish. We'll pretend they can't jump.) Given this information, we need to reorganize our classes and methods in the Pet class:
+
+[![Alt text](image.png)](image.png)
+
+This seems fine, except we have swim in both the `Dog` class as well as the `Fish` class. We'd like to not have the same swim method in two different classes, but where do we move it?
+
+With MI, we could conceivably create a `SwimmingAnimal` class that both `Fish` and `Dog` could inherit from in addition to inheriting from `Pet` or `Mammals`. However, we want to avoid MI. Fortunately, there's a better solution: use a **mix-in** instead.
+
+Mix-ins are an application of MI that is very useful in Python. It lets us create classes that can be mixed in to other classes. They provide the means to reuse code in multiple classes, even classes that are unrelated. This is also known as interface inheritance. We're using mix-ins to share behavior instead of super classes, so we're inheriting an interface.
+
+It's important to note that mix-ins don't follow any special mixin-specific rules. As far as Python is concerned, mix-ins are just multiple inheritance. We, as programmers, create a set of guidelines to follow so that we can avoid the complexities of MI while still being able to share behavior across classes when a simple hierarchy doesn't suffice.
+
+Mix-ins have the following characteristics:
+
+* Mix-ins are usually small and focused, providing a single piece of functionality. Several methods may be involved, but they are all focused on the same basic functionality.
+* Mix-ins should not normally have state of their own. In particular, they don't have a __init__ method.
+* Mix-ins must not be instantiated. In Python, all classes can be instantiated, including mix-ins, but you should not do so. In particular, the lack of state makes instantiation questionable. Furthermore, instantiating mix-ins suggests that the mix-in is unsuitable to act as a mix-in.
+* Mix-ins must not be dependent on the inner workings of other classes.
+* Mix-ins should be reusable in multiple classes.
+* A class should usually only subclass from one superclass. However, you can use as many mix-ins as you like.
+
+Let's update our code to use a SwimMixin mix-in class (the Mixin suffix for the class name is the conventional way to name mix-in classes).
+
+```python
+class SwimMixin:
+    def swim(self):
+        return 'swimming!'
+
+class Pet:
+    def speak(self):
+        pass
+
+    # run and jump methods moved to Mammal class
+
+class Mammal(Pet):
+    def run(self):
+        return 'running!'
+
+    def jump(self):
+        return 'jumping!'
+
+class Fish(SwimMixin, Pet):
+    pass
+
+class Dog(SwimMixin, Mammal):
 
     def speak(self):
         return 'bark!'
@@ -150,59 +89,20 @@ class Dog(Pet):
     def fetch(self):
         return 'fetching!'
 
-class Bulldog(Dog):
-    pass
+    # swim method moved to SwimMixin
 
-class Cat(Pet):
-    pass
+class Cat(Mammal):
 
-bob = Person('Robert')
-kitty = Cat()
-bud = Bulldog()
-bob.pets = [kitty, bud]
-print(bob.pets)
-# [<__main__.Cat object at 0x102daa410>,
-#  <__main__.Bulldog object at 0x102daa450>]
+    def speak(self):
+        return 'meow!'
 ```
 
-Notice that `bob.pets` is a list. The first element is a Cat object, while the second is a Bulldog object. Since it's a list, you can't just call `Pet` methods on pets:
+The result is that the swim method from `SwimMixin` is available in both the `Dog` and `Fish` class. Using interface inheritance, it's as though we copied and pasted the swim method into those classes. We can mix in as many mix-ins as we want. Mixing in mix-ins, though, does affect the method lookup path. Use the mro method to see how mixing in various mix-ins affects how Python looks up methods.
 
-```python
-bob.pets.jump()
-# AttributeError: 'list' object has no attribute 'jump'
-```
-
-There is no `jump` method in the list class, so we get an error. If we want to make each individual pet jump, we'll have to parse out the elements in the list and operate on the individual Pet object. Here, we'll just iterate through the list.
-
-```python
-for pet in bob.pets:
-    pet.jump()
-```
-
-When working with collaborator objects in your class, you may be working with strings, integers, lists, dictionaries, or even custom objects. Collaborator objects allow you to chop up and modularize the problem domain into cohesive pieces; they are at the core of OO programming and play an important role in modeling complicated problem domains.
+Note that mix-ins are usually listed before the superclass in the inheritance list in the class definition. While this isn't a requirement for mix-ins, it's good practice. Recall that the items in an inheritance list are processed left to right in the MRO, and you usually want to search the mix-ins before you search the superclass.
 
 Question:
 
-**Could a collaborator object be shared between two different objects? What kinds of problems might this solve, and what kinds of problems could it introduce?**
+**Do mix-ins follow different MRO rules than regular classes? Why or why not?**
 
-Yes. Two different objects can hold references to the same collaborator object (the same underlying instance) and call its methods. What it can solve:
-
-* Reduce duplication: share a single service-like object (e.g., a logger, config, cache) across many objects.
-* Consistency: centralized state/behavior so every user sees the same data and rules.
-* Coordination: a shared object can mediate interactions (e.g., a shared queue or controller).
-
-What it can introduce:
-
-* Coupling and side effects: if the collaborator is mutable, changes by one owner affect the other (aliasing). This can create hard-to-track bugs.
-* Ownership/lifecycle issues: who is responsible for initializing, resetting, or disposing of the shared object?
-* Invariants and ordering: one object might put the collaborator into a state that makes another object fail.
-* Concurrency concerns (if applicable): simultaneous access to shared mutable state needs coordination.
-
-Tips:
-
-* Prefer sharing stateless or immutable collaborators when possible.
-* If mutation is needed, encapsulate changes behind well-defined methods.
-* Consider copying/defensive copying when callers shouldn’t see each other’s changes.
-* Make responsibilities explicit: inject the collaborator where needed and document who may modify it.
-
-This aligns with the assignment’s definition that a collaborator is any object whose methods or instance variables are used by another object; sharing just means multiple objects treat the same instance as their collaborator. 
+No. Mix-ins follow the same MRO rules as any regular class because, to Python, mix-ins are just classes participating in multiple inheritance. There are no special, mixin-specific rules. The method lookup follows the standard MRO, which processes base classes left to right—so you typically list mix-ins before the main superclass to have their methods found first. 
