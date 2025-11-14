@@ -1,148 +1,208 @@
-# Encapsulation
+# Collaborators
 
-**Encapsulation** is one of the fundamental concepts of object-oriented programming. At its core, encapsulation describes the idea of bundling or combining the data and the operations that work on that data into a single entity, e.g., an object.
+## Objects as State
 
-Encapsulation lets us hide the internal representation of an object from the outside and only expose the attributes that users of the object need. In practice, Python doesn't properly support encapsulation since it doesn't support access control which limits attribute exposure.
-
-In most OOP languages, encapsulation has a broader purpose. It also refers to restricting access to the state and certain behaviors via access control. An object only exposes the data and behaviors that other parts of the application need to work. In other words, objects expose a public interface for interacting with other objects and keep their implementation details hidden. Thus, other objects can't change the data of an object without going through the proper interface.
-
-As it happens, Python doesn't support access control. That said, Python does have a convention that most experienced Python developers know they should follow. If an attribute's name begins with an alphabetic character, the attribute is intended for use by anybody. However, if the attribute's name begins with an underscore, the attribute is intended for internal use. With this convention, we can talk of encapsulation in Python.
-
-Let's take a quick look at these conventions, starting with how they interact with instance variables.
+By now, you should know that classes group common behaviors and objects encapsulate state. An object's state is saved in the object's instance variables. Instance methods can operate on the instance variables. The state is often a string or number. For example, a Person object's my_name attribute is likely to contain a string:
 
 ```python
-class Dog:
-    def __init__(self, name, age, breed):
+class Person:
+    def __init__(self, my_name):
+        self.my_name = my_name
+
+    def name(self):
+        return self.my_name
+
+joe = Person('Joe')
+print(joe.name())             # Joe
+print(type(joe.name()))       # <class 'str'>
+```
+
+Notice that `self.my_name` holds a string object. That is, '`Joe`' is an object of the `str` class. There's nothing special about the `str` class. Instance variables can hold any object. For instance, it can hold data structures, like lists or dictionaries:
+
+```python
+class Person:
+    def __init__(self):
+        self._heroes = ['Superman', 'Spiderman', 'Batman']
+        self.cash = {
+            1:   12,  # The key is bill value, value is count
+            2:   1,
+            5:   2,
+            10:  3,
+            20:  2,
+            50:  1,
+            100: 1,
+        }
+
+    def cash_on_hand(self):
+        return sum([bill_value * count
+                    for (bill_value, count) in self.cash.items()])
+
+    def heroes(self):
+        return ', '.join(self._heroes)
+
+joe = Person()
+print(joe.cash_on_hand())  # 244
+print(joe.heroes())        # Superman, Spiderman, Batman
+```
+
+In the above example, you can see that we have used a list and a dictionary to represent the object's state. Instance variables can be set to any object, even an object of a custom class you've created. Suppose we have a `Person` that has a `Pet`, like this:
+
+```python
+class Person:
+    def __init__(self, name):
         self.name = name
-        self._age = age
-        self.__breed = breed
-
-    def __str__(self):
-        return f'''
-My name is {self.name}.
-I am {self._age} years old.
-I am a {self.__breed}.
-'''
-
-rover = Dog('Rover', 4, 'Mutt')
-print(rover)                # My name is Rover.
-                            # I am 4 years old.
-                            # I am a Mutt.
-
-rover.name = 'Fido'
-rover._age = 7
-rover.__breed = 'Poodle'
-print(rover)                # My name is Fido.
-                            # I am 7 years old.
-                            # I am a Mutt.
-print(rover.__breed)        # Poodle
-print(rover._Dog__breed)    # Mutt
-
-rover._Dog__breed = 'Boxer'
-print(rover)                # My name is Fido.
-                            # I am 7 years old.
-                            # I am a Boxer.
-
-```
-
-Let's walk through this code.
-
-On lines 14 and 15, we first create a Dog object, then print it. Everything appears as expected at this point; the name, age, and breed are all correct.
-
-On lines 19-26, we attempt to reassign each instance variable to a new value.
-
-The dog's name attribute gets changed, as expected.
-
-The dog's _age attribute also gets changed. This might be unexpected since the leading underscore indicates that it's for internal use. However, this is merely a convention, and developers can ignore it at their own peril.
-
-A more promising result is that the __breed attribute wasn't changed. Curiously, though, line 25 prints a different breed than was printed by line 22. This is an effect of the name mangling that occurs with double underscore attribute names. Internally, the class's method can refer to __breed properly, but outside the class, the name gets mangled. Line 21 actually created an unmangled instance variable named __breed. However, the class's methods don't recognize that instance variable.
-Line 26 uses the mangled, _Dog__breed name for the __breed attribute to access the real attribute.
-On lines 28 and 29, we show that we can also modify double-underscore attributes by using the mangled name.
-
-Now let's see how things work with methods:
-
-```python
 
 class Dog:
-    def walk(self):
-        print('Walking the dog.')
+    def speak(self):
+        return 'bark!'
 
-    def _chase_car(self):
-        print('I am chasing a car!')
+    def fetch(self):
+        return 'fetching!'
 
-    def __goto_vet(self):
-        print('The vet! Run and hide!')
+class Bulldog(Dog):
+    pass
 
-    def a_day_in_the_life(self):
-        self.walk()
-        self._chase_car()
-        self.__goto_vet()
+bob = Person('Robert')
+bud = Bulldog()
 
-rover = Dog()
-
-rover.a_day_in_the_life()   # Walking the dog.
-                            # I am chasing a car!
-                            # The vet! Run and hide!
-
-rover.walk()                # Walking the dog.
-rover._chase_car()          # I am chasing a car!
-rover._Dog__goto_vet()      # The vet! Run and hide!
-rover.__goto_vet()
-# AttributeError: 'Dog' object has no attribute '__goto_vet'.
+bob.pet = bud
+print(bob.pet)      # <__main__.Bulldog object at 0x105001f50>
 ```
 
-In this case, we can see on lines 12-14 that methods in the class (a_day_in_the_life) can access any method also defined within the class (walk, _chase_car, and __goto_vet). Even the underscore names work as expected. These methods are intended for internal use, and calling them from within another class-defined method like a_day_in_the_life is consistent with that intent.
+Those last two lines are something we haven't seen yet, but it's a perfectly valid OO code. We've created a brand new `self.pet` instance variable in bob, and assigned it to the Bulldog object, bud. Thus, when we reference bob.pet on the last line, it returns a Bulldog object.
 
-The remaining code on lines 22-23 demonstrates that we can call methods that begin with alphabetic characters with no problem. We can even call "internal use" methods whose name begins with a single underscore.
-
-Line 24 shows that we can use a mangled name to access a method whose name begins with a double underscore. Line 25 shows that we can't use the double underscore name to access that method.
-
-Together, these two examples show that Python really doesn't control access to a class's attributes. Names that begin with a single or double underscore, by convention, signal the user of your class that they should not use that attribute. However, Python does nothing to prevent the user from bypassing the convention.
-
-In practice, smart programmers never ignore this naming convention. If they do so, they are asking for future trouble, and most programmers don't like trouble, especially when it arrives at 2:27am on a holiday morning.
-
-As for whether you should use single or double underscores for your internal names, we recommend using single underscores. The main reason for using double underscore prefixes is to prevent name clashes with subclasses, a situation we won't encounter at Launch School.
-
-On a final note, always keep in mind that classes should have as few public attributes as possible. If your users don't need a method or instance variable, use the single underscore convention to let future users know it's for internal users. If you want to provide read-only access to an instance variable, create a property with the `O` decorator.
-
-### Questions:
-
-**What does "internal use" mean in this context? What purpose does a method designated for internal use serve?**
-
-“Internal use” means “meant to be used only inside the class (by its own methods), not part of the class’s public interface that other code should call.”
-
-A method designated for internal use (named with a leading underscore) serves as an implementation detail—typically a helper that supports the class’s public methods. It lets you:
-
-* Hide how the class works behind a simpler public API
-* Signal to other programmers that the method isn’t stable for external use and may change without notice
-
-Python doesn’t enforce this; it’s a convention. As shown in the assignment’s example, a public method can call internal ones:
+Since `bob.pet` returns a Bulldog object, we can chain any Bulldog methods to the return value:
 
 ```python
-class Dog:
-    def _chase_car(self):
-        print('I am chasing a car!')
-
-    def __goto_vet(self):
-        print('The vet! Run and hide!')
-
-    def a_day_in_the_life(self):
-        self._chase_car()
-        self.__goto_vet()
-
+print(bob.pet.speak())        # bark!
+print(bob.pet.fetch())        # fetching!
 ```
 
-Here, `_chase_car` and `__goto_vet` are used inside the class to implement behavior, while users of the class are expected to call the public methods.
+## Collaboration
 
-**Is there any way in Python to completely prevent a programmer from changing an object's internal state? If not, what's the point of using a single underscore to indicate internal use?**
+In OOP, if object A calls any methods or accesses any instance variables of object B, then object B is a **collaborator** of object A. If object A just holds on to object B for some time, but doesn't do anything with it other than print or return it, then object B is not a collaborator of object A. There are many other ways in which collaboration is defined, but this explanation is perhaps the easiest to understand.
 
-No. Python doesn’t have true access control, so you can’t fully prevent someone from changing an object’s internals. Even double-underscore names are only name-mangled; they’re still accessible.
+In the above example, bob has a Bulldog collaborator object stored in the `self.pet` instance variable. When we need that Bulldog object to perform some action (i.e., we want to access some behavior of the bulldog), we can go through bob and call the method on the object stored in `self.pet`, such as speak or fetch.
 
-The single leading underscore is a convention to:
+Here's another example:
 
-* Signal “this is internal, not part of the public API”
-* Discourage external code from depending on it (it may change without notice)
-* Improve maintainability by clarifying the class’s public interface
+```python
+class Engine:
+    def start(self):
+        pass
 
-If you want read-only access to data, provide a property via @property, but understand that determined code can still bypass it. 
+class Car:
+    def __init__(self, engine):
+        self.engine = engine
 
+    def start(self):
+        return self.engine.start()
+
+class Driver:
+    def __init__(self, car):
+        self.car = car
+
+    def drive(self):
+        return self.car.start()
+
+engine = Engine()
+car = Car(engine)
+driver = Driver(car)
+```
+
+In this code, a `Car` object is a collaborator of a `Driver` object since a driver needs a car to drive. Likewise, an Engine object is a collaborator of a `Car` object; a car needs an engine or it won't run.
+
+Collaboration can also take place inside a class's methods by using method arguments and instance variables as collaborators:
+
+```python
+class Foo:
+    def __init__(self, obj):
+        self.obj = obj
+
+    def bar(self, qux):
+        return self.obj.name() + qux.name()
+```
+
+In this code, `self.obj` and `qux` are both collaborators of the Foo class's instance objects.
+
+Collaborators are usually custom objects (e.g. defined by the programmer and not inherited from the Python core library). For example, driver is an example of a custom object. However, collaborator objects aren't strictly custom objects. Even the string object stored in `bob.name` might be considered a collaborator object were the Person object to use the string in some way to carry out its functionality. This usually involves something more than just printing or returning the value.
+
+Collaborator objects play an important role in object-oriented design, since they represent the connections between various actors in your program. When working on an object-oriented program be sure to consider what collaborators your classes will have and if those associations make sense, both from a technical standpoint and in terms of modeling the problem your program aims to solve.
+
+In essence, collaborator objects in OOP let objects work together, each handling specific responsibilities and creating a well-structured, maintainable, and efficient application.
+
+Next, let's change our Person/Dog/Bulldog program from the 3rd code block on this page to let a person have many pets. How should we implement this? How about a list of pets?
+
+```python
+class Person:
+    def __init__(self, name):
+        self.name = name
+
+class Pet:
+    def jump(self):
+        return 'How high?'
+
+class Dog(Pet):
+
+    def speak(self):
+        return 'bark!'
+
+    def fetch(self):
+        return 'fetching!'
+
+class Bulldog(Dog):
+    pass
+
+class Cat(Pet):
+    pass
+
+bob = Person('Robert')
+kitty = Cat()
+bud = Bulldog()
+bob.pets = [kitty, bud]
+print(bob.pets)
+# [<__main__.Cat object at 0x102daa410>,
+#  <__main__.Bulldog object at 0x102daa450>]
+```
+
+Notice that `bob.pets` is a list. The first element is a Cat object, while the second is a Bulldog object. Since it's a list, you can't just call `Pet` methods on pets:
+
+```python
+bob.pets.jump()
+# AttributeError: 'list' object has no attribute 'jump'
+```
+
+There is no `jump` method in the list class, so we get an error. If we want to make each individual pet jump, we'll have to parse out the elements in the list and operate on the individual Pet object. Here, we'll just iterate through the list.
+
+```python
+for pet in bob.pets:
+    pet.jump()
+```
+
+When working with collaborator objects in your class, you may be working with strings, integers, lists, dictionaries, or even custom objects. Collaborator objects allow you to chop up and modularize the problem domain into cohesive pieces; they are at the core of OO programming and play an important role in modeling complicated problem domains.
+
+Question:
+
+**Could a collaborator object be shared between two different objects? What kinds of problems might this solve, and what kinds of problems could it introduce?**
+
+Yes. Two different objects can hold references to the same collaborator object (the same underlying instance) and call its methods. What it can solve:
+
+* Reduce duplication: share a single service-like object (e.g., a logger, config, cache) across many objects.
+* Consistency: centralized state/behavior so every user sees the same data and rules.
+* Coordination: a shared object can mediate interactions (e.g., a shared queue or controller).
+
+What it can introduce:
+
+* Coupling and side effects: if the collaborator is mutable, changes by one owner affect the other (aliasing). This can create hard-to-track bugs.
+* Ownership/lifecycle issues: who is responsible for initializing, resetting, or disposing of the shared object?
+* Invariants and ordering: one object might put the collaborator into a state that makes another object fail.
+* Concurrency concerns (if applicable): simultaneous access to shared mutable state needs coordination.
+
+Tips:
+
+* Prefer sharing stateless or immutable collaborators when possible.
+* If mutation is needed, encapsulate changes behind well-defined methods.
+* Consider copying/defensive copying when callers shouldn’t see each other’s changes.
+* Make responsibilities explicit: inject the collaborator where needed and document who may modify it.
+
+This aligns with the assignment’s definition that a collaborator is any object whose methods or instance variables are used by another object; sharing just means multiple objects treat the same instance as their collaborator. 
