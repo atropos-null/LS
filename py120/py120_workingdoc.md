@@ -133,7 +133,7 @@ The `@property` decorator provides **managed attributes** with clean syntax:
 ```python
 class Person:
     def __init__(self, first_name, last_name):
-        self._set_name(first_name, last_name)
+        self.name = (first_name, last_name)
 
     @property
     def name(self):
@@ -144,16 +144,8 @@ class Person:
     @name.setter
     def name(self, name_tuple):
         first_name, last_name = name_tuple
-        self._set_name(first_name, last_name)
-
-    @classmethod
-    def _validate(cls, name):
-        if not name.isalpha():
-            raise ValueError('Name must be alphabetic.')
-
-    def _set_name(self, first_name, last_name):
-        Person._validate(first_name)
-        Person._validate(last_name)
+        if not first_name.isalpha() or not last_name.isalpha():
+            raise ValueError('Names must be alphabetic.')
         self._first_name = first_name
         self._last_name = last_name
 ```
