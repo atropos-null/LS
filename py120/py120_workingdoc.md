@@ -12,6 +12,7 @@
 - [The Power of Hierarchy: A Practical Guide to Inheritance and Code Reusability in Object-Oriented Programming](#the-power-of-hierarchy-a-practical-guide-to-inheritance-and-code-reusability-in-object-oriented-programming)
 - [A Pragmatist's Guide to Encapsulation in Python: Convention Over Control](#a-pragmatists-guide-to-encapsulation-in-python-convention-over-control)
 - [Understanding Collaborator Objects: How Objects Work Together](#understanding-collaborator-objects-how-objects-work-together)
+- [Deconstructing **Circular Buffer**](#deconstructing-circular-buffer)
 
 ## Notes from Object Oriented Programming with Python Book
 
@@ -2018,4 +2019,372 @@ Mix-ins are a powerful pattern for writing clean, reusable, and maintainable cod
 Page Reference: [Mix-Ins](https://launchschool.com/lessons/14df5ba5/assignments/181b615f)
 [Back to the top](#top)
 
+**
+
+## Deconstructing **Circular Buffer** 
+
+A circular buffer is a collection of objects stored in a buffer that is treated as though it is connected end-to-end in a circle. When an object is added to this circular buffer, it is added to the position that immediately follows the most recently added object, while removing an object always removes the object that has been in the buffer the longest.
+
+This works as long as there are empty spots in the buffer. If the buffer becomes full, adding a new object to the buffer requires getting rid of an existing object; with a circular buffer, the object that has been in the buffer the longest is discarded and replaced by the new object.
+
+Assuming we have a circular buffer with room for 3 objects, the circular buffer looks and acts like this:
+
+| P1 | P2 | P3 | Comments                                            |
+|----|----|----|-----------------------------------------------------|
+|    |    |    | All positions are initially empty                   |
+| 1  |    |    | Add 1 to the buffer                                 |
+| 1  | 2  |    | Add 2 to the buffer                                 |
+| 2  |    |    | Remove oldest item from the buffer (1)              |
+| 2  | 3  |    | Add 3 to the buffer                                 |
+| 4  | 2  | 3  | Add 4 to the buffer, buffer is now full             |
+| 4  |    | 3  | Remove oldest item from the buffer (2)              |
+| 4  | 5  | 3  | Add 5 to the buffer, buffer is full again           |
+| 4  | 5  | 6  | Add 6 to the buffer, replaces oldest element (3)    |
+| 7  | 5  | 6  | Add 7 to the buffer, replaces oldest element (4)    |
+| 7  |    | 6  | Remove oldest item from the buffer (5)              |
+| 7  |    |    | Remove oldest item from the buffer (6)              |
+|    |    |    | Remove oldest item from the buffer (7)              |
+|    |    |    | Remove non-existent item from the buffer (nil)      |
+
+
+```python
+buffer = CircularBuffer(3)
+
+print(buffer.get() is None)          # True
+
+buffer.put(1)
+buffer.put(2)
+print(buffer.get() == 1)             # True
+
+buffer.put(3)
+buffer.put(4)
+print(buffer.get() == 2)             # True
+
+buffer.put(5)
+buffer.put(6)
+buffer.put(7)
+print(buffer.get() == 5)             # True
+print(buffer.get() == 6)             # True
+print(buffer.get() == 7)             # True
+print(buffer.get() is None)          # True
+
+buffer2 = CircularBuffer(4)
+
+print(buffer2.get() is None)         # True
+
+buffer2.put(1)
+buffer2.put(2)
+print(buffer2.get() == 1)            # True
+
+buffer2.put(3)
+buffer2.put(4)
+print(buffer2.get() == 2)            # True
+
+buffer2.put(5)
+buffer2.put(6)
+buffer2.put(7)
+print(buffer2.get() == 4)            # True
+print(buffer2.get() == 5)            # True
+print(buffer2.get() == 6)            # True
+print(buffer2.get() == 7)            # True
+print(buffer2.get() is None)         # True
+```
+
+Your task is to write a CircularBuffer class in Python that implements a circular buffer for arbitrary objects. The class should be initialized with the buffer size and provide the following methods:
+
+`put`: Add an object to the buffer
+`get`: Remove (and return) the oldest object in the buffer. Return None if the buffer is empty.
+
+You may assume that none of the values stored in the buffer are None (however, None may be used to designate empty spots in the buffer).
+
+You may assume that none of the values stored in the buffer are `None` (however, `None` may be used to designate empty spots in the buffer).
+
+Result:
+```python
+class CircularBuffer:
+    EMPTY = None
+    
+    def __init__(self, size):
+        self.buffer = [self.EMPTY] * size
+        self.next = 0
+        self.oldest = 0
+        
+    def put(self, obj):
+        if self.buffer[self.next] is not self.EMPTY:
+            self.oldest = (self.oldest + 1) % len(self.buffer)
+            
+        self.buffer[self.next] = obj
+        self.next = (self.next + 1) % len(self.buffer)
+        
+        
+    def get(self):
+        value = self.buffer[self.oldest]
+        if value is self.EMPTY:
+            return None
+        
+        self.buffer[self.oldest] = self.EMPTY
+        self.oldest = (self.oldest +1) % len(self.buffer)
+        return value
+        
+        
+b = CircularBuffer(3)
+print(b.get() is None)
+b.put(1); b.put(2)
+print(b.get() == 1)
+b.put(3); b.put(4)
+print(b.get() == 2)
+```
+
+Ok that was hard, wtf. 
+
+### The Breakdown
+
+#### Trace the Logic with a Concrete Example
+
+The exercise provides a table showing the state of the buffer after each operation. This is the single most valuable tool you have. Don't just read it; manually recreate it on paper or in a text file.
+
+Track the values of `self.buffer`, `self.next`, and `self.oldest` for every single step:
+
+| Action     | self.next Before | self.oldest Before | self.buffer After | self.next After | self.oldest After | Comment                                                                                             |
+|------------|------------------|--------------------|-------------------|-----------------|-------------------|-----------------------------------------------------------------------------------------------------|
+| __init__(3)| -                | -                  | [N, N, N]         | 0               | 0                 | Initial state                                                                                       |
+| put(1)     | 0                | 0                  | [1, N, N]         | 1               | 0                 | Simple add                                                                                          |
+| put(2)     | 1                | 0                  | [1, 2, N]         | 2               | 0                 | Simple add                                                                                          |
+| get()      | 2                | 0                  | [N, 2, N]         | 2               | 1                 | Oldest was at 0, now it's at 1                                                                      |
+| put(3)     | 2                | 1                  | [N, 2, 3]         | 0               | 1                 | Add and wrap next                                                                                   |
+| put(4)     | 0                | 1                  | [4, 2, 3]         | 1               | 1                 | Aha! Overwrote slot 0. It's not empty.                                                              |
+
+> When you get to `put(4)` and `put(5)`, you would manually discover the critical rule:  
+> **When I put into a slot that is NOT empty, I am overwriting the oldest element, so I must also advance the oldest pointer.**  
+> This "aha!" moment is almost impossible to have just by thinking; it comes from methodical, manual tracing.
+
+The `__init__` method sets up the initial state of every new `CircularBuffer` object. It does three things:
+
+* Creates the storage: `self.buffer` is created as a list of a specific size, filled with `None` to mark the empty slots.
+* Creates a "write" pointer: `self.next` is initialized to `0`. This integer will always hold the index of the next slot to be written to.
+* Creates a "read" pointer: `self.oldest` is also initialized to `0`. This integer will always hold the index of the oldest element, which is the next one to be read.
+
+#### `def put(self, obj)` 
+
+The `put` instance method is accepting a new number to place into the list. 
+
+* Check for an overwrite: Is the slot at `self.next` already full? If so, we're about to discard the oldest element, so we must advance `self.oldest`.
+
+* Place the object: No matter what, place the new obj into the slot at `self.next`.
+
+* Advance the "next" pointer: Update self.next so it's ready for the next put operation.
+ 
+`obj` is the value being added to the list. It's the actual piece of data you want to store, like the integers 1, 2, 3, etc.
+
+The index (or position) where that value is placed is determined by `self.next`. You can read this as: "Assign the value obj to the slot in self.buffer at the index self.next."
+
+#### `def put(self):`
+
+* `value = self.buffer[self.oldest]`: Look up the value at the oldest position. `self.oldest` is an integer (an index). We use it to find the actual value in the buffer list and store it in the `value` variable.
+
+* `if value is self.EMPTY: return None`: Check if the buffer is empty at that position. If the value we just retrieved is `None` (our EMPTY marker), it means the buffer is empty. We stop here and return `None`.
+
+* `self.buffer[self.oldest] = self.EMPTY`: Mark the slot as empty. We are NOT setting `self.oldest` to `None`. Instead, we are changing the *value in the buffer* at the `self.oldest` index back to `None`. This is how we "remove" the item.
+
+* `self.oldest = (self.oldest + 1) % len(self.buffer)`: Advance the oldest pointer. Now that the oldest item has been removed, the *next* item in line is now the new oldest. We update the `self.oldest` index to point to it, using the modulo trick to wrap around if necessary.
+
+* `return value`: Return the value we retrieved in step 1.
+
+### Ok so what questions have I not asked that would help me understand this problem better?
+
+Here are a few questions you haven't asked yet. Thinking through them will solidify your understanding of the design choices and their consequences.
+
+#### 1. "How does the buffer know when it's full or empty?"
+
+Your current code doesn't have an `is_full()` or `is_empty()` method. The logic is implicit.
+
+- **Emptiness:**  
+  The `get` method infers that the buffer is empty when it looks at `self.buffer[self.oldest]` and finds `None`. This works, but it's an indirect way of checking.
+
+- **Fullness:**  
+  The `put` method infers that the buffer is full when it checks `self.buffer[self.next]` and finds something other than `None`.
+
+An alternative design would be to track the number of items explicitly with a `self.count` instance variable:
+
+```python
+def __init__(self, size):
+    self.count = 0
+
+def put(self, value):
+    if self.count < self.size:
+        self.count += 1
+
+def get(self):
+    if self.count > 0:
+        self.count -= 1
+```
+
+**Why this matters:**  
+This is a classic design tradeoff. Your current implementation uses less state (no `self.count`) but the logic for determining fullness/emptiness is a bit more complex. An implementation with `self.count` uses more state, but the logic (`if self.count == 0`) is simpler and more direct. There's no single "right" answer, only different choices with different pros and cons.
+
+#### 2. "What would happen if I tried to store `None` in the buffer?"
+
+The exercise instructions include a critical assumption: *"You may assume that none of the values stored in the buffer are `None`."*
+
+Why is this so important?
+
+If you were to do `put(None)`, this line in your `get` method would break your logic:
+
+```python
+value = self.buffer[self.oldest]  # value would be None
+if value is self.EMPTY:           # This would be True
+    return None                   # It would wrongly report the buffer is empty
+```
+
+The `get` method would see the stored `None`, think it has found an empty slot, and incorrectly return `None` as if the buffer were empty. This reveals a limitation of our design: we can't store `None` because we're using `None` as a special marker for empty space. A more advanced implementation might use a different, unique object as the `EMPTY` marker to avoid this conflict.
+
+
+#### 3. "Why does the put method have to worry about the oldest pointer?"
+
+This is the key insight of the entire exercise. The state of the buffer is a collaborative effort between the pointers. An action that seems like it should only affect `self.next` (putting a new item) can have a "ripple effect" that requires `self.oldest` to change as well.
+
+Recognizing these hidden dependencies between different parts of an object's state is a crucial skill in object-oriented design.
+
+Asking these kinds of "what if" and "why" questions is exactly how you build the intuition to solve the next challenging problem on your own. You did an excellent job working through this.
+
+### Mental Model for Understanding a Circular Buffer
+
+### “Two People Passing Notes Around a Round Table”
+
+Imagine a round table with **N seats**.  
+Each seat may contain a note or be empty.
+
+Two people walk around this table:
+
+---
+
+#### 📝 1. The Writer (`put → next`)
+
+**The Writer’s job:**
+
+- Move one seat at a time, always clockwise.
+- Place a new note in the next seat.
+- If that seat already contains a note, the Writer says:  
+  _“Reader, move! I’m overwriting your oldest note.”_
+
+**This corresponds to:**
+```python
+if self.buffer[self.next] is not self.EMPTY:
+    self.oldest = (self.oldest + 1) % len(self.buffer)
+```
+
+- The Writer always advances:
+  - either after placing a note
+  - or after overwriting a note
+
+---
+
+#### 📖 2. The Reader (`get → oldest`)
+
+**The Reader’s job:**
+
+- Go to the oldest note (current oldest seat)
+- Pick it up
+- Mark that seat as empty
+- Move clockwise
+
+- If the Reader arrives at an empty seat (`None`):
+  - There is no note to read
+  - They return `None`
+  - They do **not** advance
+
+---
+
+#### 🔁 Modulo Arithmetic = “Walking Around a Circle”
+
+Whenever either the Writer or Reader reaches the last seat, they wrap around:
+```python
+self.next = (self.next + 1) % len(self.buffer)
+self.oldest = (self.oldest + 1) % len(self.buffer)
+```
+This is nothing more than:  
+_“If you fall off the edge, start back at seat 0.”_
+
+---
+
+### 🎯 Core Rules of the Mental Model
+
+**Rule 1:** The Writer moves every time you call `put()`  
+_Even if overwriting what the Reader hasn’t read yet._
+
+**Rule 2:** The Reader moves only when they successfully read a note  
+_If the seat is empty → Reader returns `None` and stays put._
+
+**Rule 3:** Overwriting forces the Reader to move forward  
+_This prevents the Reader from attempting to read a note that has been overwritten._
+
+---
+
+#### 🧠 Why Circular Buffers Feel Hard Initially
+
+Circular buffers feel tricky because:
+
+- The Writer and Reader are independent
+- They can cross each other
+- They wrap around
+- A full buffer requires the Reader to be “pushed” forward
+- Empty reads cause the Reader to stay still
+
+This is a lot of moving cognitive parts until you have a stable mental model.
+
+_The table-with-two-people analogy simplifies everything into a human story._
+
+---
+
+#### 🔄 Example (Buffer Size = 3)
+
+**Initial State:**  
+`[None, None, None]`  
+Writer → seat 0  
+Reader → seat 0
+
+**put(1)**  
+- Writer places “1” at seat 0 → moves to seat 1.
+
+**put(2)**  
+- Writer places “2” at seat 1 → moves to seat 2.
+
+**get()**  
+- Reader picks up “1” at seat 0 → moves to seat 1.
+
+**put(3)**  
+- Writer places “3” at seat 2 → wraps to seat 0.
+
+**put(4)**  
+- Writer sees seat 0 is not empty → buffer is full.
+- Writer pushes Reader from seat 1 → seat 2
+- Writer overwrites seat 0 with “4”
+- Writer moves to seat 1
+
+_This is correct circular buffer behavior._
+
+---
+
+#### ❤️ Why This Reduces Panic
+
+This mental model helps because:
+
+- It reduces cognitive load
+- Eliminates the need to juggle complex pointer logic
+- Turns abstract operations into a familiar story
+- Makes each step predictable and visual
+
+_When panicked, your brain loses working memory._  
+_A simple model gives you an anchor._
+
+**Just remember:**
+
+> Writer, Reader, Round Table.
+
+_Everything else flows from that._
+
+
+
+Page Reference: [Circular Buffer](https://launchschool.com/exercises/699c68e4?track=python)
+[Back to the top](#top)
 **
