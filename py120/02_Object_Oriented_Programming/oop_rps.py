@@ -8,9 +8,6 @@ class Player:
         self.move = None
         self.score = 0
 
-    def add_point(self):
-        self.score += 1
-
 class Computer(Player):
 
 
@@ -27,7 +24,7 @@ class Human(Player):
 
     def choose(self):
         while True:
-            choice = input("Please choose rock, paper, scissors, lizard, or Spock: ").lower()
+            choice = input("Please choose rock, paper, scissors, lizard, or Spock: ").strip().lower()
             if choice in Player.CHOICES:
                 break
             print(f'Sorry, {choice} is not valid')
