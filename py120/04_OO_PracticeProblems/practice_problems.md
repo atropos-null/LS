@@ -1036,14 +1036,6 @@ Alter the code related to vehicles so that the range for autos and motorcycles i
 
 <details>
 <summary>Answer:</summary>
-</details>
-
-
-Page Reference: [Practice Problems: Hard 1](https://launchschool.com/lessons/a6479eb0/assignments/639c8557)
-[Back to the top](#top)
-
-<details>
-<summary>Possible Solution</summary>
 
 ```python
 class FuelMixin:
@@ -1117,4 +1109,11 @@ print(catamaran.fuel_efficiency)        # 1.5
 print(catamaran.fuel_capacity)          # 600
 print(catamaran.range())                # 900.0
 ```
+
 </details>
+
+
+Page Reference: [Practice Problems: Hard 1](https://launchschool.com/lessons/a6479eb0/assignments/639c8557)
+[Back to the top](#top)
+
+
