@@ -884,6 +884,7 @@ This new class does not fit well with the object hierarchy defined so far. Catam
 <details>
 <summary>Answer:</summary>
 
+```python
 class FuelMixin:
 
     def range(self):
@@ -947,6 +948,7 @@ print(motorcycle.range())               # 640.0
 print(catamaran.fuel_efficiency)        # 1.5
 print(catamaran.fuel_capacity)          # 600
 print(catamaran.range())                # 900.0
+```
 </details>
 
 ### Question 2
