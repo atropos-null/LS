@@ -28,6 +28,9 @@ class Square:
 
 class Board:
     def __init__(self):
+        self.reset()
+    
+    def reset(self):
         self.squares = {key: Square() for key in range(1, 10)}
 
     def display(self):
@@ -54,11 +57,12 @@ class Board:
     def mark_square_at(self, key, marker):
         self.squares[key].marker = marker
 
+    def is_unused_square(self, key):
+        return self.squares[key].is_unused()
+    
     def unused_squares(self):
-        return [key
-                for key, square in self.squares.items()
-                if square.is_unused()]
-
+        return [key for key, square in self.squares.items() if square.is_unused()]
+                
     def is_full(self):
         return len(self.unused_squares()) == 0
 
@@ -100,8 +104,8 @@ class TTTGame:
         self.human = Human()
         self.computer = Computer()
 
-    def play(self):
-        self.display_welcome_message()
+    def play_one_game(self):
+        self.board.reset()
         self.board.display()
 
         while True:
@@ -117,8 +121,28 @@ class TTTGame:
 
         self.board.display_with_clear()
         self.display_results()
+
+    def play(self):
+        self.display_welcome_message()
+
+        while True:
+            self.play_one_game()
+            if not self.play_again():
+                break
+            print("Let's play again! \n")
+
         self.display_goodbye_message()
 
+    def play_again(self):
+        while True:
+            answer = input("Play again (y/n)").lower()
+            if answer in ["y", "n"]:
+                break
+            print("Sorry, that's not a valid choice \n")
+
+        clear_screen()
+        return answer == "y"
+    
     def display_welcome_message(self):
         clear_screen()
         print("Welcome to Tic Tac Toe!")
@@ -136,7 +160,6 @@ class TTTGame:
             print("A tie game. How boring.")
 
     @staticmethod
-
     def _join_or(choices, punct=", ", separator="or",):
         sequence = " "
         if len(choices) == 2:
@@ -171,10 +194,29 @@ class TTTGame:
         self.board.mark_square_at(choice, self.human.marker)
 
     def computer_moves(self):
-        valid_choices = self.board.unused_squares()
-        choice = random.choice(valid_choices)
+        
+        choice = self.defensive_computer_move()
+
+        if not choice:
+            valid_choices = self.board.unused_squares()
+            choice = random.choice(valid_choices)
+
         self.board.mark_square_at(choice, self.computer.marker)
 
+    def defensive_computer_move(self):
+        for row in TTTGame.POSSIBLE_WINNING_ROWS:
+            key = self.at_risk_square(row)
+            if key:
+                return key
+        return None
+    
+    def at_risk_square(self, row):
+        if self.board.count_markers_for(self.human, row) == 2:
+            for key in row:
+                if self.board.is_unused_square(key):
+                    return key
+        return None
+    
     def is_game_over(self):
         return self.board.is_full() or self.someone_won()
 
