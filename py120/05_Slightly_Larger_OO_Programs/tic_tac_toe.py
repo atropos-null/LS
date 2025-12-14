@@ -135,13 +135,27 @@ class TTTGame:
         else:
             print("A tie game. How boring.")
 
+    @staticmethod
+
+    def _join_or(choices, punct=", ", separator="or",):
+        sequence = " "
+        if len(choices) == 2:
+            for item in choices[:-1]:
+                sequence += str(item) + " "
+
+        elif len(choices) > 2:
+            for item in choices[:-1]:
+                sequence += str(item) + punct 
+    
+        return f"{sequence}{separator} {choices[-1]}"
+
     def human_moves(self):
         choice = None
-        valid_choices = self.board.unused_squares()
+        
         while True:
-            choices_list = [str(choice) for choice in valid_choices]
-            choices_str = ", ".join(choices_list)
-            prompt = f"Choose a square ({choices_str}): "
+            valid_choices = self.board.unused_squares()
+            printable_choices = TTTGame._join_or(valid_choices)
+            prompt = f"Choose a square ({printable_choices}): "
             choice = input(prompt)
 
             try:
