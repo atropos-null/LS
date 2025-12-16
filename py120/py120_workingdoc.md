@@ -17,6 +17,7 @@
 - [The Pythonic Path to Robust Objects: Mastering Properties](#the-pythonic-path-to-robust-objects-mastering-properties)
 - [Mastering State and Scope: A Guide to Object-Oriented Variables in Python](#mastering-state-and-scope-a-guide-to-object-oriented-variables-in-python)
 - [Python Exceptions: Writing Resilient Code](#python-exceptions-writing-resilient-code)
+- [PANIC STATE: WHERE DOES STATE LIVE?](#panic-state-where-does-state-live)
 
 ## Notes from Object Oriented Programming with Python Book
 
@@ -3906,4 +3907,125 @@ Adopting these practices is a defining step that separates a novice programmer f
 
 Page Reference: [Exceptions](https://launchschool.com/lessons/9363d6ba/assignments/0434f002)
 [Back to the top](#top)
+
+## PANIC STATE: WHERE DOES STATE LIVE? (OOP)
+
+Read top to bottom. Do not overthink.
+
+---
+
+## STEP 1 — DOES IT NEED TO SURVIVE?
+
+Ask:
+Does this value need to exist after this method ends?
+
+YES → Instance variable  
+NO  → Local variable  
+
+Examples:
+
+Instance:
+- hand
+- deck
+- secret_number
+- bank
+
+Local:
+- guess
+- result
+- loop counter
+
+---
+
+## STEP 2 — DOES IT RESET EACH GAME?
+
+Ask:
+Should this reset every time `play()` is called?
+
+YES → Initialize in `play()` or `reset()`  
+NO  → Initialize in `__init__()`
+
+Examples:
+
+Resets:
+- guesses_remaining
+- secret_number
+- round state
+
+Persistent:
+- player name
+- config values
+
+---
+
+## STEP 3 — WHO OWNS IT?
+
+Ask:
+Who is responsible if this value is wrong?
+
+Deck → cards  
+Hand → total  
+Bookie → bank  
+Game → turn flow / win logic  
+
+Put the state on the object you would blame.
+
+---
+
+## STEP 4 — IS IT A THING OR A PROCESS?
+
+THING → Store state  
+PROCESS → Use a method or local variable  
+
+Thing:
+- player hand
+- dealer hand
+- deck
+
+Process:
+- comparing totals
+- deciding winner
+- printing messages
+
+---
+
+## STEP 5 — RULE OR ACTION?
+
+RULE → Class constant  
+ACTION → Method  
+
+Rules:
+- MAX_GUESSES
+- WIN_SCORE
+- DEALER_LIMIT
+
+Actions:
+- hit()
+- stay()
+- busted()
+
+---
+
+## STEP 6 — CAN I EXPLAIN IT?
+
+Finish this sentence:
+
+"This state lives here because __________."
+
+If you can’t finish it:
+- park it temporarily
+- move on
+- refactor later
+
+---
+
+## EMERGENCY OVERRIDE
+
+If stuck longer than 2 minutes:
+
+1. Make it an instance variable
+2. Make it work
+3. Clean it up later
+
+Progress beats purity.
 
