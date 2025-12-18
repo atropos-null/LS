@@ -18,6 +18,7 @@
 - [Mastering State and Scope: A Guide to Object-Oriented Variables in Python](#mastering-state-and-scope-a-guide-to-object-oriented-variables-in-python)
 - [Python Exceptions: Writing Resilient Code](#python-exceptions-writing-resilient-code)
 - [PANIC STATE: WHERE DOES STATE LIVE?](#panic-state-where-does-state-live)
+- [Prompts and Prejudices](#prompts-and-prejudices)
 
 ## Notes from Object Oriented Programming with Python Book
 
@@ -3914,7 +3915,7 @@ Read top to bottom. Do not overthink.
 
 ---
 
-## STEP 1 — DOES IT NEED TO SURVIVE?
+### STEP 1 — DOES IT NEED TO SURVIVE?
 
 Ask:
 Does this value need to exist after this method ends?
@@ -3937,7 +3938,7 @@ Local:
 
 ---
 
-## STEP 2 — DOES IT RESET EACH GAME?
+### STEP 2 — DOES IT RESET EACH GAME?
 
 Ask:
 Should this reset every time `play()` is called?
@@ -3958,7 +3959,7 @@ Persistent:
 
 ---
 
-## STEP 3 — WHO OWNS IT?
+### STEP 3 — WHO OWNS IT?
 
 Ask:
 Who is responsible if this value is wrong?
@@ -3972,7 +3973,7 @@ Put the state on the object you would blame.
 
 ---
 
-## STEP 4 — IS IT A THING OR A PROCESS?
+### STEP 4 — IS IT A THING OR A PROCESS?
 
 THING → Store state  
 PROCESS → Use a method or local variable  
@@ -3989,7 +3990,7 @@ Process:
 
 ---
 
-## STEP 5 — RULE OR ACTION?
+### STEP 5 — RULE OR ACTION?
 
 RULE → Class constant  
 ACTION → Method  
@@ -4006,7 +4007,7 @@ Actions:
 
 ---
 
-## STEP 6 — CAN I EXPLAIN IT?
+### STEP 6 — CAN I EXPLAIN IT?
 
 Finish this sentence:
 
@@ -4019,7 +4020,7 @@ If you can’t finish it:
 
 ---
 
-## EMERGENCY OVERRIDE
+### EMERGENCY OVERRIDE
 
 If stuck longer than 2 minutes:
 
@@ -4029,3 +4030,996 @@ If stuck longer than 2 minutes:
 
 Progress beats purity.
 
+[Back to the top](#top)
+***
+
+## Prompts and Prejudices
+
+In which I ask a long series of prompts from LSBot and note the results
+
+### Please show me a real-world Python example where object A needs  object B, and walk me through:
+
+1. Where object A is created
+2. Where object B is created
+3. How B is passed to A
+4. How A uses B
+
+in the order they happen at runtime.
+
+A `Car` needs an `Engine` to work; the `Engine` is a collaborator object of the `Car`.
+
+```python
+class Engine:
+    """Represents the engine of a car (Object B)."""
+    def start(self):
+        return "Engine starts. Vroom vroom!"
+
+class Car:
+    """Represents a car (Object A), which has an engine."""
+    def __init__(self, engine_object):
+        # 3. How B is passed to A: The passed-in engine_object is stored in an instance variable.
+        self.engine = engine_object
+
+    def start_car(self):
+        # 4. How A uses B: The Car delegates the action of starting to its Engine object.
+        return self.engine.start()
+
+# --- Runtime Execution Steps ---
+
+# 2. Where object B is created
+# The Engine object is created first and stored in the `my_engine` variable.
+my_engine = Engine()
+
+# 1. Where object A is created
+# The Car object is created, and the Engine object is passed to its constructor.
+my_car = Car(my_engine)
+
+
+# A uses B to perform an action.
+print(my_car.start_car())
+# Expected output: Engine starts. Vroom vroom!
+```
+
+Here is a walkthrough of the creation and interaction in the order they happen at runtime:
+1. **​Object B is created (`my_engine = Engine()`)**:
+   First, an instance of the `Engine` class is created and assigned to the variable my_engine. This object now exists in memory.
+
+2. **​Object A is created (`my_car = Car(my_engine)`)**:
+   Next, an instance of the `Car` class is created. The previously created `Engine` object, `my_engine`, is passed as an argument to the `Car`'s constructor.
+
+3. **​How B is passed to A (`def __init__(self, engine_object)`)**:
+   When the `Car` object is initialized, `its __init__` method runs. `The engine_object` parameter receives the `my_engine` object. The line `self.engine = engine_object` assigns this `Engine` object to an instance variable named engine within the new `Car` object. The `Car` object now holds a reference to the `Engine` object.
+4. **​How A uses B (`print(my_car.start_car())`):**
+   When `my_car.start_car()` is called, the `Car` object looks at its `start_car` method. Inside that method, the line `self.engine.start()` is executed. This accesses the `Engine` object stored in `self.engine` and calls its start method. The `Engine` performs its action and returns a string, which the `Car` method then returns.
+
+This pattern, where one object holds a reference to another object and calls its methods, is a fundamental concept in OOP called ​collaboration​. 
+
+Page Reference: [Collaborators](https://launchschool.com/lessons/14df5ba5/assignments/8939d1cb)
+
+
+### I want to practice creating a small program with 3-4 classes  where one class orchestrates the others. Can you guide me through the design process?
+
+Let's design a simple command-line quiz game.
+
+The process we'll follow is similar to the one used in the Rock Paper Scissors and Tic Tac Toe projects. We'll start by brainstorming, then define our classes and their responsibilities, and finally create a "scaffolding" or skeleton for our program.
+
+#### Step 1: Brainstorming with Nouns and Verbs
+F
+irst, let's describe what our program will do in plain English:
+
+The game starts and welcomes the ​player​. It asks the player for their ​name​. Then, it presents a series of ​questions​, one by one. For each ​question​, the player provides an ​answer​. The game checks if the ​answer​ is correct and updates the player's ​score​. After all questions are answered, the game displays the final ​score​ and says goodbye.
+
+From this description, we can extract some potential nouns and verbs:
+*   ​Nouns​: Player, Name, Question, Answer, Score, Game
+*   ​Verbs​: Start, welcome, ask, answer, check, update score, display score
+
+#### Step 2: Designing the Classes and Their Responsibilities
+
+Now, let's group these nouns and verbs into distinct classes. A good design gives each class a single, clear responsibility.
+
+1.  **​Question Class**​:
+    *   ​Responsibility​: To hold the data for a single question.
+    *   ​State (Nouns)​: The question text and the correct answer.
+    *   ​Behavior (Verbs)​: Check if a given answer is correct.
+2.  **​Player Class​**:
+    *   ​Responsibility​: To hold the data for the person playing the game.
+    *   ​State (Nouns)​: The player's name and their current score.
+    *   ​Behavior (Verbs)​: Increment its own score.
+3.  **​QuizGame Class **(The Orchestration Engine)​:
+    *   ​Responsibility​: To manage the overall flow of the game. This is our ​orchestration engine​, just like the RPSGame or TTTGame classes you've seen.
+    *   ​State (Nouns)​: It will need a `Player` object and a list of `Question` objects to manage.
+    *   ​Behavior (Verbs)​: Start the game, run the main loop (ask questions, get answers, update score), and display the final results.
+
+This gives us three well-defined classes. The `QuizGame` class doesn't handle the details of what a question is or how a score is tracked; it delegates those responsibilities to the `Question` and `Player` classes.
+
+#### Step 3: Defining Collaborators
+
+The next step is to think about how these classes will interact. This is where we define the ​collaborator​ objects.
+* A `QuizGame` object ​has-a​ `Player` object.
+* A `QuizGame` object ​has-a​ list of `Question` objects.
+
+The `QuizGame` will *​use*​ its `Player` object to get the player's name and tell it to update its score.
+
+It will iterate through its list of `Question` objects to display them and check the answers.
+
+This "has-a" relationship is a form of ​composition​, where one class is composed of other objects to do its job.
+A great tool for visualizing these relationships is using **​Class Responsibility Collaborator (CRC) Cards**​, which help you map out what each class does and what other classes it needs to interact with.
+
+Page Reference: [CRC Cards](https://launchschool.com/lessons/14df5ba5/assignments/d0605323)
+Page Reference: [Inheritance](https://launchschool.com/books/oo_python/read/inheritance#thehasarelationship)
+
+#### Step 4: Creating the Scaffolding
+
+Now we can build a skeleton of our program. This involves creating the classes and methods with empty implementations, often called ​stubs​.
+
+This helps us see the structure and ensure the high-level design makes sense before we write the detailed logic.
+
+```python
+
+class Question:
+    def __init__(self, prompt, answer):
+        # A question needs to know its prompt and answer.
+        self.prompt = prompt
+        self.answer = answer
+
+    def is_correct(self, player_answer):
+        # It should be able to check if an answer is correct.
+        pass
+
+class Player:
+    def __init__(self, name):
+        # A player needs a name and a score.
+        self.name = name
+        self.score = 0
+
+    def increment_score(self):
+        # It should be able to increment its score.
+        pass
+
+class QuizGame:
+    def __init__(self):
+        # The orchestration engine holds its collaborators.
+        self._player = None
+        self._questions = []
+
+    def _setup(self):
+        # A private helper method to create the questions and player.
+        # This keeps the main `play` method cleaner.
+        print("--- Setting up the quiz ---")
+        player_name = input("Please enter your name: ")
+        self._player = Player(player_name)
+
+        # Create our question objects
+        q1 = Question("What is 2 + 2?", "4")
+        q2 = Question("What is the capital of France?", "Paris")
+        q3 = Question("What color is the sky?", "blue")
+        self._questions = [q1, q2, q3]
+        print("--- Setup complete ---")
+
+    def _run_quiz_loop(self):
+        # This is where the main game logic lives.
+        for question in self._questions:
+            player_answer = input(question.prompt + " ")
+            if question.is_correct(player_answer):
+                print("Correct!")
+                self._player.increment_score()
+            else:
+                print(f"Sorry, the correct answer was {question.answer}")
+
+    def _display_final_results(self):
+        # Show the player their final score.
+        print("\n--- Quiz Over ---")
+        print(f"{self._player.name}, your final score is: "
+              f"{self._player.score}/{len(self._questions)}")
+
+    def play(self):
+        # The main public method that orchestrates the game.
+        self._setup()
+        self._run_quiz_loop()
+        self._display_final_results()
+
+# --- To run the game ---
+if __name__ == "__main__":
+    game = QuizGame()
+    game.play()
+```
+
+Me: 
+
+> Ok great this is helpful because this is precisely where I lose confidence. I see the quiz driver. But how do I get Question.is_correct to connect to QuizGame?
+
+That's an excellent question, and it gets to the very heart of how objects work together. It's a very common point of confusion when you're first learning, so let's break it down.
+
+The "connection" is made when the orchestrator object (`QuizGame`) holds a reference to another object (`Question`) and calls a method on it.
+
+Think of it this way: The `QuizGame` is the manager. The `Question` objects are its employees. The manager doesn't do the work itself; it tells the right employee to do their job and report back.
+
+Here’s how it happens in the code, step-by-step:
+1. **The QuizGame Holds the Question Objects**
+
+First, in the `_setup` method, we create the `Question` instances and store them in an instance variable on our `QuizGame` object, `self._questions`.
+
+```python
+
+# Inside the QuizGame class
+def _setup(self):
+    # ...
+    q1 = Question("What is 2 + 2?", "4")
+    q2 = Question("What is the capital of France?", "Paris")
+    # ...
+    # The QuizGame instance now holds a list of Question objects.
+    self._questions = [q1, q2, q3]
+```
+
+Now, the game object has a list of its "employees" and can access them anytime through `self._questions`.
+
+2. **The QuizGame Iterates Through its Question Objects**
+
+Next, in the `_run_quiz_loop`, we loop through this list. In each iteration, the variable question becomes a temporary alias for one of the `Question` objects in the list (q1 in the first loop, q2 in the second, and so on).
+
+```python
+# Inside the QuizGame class
+def _run_quiz_loop(self):
+    # The `question` variable here IS a Question object.
+    for question in self._questions:
+        # ... the connection happens in here ...
+```
+
+3. **The QuizGame Calls the Method on the Question Object (The Connection!)**
+
+This is the key step. Since the `question` variable holds a `Question` object, we can use dot notation to call any of its methods. The `QuizGame` asks the `player` for an answer and stores it in `player_answer`. It then passes this answer to the current Question object and asks, "Is this correct?"
+
+Here is the code with the logic for is_correct filled in:
+
+```python
+
+class Question:
+    def __init__(self, prompt, answer):
+        self.prompt = prompt
+        self.answer = answer
+
+    def is_correct(self, player_answer):
+        # The Question object's job is simple: compare the player's
+        # answer to its own correct answer.
+        # It returns True or False.
+        return player_answer.lower() == self.answer.lower()
+
+class QuizGame:
+    # ... other methods ...
+
+    def _run_quiz_loop(self):
+        print("\n--- Let's start the quiz! ---")
+        for question in self._questions:
+            # 1. The QuizGame gets input from the user.
+            player_answer = input(question.prompt + " ")
+
+            # 2. THE CONNECTION:
+            # The QuizGame calls the is_correct method ON the current
+            # `question` object, passing the `player_answer` to it.
+            if question.is_correct(player_answer):
+                # 3.
+```
+The `QuizGame` uses the True/False result to decide what to do.
+```python
+                print("Correct!")
+                self._player.increment_score()
+            else:
+                print(f"Sorry, the correct answer was {question.answer}")
+```
+
+The line if `question.is_correct(player_answer)`: is the entire connection. The `QuizGame` object (the orchestrator) is delegating the responsibility of checking the answer to the `Question` object, which is the expert on that specific task.
+This is a perfect example of ​collaboration​. The `QuizGame` object is a collaborator with the `Question` object because it calls one of its methods. This design is powerful because it keeps each class focused on its own job:
+
+*  `QuizGame`: Manages the flow of the game.
+*   `Question`: Knows its own prompt and correct answer, and can verify a guess.
+*   `Player`: Tracks a name and a score.
+
+This separation of concerns makes your code much easier to read, modify, and debug.
+
+Me: 
+> So why aren't the questions in `Questions` and instead in `QuizGame`? how does the line `return player_answer.lower() == self.answer.lower()` get written?
+
+Those are two fantastic, deeply related questions that get to the core of object-oriented design. Let's tackle them one by one.
+
+1. **"Why aren't the questions in `Question` and instead in `QuizGame`?"**
+
+This is a key design decision based on the **​Single Responsibility Principle**​. Each class should have one, and only one, reason to change.
+
+* `​The Question Class's Responsibility`:​ Its job is to be a blueprint for a ​single​ question. It should know its own prompt and its own correct answer. It's an expert on one thing: itself. If you needed to change how a question is structured (e.g., add a hint or multiple-choice options), you would only change the Question class. It has no business knowing about the other questions that make up a full quiz.
+
+*   **​The QuizGame Class's Responsibility**:​ Its job is to be the ​orchestration engine​. It manages the entire flow of the game. Part of that flow is knowing ​which questions to ask​ and ​in what order​. The collection, or list, of Question objects is part of the state of the ​game​, not the state of an individual Question.
+
+Think of it like this:
+
+You have a `Book` class. The `Book` class knows its own title, author, and number of pages. You also have a `Library` class. The Library class holds a list of all the Book objects. It wouldn't make sense for a single Book object to be responsible for holding the entire collection of all other books in the library. That's the library's job.
+
+In our case, `QuizGame` is the "library" and `Question` is the "book." The `QuizGame` holds the collection of `Question `objects that make up that specific quiz.
+
+2. **"How does the line return player_answer.lower() == self.answer.lower() get written?"**
+
+Let's break down that line of code, which lives inside the `is_correct` method of the `Question` class.
+
+```python
+
+# Inside the Question class
+def is_correct(self, player_answer):
+    return player_answer.lower() == self.answer.lower()
+```
+
+This single line is a compact and powerful piece of Python. Here's what's happening from left to right:
+
+1.  `​player_answer`​: This is the argument passed ​into​ the method. It's the string that the user typed as their answer (e.g., "paris"). The QuizGame is the one that provides this value when it calls the method.
+
+2.  `​.lower()`​: This is a standard Python string method. It returns a new string with all characters converted to lowercase. We do this to both strings to make the comparison ​case-insensitive​. This way, if the correct answer is "Paris", the user's answers of "paris", "PARIS", and "PaRiS" will all be counted as correct.
+
+3.  `​self.answer`​: This is where `self` is crucial. `self` refers to the specific instance of the `Question` object that the method is being called on.
+
+`self.answer` accesses the instance variable answer that was stored on that object when it was created. So, if the object is `q2 = Question("What is the capital of France?", "Paris"`), then `self.answer `holds the string "Paris".
+
+4.  `​==`​: This is the equality operator. It compares the value on its left (the user's answer, in lowercase) with the value on its right (the object's correct answer, also in lowercase).
+
+5.  `​return`​: The result of the == comparison is a boolean value: either True or False. The return keyword sends this boolean value back to the place where the method was called (the if statement inside QuizGame).
+
+So, the `QuizGame` asks a Question object, "Hey, the user gave me this answer. Can you check if it's correct?" The Question object uses its own internal data (self.answer) to perform the check and replies with a simple True or False.
+This ability for an instance method to access its own object's state via self is fundamental to object-oriented programming.
+
+Me: 
+> Ok so the Question class should only hold that 1 question And since it shouldn't hold all three questions, that responsibility in turn goes to _setup? I don't understand how q1, q2, q3 connect back to the Question class.
+
+That's the perfect question to ask. You've pinpointed one of the most important concepts in object-oriented programming: the difference between a ​class​ (a blueprint) and an ​object​ (an instance created from that blueprint).
+
+Let's clarify this.
+
+1. **The Responsibility Belongs to the QuizGame Object**
+
+You are exactly right that the `Question` class should only be concerned with a single question. Your next thought is very close. The responsibility for holding the list of questions doesn't go to the `_setup` ​method​, but to the `QuizGame`​ object itself​. The `_setup` method is just the place where the `QuizGame` object does the work of creating and organizing its resources before the game starts.
+
+Think of it like this:
+*   The `QuizGame` object is a chef.
+*   The list of questions (`self._questions`) is the chef's ingredient list. This list belongs to the chef.
+*   The `_setup` method is the ​mise en place​—the process where the chef gathers and prepares all the ingredients (`Question` objects) before starting to cook (running the game).
+
+The ingredients don't belong to the ​process​ of preparing them; they belong to the ​chef​. In the same way, the list of questions belongs to the `QuizGame` instance, and `_setup` is just the method that populates that list.
+
+2. **How `q1`, `q2`, `q3` Connect to the Question Class**
+
+This is the most critical part. The `Question` class is a ​blueprint​. It defines what a question looks like and how it behaves. It says, "Any 'question' you create must have a prompt and an answer."
+
+The lines `q1 = Question(...)`, `q2 = Question(...)`, and `q3 = Question(...)` are the moments you use that blueprint to build actual, individual things. This process is called ​instantiation​.
+
+Let's break down this single line:
+```python
+#  [   Step 2   ]   [        Step 1        ]
+q1 = Question("What is 2 + 2?", "4")
+```
+
+Here is what happens, in order:
+
+#### ​Step 1: Creating an Instance (The Constructor Call)
+1. Python sees `Question(...)` and knows you want to use the Question class blueprint to create a new object.
+2. It calls the class's special `__init__` method (the constructor).
+3. It passes `"What is 2 + 2?"` and `"4"` as arguments to that `__init__` method.
+4. Inside `__init__`, `self.prompt` is set to `"What is 2 + 2?"` and `self.answer` is set to `"4"` for this ​specific new object​.
+5. A new `Question` object now exists in your computer's memory. It is a concrete thing, separate from the blueprint.
+
+#### ​Step 2: Assigning the Instance to a Variable
+1. The `=` sign takes the brand-new `Question` object that was just created and assigns it to the variable name `q1`.
+2. `q1` is now a label or a reference pointing to that specific object in memory.
+
+So, `q1` is not just a variable; it ​is a `Question` object​. `q2` ​is a different `Question` object​, and `q3` is a `third` one. They were all built from the same `Question` blueprint, but they are three distinct, separate objects, each with its own state (its own prompt and answer).
+
+When you later create the list `self._questions = [q1, q2, q3]`, you are creating a list that holds references to these three individual `Question` objects.
+
+In short, the connection is this: `​q1`, `q2`, and `q3` are instances of the `Question` class.​ The class is the template; the objects are the things you build from it.
+
+Me:
+>  can you explain the increment score? Why is it on Player?
+
+The `increment_score` method is placed on the `Player` class because ​the `Player` object is responsible for managing its own data.
+
+This is a core principle of object-oriented programming called ​encapsulation​: bundling the data (attributes) and the methods that operate on that data together in one object.
+
+Let's break down why this is a good design choice:
+
+1.  **​The Player is the Expert on Player Data**
+The `Player` class is our designated "expert" on everything related to a player. It knows a player has a name and a score. Therefore, it should also be the expert on how to ​change​ that data. The score belongs to the player, so the logic for changing the score should also belong to the player.
+
+2.  **​"Tell, Don't Ask"**
+
+This design follows a common OOP principle called "Tell, Don't Ask." Instead of the `QuizGame` "asking" the `Player` for its score, changing the value, and then saving it back, the `QuizGame` simply "tells" the `Player` object: "Increment your score."
+Here's how it looks in the code:
+
+```python
+  class Player:
+        def __init__(self, name):
+            self.name = name
+            self.score = 0  # The player's data
+
+        def increment_score(self):
+            # The method that operates on the player's data
+            self.score += 1
+
+    class QuizGame:
+        # ...
+
+        def _run_quiz_loop(self):
+            for question in self._questions:
+                player_answer = input(question.prompt + " ")
+                if question.is_correct(player_answer):
+                    print("Correct!")
+                    # The QuizGame TELLS the player to update its score.
+                    # It doesn't know or care HOW it happens.
+                    self._player.increment_score()
+                else:
+                    # ...
+```
+
+3.  **​The Alternative (and why it's less ideal)**
+
+What if we didn't have the `increment_score` method? The `QuizGame` would have to do the work itself:
+    
+```python
+    # Less ideal design inside QuizGame's _run_quiz_loop
+    if question.is_correct(player_answer):
+        print("Correct!")
+        # The QuizGame now needs to know the internal details of Player.
+        self._player.score += 1
+```
+
+This might seem simpler at first, but it makes the code more brittle:
+
+* It breaks encapsulation:​ The `QuizGame` now has to know that the player's score is stored in an attribute called score and that it's a number that can be increased with += 1.
+
+* ​It's harder to change:​ What if you decide later that each correct answer is worth 5 points? If you use the less ideal design, you'd have to find every place in QuizGame that changes the score.
+
+With our current, better design, you only have to make one change in one place:
+
+```python
+    # One simple change inside the Player class
+    def increment_score(self):
+        self.score += 5 # Change the logic here, and it works everywhere.
+```
+
+The `QuizGame` code doesn't need to be touched at all! This makes your program much easier to maintain and update.
+
+In summary, placing `increment_score` on the `Player` class keeps the data and the operations on that data tightly coupled in one logical place. The `QuizGame` can remain a high-level orchestrator without needing to know the nitty-gritty details of how a `Player`'s score is managed.
+
+#### Final Code
+
+```python
+class Question:
+    """Represents a single question with its prompt and answer."""
+    def __init__(self, prompt, answer):
+        self.prompt = prompt
+        self.answer = answer
+
+    def is_correct(self, player_answer):
+        """Checks if the provided answer is correct (case-insensitive)."""
+        return player_answer.lower() == self.answer.lower()
+
+class Player:
+    """Represents the player, tracking their name and score."""
+    def __init__(self, name):
+        self.name = name
+        self.score = 0
+
+    def increment_score(self):
+        """Increases the player's score by one."""
+        self.score += 1
+
+class QuizGame:
+    """The orchestration engine for the quiz."""
+    def __init__(self):
+        self._player = None
+        self._questions = []
+
+    def _setup(self):
+        """Creates the player and question objects for the game."""
+        print("--- Setting up the quiz ---")
+        player_name = input("Please enter your name: ")
+        self._player = Player(player_name)
+
+        q1 = Question("What is 2 + 2?", "4")
+        q2 = Question("What is the capital of France?", "Paris")
+        q3 = Question("What color is the sky on a clear day?", "blue")
+        self._questions = [q1, q2, q3]
+        print("--- Setup complete ---\n")
+
+    def _run_quiz_loop(self):
+        """Runs the main loop, asking each question and checking the answer."""
+        print("--- Let's start the quiz! ---")
+        for question in self._questions:
+            player_answer = input(question.prompt + " ")
+
+            if question.is_correct(player_answer):
+                print("Correct!")
+                self._player.increment_score()
+            else:
+                print(f"Sorry, the correct answer was '{question.answer}'")
+            print("") # Add a blank line for readability
+
+    def _display_final_results(self):
+        """Displays the player's final score at the end of the game."""
+        print("--- Quiz Over ---")
+        print(f"{self._player.name}, your final score is: "
+              f"{self._player.score}/{len(self._questions)}")
+
+    def play(self):
+        """The main public method that orchestrates the entire game flow."""
+        self._setup()
+        self._run_quiz_loop()
+        self._display_final_results()
+
+# --- To run the game ---
+if __name__ == "__main__":
+    game = QuizGame()
+    game.play()
+```
+
+Finally, **Why increment_score Doesn't Need a return** The `increment_score` method doesn't need a return statement because its job is to ​​perform an action that changes the object's state​​, not to provide a value back to the caller.
+
+Page Reference: [Orchestration Engine](https://launchschool.com/lessons/14df5ba5/assignments/4eee53e0)
+Page Reference: [Scaffolding](https://launchschool.com/lessons/4cd9247c/assignments/e217ef6f)
+
+
+###  What are the different ways to inject dependencies into a class? Show me constructor injection, method injection, and property injection with practical examples of when you'd use each?
+
+In PY120, we refer to these "dependencies" as **​collaborator objects**​. An object "has-a" dependency when it needs another object to perform its functions. The different "injection" techniques you mentioned are patterns for providing a class with its collaborator objects. Managing these collaborations is key to creating a clean ​dependency graph​, as discussed in the Tic Tac Toe lesson.
+
+Let's look at the common patterns for providing these collaborator objects.
+
+1. **Constructor Injection**
+
+This is the most common and straightforward approach. You pass the collaborator objects as arguments to the class's `__init__` method. The object is "injected" with its dependencies upon creation.
+
+​When to use it:​ Use constructor injection for essential collaborators that an object cannot function without. If the object needs the dependency for its entire lifecycle, this is the best choice.
+
+*Example:*
+
+Imagine a `Game` class that needs a Board object to work. The `Game` can't exist without a `Board`, so we inject it through the constructor.
+
+```python
+
+class Board:
+    # Represents the game board
+    def __init__(self, size):
+        self.size = size
+
+    def display(self):
+        print(f"Displaying a {self.size}x{self.size} board.")
+
+class Game:
+    def __init__(self, board): # The 'board' collaborator is injected here
+        self.board = board
+
+    def play(self):
+        print("Starting the game...")
+        self.board.display()
+
+# Create the dependency first
+game_board = Board(3)
+
+# Inject the dependency into the Game object
+tic_tac_toe = Game(game_board)
+tic_tac_toe.play()
+```
+
+2. **Method Injection (or Setter Injection)**
+
+With this pattern, you provide the dependency through a specific method ​after​ the main object has been created. This is often done with a "setter" method.
+
+When to use it:​ Use method injection for optional collaborators or for dependencies that might need to be changed or swapped out during the object's lifetime.
+
+**Example**:
+
+Consider a Robot that can be equipped with different tools. The Robot can exist without a tool, and its tool can be changed at any time.
+
+```python
+
+class Screwdriver:
+    def use(self):
+        print("Using the screwdriver.")
+
+class Wrench:
+    def use(self):
+        print("Using the wrench.")
+
+class Robot:
+    def __init__(self, name):
+        self.name = name
+        self.tool = None # Starts with no tool
+
+    def set_tool(self, tool): # The 'tool' is injected here
+        self.tool = tool
+
+    def perform_task(self):
+        if self.tool:
+            self.tool.use()
+        else:
+            print(f"{self.name} has no tool to work with.")
+
+# Create the robot
+robot = Robot("Bender")
+robot.perform_task() # Output: Bender has no tool to work with.
+
+# Create and inject a dependency later
+screwdriver = Screwdriver()
+robot.set_tool(screwdriver)
+robot.perform_task() # Output: Using the screwdriver.
+
+# Swap the dependency
+wrench = Wrench()
+robot.set_tool(wrench)
+robot.perform_task() # Output: Using the wrench.
+```
+
+3. **Property Injection**
+
+This is a variation of method injection that uses Python's `@property `and setter syntax. It provides a more attribute-like way to set the dependency, which can make the code feel more natural to use.
+
+​When to use it:​ The use cases are the same as for method injection—optional or swappable dependencies. This is often a matter of style.
+
+*Example*:
+Let's refactor the Robot example to use a property setter for its tool.
+
+```python
+class Screwdriver:
+    def use(self):
+        print("Using the screwdriver.")
+
+class Robot:
+    def __init__(self, name):
+        self.name = name
+        self._tool = None # A "private" variable to hold the tool
+
+    @property
+    def tool(self):
+        return self._tool
+
+    @tool.setter
+    def tool(self, new_tool): # The dependency is injected via the property setter
+        self._tool = new_tool
+
+    def perform_task(self):
+        if self.tool:
+            self.tool.use()
+        else:
+            print(f"{self.name} has no tool to work with.")
+
+# Create the robot
+robot = Robot("Bender")
+
+# Inject the dependency using attribute assignment syntax
+robot.tool = Screwdriver()
+robot.perform_task() # Output: Using the screwdriver.
+
+```
+
+While the specific terminology of "dependency injection" isn't heavily emphasized in the PY120 curriculum, understanding these patterns of collaboration is a key part of object-oriented design. The main goal is to create classes that are loosely coupled, making your code more flexible and easier to maintain.
+
+### What's the difference between 'loose coupling' and 'tight coupling' in Python? Show me examples of both and why loose coupling matters."
+
+Of course! That's an excellent question that gets to the heart of good software design. Understanding the difference between loose and tight coupling is a key concept in Object-Oriented Programming.
+
+In OOP, "coupling" refers to the degree of direct knowledge that one class has of another. Think of it as how dependent classes are on each other.
+
+#### Tight Coupling
+
+Tightly coupled classes are highly dependent on one another. A change in one class often requires a change in another. This happens when a class depends on the specific implementation details of another class, rather than a public interface.
+
+As the curriculum notes, "Tightly coupled dependencies are easier to understand but offer less flexibility."
+
+*Example of Tight Coupling*
+
+Imagine a `SalesReporter` class that needs to print data from a `WeeklySales` class. In a tightly coupled design, the reporter might access the internal data structure of `WeeklySales` directly.
+
+```Python
+class WeeklySales:
+    def __init__(self):
+        # Internal data structure:  a list of lists
+        self._sales_data = [
+            ["Mon", 50, 500],
+            ["Tue", 65, 680],
+        ]
+
+class SalesReporter:
+    def __init__(self, sales_data_source):
+        self._data_source = sales_data_source
+
+    def print_report(self):
+        print("Weekly Sales Report:")
+        # The reporter knows the exact structure of _sales_data
+        for record in self._data_source._sales_data:
+            print(f"  {record[0]}: ${record[2]} revenue")
+
+weekly_sales = WeeklySales()
+reporter = SalesReporter(weekly_sales)
+reporter.print_report()
+```
+
+The problem here is that if `WeeklySales` changes how it `stores _sales_data` (e.g., uses a dictionary or adds a new column), the `SalesReporter` class will break and must be updated.
+
+#### Loose Coupling
+
+Loosely coupled classes are more independent. They interact through well-defined public interfaces (like methods) without needing to know about each other's internal implementation. This is the preferred approach in OOP.
+
+The curriculum states, "Loosely coupled dependencies are more challenging to understand but offer more long-term flexibility."
+
+*Example of Loose Coupling*
+Let's refactor the previous example. Here, WeeklySales provides a public method that SalesReporter can use. The reporter doesn't need to know how the data is stored internally.
+
+```Python
+class WeeklySales:
+    def __init__(self):
+        self._sales_data = [
+            {"day": "Mon", "items":  50, "revenue": 500},
+            {"day": "Tue", "items": 65, "revenue": 680},
+        ]
+
+    def get_daily_sales(self):
+        # Provide data through a public interface, hiding implementation details
+        return self._sales_data
+
+class SalesReporter:
+    def __init__(self, sales_data_source):
+        self._data_source = sales_data_source
+
+    def print_report(self):
+        print("Weekly Sales Report:")
+        daily_sales = self._data_source.get_daily_sales()
+        # The reporter relies on the stable public method
+        for record in daily_sales:
+            print(f"  {record['day']}: ${record['revenue']} revenue")
+
+weekly_sales = WeeklySales()
+reporter = SalesReporter(weekly_sales)
+reporter.print_report()
+```
+
+#### Why Loose Coupling Matters
+The loosely coupled design is much better for a few key reasons:
+
+Flexibility: The `WeeklySales` class is free to change its internal data structure. As long as the `get_daily_sales()` method continues to return data in the expected format, the SalesReporter will work without any changes.
+
+Maintainability: It's easier to fix bugs or add features to one class without accidentally breaking another.
+
+Reusability: The `SalesReporter` could now work with any object that has a `get_daily_sales()` method, not just WeeklySales objects.
+
+#### The Art of Programming
+
+As you've seen in the Tic Tac Toe assignment, there is rarely one "right" design. It's often a series of trade-offs. The curriculum puts it this way:
+
+That's the art component of programming. It's a small taste of software design, patterns, and architecture. Mastering this art is a lifelong journey, and your intuition will slowly improve as you gain experience.
+
+Striving for loose coupling is a fundamental part of that art and will help you write more robust and maintainable programs.
+
+### Show me how to write a class that's testable because it uses  dependency injection. Then show me the same class but untestable because it creates its own dependencies.
+
+
+Excellent question. This gets to the core of writing flexible and maintainable object-oriented code. The concept you're asking about is a practical application of loose coupling.
+
+Dependency Injection is a technique where an object receives its dependencies from an outside source rather than creating them itself. This leads to loosely coupled, testable code.
+
+**Overview**
+
+Dependency Injection: give an object the collaborators it needs instead of letting it construct them.
+Result: loosely coupled, easier-to-test, more flexible code.
+Example: PasswordManager that checks password security
+
+Untestable: creating its own dependency
+This version is tightly coupled because PasswordManager constructs the SecurityChecker internally.
+
+```Python
+# The dependency
+class SecurityChecker:
+    def is_secure(self, password):
+        # In a real app, this might check a database of leaked passwords
+        # or enforce complex rules. For now, it's simple.
+        print("--- Calling the REAL security checker ---")
+        return len(password) > 12
+
+# The class that creates its own dependency
+class PasswordManager:
+    def __init__(self):
+        # Tightly coupled: The dependency is created internally.
+        self.checker = SecurityChecker()
+
+    def set_new_password(self, user, password):
+        if self.checker.is_secure(password):
+            print(f"Password for {user} has been set.")
+            return True
+        else:
+            print(f"Password for {user} is not secure enough.")
+            return False
+
+# How you'd use it:
+manager = PasswordManager()
+manager.set_new_password('kelley', 'short')
+```
+
+Why this is difficult to test:
+
+You can't test `PasswordManager` without also running the real `SecurityChecker`.
+
+If `SecurityChecker` is slow, uses network/db, or costs money, tests become slow/expensive.
+Hard to simulate edge cases (exceptions, specific return values) — you end up testing both classes together.
+Testable: using Dependency Injection
+Refactor so PasswordManager accepts a dependency (injected) instead of creating it. This enables substituting a mock for tests.
+
+```Python
+# The dependency (same as before)
+class SecurityChecker:
+    def is_secure(self, password):
+        print("--- Calling the REAL security checker ---")
+        return len(password) > 12
+
+# The class that ACCEPTS its dependency
+class PasswordManager:
+    def __init__(self, checker):
+        # Loosely coupled: The dependency is "injected" from outside.
+        self.checker = checker
+
+    def set_new_password(self, user, password):
+        if self.checker.is_secure(password):
+            print(f"Password for {user} has been set.")
+            return True
+        else:
+            print(f"Password for {user} is not secure enough.")
+            return False
+
+# How you'd use it in your application:
+real_checker = SecurityChecker()
+manager = PasswordManager(real_checker)
+manager.set_new_password('kelley', 'thisisalongpassword')
+```
+
+This demonstrates a "has-a" relationship (composition): `PasswordManager` has a `SecurityChecker`.
+
+Testing with a mock (test double)
+Because `PasswordManager` accepts any object that implements `is_secure`, tests can inject a fake implementation.
+
+```Python
+# A "mock" or "test double" for our dependency
+class MockSecurityChecker:
+    def __init__(self, should_be_secure):
+        self.should_be_secure = should_be_secure
+
+    def is_secure(self, password):
+        # No network calls, no database, just instant predictable behavior
+        print(f"--- Mock checker called with '{password}' ---")
+        return self.should_be_secure
+
+# --- Test Case 1: Test the "secure" path ---
+mock_checker_secure = MockSecurityChecker(True)
+manager = PasswordManager(mock_checker_secure)
+assert manager.set_new_password('testuser1', 'any_pass') is True
+
+# --- Test Case 2: Test the "insecure" path ---
+mock_checker_insecure = MockSecurityChecker(False)
+manager = PasswordManager(mock_checker_insecure)
+assert manager.set_new_password('testuser2', 'any_pass') is False
+```
+
+Benefits:
+
+* Tests are fast, deterministic, and isolated.
+* You can simulate edge conditions (exceptions, specific return values).
+* `PasswordManager` logic is tested independently from `SecurityChecker`.
+
+Key takeaways:
+* Injecting dependencies decouples classes and improves testability.
+* Use collaborator objects (injected collaborators) rather than letting classes construct dependencies internally.
+
+This is an example of composition ("has-a") and is often preferred over inheritance ("is-a") for flexibility — also known as "Composition over Inheritance."
+
+Related curriculum topics:
+* Working with Collaborator Objects (foundation of dependency injection)
+* "is-a" vs. "has-a": Composition over Inheritance
+
+### Explain the Dependency Injection pattern in detail. What problems does it solve?  What are common mistakes people make?
+
+#### Dependency Injection (DI) Pattern - Deep Dive
+
+*Building on loose coupling and testability concepts*
+
+##### What is Dependency Injection in Detail?
+
+**Dependency Injection (DI)** is a design pattern used to implement Inversion of Control (IoC), where the control of object creation is inverted.  Instead of an object creating its own dependencies, the dependencies are provided—or "injected"—from an external source. 
+
+A **dependency** is any other object that your object needs to function. In our last example, the SecurityChecker was a dependency of the PasswordManager.
+
+#### Three Common Ways to Inject Dependencies
+
+##### 1. Constructor Injection (Most Common)
+The dependencies are provided through the class constructor.  This is the clearest and most direct method, as it ensures the object is in a valid state as soon as it's created.
+
+```python
+class Service:
+    # ... 
+
+class Client:
+    def __init__(self, service):  # Dependency injected here
+        self._service = service
+```
+
+##### 2. Setter Injection
+The dependency is provided through a public setter method after the object has been created. This is useful for optional dependencies.
+
+```python
+class Client:
+    def __init__(self):
+        self._service = None
+
+    def set_service(self, service):  # Dependency injected here
+        self._service = service
+```
+
+##### 3. Method Injection
+The dependency is passed directly into a specific method that needs it. This is useful when only one method in the class uses the dependency. 
+
+```python
+class Client:
+    def do_something(self, service):  # Dependency injected here for this call
+        # ... use service ...
+```
+
+> **Focus Point:** For now, focusing on **Constructor Injection** is the best way to understand and apply the pattern. 
+
+#### What Problems Does It Solve? 
+
+Dependency Injection is a solution to several problems that arise from tightly coupled code:
+
+##### 1. Reduces Tight Coupling
+This is the primary problem DI solves.  When a class creates its own dependencies (e.g., `self.checker = SecurityChecker()`), it is permanently tied to that **specific** class. By injecting the dependency, the class only depends on an **interface** (or, in Python's case, a "duck type"—any object that has the right methods). This makes your components more independent and modular.
+
+##### 2. Dramatically Improves Testability
+As we saw in the previous example, DI is the key to unit testing in isolation. It allows you to replace real, complex dependencies (like a database connection or a web service) with lightweight "mocks" or "test doubles" during testing. This makes your tests faster, more reliable, and independent of external systems.
+
+##### 3. Increases Flexibility and Reusability
+Your classes become more flexible because you can swap out dependencies without changing the class itself.
+
+For example, you could have a PasswordManager use a `StrictSecurityChecker` in production but a `LenientSecurityChecker` in a development environment, simply by injecting a different object at runtime.
+
+##### 4. Centralizes Object Creation
+DI encourages you to create and configure your objects in a single, high-level part of your application (sometimes called a "composition root"). This makes it easier to see how all the parts of your system fit together. 
+
+#### Common Mistakes People Make
+
+While powerful, DI can be misused, especially when you're first learning it.
+
+##### 1. Over-engineering Simple Cases
+Not every class needs to have all its dependencies injected. If a class uses a very simple, stable object that has no external dependencies of its own (like a custom Logger that just prints to the console), creating it internally might be fine.  
+
+As the curriculum wisely advises, "premature optimization is the root of all evil". Don't apply complex design patterns just for the sake of it. The goal is to solve a problem, not just to use a pattern.
+
+
+##### 2. Injecting Too Many Dependencies (Dependency Hell)
+If you find yourself writing a constructor that takes ten arguments, that's a "code smell." It's a strong sign that your class is doing too much and violating the Single Responsibility Principle. Instead of just injecting more dependencies, you should consider if the class needs to be broken up into smaller, more focused classes.
+
+##### 3. Hiding Dependencies
+A less obvious mistake is creating a dependency inside a method instead of the constructor.
+
+```python
+class BadExample:
+    def __init__(self):
+        # No dependencies here... looks clean!
+        pass
+
+    def do_work(self):
+        # But the dependency is hidden down here!
+        checker = SecurityChecker()
+        # ...
+```
+
+This reintroduces tight coupling and makes the class hard to test because the dependency isn't exposed.
+
+#### Key Takeaway
+
+Mastering DI is a journey, and as the curriculum notes, it's part of the "art" of programming that you'll develop with experience. For now, focus on: 
+
+- Recognizing when one class depends on another
+- Practicing using constructor injection to make them more testable and flexible
+- Understanding that DI is a tool to solve specific problems, not a pattern to use everywhere
+
+[Back to the top](#top)
+***
