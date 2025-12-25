@@ -19,6 +19,8 @@
 - [Python Exceptions: Writing Resilient Code](#python-exceptions-writing-resilient-code)
 - [PANIC STATE: WHERE DOES STATE LIVE?](#panic-state-where-does-state-live)
 - [Prompts and Prejudices](#prompts-and-prejudices)
+- [More Tooling around with Chat GPT](#more-tooling-around-with-chat-gpt)
+- [The Grammar of Object Collaboration in Python](#the-grammar-of-object-collaboration-in-python)
 
 ## Notes from Object Oriented Programming with Python Book
 
@@ -5020,6 +5022,1168 @@ Mastering DI is a journey, and as the curriculum notes, it's part of the "art" o
 - Recognizing when one class depends on another
 - Practicing using constructor injection to make them more testable and flexible
 - Understanding that DI is a tool to solve specific problems, not a pattern to use everywhere
+
+[Back to the top](#top)
+***
+
+## More Tooling around with Chat GPT
+
+Object-Oriented Programming is about modeling programs as interacting “things” that combine data and behavior, rather than as sequences of instructions acting on raw data.
+
+### The Master Analogy: A Blueprint and a Factory
+
+Imagine you are designing a car factory.
+
+#### Step 1: The Blueprint (Class)
+
+A class is like a blueprint for making cars.
+
+It specifies:
+
+* What parts each car has (data)
+* What actions each car can perform (behavior)
+
+```python
+class Car:
+    pass
+```
+
+This creates nothing physical yet. Just like a blueprint:
+* You can’t drive it
+* You can’t sit in it
+* It just describes what a car would be like
+
+#### Step 2: Building Real Cars (Objects / Instances)
+
+An object (also called an instance) is an actual car built from the blueprint.
+
+`my_car = Car()`
+
+Now:
+
+`Car` → the blueprint
+`my_car` → a real, physical car
+
+You can build many cars from the same blueprint:
+```python
+car1 = Car()
+car2 = Car()
+```
+
+Each one is separate:
+
+* Different fuel
+* Different mileage
+* Different damage
+
+But they all follow the same design.
+
+#### Attributes: The Car’s State (Data)
+
+Let’s give each car some state—data that belongs to that specific object.
+
+```python
+class Car:
+    def __init__(self, color, speed):
+        self.color = color
+        self.speed = speed
+```
+
+##### What `__init__` Really Is
+
+`__init__` is not the constructor in the classical sense.
+
+Think of it as: “The setup checklist performed immediately after the car is built.”
+
+Python:
+
+* Allocates memory for a new object with `__new__`
+* Calls `__init__` to initialize it.
+
+#### The Meaning of `self`
+
+`self` is the object currently being worked on.
+
+In the factory analogy:
+
+self = *this specific car on the assembly line*
+
+```python
+car = Car("red", 120)
+```
+
+Internally, Python does:
+```python
+Car.__init__(car, "red", 120)
+```
+
+So:
+
+`self.color = color` means “Attach a color attribute to this particular car.”
+
+##### Object State in Action
+
+```python
+car1 = Car("red", 120)
+car2 = Car("blue", 90)
+
+print(car1.color)  # red
+print(car2.color)  # blue
+```
+
+Same blueprint. Different state. 
+
+#### Methods: Behavior Belonging to Objects
+
+Now we give the car behavior.
+
+```python
+class Car:
+    def __init__(self, color, speed):
+        self.color = color
+        self.speed = speed
+
+    def accelerate(self, amount):
+        self.speed += amount
+```
+
+What a Method Really Is
+
+A method is just a function that:
+
+* Lives inside a class
+* Automatically receives the object as self
+
+```python
+car.accelerate(10)
+```
+
+Is secretly: 
+```python
+Car.accelerate(car, 10)
+```
+
+So the method has access to the object’s internal state and can read and modify it.
+
+### Encapsulation: Keeping the Insides Together
+
+OOP bundles **data and behavior **into a single unit.
+
+Instead of this (procedural style):
+
+```python
+speed = 100
+def accelerate(speed, amount):
+    return speed + amount
+```
+
+We do this in OOP:
+```python
+car.accelerate(10)
+```
+
+The data and logic live together.
+
+### Inheritance: Specializing the Blueprint
+
+Inheritance lets you create a new blueprint based on an existing one.
+
+```python
+class ElectricCar(Car):
+    def __init__(self, color, speed, battery):
+        super().__init__(color, speed)
+        self.battery = battery
+```
+
+#### Analogy: Car Models
+
+`Car` → generic blueprint
+
+`ElectricCar` → specialized model
+
+`ElectricCar`:
+* Inherits all attributes and methods
+* Can add new ones
+* Can override existing ones
+
+`tesla = ElectricCar("white", 150, 85)`
+
+#### Method Overriding
+
+```python
+class ElectricCar(Car):
+    def accelerate(self, amount):
+        if self.battery > 0:
+            self.speed += amount
+            self.battery -= amount * 0.1
+```
+
+Same method name. Different behavior.
+
+Python decides which method to call at runtime, based on the object’s actual type.
+
+This is polymorphism.
+
+### Polymorphism: Same Interface, Different Behavior
+
+```python
+cars = [
+    Car("red", 100),
+    ElectricCar("blue", 120, 80)
+]
+
+for car in cars:
+    car.accelerate(10)
+```
+
+Same code. Different Behavior. 
+
+### Composition vs Inheritance (Important in Python)
+
+Python favors *composition*:
+
+```python
+class Engine:
+    def start(self):
+        print("Engine started")
+
+class Car:
+    def __init__(self):
+        self.engine = Engine()
+```
+Instead of saying:
+
+> "A car is an engine."
+
+We say:
+
+> "A car has an engine"
+
+which leads to more flexible design.
+
+### Attribute Access Is a Conversation, Not a Dictionary Lookup
+
+In Python, attribute access is an active process, not a lookup.
+
+When you write:
+
+`obj.x`
+
+You might imagine: “Python looks in obj for x.”
+
+That is wrong. What actually happens is closer to:
+
+“Python asks multiple parties if anyone knows how to produce x.”
+
+When Python evaluates `obj.attr`, it:
+
+1. Check if the class defines a data descriptor named `attr`
+2. Check `obj.__dict__`
+3. Check non-data descriptors on the class
+4. Check parent classes (via MRO)
+
+At every step, Python asks: “If I find you, do you want to compute this attribute?”
+
+#### Functions Become Methods via Descriptors (The Missing Link)
+
+Now the key revelation: A Function in a Class Is Not a Method.
+
+```python
+class A:
+    def f(self):
+        pass
+```
+
+Inside the class dictionary:
+```python
+A.__dict__['f']   # function object
+```
+
+Is *not* a method yet!
+** The Transformation Happens at Access Time**
+
+```python
+a = A()
+a.f
+```
+
+Python sees:
+
+* `f` is a function
+* Functions implement `__get__`
+
+So Python calls:
+
+```python
+A.__dict__['f'].__get__(a, A)
+```
+
+This produces a bound method, which is a function + instance glued together.
+
+#### Why Class.method ≠ obj.method
+
+```python
+A.f      # accessed via class
+a.f      # accessed via instance
+```
+What changes?
+
+The `instance` argument passted to `__get__`
+```python
+A.f.__get__(None, A)  → function
+A.f.__get__(a, A)     → bound method
+```
+
+#### Why `self` Must Exist
+
+Now we can finally answer this cleanly.
+
+`self` is not:
+*  A keyword
+* A convention
+* A trick
+
+It is the instance captured by the bound method.
+
+Without it the function would not know which object it operates on.
+
+
+### Why `type` is a Class
+
+Classes are objects.
+Objects are created by classes.
+So classes must themselves be created by something.
+That something is type.
+
+### Questions and Answers:
+
+#### When you write `obj.method(x)`, what exact transformation does Python perform before calling the function?
+
+When you write `obj.method(x)` Python peforms three exact steps:
+
+1. Attribute lookup on obj: Python looks for "method" via the Method Resolution Order (MRO):
+
+* obj.__dict__
+* then its class
+* then parent classes (left-to-right depth-first)
+
+2. Descriptor binding:
+
+* If the attribute found is a **function defined in a class**, Python turns it into a **bound method**
+
+* This binding permanently attaches obj as the first argument
+
+* Call execution:
+```python
+Class.method(obj, x)
+```
+
+So the real transformation is:
+```python
+obj.method(x)
+# becomes
+(type(obj).method).__get__(obj, type(obj))(x)
+```
+
+#### Why is `__init__` not technically a constructor in Python?
+
+`obj = Class(args)`
+
+Internally:
+
+1. `Class.__new__(Class, args)`
+    * Allocates memory
+    * Returns a new instance
+
+2. `Class.__init__(obj, args)`
+    * Configures that instance
+    * Must return `None`
+
+If `__new__` does not return an instance of the class, `__init__` is never called
+
+To memorize:
+
+* `__new__`controls existence
+* `__init__` controls identity and state
+
+
+#### What problem does self solve that cannot be solved with global variables?
+
+Without `self`, methods would have no idea which object they are operating on.
+
+Globals fail because:
+* They collapse all instances into one shared state
+* They destroy identity
+* They break concurrency and modularity
+
+Each instance has:
+* Its own namespace
+* Its own memory
+* Its own identity
+
+Analogy
+
+Globals are a single whiteboard in a room.
+Objects are personal notebooks.
+
+#### How does Python decide which overridden method to call at runtime?
+
+##### The Actual Rule: Method Resolution Order (MRO)
+
+Python uses C3 Linearization. The order is:
+
+1. Instance
+2. Class
+3. Parent classes (left-to-right)
+4. Grandparents
+5. object
+
+```python
+class A: 
+    pass
+class B(A): 
+    pass
+class C(A): 
+    pass
+class D(B, C):
+    pass
+
+```
+
+MRO: `D → B → C → A → object`
+
+And when `super()` uses the MRO, it does not mean look at the "parent". It means “Continue the method lookup from where I am in the MRO.”
+
+#### Why does Python encourage composition over deep inheritance trees?
+
+Why Composition Wins in Python
+
+Inheritance:
+
+* Couples behavior at definition time
+* Locks structure early
+* Breaks easily under change
+
+Composition:
+
+* Assembles behavior at runtime
+* Swappable components
+* More testable
+
+Better aligns with duck typing
+
+Pythonic Principle:  “Prefer objects with behavior over class hierarchies.”
+
+**Analogy**
+
+Inheritance is a family tree.
+Composition is a toolbox.
+
+You don’t inherit a hammer — you pick one up.
+
+#### What is the type of a class object like Car, and why does that matter?
+
+`Car` is an object created by the metaclass `type`.
+
+That means:
+* Classes are runtime objects
+* Classes can be modified dynamically
+* Classes can be created programmatically
+
+`type` is the factory that builds blueprints
+
+`Car` is itself a product
+
+Now for the next round:
+
+#### What exactly is a bound method, and how is it different from a function object?
+
+A **bound method **is an object that wraps a function defined on a class plus a specific instance it is bound to
+
+```python
+class A:
+    def f(self, x):
+        return self, x
+
+a = A()
+
+A.f        # function object
+a.f        # bound method
+
+print(a.f.__func__)   # the original function     <function A.f at 0x7efaa589f4c0>
+print(a.f.__self__)   # the bound instance <__main__.A object at 0x7efaa59a6900>
+```
+
+So when you call:
+```python
+a.f(10)
+```
+
+Python does:
+```python
+A.f(a,10)
+```
+
+**Why This Exists (Key Insight)**
+
+Without bound methods:
+
+* You would have to manually pass the instance every time
+* The object model would be brittle and error-prone
+
+Bound methods let Python delay binding self until access time, not definition time. A function becomes a method only when accessed through an instance.
+
+#### Why does __init__ not return self?
+
+When you first run:
+```python
+obj = Class(args)
+```
+
+1. `__new__`
+
+```python
+obj = Class.__new__(Class, args)
+```
+* Allocates memory
+* Creates the instance
+* **Returns the instance**
+
+2. `__init__`
+```python
+Class.__init__(obj, args)
+```
+
+* Mutates the instance
+* Must return `None`
+
+If `__init__` returned self, Python would treat that as an error because the object already exist and replacing it would break reference consistency.
+
+Why `__init__` Is Not a Constructor
+
+Because:
+
+* Construction already happened in `__new__`
+* `__init__` is an initializer
+
+#### What does `__get__ `do?
+
+What `__get__` Returns:
+
+```python
+function.__get__(instance, owner)
+```
+
+Returns:
+* A bound method if instance is not `None`
+* The original function if instance is `None`
+
+So `__get__`:
+* Captures the instance
+* Stores it as __self__
+* Wraps the function into a callable object
+
+##### Why Python Doesn’t Need Special Syntax
+
+Because attribute access is uniform.
+```python
+obj.attr
+```
+
+Python doesn’t care whether:
+
+* `attr`is data
+* a method
+* a property
+* a classmethod
+* a staticmethod
+
+It always asks: “Do you implement `__get__`?”
+
+#### How does the descriptor protocol enable methods?
+
+##### The Descriptor Protocol (Formal)
+
+An object is a descriptor if it defines any of:
+```python
+__get__(self, instance, owner)
+__set__(self, instance, value)
+__delete__(self, instance)
+```
+
+Functions defined in classes are descriptors.
+
+##### How Methods Work (This Is Huge)
+
+When Python sees:
+```python
+obj.method
+```
+
+It does:
+```python
+method = Class.__dict__['method'].__get__(obj, Class)
+```
+
+That `__get__` call:
+
+* Binds the function to the instance
+* Produces a bound method
+
+Without Descriptors there would be:
+
+* No automatic self
+* No properties
+* No `@staticmethod`
+* No `@classmethod`
+
+Descriptors are the mechanical heart of Python OOP.
+
+#### In multiple inheritance, why can Python safely avoid the “diamond problem”?
+
+The Diamond Problem:
+```
+    A
+   / \
+  B   C
+   \ /
+    D
+```
+
+If:
+
+* `A` defines a method
+* `B` and `C` override it
+* `D` inherits from both
+
+**Which version should D use?**
+
+Python’s Solution: C3 Linearization. Python creates a single, consistent linear order:
+```
+D → B → C → A → object
+```
+
+Rules:
+
+* Parents appear before grandparents
+* Left-to-right order preserved
+* No duplication
+
+So:
+
+* Each class appears once
+* Each method is resolved once
+* `super()` works predictably
+
+#### What practical advantage does type being a class itself give Python?
+
+
+Because type is a class:
+
+* Classes are objects
+* Classes are created at runtime
+* Classes can be modified dynamically
+* Metaclasses can control class creation
+
+```python
+MyClass = type("MyClass", (Base,), {"x": 10})
+```
+
+#### Final Reconstructed Answers (Clean)
+
+Here are your now-correct answers, consolidated:
+
+`Class.method` returns a function, while `obj.method returns` a bound method because binding happens via the descriptor protocol at attribute access time.
+
+`__get__` binds a function to an instance by returning a bound method.
+
+`super()` continues method lookup along the MRO to support cooperative multiple inheritance.
+
+A linear MRO eliminates ambiguity and guarantees deterministic method resolution.
+
+Both methods and properties are descriptors; they differ only in what their `__get__` method returns.
+
+
+[Back to the top](#top)
+***
+
+## The Grammar of Object Collaboration in Python
+
+### Layer 1: The Core Sentence of Object Collaboration
+
+The fundamental sentence in Python OOP is:
+```python
+receiver.method(arguments)
+```
+
+This is **message passing**, even though Python doesn’t use that term explicitly.
+
+What This Really Means:
+```python
+receiver.method(arg)
+```
+
+Is equivalent to:
+```python
+type(receiver).method(receiver, arg)
+```
+
+So collaboration always follows this shape: Object A sends a message to Object B, and B decides how to respond.
+
+#### What it means: Direct Method Call —> Do it now
+
+```python
+obj.method()
+```
+
+Meaning: One object asks another object to perform an action immediately.
+
+```python
+car.start()
+```
+Notes
+
+* Executes right away
+* Most common collaboration pattern
+* Requires the object to already exist
+
+### Layer 2: Objects Collaborate by Holding References
+
+Objects collaborate by owning or referencing other objects.
+
+```python
+class Engine:
+    def start(self):
+        print("engine started")
+
+class Car:
+    def __init__(self):
+        self.engine = Engine()
+
+    def drive(self):
+        self.engine.start()
+```
+
+Syntax Pattern:
+```python
+self.other_object.method()
+```
+
+**Collaboration happens through attributes that reference other objects.**
+
+#### What it means: Ownership + Delegation —> Use something I have
+
+Pattern:
+```python
+self.component.method()
+```
+
+Meaning:
+* An object collaborates with another object it owns.
+* Responsibility is delegated.
+
+Example:
+```python
+class Car:
+    def __init__(self, engine):
+        self.engine = engine
+
+    def drive(self):
+        self.engine.start()
+```
+Notes
+
+* Enables composition
+* Collaborator can be replaced at runtime
+* Preferred over inheritance in Python
+
+### Layer 3: Passing Objects as Messages
+
+Objects don’t just talk — they hand each other other objects.
+
+```python
+class Driver:
+    def drive(self, car):
+        car.accelerate()
+
+class Car:
+    def accelerate(self):
+        print("speed up")
+```
+
+Syntax Pattern
+```python
+object_a.method(object_b)
+```
+
+Here, `Driver` does not care what kind of car it is. It only cares that it responds to `.accelerate()`
+
+This is duck typing.
+
+#### What this means: Passing Objects —> Temporary collaboration
+
+Syntax:
+```python
+def use(obj):
+    obj.do_work()
+
+```
+
+Meaning: An object is handed to another function or object to use temporarily.
+
+Example
+```python
+def process(worker):
+    worker.work()
+
+process(employee)
+```
+
+Notes
+* Enables loose coupling
+* Uses duck typing
+* Objects don’t need to know each other beforehand
+* Python checks behavior at runtime
+* No declared interfaces required
+
+### Layer 4: Collaboration via Protocols (Implicit Interfaces)
+
+Python objects collaborate by behavioral promises, not declared interfaces. An object can be used if it provides the behavior that the caller uses.
+
+The Core Pattern:
+```python
+def use(obj):
+    obj.do_something()
+```
+
+This works if and only if:
+* obj has a method named do_something
+* callable with the expected arguments
+
+Python does not check types in advance. It checks at runtime, at the moment of use.
+
+What’s happening here is commonly described as:
+
+* Duck typing (informal, Pythonic term)
+* Structural typing (formal computer science term)
+
+But Python itself does not enforce structural typing at runtime. It simply attempts the call and fails if the structure is missing.
+
+So the safest wording is:
+** Python relies on behavioral compatibility, not declared types.**
+
+If an object provides the methods that the code actually uses, collaboration succeeds. Otherwise, Python raises an error at the point of use.
+
+```python
+class FileLogger:
+    def write(self, msg):
+        print(msg)
+
+class NetworkLogger:
+    def write(self, msg):
+        print("Sending:", msg)
+
+
+def log(writer):
+    writer.write("Hello")   # expects `.write`
+
+```
+
+Both work:
+```python
+log(FileLogger())
+log(NetworkLogger())
+```
+
+This fails:
+```python
+class BadLogger:
+    pass
+
+log(BadLogger())   # AttributeError at runtime
+```
+Layer 3 is temporary collaboration based on expectations, not promises.
+
+This enables:
+* test doubles (fakes, mocks)
+* swapping implementations
+* simple APIs
+* less inheritance
+
+Which is why Python code often looks like:
+```python
+def process(worker):
+    worker.work()
+```
+
+instead of:
+```python
+def process(worker: WorkerBase):
+    ...
+```
+#### What this means: Saving Behavior (Bound Method) —> Call later
+
+```python
+callback = obj.method
+```
+
+Meaning: Behavior is captured without executing it and can be invoked later.
+
+Notes
+* No parentheses when saving
+* Parentheses only when calling
+* Common in callbacks and event systems
+
+### Layer 5: Interpreter Collaboration — Python calls me
+
+```python
+len(obj)
+obj + other
+with obj:
+```
+
+Meaning: Python itself calls special methods on the object.
+
+Notes
+* Uses dunder methods (`__len__`, `__add__`, `__enter__`, etc.)
+* Integrates objects into the language
+* Object collaborates with the interpreter
+
+### Layer 6: Giving Behavior — Configure collaboration
+```python
+obj.attribute = other.method
+```
+
+Meaning: One object gives behavior to another object, configuring how it will act.
+
+Notes
+* Collaboration is set up, not executed
+* Behavior can be swapped easily
+* Common in GUIs and frameworks
+
+### The Grammar of Collaboration (Condensed)
+
+| Pattern        | Syntax              | Meaning                 |
+| -------------- | ------------------- | ----------------------- |
+| Method call    | `a.b()`             | Message passing         |
+| Ownership      | `self.x = obj`      | Long-term collaboration |
+| Parameter      | `f(obj)`            | Temporary collaboration |
+| Duck typing    | `obj.method()`      | Behavioral contract     |
+| Delegation     | `self.sub.method()` | Responsibility transfer |
+| Callback       | `obj.method_ref`    | Deferred collaboration  |
+| Inheritance    | `super()`           | Temporal collaboration  |
+| Dunder methods | `+`, `len`          | Language integration    |
+
+One Line Summary:
+
+Python objects collaborate by calling methods, delegating to owned objects, passing behavior-compatible objects, saving behavior for later, responding to the interpreter, and wiring behavior dynamically.
+
+### Questions and Answers
+
+#### Why is `self.other.method()` more flexible than inheritance?
+
+`self.other.method()` is more flexible because the collaborating object can be replaced at runtime, whereas inheritance fixes behavior at class definition time.
+
+Why this matters:
+```python
+self.engine = ElectricEngine()
+self.engine = GasEngine()
+```
+
+No subclassing required. Inheritance locks you into:
+* A single ancestry chain
+* Behavior fixed before objects exist
+
+**Analogy**
+
+Inheritance is DNA.
+Delegation is prosthetics.
+
+One is permanent.
+The other is swappable.
+
+#### Why are bound methods ideal callbacks?
+
+A bound method:
+* Already has self attached
+* Requires no additional context
+* Preserves object identity automatically
+
+
+#### What exactly is the difference between delegation and inheritance in collaboration terms?
+
+| Delegation            | Inheritance            |
+| --------------------- | ---------------------- |
+| Runtime collaboration | Compile-time structure |
+| “Has-a” relationship  | “Is-a” relationship    |
+| Behavior forwarded    | Behavior overridden    |
+| Replaceable           | Fixed                  |
+| Loosely coupled       | Tightly coupled        |
+
+
+Delegation:
+```python
+self.worker.do_task()
+```
+
+Inheritance:
+```python
+class Child(Parent):
+    pass
+```
+
+Delegation collaborates between objects, inheritance collaborates between classes across time.
+
+#### Why does duck typing enable loose coupling?
+
+Duck typing enables loose coupling because objects are depended on by the methods they provide, not by their concrete types.
+
+```python
+def save(writer):
+    writer.write("data")
+```
+
+`writer` can be anything:
+
+* File
+* Socket
+* Logger
+* Mock
+
+As long as `.write()` exists.
+
+#### Which collaboration patterns interact directly with Python’s interpreter?
+
+Patterns that interact directly with Python’s interpreter:
+
+1. Dunder methods: `__add__`, `__len__`, `__iter__`
+
+2. Descriptors: Methods, properties
+
+3. Context managers: `__enter__`, `__exit__`
+
+4. Iteration protocols: `__iter__`, `__next__`
+
+These are Python speaking to your objects, not object-to-object collaboration.
+
+
+### Parentheses or not?
+
+The One Rule (Memorize This)
+
+Parentheses mean “do it now.”
+No parentheses mean “hand it around.”
+
+#### Decision Test (Ask Yourself This)
+
+When you write something like:
+```python
+obj.method
+```
+Ask:
+
+>Do I want the result right now — or do I want the action itself?
+
+If you want the result now → use ()
+
+If you want the behavior later → no ()
+
+#### Side-by-Side Examples (Very Concrete)
+✅ Do it now → Use parentheses
+```python
+card = deck.draw()
+```
+
+* You want an actual Card
+* The action must happen now
+
+```python
+player.receive(card)
+```
+* You want the card added now
+
+✅ Save the action → No parentheses
+```python
+on_click = player.play_card
+```
+
+* You are saving *how* to play a card
+* Nothing happens yet
+
+Later:
+```python
+on_click()
+```
+Now it happens.
+
+#### Common Mistake (And Why It’s Wrong)
+```python
+button.on_click = player.play_card()   # ❌ wrong
+```
+
+Why wrong?
+
+* `()` executes immediately
+* You assign the result, not the behavior
+
+Correct:
+```python
+button.on_click = player.play_card     # ✅ correct
+```
+
+#### Card Game Mental Model (This Helps a Lot)
+
+Think of methods as moves in a game.
+
+Without parentheses
+```python
+player.play_card
+```
+
+You are saying: “This player knows how to play a card.”
+
+With parentheses
+```python
+player.play_card()
+```
+
+You are saying: “The player plays a card right now.”
+
+#### Quick Reference Table (Pasteable)
+
+`obj.method()`   → execute now
+`obj.method`    → store or pass behavior
+
+Examples:
+
+`deck.draw()`         → get a Card now
+`deck.draw`           → remember how to draw
+
+`player.receive(c)`   → add card now
+`player.receive`      → save action for later
+
+##### When You’ll Always Use Parentheses
+
+Use `()` when:
+
+* you need a value (card = ...)
+* you want a side effect now
+* you are inside a method body performing work
+
+##### When You’ll Never Use Parentheses
+
+No `()` when:
+
+* assigning callbacks
+* passing behavior to another object
+* configuring objects
+* wiring systems together
+
+If you ever feel unsure, default to this:
+
+*If nothing should happen yet, do not use parentheses.*
+
+That rule will almost never betray you.
 
 [Back to the top](#top)
 ***
