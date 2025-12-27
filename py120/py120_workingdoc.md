@@ -6185,5 +6185,121 @@ If you ever feel unsure, default to this:
 
 That rule will almost never betray you.
 
+### More Noodling Around: Random notes that clicked
+
+Why OOP Does It This Way (This Is the Big Insight)
+
+OOP could have chosen this syntax with regards to methods and ob jects:
+```python
+method(obj, x)
+```
+
+Instead it chose:
+```python
+ obj.method(x)
+```
+
+Why? Because the object is the conceptual starting point. You’re saying:
+
+> “Given this object, ask it to perform behavior.”
+
+Not:
+
+> “Here is a function, now give it an object.”
+
+This has three deep consequences:
+
+1. Encapsulation Becomes Structural
+
+Methods:
+* live with the object’s data
+* are discovered via the object
+* are limited by what the object exposes
+
+This is not just style — it shapes the collaboration graph.
+
+2. Polymorphism Becomes Natural
+
+When you write:
+```python
+obj.method(x)
+```
+
+Python doesn’t care what `obj` is. It only asks:
+
+> “Does this object have a callable attribute named method?”
+
+That’s duck typing.
+
+3. The Graph Becomes Object-Centered
+
+Instead of:
+```
+function ──► object
+```
+
+You get:
+```
+object ──► function
+```
+
+**Object-oriented programming is not about objects having methods. It is about functions being selected through objects.**
+
+The dot (.) is a function selector.
+
+### More Questions and Answers
+
+#### Why does Class.method(obj) work but obj.method() fails if method is not defined on the class?
+
+
+`Class.method(obj)` works because method is just a function stored on the class, and Python does no automatic binding when accessed through the class. Binding happens at attribute access time, not definition time.
+
+#### Why Accessing a Method Doesn’t Create a Stack Frame
+
+Stack frames are created only on call, not on lookup.
+
+##### Graph Difference 
+
+| Access                | Resulting Graph          |
+| --------------------- | ------------------------ |
+| `obj.method`          | bound method → `obj`    |
+| `Class.method`        | function                |
+| `obj.staticmethod`    | function                |
+| `Class.staticmethod`  | function                |
+
+📌 **Key insight:**  
+`staticmethod` suppresses automatic edge creation.
+
+
+#### Why staticmethod Is Often a Design Smell (Sharpened)
+
+`staticmethod` signals that no collaboration graph edge is needed. That raises a design question:
+
+“Why does this function live on the class at all?”
+
+If a function, doesn’t need self, doesn’t need cls, doesn’t participate in object collaboration
+
+Then it may be better as a module-level function or part of another object that does own the behavior
+
+📌 Rule of thumb:
+If a method doesn’t need an edge, question why it’s attached to the node.
+
+#### Why self Is Not a Keyword?
+
+`self` is not a keyword because Python does not special-case it. It is just the first parameter of a function.
+
+Binding is positional, not semantic.
+
+
+#### Why Python Allows Methods to Be Reassigned at Runtime
+
+In Python, methods are not special. They are attributes. Python favors late binding and dynamic graph traversal over static structure. Python OOP is not about defining rigid structures — it’s about dynamically shaping and traversing a graph of objects at runtime. Deep inheritance chains create long, implicit, hard-to-modify lookup paths in the object graph, which conflicts with Python’s preference for late binding and behavior-based collaboration.
+
+The overarching design principle in OOP is:
+> Design is about minimizing implicit, long-lived edges in the collaboration graph.
+
+Object collaboration = execution paths that follow edges between nodes. Objects never broadcast. They never search.
+They only call methods on objects they already have edges to.
+
 [Back to the top](#top)
 ***
