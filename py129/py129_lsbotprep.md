@@ -1,0 +1,415 @@
+
+# PY 120 Written Quiz Prep
+
+## Pass 1
+
+Based on the topics covered in PY120 and the Object Oriented Programming with Python book, here are 20 questions that cover the core concepts you'll need to understand for the PY129 assessment.   
+
+### 1. **Conceptual**:  What is a class and what is an object in Python?  Explain their relationship.  
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+### 2. **Conceptual**: What is the purpose of the `__init__` method in a Python class? What does the `self` parameter represent?
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+### 3. **Conceptual**:  Explain the difference between a class attribute and an instance attribute. Provide a code example to demonstrate this difference.
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+### 4. **Conceptual**:  Describe the differences between an instance method, a class method, and a static method.  Provide a code example showing how to define and call each.  
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+### 5. **Conceptual**: What is inheritance?  Explain how a subclass inherits from a superclass and demonstrate with a simple code example.
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+### 6. **Conceptual**: What is method overriding? How can a method in a subclass call the overridden method from its superclass?
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+### 7. **Conceptual**: Explain Python's Method Resolution Order (MRO). How would you view the MRO for a specific class?
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+### 8. **Conceptual**: What is a mix-in module in the context of Python OOP? What problem does it solve?
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+### 9. **Conceptual**: Explain the concept of polymorphism in Python. How does it relate to "duck typing"?
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+### 10. **Conceptual**: What is encapsulation? How does Python support it, and what is the purpose of name mangling (e.g., `__private_attribute`)?
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+### 11. **Conceptual**: What is a collaborator object? Provide an example of two classes where one class uses an object of the other class as a collaborator. 
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+### 12. **Conceptual**: Explain the difference between the `is` and `==` operators when comparing two objects. When would you implement the `__eq__` method?
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+### 13. **Conceptual**: What is the purpose of the `__str__` and `__repr__` dunder methods? What are the key differences between them?
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+### 14. **Conceptual**: How can you define a "private" method or attribute in Python? What is the convention, and does it enforce true privacy?
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+### 15. **Coding**: Write a `Cat` class that is initialized with a name. The class should have one instance attribute, `name`, and one instance method, `speak`, which returns `"Meow!"`.
+
+<details>
+<summary>Possible Solution</summary>
+</details>
+
+### 16. **Coding**: Given the following code, what is the output and why? 
+
+```python
+class Person:
+    def __init__(self, name):
+        self.name = name
+
+    def __gt__(self, other):
+        return len(self.name) > len(other.name)
+
+alex = Person("Alex")
+bob = Person("Robert")
+
+print(alex > bob)
+print(bob > alex)
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 17. **Coding**: What is the output of the following code? Explain the role of the class attribute count.
+
+```Python
+class Pet:
+    count = 0
+
+    def __init__(self, species, name):
+        self.species = species
+        self.name = name
+        Pet.count += 1
+
+pet1 = Pet("Dog", "Fido")
+pet2 = Pet("Cat", "Whiskers")
+pet3 = Pet("Dog", "Buddy")
+
+print(Pet.count)
+```
+
+<details>
+<summary>Possible Solution</summary> 
+</details>
+
+### 18. **Coding**: What does the following code print? Explain the method lookup path for buddy. speak().
+```Python
+class Animal:
+    def speak(self):
+        return "Generic animal sound"
+
+class Dog(Animal):
+    def speak(self):
+        return "Woof!"
+
+class Labrador(Dog):
+    pass
+
+buddy = Labrador()
+print(buddy.speak())
+```
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 19. **Coding**: Create a Vehicle class and two subclasses, Car and Motorcycle. The Vehicle class should have attributes for make and model. The Car class should have an additional attribute for num_doors, and the Motorcycle class should have an additional attribute for has_sidecar.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 20. **Coding**: Implement a Wallet class that holds Cash objects. The Wallet should be able to add Cash objects to it and report the total amount of money it contains. A Cash object should have currency and amount attributes. This demonstrates collaborator objects.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+## Pass 2
+
+Based on the topics covered in PY120 and the PY129 Study Guide, here are 20 advanced questions designed to test your readiness for the assessment.
+
+### 1. **Difficulty: Advanced (MRO & `super()`)** Given the following multiple inheritance structure:
+
+```Python
+class A: 
+    pass
+class B(A): 
+    pass
+class C(A): 
+    pass
+class D(B, C): 
+    pass
+```
+
+What is the Method Resolution Order (MRO) for class D? Now, implement these classes. Give each class a method named identify that prints its class name and then calls `super().identify()`. What is the output when you call this method on an instance of D?
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 2. **Difficulty: Advanced (Class vs. Instance Attributes)** Create a `Widget` class with a class attribute `widgets_created` that increments every time a new instance is created. 
+
+It should also have an instance attribute for its name. Implement a class method that returns the total number of widgets created. Then, demonstrate how modifying the class attribute through an instance (`my_widget.widgets_created` = 5) can lead to unexpected behavior for future instances. Explain why this happens.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 3. **Difficulty: Advanced (Encapsulation & Properties)** Design a `BankAccount` class. The account balance should be encapsulated using name mangling (__). 
+
+Provide a read-only property to access the balance. Implement deposit and withdraw methods. The withdraw method must not allow the balance to go below zero; if an attempt is made, it should raise a custom `InsufficientFundsError`.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 4. **Difficulty: Advanced (Collaborator Objects)** Design and implement a `Deck` class and a `Card` class. A `Deck` should be initialized with 52 unique `Card` objects. 
+
+The `Deck` class should "have" a list of `Card` objects as its primary instance variable. Implement shuffle and deal methods for the Deck. The deal method should remove and return the top card from the deck.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 5. **Difficulty: Advanced (str vs. repr)** Create a `Book class with title and author attributes. Implement both `__str__` and `__repr__` methods. 
+
+The `__str__` method should return a user-friendly string (e.g., "To Kill a Mockingbird by Harper Lee"), while the `__repr__ `should return a developer-friendly string that could be used to recreate the object (e.g., `Book("To Kill a Mockingbird", "Harper Lee")`). Explain the primary use case for each method.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 6. **Difficulty: Advanced (Custom Comparison)** Implement a Version class that takes a version string like "2.1.15" as input. Override all rich comparison magic methods (`__eq__`, `__ne__`, `__lt__`, `__gt__`, `__le__`, `__ge__`) to allow for correct comparison between Version objects. 
+
+For example, Version("2.1.5") should be less than Version("2.2.0").
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 7. **Difficulty: Advanced ("is-a" vs. "has-a")** Explain the difference between the "is-a" relationship (inheritance) and the "has-a" relationship (composition/collaboration).
+
+Provide a clear Python code example for both. For instance, model a Car, a Truck, a Vehicle, and an Engine. Justify your design choices regarding which relationships are "is-a" and which are "has-a".
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 8. **Difficulty: Advanced (Polymorphism & Duck Typing)** Write a single function render_elements(elements) that iterates through a list of objects and calls a `.render()` method on each one. 
+
+Create three distinct classes (`Button`, `TextField`, `Checkbox`) that do not share a parent class but each have a `.render()` method with a different implementation (e.g., printing what they are). Demonstrate that your function works polymorphically with a list containing instances of all three classes.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 9. **Difficulty: Advanced (Static vs. Class Methods)** Create a class `MyDate`. Implement a class method from_iso_format(date_string) that takes a string like "2023-12-25" and returns a new `MyDate` instance. 
+
+Implement a static method is_valid_format(date_string) that returns True or False depending on whether the date string is in a valid YYYY-MM-DD format. Explain precisely why a class method is appropriate for the first task and a static method is appropriate for the second.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 10. **Difficulty: Advanced (Custom Arithmetic)** Implement a `Vector` class that represents a 2D vector with x and y attributes. 
+
+Override the `__add__` and `__sub__` magic methods to allow for vector addition and subtraction. Also, override `__mul__` to perform a scalar multiplication (e.g., my_vector * 3).
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 11. **Difficulty: Advanced (Mix-ins)** Create a mix-in class called `LoggerMixin` that has a log method which prints a message with the object's class name and memory address. 
+
+Create two unrelated classes, `DatabaseConnection` and `FileSystemObject`, and demonstrate how you can add the logging functionality to both using the mix-in without using multiple inheritance from a common functional base class.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 12. **Difficulty: Advanced (Name Mangling)** What is name mangling in Python? 
+
+Provide a code example using a class with an attribute prefixed with a double underscore (e.g., `__value`). Show how to access this attribute from outside the class using its mangled name. Explain why this feature is not for creating true private members and what its main purpose is.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 13. **Difficulty: Advanced (`is` vs `==`)** Create a Point class with x and y attributes. Implement the `__eq__` method so that two Point instances are considered equal if their x and y values are the same. 
+
+In your script, create two different Point objects with the same coordinates. Demonstrate that `point1 == point2` evaluates to `True`, while `point1 is point2` evaluates to `False`. Explain the output.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 14. **Difficulty: Advanced (Custom Exceptions)** Create a custom exception class `InvalidUsernameError`. Then, create a `User` class. 
+
+In the `__init__` method, validate the username to ensure it is alphanumeric and between 4 and 16 characters long. If the validation fails, raise your `InvalidUsernameError` with an appropriate message.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 15. **Difficulty: Advanced (Code Reading: Inheritance and State)** What is the output of the following code and why? Explain the state of each object and which speak method is called in each iteration.
+
+```Python
+class Animal:
+    def __init__(self, name):
+        self.name = name
+
+    def speak(self):
+        return f"{self.name} makes a sound."
+
+class Dog(Animal):
+    def speak(self):
+        return f"{self.name} barks."
+
+class Poodle(Dog):
+    def speak(self):
+        return f"{self.name} yips."
+
+animals = [Poodle("Fifi"), Dog("Rex"), Animal("Generic")]
+for animal in animals:
+    print(animal.speak())
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 16. **Difficulty: Advanced (Callable Objects)** Implement a `SequenceGenerator` class where instances of the class are callable. 
+
+The class should be initialized with a start number and a step. Each time the instance is called, it should return the next number in the sequence.
+
+```Python
+evens = SequenceGenerator(0, 2)
+print(evens()) # Expected: 0
+print(evens()) # Expected: 2
+print(evens()) # Expected: 4
+```
+
+Which magic method must you implement to achieve this?
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 17. **Difficulty: Advanced (Scope and Inheritance)** Explain how inheritance influences attribute lookup in Python. 
+
+Provide a code example with a base class and a derived class where the derived class accesses:
+
+* An instance variable defined only in the base class's `__init__`.
+* A class variable defined only in the base class.
+* A method defined only in the base class.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 18. **Difficulty: Advanced (`super()` in `init`)** Why is it considered a best practice to call `super().__init__()` within the `__init__` method of a subclass? 
+
+What potential problems can arise if you fail to do so? Provide a simple code example with a multi-level inheritance hierarchy (A -> B -> C) to illustrate a problem where class C fails to initialize state from class A.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 19. **Difficulty: Advanced (Properties for Validation)** Create a `Temperature` class that stores temperature in Celsius. 
+
+Use a private `_celsius` attribute. Create a property fahrenheit with a getter and a setter. The getter should convert the Celsius temperature to Fahrenheit. The setter should take a Fahrenheit value, convert it to Celsius, and store it in the private `_celsius` attribute.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### 20. **Difficulty: Advanced (Code Reading: MRO and `super()`)** Predict the output of the following code.
+
+Explain your reasoning by tracing the Method Resolution Order and the super() calls step-by-step.
+
+```Python
+class A:
+    def process(self):
+        print("Processing in A")
+
+class B:
+    def process(self):
+        print("Processing in B")
+
+class C(A, B):
+    def process(self):
+        print("Processing in C")
+        super().process()
+
+class D(B, A):
+    def process(self):
+        print("Processing in D")
+        super().process()
+
+c_obj = C()
+c_obj.process()
+print("-" * 10)
+d_obj = D()
+d_obj.process()
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+Output is as follows:
+
+```
+Processing in C
+Processing in A
+----------
+Processing in D
+Processing in B
+```
+
+</details> 
