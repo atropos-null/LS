@@ -503,3 +503,56 @@ Processing in B
 ```
 
 </details> 
+
+## Pass 3
+
+### Difficulty: Intermediate    
+
+Create a Book class that has title and author attributes. Implement the magic methods `__str__` and `__eq__` for this class. The `__str__` method should return a string in the format "Title by Author", and the `__eq__` method should return True if two Book objects have the same title and author. Demonstrate that your implementation works.
+
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+
+### ​Difficulty: Intermediate    
+
+Define a class `Vehicle` with an `__init__` method that accepts make and model as arguments. Create a `Car` class that inherits from `Vehicle` and adds a `wheels` attribute, setting it to `4`. The `Car` class's `__init__` method should properly initialize the attributes from the Vehicle class using `super()`. Provide a code sample that instantiates a Car object and prints its make, model, and wheels.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### Difficulty: Intermediate    
+
+Write a class `Person` with a "private" attribute `_age`. Implement a getter and a setter for this attribute using the `@property` decorator. The setter should ensure that the age cannot be set to a negative number; if an attempt is made, it should raise a `ValueError`.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+
+### Difficulty: Advanced    
+
+Create a `ShoppingCart` class that can hold Item objects. The `ShoppingCart` should have a method `add_item` that takes an `Item` object and a `remove_item` method. The `Item` class should have name and price attributes. This demonstrates a "has-a" relationship (composition). Write the code for both classes and show how a ShoppingCart object would collaborate with `Item` objects.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### ​Difficulty: Intermediate    
+
+Explain polymorphism and provide a Python code example. Your example should include a function that can accept different types of objects (e.g., `Dog`, `Cat`, `Bird`), as long as they implement a common method (e.g., `speak`). The function should call this method on the object it receives.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### ​Difficulty: Advanced    
+
+Create a custom exception class called `OutOfStockError`. Then, create a `VendingMachine` class that has a dictionary of items and their quantities. Implement a `dispense_item` method that takes an item name as an argument. If the item's quantity is 0, this method should raise the `OutOfStockError`. Show how you would call this method and handle the custom exception using a `try...except` block.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
