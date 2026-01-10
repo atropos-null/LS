@@ -71,13 +71,7 @@ class GoodDog:
 sparky = GoodDog()
 ```
 
-Page Reference: [The Object Model, Object Oriented Programming with Python](https://launchschool.com/books/oo_python/read/object_model)
-
-[Back to the top](#top)
-
----
-
-## Instantiation and `__init__`
+### Instantiation and `__init__`
 
 **Instantiation** is the process of creating a new object (an instance) from a class. You do this by calling the class as if it were a function, like `GoodDog()`.
 
@@ -98,9 +92,7 @@ sparky = GoodDog('Sparky', 5)
 In this example, when we create `sparky`, the `__init__` method runs, assigning `'Sparky'` to `self.name` and `5` to `self.age` for that specific object.
 
 
----
-
-## Instance Variables, Class Variables, and Scope
+### Instance Variables, Class Variables, and Scope
 
 **Instance Variables** belong to a specific object instance. They hold the state of that particular object. They are defined inside methods, typically `__init__`, and are prefixed with `self` (e.g., `self.name`). Each object has its own copy of instance variables.
 
@@ -126,11 +118,10 @@ print(GoodCat.number_of_cats)   # 2
 
 **Scope** refers to where these variables can be accessed. Instance variables are tied to the object's scope, while class variables are tied to the class's scope.
 
----
 
-## Instance Methods vs. Class Methods vs. Static Methods
+### Instance Methods vs. Class Methods vs. Static Methods
 
-### Instance Methods
+#### Instance Methods
 - Operate on a specific object instance.
 - The first parameter is conventionally `self`, which refers to the instance calling the method.
 - They can access and modify the object's state (instance variables).
@@ -141,7 +132,7 @@ class GoodDog:
         return f'{self.name} says arf!'
 ```
 
-### Class Methods
+#### Class Methods
 
 - Operate on the class itself, not an instance.
 - The first parameter is conventionally `cls`, which refers to the class.
@@ -155,7 +146,7 @@ class Animal:
         print(f'{cls.__name__}: A generic sound')
 ```
 
-### Static Methods
+#### Static Methods
 
 - Don't operate on the instance or the class. They are essentially regular functions grouped with a class for organizational purposes.
 - They do not take `self` or `cls` as their first parameter.
@@ -170,7 +161,9 @@ class TheGame:
         print("These are the rules of the game.")
 ```
 
----
+[Back to the top](#top)
+
+***
 
 ## Attributes and State
 
@@ -178,9 +171,8 @@ class TheGame:
 
 **Attributes** is a broader term that includes all of an object's instance variables and its instance methods. So, `sparky.name` is an attribute (an instance variable), and `sparky.speak` is also an attribute (an instance method).
 
----
 
-## Calling and Accessing Attributes: `self`, `cls`, `obj.__class__`
+### Calling and Accessing Attributes: `self`, `cls`, `obj.__class__`
 
 - **`self`**: Inside an instance method, `self` is a reference to the specific object instance the method was called on. It's used to access that object's attributes, like `self.name`.
 - **`cls`**: Inside a class method, `cls` is a reference to the class itself. It's used to access class-level attributes, like a class variable or another class method.
@@ -188,9 +180,8 @@ class TheGame:
 
 Both `self` and `cls` are conventions. Python automatically passes the instance or class as the first argument, and by convention, we name that parameter `self` or `cls`.
 
----
 
-## Creating and Using Properties, Getters, and Setters
+### Creating and Using Properties, Getters, and Setters
 
 **Getters and Setters** are methods that provide controlled access to an object's attributes. A getter retrieves an attribute's value, and a setter modifies it. This allows you to add logic, like validation, when an attribute is accessed or changed.
 
@@ -232,18 +223,14 @@ print(kate.name)         # Calls the getter
 kate.name = 'Katherine'  # Calls the setter
 ```
 
----
-
-## Access Control in Python
+### Access Control in Python
 
 Python doesn't have strict private attributes like some other languages. Instead, it relies on naming conventions:
 
 - **Single Underscore (`_name`)**: This is a convention that tells other developers that an attribute is intended for internal use within the class and should not be accessed directly from outside. Python does not enforce this.
 - **Double Underscore (`__name`)**: This triggers a feature called **name mangling**. Python renames the attribute to `_ClassName__name`, making it harder to access accidentally from outside the class or from a subclass. It's used to prevent naming conflicts in inheritance.
 
----
-
-## Encapsulation and Polymorphism
+### Encapsulation and Polymorphism
 
 These are two fundamental principles of OOP.
 
@@ -301,8 +288,6 @@ print(my_car.start_engine()) # Vrroooom! (inherited from Vehicle)
 ```
 
 
----
-
 ### Understanding `self` and `cls` with Inheritance
 
 The behavior of `self` and `cls` remains consistent with inheritance, which is a powerful feature.
@@ -332,8 +317,6 @@ child_instance.identify()   # Prints "Instance method called on: Child"
 Child.who_are_we()          # Prints "Class method called on: Child"
 ```
 
----
-
 ### The `super()` Function
 
 The `super()` function is a built-in function that allows you to call methods from a superclass. It's most commonly used inside a subclass's `__init__` method to ensure that the superclass's `__init__` method is also called.
@@ -356,8 +339,6 @@ my_car = Car(2023, 'Toyota')
 print(my_car.year)  # Initialized by Vehicle's __init__
 print(my_car.make)  # Initialized by Car's __init__
 ```
-
----
 
 ### Mix-ins (Interface Inheritance)
 
@@ -383,8 +364,6 @@ my_car.set_color('blue')
 print(my_car.get_color()) # blue
 ```
 
----
-
 ### "Is-a" vs. "Has-a"
 
 These terms describe the two primary relationships between objects in OOP and help you decide when to use inheritance versus other techniques.
@@ -397,8 +376,6 @@ These terms describe the two primary relationships between objects in OOP and he
 
 Many developers prefer "has-a" relationships over "is-a" relationships, a principle known as **Composition Over Inheritance**. This approach is often more flexible and leads to more modular code.
 
----
-
 ### The Influence of Inheritance on Scope
 
 Inheritance doesn't change Python's lexical scope rules (Local, Enclosing, Global, Built-in). Instead, it influences the **attribute lookup path** for an object. When you try to access a method or attribute on an object (e.g., `my_car.start_engine()`), Python doesn't just look in the `Car` class. If it can't find it there, it searches up the inheritance hierarchy (`Vehicle`, and eventually the base `object` class) until it finds the attribute or runs out of classes to search.
@@ -407,9 +384,6 @@ This lookup path is formally known as the **Method Resolution Order (MRO)**.
 
 It's important to remember that instance variables belong to the object instance, not the class. While a subclass instance acquires the same instance variables defined in its superclass's `__init__`, they are not "looked up" via the MRO in the same way methods are.
 
-(Source: Object Oriented Programming with Python - Method Resolution Order)
-
----
 
 ### Method Resolution Order (MRO)
 
@@ -450,7 +424,7 @@ When you call a method on a `Human` instance, Python will search for that method
 
 [Back to the top](#top)
 
----
+***
 
 ## The is Operator and id() Function
 
@@ -481,15 +455,12 @@ print(person1 is person2) # False - different objects
 print(person2 is person3) # True - same object
 ```
 
----
-
-## Magic Methods (Dunder Methods)
+### Magic Methods (Dunder Methods)
 
 Magic methods, also known as "dunder" methods (for **d**ouble **under**score), are special methods that let you customize the behavior of your classes. Their names always start and end with double underscores (e.g., `__init__`, `__str__`). You typically don't call these methods directly. Instead, Python calls them for you when you use certain syntax, like operators (`+`, `==`) or built-in functions (`str()`, `repr()`).
 
----
 
-### Custom Comparison Methods: `__eq__`, `__ne__`, `__lt__`, etc.
+#### Custom Comparison Methods: `__eq__`, `__ne__`, `__lt__`, etc.
 
 These methods allow you to define how instances of your custom class behave with comparison operators.
 
@@ -502,9 +473,8 @@ These methods allow you to define how instances of your custom class behave with
 
 By defining these, you give Python instructions on how to determine if one of your objects is equal to, not equal to, or greater/less than another object.
 
----
 
-### Custom Arithmetic Methods: `__add__`, `__sub__`, `__mul__`, etc.
+#### Custom Arithmetic Methods: `__add__`, `__sub__`, `__mul__`, etc.
 
 These methods let you define how arithmetic operators work with your objects. For example, you can define how to "add" two `Vector` objects together.
 
@@ -619,7 +589,7 @@ print(f"v1 after  *=: {v1}\n")
 
 ```
 
-#### Key Patterns to Notice
+##### Key Patterns to Notice
 1.  **​Standard vs. In-Place Operators**​:
 
 * The standard methods (`__add__`, `__sub__`, `__mul__`) do not change the original object (`self`). They perform the calculation and return a ​new instance​ of the class with the result.
@@ -634,7 +604,6 @@ print(f"v1 after  *=: {v1}\n")
 
 * As the curriculum notes, you should normally define the in-place version (e.g., `__iadd__`) whenever you define the primary version (`__add__`). This provides a consistent and expected interface for users of your class.
 
----
 
 ### Custome Comparison Methods: `__eq__`, `__gt__`, `__lt__`, etc:
 
@@ -934,13 +903,12 @@ In summary,` __str__` and `__repr__` were created to provide context-appropriate
 
 Page Reference: [Object Oriented Programming with Python, Magic Methods](https://launchschool.com/books/oo_python/read/magic_methods)
 
----
 
-## Magic Attributes: `__class__` and `__name__`
+### Magic Attributes: `__class__` and `__name__`
 
  `__class__` and `__name__` are important concepts to understand for the assessment. Let me provide a more thorough explanation based on the curriculum. These are often referred to as "magic variables" or "dunder variables." They provide metadata about your code, which is particularly useful for introspection, debugging, and controlling how modules are executed.
 
-### The `__name__` Attribute
+#### The `__name__` Attribute
 
 The `__name__` attribute has two common contexts: modules and classes.
 
@@ -986,7 +954,7 @@ class MyClass:
 print(MyClass.__name__)  # Output: 'MyClass'
 ```
 
-### The `__class__` Attribute
+#### The `__class__` Attribute
 
 The `__class__` attribute is accessed on an ​​instance​​ of a class. It returns a reference to the class object that the instance was created from. This is incredibly useful for finding out what type of object you are working with at runtime.
 
@@ -1007,7 +975,7 @@ if fido.__class__ is Dog:
 # Output: Fido is an instance of the Dog class.
 ```
 
-### Tying Them Together
+#### Tying Them Together
 
 You can use both attributes together to get the string name of an object's class. This is a common pattern:
 
@@ -1059,9 +1027,7 @@ As you've seen in the curriculum, we can describe relationships between classes 
 
 Many developers prefer "has-a" relationships over "is-a" relationships, a principle called **Composition Over Inheritance**. This approach often leads to more flexible and maintainable code because it allows you to build complex objects by combining simpler, independent objects.
 
----
-
-### Code Example
+#### Code Example
 
 Here is an example from the curriculum where a Person can have multiple pets. The `list` object that holds the pets, and the `Pet` objects themselves, are collaborators.
 
@@ -1106,8 +1072,6 @@ for pet in bob.pets:
 
 In this example, the Person object doesn't need to know how to speak. Instead, it holds onto Pet objects and can ask them to perform actions. The `list` object stored in `self.pets` is also a collaborator because the Person class uses it (via `append`) to manage its collection of pets.
 
----
-
 ### An Important Distinction
 
 It's important to remember that simply storing an object as an instance variable doesn't automatically make it a collaborator. For an object to be considered a collaborator, the containing class must actively use it in its methods to help fulfill its own functionality.
@@ -1115,8 +1079,6 @@ It's important to remember that simply storing an object as an instance variable
 For instance, if `Person` just stored a list of pets but never used that list, the list wouldn't truly be collaborating.
 
 In our example,`Person` uses the list's `append` method, making it a collaborator.
-
----
 
 ### High-Level Reasoning: Why Use Collaborators?
 
@@ -1243,7 +1205,9 @@ The `Car` class is now loosely coupled from the specific engine classes. This ma
 The choice between tight and loose coupling is not about finding the one "right" way, but about understanding the advantages and disadvantages of each approach for a given situation. As the curriculum states, this is the "art" of programming. Here is a breakdown of the trade-offs:
 
 #### Tightly Coupled Designs
+
 In a tightly coupled design, classes are closely connected and have detailed knowledge of each other.
+
 * **​Advantage**: Easier to Understand (at first)
 
 When you look at a method in a tightly coupled system, the logic is usually all in one place. You don't have to jump between multiple files or classes to follow the flow of execution. For smaller, simpler programs, this can make the code seem more straightforward and easier to write initially.
@@ -1334,7 +1298,7 @@ While you've focused more on the first approach in PY120 (polymorphism and colla
 
 [Back to the top](#top)
 
----
+***
 
 ## Reading OO Code
 
@@ -1482,7 +1446,10 @@ To conclude your analysis, you would summarize the key OOP principles you've ide
 
 This systematic process—identifying classes, relationships, state, behavior, and key principles like polymorphism—is exactly what the PY129 assessment is looking for. It shows you can move beyond just executing code in your head and can analyze its design and structure.
 
----
+[Back to the top](#top)
+
+***
+
 
 ## Create a Code Spike
 
