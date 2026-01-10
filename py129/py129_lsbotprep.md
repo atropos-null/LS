@@ -1,5 +1,5 @@
 
-# PY 120 Written Quiz Prep
+# PY129 LSBOT Exam Prep Questions
 
 ## Pass 1
 
@@ -166,9 +166,87 @@ print(buddy.speak())
 
 ### 20. **Coding**: Implement a Wallet class that holds Cash objects. The Wallet should be able to add Cash objects to it and report the total amount of money it contains. A Cash object should have currency and amount attributes. This demonstrates collaborator objects.
 
+
+### 20a. **Coding** `Wallet` part 2. Creating a Class with Properties
+
+
+Improve on the `Wallet` Class.
+1. The `Wallet` should be initialized with a starting balance. This balance should be stored in an instance variable that is intended for internal use only (follow Python's convention).
+2. Implement a balance property that allows a user to get the value of the balance.
+3. Implement a setter for the balance property. The setter should perform validation:
+    * It must ensure the new balance is a non-negative number (integer or float).
+    * If the new balance is invalid, it should raise a `ValueError` with an appropriate message.
+4. Add an add_money method that takes an amount and adds it to the balance. This method should also validate that the amount being added is a positive number, raising a ValueError if not.
+
+Example Usage:
+
+```python
+my_wallet = Wallet(100)
+print(f"Initial balance: {my_wallet.balance}")  # Expected: Initial balance: 100
+
+my_wallet.add_money(50)
+print(f"After adding money: {my_wallet.balance}") # Expected: After adding money: 150
+
+try:
+    my_wallet.add_money(-20)
+except ValueError as e:
+    print(e)  # Expected: Amount must be positive.
+
+try:
+    my_wallet.balance = -500
+except ValueError as e:
+    print(e)  # Expected: Balance cannot be negative.
+
+print(f"Final balance: {my_wallet.balance}") # Expected: Final balance: 150
+```
+
 <details> 
 <summary>Possible Solution</summary> 
 </details>
+
+### 21. **Conceptual** What is the output of the following code? 
+
+Explain why each line produces its output, paying close attention to the difference between class and instance variables and methods.
+
+```python
+class Pet:
+    total_pets = 0
+
+    def __init__(self, name):
+        self._name = name
+        self.__class__.total_pets += 1
+
+    def speak(self):
+        return f"{self._name} makes a sound."
+
+    @classmethod
+    def get_total_pets(cls):
+        return f"There are {cls.total_pets} pets in total."
+
+class Dog(Pet):
+    def speak(self):
+        return f"{self._name} barks."
+
+class Cat(Pet):
+    def speak(self):
+        return f"{self._name} meows."
+
+# Code to analyze
+pet1 = Dog("Fido")
+pet2 = Cat("Whiskers")
+pet3 = Dog("Rex")
+
+print(pet1.speak())
+print(pet2.speak())
+print(Pet.get_total_pets())
+print(Dog.get_total_pets())
+print(pet3.total_pets)
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
 
 ## Pass 2
 
@@ -369,7 +447,19 @@ Use a private `_celsius` attribute. Create a property fahrenheit with a getter a
 <summary>Possible Solution</summary> 
 </details>
 
-### 20. **Difficulty: Advanced (Code Reading: MRO and `super()`)** Predict the output of the following code.
+### 20. **Difficulty: Advanced(Inhertance and Collaboration)** You are building a system for a library.
+
+1. Create a `Writer` class that is initialized with a `name`.
+2. Create a base class `Publication` that is initialized with a `title` and a `Writer` object (this is a "has-a" relationship/collaboration). It should have a display method that prints the title and the writer's name.
+3. Create two subclasses that inherit from `Publication`: `Book` and `Magazine`.
+    * Book should be initialized with a title, a writer, and a genre.
+    * Magazine should be initialized with a title, a writer, and an issue_date.
+
+4. Both `Book` and `Magazine` should override the display method. They must first call the parent class's display method using `super()` and then print their own specific information (genre for `Book`, issue date for `Magazine`).
+
+5.  Finally, implement a custom `__str__` method for the Publication class that returns the string `"{title}" by {writer's name}`.
+
+### 21. **Difficulty: Advanced (Code Reading: MRO and `super()`)** Predict the output of the following code.
 
 Explain your reasoning by tracing the Method Resolution Order and the super() calls step-by-step.
 

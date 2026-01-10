@@ -9,6 +9,7 @@
 - [Inheritance](#inheritance)
 - [The `is` Operator and `id()` Function](#the-is-operator-and-id-function)
 - [Reading OO Code](#reading-oo-code)
+- [Create a Code Spike](#create-a-code-spike)
 
 
 
@@ -32,12 +33,15 @@ You need to demonstrate mastery of the Object-Oriented Programming concepts from
 Beyond just knowing the material, the interview specifically assesses your ability to:
 
 *​Speak with Precision and Clarity​*
+
 You must explain concepts using correct vocabulary and clear reasoning. As stated in the interview tips: "You should speak in a clear tone and explain concepts with precision and correct vocabulary."
 
 *​Think and Code Under Pressure​*
+
 The interview simulates a real job interview environment. You'll need to demonstrate how you approach problems, work through code examples, and recover from mistakes in real-time.
 
 *​Drive Technical Conversations​*
+
 You're expected to "speak and drive the conversation" - teaching and presenting OOP topics rather than just answering yes/no questions.
 
 ### Why Communication Matters So Much
@@ -138,6 +142,7 @@ class GoodDog:
 ```
 
 ### Class Methods
+
 - Operate on the class itself, not an instance.
 - The first parameter is conventionally `cls`, which refers to the class.
 - They are marked with the `@classmethod` decorator.
@@ -151,6 +156,7 @@ class Animal:
 ```
 
 ### Static Methods
+
 - Don't operate on the instance or the class. They are essentially regular functions grouped with a class for organizational purposes.
 - They do not take `self` or `cls` as their first parameter.
 - They are marked with the `@staticmethod` decorator.
@@ -171,7 +177,6 @@ class TheGame:
 **State** refers to the data that an object holds at any given time. This data is stored in its instance variables. For example, a GoodDog object's state would include its name and age.
 
 **Attributes** is a broader term that includes all of an object's instance variables and its instance methods. So, `sparky.name` is an attribute (an instance variable), and `sparky.speak` is also an attribute (an instance method).
-
 
 ---
 
@@ -497,8 +502,6 @@ These methods allow you to define how instances of your custom class behave with
 
 By defining these, you give Python instructions on how to determine if one of your objects is equal to, not equal to, or greater/less than another object.
 
-(Source: Object Oriented Programming with Python, Magic Methods)
-
 ---
 
 ### Custom Arithmetic Methods: `__add__`, `__sub__`, `__mul__`, etc.
@@ -794,7 +797,6 @@ When accessed on a class, `__name__` simply returns the name of the class as a s
 class MyClass:
     pass
 
-
 print(MyClass.__name__)  # Output: 'MyClass'
 ```
 
@@ -924,9 +926,9 @@ In this example, the Person object doesn't need to know how to speak. Instead, i
 
 It's important to remember that simply storing an object as an instance variable doesn't automatically make it a collaborator. For an object to be considered a collaborator, the containing class must actively use it in its methods to help fulfill its own functionality.
 
-For instance, if Person just stored a list of pets but never used that list, the list wouldn't truly be collaborating.
+For instance, if `Person` just stored a list of pets but never used that list, the list wouldn't truly be collaborating.
 
-In our example, Person uses the list's `append` method, making it a collaborator.
+In our example,`Person` uses the list's `append` method, making it a collaborator.
 
 ---
 
@@ -935,7 +937,7 @@ In our example, Person uses the list's `append` method, making it a collaborator
 Collaborator objects are central to object-oriented design because they allow you to model real-world relationships and build complex systems from smaller, more focused components.
 
 1.  **Modeling the Problem Domain:** They represent the connections between different actors in your program. A car **has an** engine, a customer **has an** order, a person **has pets**. This makes your code more intuitive and easier to understand.
-2.  **Delegating Responsibility:** Classes can delegate tasks to their collaborators. A Car object doesn't need to know the intricate details of combustion; it just tells its Engine collaborator to `start()`. This keeps each class focused on a single responsibility.
+2.  **Delegating Responsibility:** Classes can delegate tasks to their collaborators. A `Car` object doesn't need to know the intricate details of combustion; it just tells its Engine collaborator to `start()`. This keeps each class focused on a single responsibility.
 3.  **Flexibility and Maintainability:** Composition makes your code more flexible. You can easily swap out a collaborator for a different one without changing the containing class, as long as the new collaborator responds to the same methods. This makes your system easier to update and maintain over time.
 
 In essence, collaborator objects allow you to build powerful and well-structured programs where objects work together, each handling its specific responsibilities.
@@ -984,7 +986,7 @@ This chain of collaboration allows each class to have a single, focused responsi
 
 While the terms "tight coupling" and "loose coupling" are not explicitly defined in the PY120 curriculum, they are vital software design principles that you will encounter frequently as you progress. They describe the degree of dependence between different parts of a system.
 
-* ​Tight Coupling​: This is when two or more classes are highly dependent on each other. A class that is tightly coupled to another knows too much about the inner workings of that class. A change in one class will often force you to make changes in the other. This makes the code brittle and hard to maintain. ​Example of Tight Coupling:
+* **​Tight Coupling​**: This is when two or more classes are highly dependent on each other. A class that is tightly coupled to another knows too much about the inner workings of that class. A change in one class will often force you to make changes in the other. This makes the code brittle and hard to maintain. ​Example of Tight Coupling:
 
 ```python
 class Car:
@@ -1005,15 +1007,17 @@ The problem here is that the `Car` class is "hard-coded" to use a `V6Engine`.
 
 What if you want to create a `Car` with an `ElectricEngine`? You would have to modify the `Car` class itself.
 
-* ​Loose Coupling​: This is the goal of good object-oriented design. Classes are independent and interact through well-defined public interfaces (i.e., methods) without needing to know about each other's internal implementation. A change in one class has little to no impact on the others. This makes the system modular, flexible, and easier to test and maintain.
+* **​Loose Coupling**​: This is the goal of good object-oriented design. Classes are independent and interact through well-defined public interfaces (i.e., methods) without needing to know about each other's internal implementation. A change in one class has little to no impact on the others. This makes the system modular, flexible, and easier to test and maintain.
 
 ### Dependency Injection
-Dependency Injection is a specific design pattern used to achieve ​loose coupling​. It's a more advanced topic, but the core idea is simple:
+
+Dependency Injection is a specific design pattern used to achieve **​loose coupling**​. It's a more advanced topic, but the core idea is simple:
 
 >Instead of an object creating its own dependencies (collaborators), the dependencies are provided, or "injected," from an outside source.
 
-Let's refactor our tightly coupled Car example to use dependency injection. Example of Loose Coupling via Dependency Injection:
+Let's refactor our tightly coupled `Car` example to use dependency injection.
 
+Example of Loose Coupling via Dependency Injection:
 ```python
 # --- Define different types of engines ---
 class V6Engine:
