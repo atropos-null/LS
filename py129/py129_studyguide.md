@@ -636,6 +636,192 @@ print(f"v1 after  *=: {v1}\n")
 
 ---
 
+### Custome Comparison Methods: `__eq__`, `__gt__`, `__lt__`, etc:
+
+What are Dunder Comparison Methods? In Python, methods with names surrounded by double underscores (like `__init__`) are called "magic methods" or "dunder methods." They let you customize the behavior of your objects to integrate with Python's core features.
+
+The dunder comparison methods allow you to define how operators like `==`, `!=`, `<`, and `>` work with instances of your classes.
+
+Here are the primary comparison methods:
+* `__eq__`: Corresponds to the `==` (equal to) operator.
+* `__ne__`: Corresponds to the `!=` (not equal to) operator.
+* `__lt__`: Corresponds to the `<` (less than) operator.
+* `__le__`: Corresponds to the `<=` (less than or equal to) operator.   
+* `__gt__`: Corresponds to the `>` (greater than) operator.
+* `__ge__`: Corresponds to the `>=` (greater than or equal to) operator.
+
+#### Equality Methods: `__eq__` and `__ne__`
+
+By default, Python's `==` operator checks if two variables refer to the ​same object​ (identity), which is the same as using the is operator. This is often not what you want. You usually want to consider two objects equal if their ​state​ is the same.
+
+You can define your own logic for equality by implementing the `__eq__` method. 
+
+When Python encounters `a == b`, it effectively calls `a.__eq__(b)`. Here's an example.Without a custom `__eq__` method, two different `Cat` objects with the same name are not considered equal:
+
+```python
+class Cat:
+    def __init__(self, name):
+        self.name = name
+
+fluffy = Cat('Fluffy')
+fluffy2 = Cat('Fluffy')
+
+print(fluffy == fluffy2)      # False, because they are different objects
+```
+
+Now, let's implement `__eq__` to define equality based on the cat's name:
+
+```python
+class Cat:
+    def __init__(self, name):
+        self.name = name
+
+    def __eq__(self, other):
+        # It's good practice to check if the other object is of the same type
+        if not isinstance(other, Cat):
+            return NotImplemented
+        return self.name == other.name
+
+fluffy = Cat('Fluffy')
+fluffy2 = Cat('Fluffy')
+
+print(fluffy == fluffy2)      # True, because their names are the same
+```
+While defining `__eq__` often gives you a working `__ne__` for free, it's best practice to define `__ne__` yourself to handle all cases correctly, especially when dealing with different types.
+
+#### Ordered Comparison Methods: `__lt__`, `__gt__`, etc.
+
+If you try to compare custom objects using operators like < or > without defining the corresponding methods, Python will raise a TypeError.
+
+```python
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+ted = Person('Ted', 33)
+carol = Person('Carol', 49)
+
+# The following line would raise a TypeError
+# if ted < carol:
+#     print('Ted is younger than Carol')
+```
+
+To fix this, you need to implement the ordered comparison methods. Let's add `__lt__ `(less than) and `__gt__` (greater than) to compare Person objects based on their age.
+
+```python
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def __lt__(self, other):
+        if not isinstance(other, Person):
+            return NotImplemented
+        return self.age < other.age
+
+    def __gt__(self, other):
+        if not isinstance(other, Person):
+            return NotImplemented
+        return self.age > other.age
+
+ted = Person('Ted', 33)
+carol = Person('Carol', 49)
+
+if ted < carol:
+    print('Ted is younger than Carol')  # This now works and will print
+```
+
+#### A Note on `NotImplemented`
+
+In the examples above, you can see return`NotImplemented`. This is a special singleton value that you should return from a comparison method if it doesn't know how to handle the other object's type.
+
+When a method returns `NotImplemented`, Python knows to try the "reflected" operation on the other object. For example, if `a < b` calls `a.__lt__(b)` and it returns `NotImplemented`, Python will then try `b.__gt__(a)`. If all attempts fail, a `TypeError` is raised. This makes your custom classes more robust and able to interact with other types gracefully.
+
+#### All of them together
+
+Here is the complete class definition followed by examples of each comparison method in use.
+
+```python
+class Movie:
+    def __init__(self, title, rating):
+        self.title = title
+        self.rating = rating
+
+    # Equality: based on both title and rating
+    def __eq__(self, other):
+        if not isinstance(other, Movie):
+            return NotImplemented
+        return self.title == other.title and self.rating == other.rating
+
+    # Inequality
+    def __ne__(self, other):
+        if not isinstance(other, Movie):
+            return NotImplemented
+        return not self.__eq__(other)
+
+    # Less than: based on rating
+    def __lt__(self, other):
+        if not isinstance(other, Movie):
+            return NotImplemented
+        return self.rating < other.rating
+
+    # Less than or equal to
+    def __le__(self, other):
+        if not isinstance(other, Movie):
+            return NotImplemented
+        return self.rating <= other.rating
+
+    # Greater than
+    def __gt__(self, other):
+        if not isinstance(other, Movie):
+            return NotImplemented
+        return self.rating > other.rating
+
+    # Greater than or equal to
+    def __ge__(self, other):
+        if not isinstance(other, Movie):
+            return NotImplemented
+        return self.rating >= other.rating
+
+# --- Create some instances to compare ---
+movie_a = Movie("The Grand Budapest Hotel", 8.1)
+movie_b = Movie("Isle of Dogs", 7.8)
+movie_c = Movie("The Grand Budapest Hotel", 8.1)
+
+# --- Example Usage ---
+
+# 1. __eq__ (==)
+# Compares movie_a and movie_c
+print(f"movie_a == movie_c: {movie_a == movie_c}")  # True, title and rating match
+
+# 2. __ne__ (!=)
+# Compares movie_a and movie_b
+print(f"movie_a != movie_b: {movie_a != movie_b}")  # True, they are different movies
+
+# 3. __lt__ (<)
+# Compares movie_b's rating to movie_a's rating
+print(f"movie_b < movie_a: {movie_b < movie_a}")    # True, because 7.8 is less than 8.1
+
+# 4. __le__ (<=)
+# Compares movie_a's rating to movie_c's rating
+print(f"movie_a <= movie_c: {movie_a <= movie_c}")  # True, because 8.1 is less than or equal to 8.1
+
+# 5. __gt__ (>)
+# Compares movie_a's rating to movie_b's rating
+print(f"movie_a > movie_b: {movie_a > movie_b}")    # True, because 8.1 is greater than 7.8
+
+# 6. __ge__ (>=)
+# Compares movie_a's rating to movie_c's rating
+print(f"movie_a >= movie_c: {movie_a >= movie_c}")  # True, because 8.1 is greater than or equal to 8.1
+```
+
+##### Breakdown of the Methods
+
+1. `__eq__` and `__ne__` check for value equality. In this case, two Movie objects are only considered equal if both their title and rating are identical.   
+2. The ordered comparison methods (`__lt__`, `__le__`, `__gt__`, `__ge__`) are all based on a single attribute: the rating. This allows you to sort a list of `Movie` objects or find the one with the highest rating. 
+3. Notice that each method includes if not `isinstance(other, Movie): return NotImplemented`. This is a robust way to handle comparisons with objects of different types, as covered in the curriculum.
+
 ### Custom Formatting Methods: `__str__` and `__repr__`
 
 These two methods control how your objects are converted to strings.
