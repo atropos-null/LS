@@ -3911,7 +3911,7 @@ Adopting these practices is a defining step that separates a novice programmer f
 Page Reference: [Exceptions](https://launchschool.com/lessons/9363d6ba/assignments/0434f002)
 [Back to the top](#top)
 
-## PANIC STATE: WHERE DOES STATE LIVE? (OOP)
+## PANIC STATE: WHERE DOES STATE LIVE?
 
 Read top to bottom. Do not overthink.
 
