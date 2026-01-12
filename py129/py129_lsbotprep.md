@@ -169,7 +169,6 @@ print(buddy.speak())
 
 ### 20a. **Coding** `Wallet` part 2. Creating a Class with Properties
 
-
 Improve on the `Wallet` Class.
 1. The `Wallet` should be initialized with a starting balance. This balance should be stored in an instance variable that is intended for internal use only (follow Python's convention).
 2. Implement a balance property that allows a user to get the value of the balance.
@@ -252,7 +251,7 @@ print(pet3.total_pets)
 
 Based on the topics covered in PY120 and the PY129 Study Guide, here are 20 advanced questions designed to test your readiness for the assessment.
 
-### 1. **Difficulty: Advanced (MRO & `super()`)** Given the following multiple inheritance structure:
+### 22. **Difficulty: Advanced (MRO & `super()`)** Given the following multiple inheritance structure:
 
 ```Python
 class A: 
@@ -271,7 +270,7 @@ What is the Method Resolution Order (MRO) for class D? Now, implement these clas
 <summary>Possible Solution</summary> 
 </details>
 
-### 2. **Difficulty: Advanced (Class vs. Instance Attributes)** Create a `Widget` class with a class attribute `widgets_created` that increments every time a new instance is created. 
+### 23. **Difficulty: Advanced (Class vs. Instance Attributes)** Create a `Widget` class with a class attribute `widgets_created` that increments every time a new instance is created. 
 
 It should also have an instance attribute for its name. Implement a class method that returns the total number of widgets created. Then, demonstrate how modifying the class attribute through an instance (`my_widget.widgets_created` = 5) can lead to unexpected behavior for future instances. Explain why this happens.
 
@@ -279,7 +278,7 @@ It should also have an instance attribute for its name. Implement a class method
 <summary>Possible Solution</summary> 
 </details>
 
-### 3. **Difficulty: Advanced (Encapsulation & Properties)** Design a `BankAccount` class. The account balance should be encapsulated using name mangling (__). 
+### 24. **Difficulty: Advanced (Encapsulation & Properties)** Design a `BankAccount` class. The account balance should be encapsulated using name mangling (__). 
 
 Provide a read-only property to access the balance. Implement deposit and withdraw methods. The withdraw method must not allow the balance to go below zero; if an attempt is made, it should raise a custom `InsufficientFundsError`.
 
@@ -287,7 +286,7 @@ Provide a read-only property to access the balance. Implement deposit and withdr
 <summary>Possible Solution</summary> 
 </details>
 
-### 4. **Difficulty: Advanced (Collaborator Objects)** Design and implement a `Deck` class and a `Card` class. A `Deck` should be initialized with 52 unique `Card` objects. 
+### 25. **Difficulty: Advanced (Collaborator Objects)** Design and implement a `Deck` class and a `Card` class. A `Deck` should be initialized with 52 unique `Card` objects. 
 
 The `Deck` class should "have" a list of `Card` objects as its primary instance variable. Implement shuffle and deal methods for the Deck. The deal method should remove and return the top card from the deck.
 
@@ -295,7 +294,7 @@ The `Deck` class should "have" a list of `Card` objects as its primary instance 
 <summary>Possible Solution</summary> 
 </details>
 
-### 5. **Difficulty: Advanced (str vs. repr)** Create a `Book class with title and author attributes. Implement both `__str__` and `__repr__` methods. 
+### 26. **Difficulty: Advanced (str vs. repr)** Create a `Book class with title and author attributes. Implement both `__str__` and `__repr__` methods. 
 
 The `__str__` method should return a user-friendly string (e.g., "To Kill a Mockingbird by Harper Lee"), while the `__repr__ `should return a developer-friendly string that could be used to recreate the object (e.g., `Book("To Kill a Mockingbird", "Harper Lee")`). Explain the primary use case for each method.
 
@@ -303,7 +302,7 @@ The `__str__` method should return a user-friendly string (e.g., "To Kill a Mock
 <summary>Possible Solution</summary> 
 </details>
 
-### 6. **Difficulty: Advanced (Custom Comparison)** Implement a Version class that takes a version string like "2.1.15" as input. Override all rich comparison magic methods (`__eq__`, `__ne__`, `__lt__`, `__gt__`, `__le__`, `__ge__`) to allow for correct comparison between Version objects. 
+### 27. **Difficulty: Advanced (Custom Comparison)** Implement a Version class that takes a version string like "2.1.15" as input. Override all rich comparison magic methods (`__eq__`, `__ne__`, `__lt__`, `__gt__`, `__le__`, `__ge__`) to allow for correct comparison between Version objects. 
 
 For example, Version("2.1.5") should be less than Version("2.2.0").
 
@@ -311,7 +310,7 @@ For example, Version("2.1.5") should be less than Version("2.2.0").
 <summary>Possible Solution</summary> 
 </details>
 
-### 7. **Difficulty: Advanced ("is-a" vs. "has-a")** Explain the difference between the "is-a" relationship (inheritance) and the "has-a" relationship (composition/collaboration).
+### 28. **Difficulty: Advanced ("is-a" vs. "has-a")** Explain the difference between the "is-a" relationship (inheritance) and the "has-a" relationship (composition/collaboration).
 
 Provide a clear Python code example for both. For instance, model a Car, a Truck, a Vehicle, and an Engine. Justify your design choices regarding which relationships are "is-a" and which are "has-a".
 
@@ -319,7 +318,7 @@ Provide a clear Python code example for both. For instance, model a Car, a Truck
 <summary>Possible Solution</summary> 
 </details>
 
-### 8. **Difficulty: Advanced (Polymorphism & Duck Typing)** Write a single function render_elements(elements) that iterates through a list of objects and calls a `.render()` method on each one. 
+### 29. **Difficulty: Advanced (Polymorphism & Duck Typing)** Write a single function render_elements(elements) that iterates through a list of objects and calls a `.render()` method on each one. 
 
 Create three distinct classes (`Button`, `TextField`, `Checkbox`) that do not share a parent class but each have a `.render()` method with a different implementation (e.g., printing what they are). Demonstrate that your function works polymorphically with a list containing instances of all three classes.
 
@@ -327,7 +326,7 @@ Create three distinct classes (`Button`, `TextField`, `Checkbox`) that do not sh
 <summary>Possible Solution</summary> 
 </details>
 
-### 9. **Difficulty: Advanced (Static vs. Class Methods)** Create a class `MyDate`. Implement a class method from_iso_format(date_string) that takes a string like "2023-12-25" and returns a new `MyDate` instance. 
+### 30. **Difficulty: Advanced (Static vs. Class Methods)** Create a class `MyDate`. Implement a class method from_iso_format(date_string) that takes a string like "2023-12-25" and returns a new `MyDate` instance. 
 
 Implement a static method is_valid_format(date_string) that returns True or False depending on whether the date string is in a valid YYYY-MM-DD format. Explain precisely why a class method is appropriate for the first task and a static method is appropriate for the second.
 
@@ -335,7 +334,7 @@ Implement a static method is_valid_format(date_string) that returns True or Fals
 <summary>Possible Solution</summary> 
 </details>
 
-### 10. **Difficulty: Advanced (Custom Arithmetic)** Implement a `Vector` class that represents a 2D vector with x and y attributes. 
+### 31. **Difficulty: Advanced (Custom Arithmetic)** Implement a `Vector` class that represents a 2D vector with x and y attributes. 
 
 Override the `__add__` and `__sub__` magic methods to allow for vector addition and subtraction. Also, override `__mul__` to perform a scalar multiplication (e.g., my_vector * 3).
 
@@ -343,7 +342,7 @@ Override the `__add__` and `__sub__` magic methods to allow for vector addition 
 <summary>Possible Solution</summary> 
 </details>
 
-### 11. **Difficulty: Advanced (Mix-ins)** Create a mix-in class called `LoggerMixin` that has a log method which prints a message with the object's class name and memory address. 
+### 32. **Difficulty: Advanced (Mix-ins)** Create a mix-in class called `LoggerMixin` that has a log method which prints a message with the object's class name and memory address. 
 
 Create two unrelated classes, `DatabaseConnection` and `FileSystemObject`, and demonstrate how you can add the logging functionality to both using the mix-in without using multiple inheritance from a common functional base class.
 
@@ -351,7 +350,7 @@ Create two unrelated classes, `DatabaseConnection` and `FileSystemObject`, and d
 <summary>Possible Solution</summary> 
 </details>
 
-### 12. **Difficulty: Advanced (Name Mangling)** What is name mangling in Python? 
+### 33. **Difficulty: Advanced (Name Mangling)** What is name mangling in Python? 
 
 Provide a code example using a class with an attribute prefixed with a double underscore (e.g., `__value`). Show how to access this attribute from outside the class using its mangled name. Explain why this feature is not for creating true private members and what its main purpose is.
 
@@ -359,7 +358,7 @@ Provide a code example using a class with an attribute prefixed with a double un
 <summary>Possible Solution</summary> 
 </details>
 
-### 13. **Difficulty: Advanced (`is` vs `==`)** Create a Point class with x and y attributes. Implement the `__eq__` method so that two Point instances are considered equal if their x and y values are the same. 
+### 34. **Difficulty: Advanced (`is` vs `==`)** Create a Point class with x and y attributes. Implement the `__eq__` method so that two Point instances are considered equal if their x and y values are the same. 
 
 In your script, create two different Point objects with the same coordinates. Demonstrate that `point1 == point2` evaluates to `True`, while `point1 is point2` evaluates to `False`. Explain the output.
 
@@ -367,7 +366,7 @@ In your script, create two different Point objects with the same coordinates. De
 <summary>Possible Solution</summary> 
 </details>
 
-### 14. **Difficulty: Advanced (Custom Exceptions)** Create a custom exception class `InvalidUsernameError`. Then, create a `User` class. 
+### 35. **Difficulty: Advanced (Custom Exceptions)** Create a custom exception class `InvalidUsernameError`. Then, create a `User` class. 
 
 In the `__init__` method, validate the username to ensure it is alphanumeric and between 4 and 16 characters long. If the validation fails, raise your `InvalidUsernameError` with an appropriate message.
 
@@ -375,7 +374,7 @@ In the `__init__` method, validate the username to ensure it is alphanumeric and
 <summary>Possible Solution</summary> 
 </details>
 
-### 15. **Difficulty: Advanced (Code Reading: Inheritance and State)** What is the output of the following code and why? Explain the state of each object and which speak method is called in each iteration.
+### 36. **Difficulty: Advanced (Code Reading: Inheritance and State)** What is the output of the following code and why? Explain the state of each object and which speak method is called in each iteration.
 
 ```Python
 class Animal:
@@ -402,7 +401,7 @@ for animal in animals:
 <summary>Possible Solution</summary> 
 </details>
 
-### 16. **Difficulty: Advanced (Callable Objects)** Implement a `SequenceGenerator` class where instances of the class are callable. 
+### 37. **Difficulty: Advanced (Callable Objects)** Implement a `SequenceGenerator` class where instances of the class are callable. 
 
 The class should be initialized with a start number and a step. Each time the instance is called, it should return the next number in the sequence.
 
@@ -419,7 +418,7 @@ Which magic method must you implement to achieve this?
 <summary>Possible Solution</summary> 
 </details>
 
-### 17. **Difficulty: Advanced (Scope and Inheritance)** Explain how inheritance influences attribute lookup in Python. 
+### 38. **Difficulty: Advanced (Scope and Inheritance)** Explain how inheritance influences attribute lookup in Python. 
 
 Provide a code example with a base class and a derived class where the derived class accesses:
 
@@ -431,7 +430,7 @@ Provide a code example with a base class and a derived class where the derived c
 <summary>Possible Solution</summary> 
 </details>
 
-### 18. **Difficulty: Advanced (`super()` in `init`)** Why is it considered a best practice to call `super().__init__()` within the `__init__` method of a subclass? 
+### 39. **Difficulty: Advanced (`super()` in `init`)** Why is it considered a best practice to call `super().__init__()` within the `__init__` method of a subclass? 
 
 What potential problems can arise if you fail to do so? Provide a simple code example with a multi-level inheritance hierarchy (A -> B -> C) to illustrate a problem where class C fails to initialize state from class A.
 
@@ -439,7 +438,7 @@ What potential problems can arise if you fail to do so? Provide a simple code ex
 <summary>Possible Solution</summary> 
 </details>
 
-### 19. **Difficulty: Advanced (Properties for Validation)** Create a `Temperature` class that stores temperature in Celsius. 
+### 40. **Difficulty: Advanced (Properties for Validation)** Create a `Temperature` class that stores temperature in Celsius. 
 
 Use a private `_celsius` attribute. Create a property fahrenheit with a getter and a setter. The getter should convert the Celsius temperature to Fahrenheit. The setter should take a Fahrenheit value, convert it to Celsius, and store it in the private `_celsius` attribute.
 
@@ -447,7 +446,7 @@ Use a private `_celsius` attribute. Create a property fahrenheit with a getter a
 <summary>Possible Solution</summary> 
 </details>
 
-### 20. **Difficulty: Advanced(Inhertance and Collaboration)** You are building a system for a library.
+### 41. **Difficulty: Advanced(Inhertance and Collaboration)** You are building a system for a library.
 
 1. Create a `Writer` class that is initialized with a `name`.
 2. Create a base class `Publication` that is initialized with a `title` and a `Writer` object (this is a "has-a" relationship/collaboration). It should have a display method that prints the title and the writer's name.
@@ -459,7 +458,7 @@ Use a private `_celsius` attribute. Create a property fahrenheit with a getter a
 
 5.  Finally, implement a custom `__str__` method for the Publication class that returns the string `"{title}" by {writer's name}`.
 
-### 21. **Difficulty: Advanced (Code Reading: MRO and `super()`)** Predict the output of the following code.
+### 42. **Difficulty: Advanced (Code Reading: MRO and `super()`)** Predict the output of the following code.
 
 Explain your reasoning by tracing the Method Resolution Order and the super() calls step-by-step.
 
@@ -506,7 +505,7 @@ Processing in B
 
 ## Pass 3
 
-### 1. Difficulty: Intermediate    
+### 43. Difficulty: Intermediate    
 
 Create a Book class that has title and author attributes. Implement the magic methods `__str__` and `__eq__` for this class. The `__str__` method should return a string in the format "Title by Author", and the `__eq__` method should return True if two Book objects have the same title and author. Demonstrate that your implementation works.
 
@@ -516,7 +515,7 @@ Create a Book class that has title and author attributes. Implement the magic me
 </details>
 
 
-### 2. ​Difficulty: Intermediate    
+### 44. ​Difficulty: Intermediate    
 
 Define a class `Vehicle` with an `__init__` method that accepts make and model as arguments. Create a `Car` class that inherits from `Vehicle` and adds a `wheels` attribute, setting it to `4`. The `Car` class's `__init__` method should properly initialize the attributes from the Vehicle class using `super()`. Provide a code sample that instantiates a Car object and prints its make, model, and wheels.
 
@@ -524,7 +523,7 @@ Define a class `Vehicle` with an `__init__` method that accepts make and model a
 <summary>Possible Solution</summary> 
 </details>
 
-### 3. Difficulty: Intermediate    
+### 45. Difficulty: Intermediate    
 
 Write a class `Person` with a "private" attribute `_age`. Implement a getter and a setter for this attribute using the `@property` decorator. The setter should ensure that the age cannot be set to a negative number; if an attempt is made, it should raise a `ValueError`.
 
@@ -533,7 +532,7 @@ Write a class `Person` with a "private" attribute `_age`. Implement a getter and
 </details>
 
 
-### 4. Difficulty: Advanced    
+### 46. Difficulty: Advanced    
 
 Create a `ShoppingCart` class that can hold Item objects. The `ShoppingCart` should have a method `add_item` that takes an `Item` object and a `remove_item` method. The `Item` class should have name and price attributes. This demonstrates a "has-a" relationship (composition). Write the code for both classes and show how a ShoppingCart object would collaborate with `Item` objects.
 
@@ -541,7 +540,7 @@ Create a `ShoppingCart` class that can hold Item objects. The `ShoppingCart` sho
 <summary>Possible Solution</summary> 
 </details>
 
-### ​Difficulty: Intermediate    
+### ​47. Difficulty: Intermediate    
 
 Explain polymorphism and provide a Python code example. Your example should include a function that can accept different types of objects (e.g., `Dog`, `Cat`, `Bird`), as long as they implement a common method (e.g., `speak`). The function should call this method on the object it receives.
 
@@ -549,7 +548,7 @@ Explain polymorphism and provide a Python code example. Your example should incl
 <summary>Possible Solution</summary> 
 </details>
 
-### 5. ​Difficulty: Advanced    
+### 48. ​Difficulty: Advanced    
 
 Create a custom exception class called `OutOfStockError`. Then, create a `VendingMachine` class that has a dictionary of items and their quantities. Implement a `dispense_item` method that takes an item name as an argument. If the item's quantity is 0, this method should raise the `OutOfStockError`. Show how you would call this method and handle the custom exception using a `try...except` block.
 
@@ -559,7 +558,7 @@ Create a custom exception class called `OutOfStockError`. Then, create a `Vendin
 
 ## Pass 4, `__repr__`
 
-### Given the following class definition, implement the` __repr__` method so that it provides a developer-friendly, unambiguous string representation of a `Book` object. The representation should ideally be a valid Python expression that could be used to recreate the object.
+### 49. Given the following class definition, implement the` __repr__` method so that it provides a developer-friendly, unambiguous string representation of a `Book` object. The representation should ideally be a valid Python expression that could be used to recreate the object.
 
 ```python
 class Book:        
@@ -578,7 +577,7 @@ class Book:        
 <summary>Possible Solution</summary> 
 </details>
 
-### Consider a class named Gadget. Predict the output of `print(str(my_gadget))` and `print(repr(my_gadget))` in the following four independent scenarios:    
+### 50. Consider a class named Gadget. Predict the output of `print(str(my_gadget))` and `print(repr(my_gadget))` in the following four independent scenarios:    
 
 * Scenario A: Gadget has a `__str__` method but no `__repr__` method.    
 * Scenario B: Gadget has a `__repr__` method but no `__str__` method.    
@@ -589,7 +588,7 @@ class Book:        
 <summary>Possible Solution</summary> 
 </details>
 
-### The `__repr__` method in the `Person` class below is incomplete. It doesn't correctly handle names that contain quote characters. 
+### 51. The `__repr__` method in the `Person` class below is incomplete. It doesn't correctly handle names that contain quote characters. 
 
 When `repr()` is called on an instance like `p2`, the resulting string is not valid Python code for recreating the object. Modify the `__repr__` method to fix this, ensuring it produces a valid representation for all string inputs.
 
@@ -609,7 +608,7 @@ print(repr(p1)) # Works as expected  
 print(repr(p2)) # Produces invalid Python code
 ```
 
-### Advanced​: When implementing `__repr__`, it is a common best practice to use the `repr()` built-in function on the instance's attributes within the returned string. 
+### 52. Advanced​: When implementing `__repr__`, it is a common best practice to use the `repr()` built-in function on the instance's attributes within the returned string. 
 
 For example: `return f"Cat({repr(self.name)})"`. 
 
@@ -619,7 +618,7 @@ Explain why this practice is important for creating a robust and reliable repres
 <summary>Possible Solution</summary> 
 </details>
 
-### Create a `Vector` class that represents a 2D vector. It should be initialized with `x` and `y` coordinates. Implement the `__repr__` method so it returns a string that can be used to recreate the vector object.
+### 53. Create a `Vector` class that represents a 2D vector. It should be initialized with `x` and `y` coordinates. Implement the `__repr__` method so it returns a string that can be used to recreate the vector object.
 
 ```python
 class Vector:
@@ -641,7 +640,7 @@ print(v2) # Expected output: Vector(-1, 5)
 <summary>Possible Solution</summary> 
 </details>
 
-### You are building a system to manage sports teams. Create a `Team` class that is initialized with a team name (a string) and a list of players (a list of strings). Implement the `__repr__` method to provide a clear representation of the Team object.
+### 54. You are building a system to manage sports teams. Create a `Team` class that is initialized with a team name (a string) and a list of players (a list of strings). Implement the `__repr__` method to provide a clear representation of the Team object.
 
 ```python
 class Team:
@@ -662,7 +661,7 @@ class Team:
 <summary>Possible Solution</summary> 
 </details>
 
-### A `Product` class needs two different string representations: a user-friendly one for customers and a developer-friendly one for debugging.    
+### 55. A `Product` class needs two different string representations: a user-friendly one for customers and a developer-friendly one for debugging.    
 
 * Implement `__str__` to return a formatted string like "`Name: $price`".    
 * Implement `__repr__` to return a string that could be used to reconstruct the object.
@@ -702,7 +701,7 @@ class Product:
 </details>
 
 
-### Advanced​: In this exercise, one class will contain an object of another custom class. 
+### 56. Advanced​: In this exercise, one class will contain an object of another custom class. 
 
 You need to implement `__repr__` for both. Create an `Author` class and a `Book` class. A `Book` object should be initialized with a title and an `Author` object.
 
@@ -737,7 +736,7 @@ print(repr(book))    # Expected output:    # Book('The Hobbit', Author('J.R.
 <summary>Possible Solution</summary> 
 </details>
 
-### Advanced​: You are creating an `InventoryItem` class for a warehouse management system. 
+### 57. Advanced​: You are creating an `InventoryItem` class for a warehouse management system. 
 
 The class is initialized with a name (string), quantity (integer), and tags (a set of strings). Implement a `__repr__` method that correctly represents this object, paying close attention to how the set of tags is formatted.
 
