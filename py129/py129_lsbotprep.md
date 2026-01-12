@@ -506,7 +506,7 @@ Processing in B
 
 ## Pass 3
 
-### Difficulty: Intermediate    
+### 1. Difficulty: Intermediate    
 
 Create a Book class that has title and author attributes. Implement the magic methods `__str__` and `__eq__` for this class. The `__str__` method should return a string in the format "Title by Author", and the `__eq__` method should return True if two Book objects have the same title and author. Demonstrate that your implementation works.
 
@@ -516,7 +516,7 @@ Create a Book class that has title and author attributes. Implement the magic me
 </details>
 
 
-### ​Difficulty: Intermediate    
+### 2. ​Difficulty: Intermediate    
 
 Define a class `Vehicle` with an `__init__` method that accepts make and model as arguments. Create a `Car` class that inherits from `Vehicle` and adds a `wheels` attribute, setting it to `4`. The `Car` class's `__init__` method should properly initialize the attributes from the Vehicle class using `super()`. Provide a code sample that instantiates a Car object and prints its make, model, and wheels.
 
@@ -524,7 +524,7 @@ Define a class `Vehicle` with an `__init__` method that accepts make and model a
 <summary>Possible Solution</summary> 
 </details>
 
-### Difficulty: Intermediate    
+### 3. Difficulty: Intermediate    
 
 Write a class `Person` with a "private" attribute `_age`. Implement a getter and a setter for this attribute using the `@property` decorator. The setter should ensure that the age cannot be set to a negative number; if an attempt is made, it should raise a `ValueError`.
 
@@ -533,7 +533,7 @@ Write a class `Person` with a "private" attribute `_age`. Implement a getter and
 </details>
 
 
-### Difficulty: Advanced    
+### 4. Difficulty: Advanced    
 
 Create a `ShoppingCart` class that can hold Item objects. The `ShoppingCart` should have a method `add_item` that takes an `Item` object and a `remove_item` method. The `Item` class should have name and price attributes. This demonstrates a "has-a" relationship (composition). Write the code for both classes and show how a ShoppingCart object would collaborate with `Item` objects.
 
@@ -549,9 +549,215 @@ Explain polymorphism and provide a Python code example. Your example should incl
 <summary>Possible Solution</summary> 
 </details>
 
-### ​Difficulty: Advanced    
+### 5. ​Difficulty: Advanced    
 
 Create a custom exception class called `OutOfStockError`. Then, create a `VendingMachine` class that has a dictionary of items and their quantities. Implement a `dispense_item` method that takes an item name as an argument. If the item's quantity is 0, this method should raise the `OutOfStockError`. Show how you would call this method and handle the custom exception using a `try...except` block.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+## Pass 4, `__repr__`
+
+### Given the following class definition, implement the` __repr__` method so that it provides a developer-friendly, unambiguous string representation of a `Book` object. The representation should ideally be a valid Python expression that could be used to recreate the object.
+
+```python
+class Book:        
+    def __init__(self, title, author):            
+        self.title = title            
+        self.author = author    
+        
+        # Example usage:    
+        book = Book("The Hitchhiker's Guide to the Galaxy", "Douglas Adams")    
+        print(repr(book))    
+        #Expected output:    
+        #Book('The Hitchhiker's Guide to the Galaxy', 'Douglas Adams')
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### Consider a class named Gadget. Predict the output of `print(str(my_gadget))` and `print(repr(my_gadget))` in the following four independent scenarios:    
+
+* Scenario A: Gadget has a `__str__` method but no `__repr__` method.    
+* Scenario B: Gadget has a `__repr__` method but no `__str__` method.    
+* Scenario C: Gadget has neither a `__str__` nor a `__repr__` method.    
+* Scenario D: Gadget has both a `__str__` and a `__repr__` method.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### The `__repr__` method in the `Person` class below is incomplete. It doesn't correctly handle names that contain quote characters. 
+
+When `repr()` is called on an instance like `p2`, the resulting string is not valid Python code for recreating the object. Modify the `__repr__` method to fix this, ensuring it produces a valid representation for all string inputs.
+
+```python
+class Person:        
+    def __init__(self, name):            
+        self.name = name        
+        
+    def __repr__(self):            
+        # This implementation is flawed            
+        return f"Person('{self.name}')"    
+        
+# Test cases:    
+p1 = Person("Alice")    
+p2 = Person("Bob O'Malley")    
+print(repr(p1)) # Works as expected   
+print(repr(p2)) # Produces invalid Python code
+```
+
+### Advanced​: When implementing `__repr__`, it is a common best practice to use the `repr()` built-in function on the instance's attributes within the returned string. 
+
+For example: `return f"Cat({repr(self.name)})"`. 
+
+Explain why this practice is important for creating a robust and reliable representation of an object.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### Create a `Vector` class that represents a 2D vector. It should be initialized with `x` and `y` coordinates. Implement the `__repr__` method so it returns a string that can be used to recreate the vector object.
+
+```python
+class Vector:
+        def __init__(self, x, y):
+            self.x = x
+            self.y = y
+
+        # Your __repr__ method here
+
+    # Example usage:
+    v1 = Vector(2, 3)
+    v2 = Vector(-1, 5)
+
+print(v1) # Expected output: Vector(2, 3)
+print(v2) # Expected output: Vector(-1, 5)
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### You are building a system to manage sports teams. Create a `Team` class that is initialized with a team name (a string) and a list of players (a list of strings). Implement the `__repr__` method to provide a clear representation of the Team object.
+
+```python
+class Team:
+        def __init__(self, name, players):
+            self.name = name
+            self.players = players
+
+        # Your __repr__ method here
+
+    # Example usage:
+    giants = Team("Giants", ["Eli Manning", "Odell Beckham Jr."])
+    print(repr(giants))
+    # Expected output:
+    # Team('Giants', ['Eli Manning', 'Odell Beckham Jr.'])
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### A `Product` class needs two different string representations: a user-friendly one for customers and a developer-friendly one for debugging.    
+
+* Implement `__str__` to return a formatted string like "`Name: $price`".    
+* Implement `__repr__` to return a string that could be used to reconstruct the object.
+* Observe the difference when you print a single object versus printing a list containing that object.
+
+```python
+class Product:
+        def __init__(self, name, price):
+            self.name = name
+            self.price = price
+
+        # Your __str__ method here
+
+        # Your __repr__ method here
+
+
+    # Example usage:
+    book = Product("Python Crash Course", 29.99)
+    products_list = [book]
+
+    print(str(book))
+    # Expected output for str(book):
+    # Python Crash Course: $29.99
+
+    print(repr(book))
+    # Expected output for repr(book):
+    # Product('Python Crash Course', 29.99)
+
+    print(products_list)
+    # Expected output for printing the list:
+    # [Product('Python Crash Course', 29.99)]
+```
+
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+
+### Advanced​: In this exercise, one class will contain an object of another custom class. 
+
+You need to implement `__repr__` for both. Create an `Author` class and a `Book` class. A `Book` object should be initialized with a title and an `Author` object.
+
+Ensure the `__repr__` of a `Book` object correctly represents the nested `Author` object.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+```python
+class Author:        
+    def __init__(self, name):            
+        self.name = name        
+    
+    # Your __repr__ method for Author here  
+      
+class Book:        
+    def __init__(self, title, author):             
+        self.title = title           
+        self.author = author     # author is expected to be an Author object     
+        
+        # Your __repr__ method for Book here    
+        
+        # Example usage:    
+author = Author("J.R.R. Tolkien")    
+book = Book("The Hobbit", author)    
+print(repr(book))    # Expected output:    # Book('The Hobbit', Author('J.R.R. Tolkien'))
+
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### Advanced​: You are creating an `InventoryItem` class for a warehouse management system. 
+
+The class is initialized with a name (string), quantity (integer), and tags (a set of strings). Implement a `__repr__` method that correctly represents this object, paying close attention to how the set of tags is formatted.
+
+
+```python
+class InventoryItem:        
+    def __init__(self, name, quantity, tags):            
+        self.name = name            
+        self.quantity = quantity            
+        self.tags = tags        
+        
+    # Your __repr__ method here    
+
+# Example usage:    
+item = InventoryItem("Laptop", 15, {"electronics", "computer", "office"})   
+# Note: The order of elements in a set is not guaranteed.    
+# The repr() of the set might be in a different order, which is acceptable.    
+print(repr(item))    
+# Possible expected output (order of set elements may vary):    # InventoryItem('Laptop', 15, {'office', 'computer', 'electronics'})
+```
 
 <details> 
 <summary>Possible Solution</summary> 
