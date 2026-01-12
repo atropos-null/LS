@@ -223,7 +223,207 @@ print(kate.name)         # Calls the getter
 kate.name = 'Katherine'  # Calls the setter
 ```
 
-### Access Control in Python
+### Python Setters Explained
+
+#### How Python Connects `__init__` to a Setter
+
+When you assign a value to an attribute in `__init__` (or anywhere else), Python automatically uses the **setter** if that attribute is defined as a **property**. 
+
+##### Example
+
+```python
+class Example:
+    def __init__(self, value):
+        self._value = None
+        self.value = value  # ← This line calls the setter!
+    
+    @property
+    def value(self):
+        """Getter method"""
+        return self._value
+    
+    @value. setter
+    def value(self, new_value):
+        """Setter method"""
+        print(f"Setting value to {new_value}")
+        if new_value < 0:
+            raise ValueError("Value must be non-negative")
+        self._value = new_value
+```
+
+#### How It Works
+
+1. The `@property` decorator creates a property object for `value`
+2. When you write `self.value = something`, Python checks if `value` is a property
+3. If it finds a property with a setter defined, it calls the setter method
+4. This works through Python's **descriptor protocol** - properties are descriptors that intercept attribute access
+
+#### Behind the Scenes
+
+```python
+# When you do this:
+self. value = 10
+
+# Python essentially does this:
+type(self).value.__set__(self, 10)  # Calls the setter method
+```
+
+#### What Happens Without a Setter? 
+
+##### Scenario 1: Property Without Setter (Read-Only)
+
+If a property doesn't have a setter, Python raises an **AttributeError** when you try to assign to it. 
+
+```python
+class Example:
+    def __init__(self, value):
+        self._value = value
+        self.value = 10  # ❌ AttributeError: property 'value' has no setter
+    
+    @property
+    def value(self):
+        """Only a getter, no setter"""
+        return self._value
+```
+
+**The Workaround:** Set the internal attribute directly
+
+```python
+class Example:
+    def __init__(self, value):
+        self._value = value  # ✅ Set the internal attribute directly
+    
+    @property
+    def value(self):
+        """Read-only property"""
+        return self._value
+
+obj = Example(42)
+print(obj.value)  # ✅ Works: 42
+obj.value = 100   # ❌ AttributeError: property 'value' has no setter
+```
+
+#### Scenario 2: No Property at All (Regular Attribute)
+
+If there's no property decorator, it's just a regular attribute assignment:
+
+```python
+class Example:
+    def __init__(self, value):
+        self.value = value  # ✅ Just creates a regular attribute
+
+obj = Example(42)
+obj.value = 100  # ✅ Works fine - it's a normal attribute
+```
+
+#### Why Use Setters?
+
+##### Regular Assignment vs.  Setter
+
+| Feature | Regular Assignment | Setter |
+|---------|-------------------|--------|
+| **Syntax** | `self.attr = value` | `self.attr = value` (looks the same!) |
+| **Storage** | Direct | Goes through setter method |
+| **Validation** | None | ✅ Can validate |
+| **Side effects** | None | ✅ Can trigger other code |
+| **Type conversion** | None | ✅ Can convert/transform |
+| **Performance** | Faster | Slightly slower (method call) |
+
+#### Common Use Cases
+
+##### 1. Validation
+
+```python
+class User:
+    @property
+    def email(self):
+        return self._email
+    
+    @email.setter
+    def email(self, value):
+        if "@" not in value:
+            raise ValueError("Invalid email")
+        self._email = value
+```
+
+##### 2. Type Conversion
+
+```python
+class Temperature:
+    @property
+    def celsius(self):
+        return self._celsius
+    
+    @celsius.setter
+    def celsius(self, value):
+        self._celsius = float(value)  # Always convert to float
+```
+
+##### 3. Side Effects / Triggering Actions
+
+```python
+class GUI:
+    @property
+    def text(self):
+        return self._text
+    
+    @text.setter
+    def text(self, value):
+        self._text = value
+        self.refresh_display()  # Update the UI when text changes!
+```
+
+##### 4. Computed/Derived Values
+
+```python
+class Rectangle:
+    def __init__(self, width, height):
+        self._width = width
+        self._height = height
+    
+    @property
+    def area(self):
+        return self._width * self._height
+    
+    @area.setter
+    def area(self, value):
+        # Keep aspect ratio, adjust size
+        ratio = (value / self. area) ** 0.5
+        self._width *= ratio
+        self._height *= ratio
+```
+
+##### 5. Backwards Compatibility
+
+```python
+class OldClass:
+    def __init__(self):
+        self. old_name = "value"  # Original attribute
+
+# Later, you want to rename but keep old code working:
+class NewClass:
+    def __init__(self):
+        self._new_name = "value"
+    
+    @property
+    def old_name(self):  # Old name still works
+        return self._new_name
+    
+    @old_name.setter
+    def old_name(self, value):
+        self._new_name = value
+```
+
+##### Quick Reference
+
+**Three Scenarios:**
+- **With property + setter**: Assignment calls the setter method (validation, side effects, etc.)
+- **With property, no setter**: Assignment raises `AttributeError` (read-only)
+- **No property at all**:  Assignment works normally (creates/updates regular attribute)
+
+**Key Takeaway:** The beauty of properties is that the syntax looks identical to regular attribute access, but you get all the control of a method! 
+
+#### Access Control in Python
 
 Python doesn't have strict private attributes like some other languages. Instead, it relies on naming conventions:
 
@@ -258,6 +458,65 @@ animal_sound(cat) # Output: Meow
 ```
 
 Here, `animal_sound` works with both `Dog` and `Cat` objects because they both have a `make_sound` method. This is polymorphism in action.
+
+### What are different ways to implement polymorphism?
+
+In Python, there are three primary ways to implement polymorphism:
+
+* Inheritance: Different classes share a common superclass. Subclasses can either override inherited methods to provide unique behavior or use the superclass implementation, allowing client code to treat different types interchangeably as generic versions of the parent class.
+
+```python
+Subclasses override a method inherited from a common superclass, allowing client code to treat them as generic versions of that superclass.
+class Animal:
+    def move(self):
+        print("I am moving.")
+
+class Fish(Animal):
+    def move(self):
+        print("I am swimming.")
+
+class Cat(Animal):
+    def move(self):
+        print("I am walking.")
+
+# The loop treats all as generic 'animals' [5, 6]
+for animal in [Fish(), Cat()]:
+    animal.move()
+```
+
+* Duck Typing: This occurs when unrelated types implement the same method names with compatible arguments and return values. Python focuses on whether an object has the required behavior rather than its specific class, enabling polymorphic use without a shared superclass.
+
+```python
+class Chef:
+    def prepare_wedding(self, wedding):
+        print("Preparing the food.")
+
+class Musician:
+    def prepare_wedding(self, wedding):
+        print("Preparing the performance.")
+
+# Unrelated classes respond to the same call [9, 10]
+for preparer in [Chef(), Musician()]:
+    preparer.prepare_wedding(my_wedding)
+```
+
+* Mix-ins: Often called "interface inheritance," mix-ins allow you to share common behaviors across unrelated classes. By mixing a small, focused class into others, you provide a consistent interface for shared functionality.
+
+Interface inheritance is the practice of using mix-ins to share specific behaviors across classes, especially when those classes do not share a hierarchical "is-a" relationship. Instead of inheriting an object type from a superclass, the class inherits an interface, which is a focused, standard set of methods. Using this approach allows you to reuse code in multiple unrelated classes as if the methods were copied and pasted directly into them.
+
+```python
+class ColorMixin:
+    def set_color(self, color):
+        self._color = color
+
+class Car(ColorMixin):
+    pass
+
+class House(ColorMixin):
+    pass
+
+# Both classes now share the set_color interface [13, 14]
+```
 
 Page Reference: [Classes and Objects, Object Oriented Programming with Python](https://launchschool.com/books/oo_python/read/classes_objects)
 
