@@ -1140,6 +1140,10 @@ When you call a method on a `Human` instance, Python will search for that method
 
 [Back to the top](#top)
 
+Further References:
+[Christinelinster. (n.d.). ls-py120/practice_snippets at main · christinelinster/ls-py120. GitHub.](https://github.com/christinelinster/ls-py120/tree/main/practice_snippets)
+
+
 ***
 
 ## The is Operator and id() Function
