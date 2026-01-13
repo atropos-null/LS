@@ -61,14 +61,13 @@ An **object** is an instance of a class. It's a concrete entity created from the
 Think of a `GoodDog` class. The class itself defines what every dog has (like a name) and what every dog can do (like speak). An individual dog, like `sparky`, is an object created from that class, with its own specific name.
 
 ```python
-class GoodDog:
-    # speak is an instance method (behavior)
-    def speak(self):
-        # We're using the self.name instance variable
-        print(f'{self.name} says Woof!')
+class GoodDog:    
+    def __init__(self, name):        
+    self.name = name    def speak(self):        
+    print(f'{self.name} says Woof!')
 
-# 'sparky' is an object, an instance of the GoodDog class
-sparky = GoodDog()
+sparky = GoodDog('Sparky')
+sparky.speak()#  Output: Sparky says Woof!
 ```
 
 ### Instantiation and `__init__`
@@ -434,9 +433,180 @@ Python doesn't have strict private attributes like some other languages. Instead
 
 These are two fundamental principles of OOP.
 
+#### Encapsulation
+
 **Encapsulation** is the practice of bundling data (attributes) and the methods that operate on that data together within a single unit (a class). It also involves hiding the internal state of an object from the outside world and only exposing a controlled public interface (through methods and properties). Getters, setters, and the underscore conventions are tools for encapsulation.
 
-**Polymorphism** means "many forms." In programming, it's the ability for objects of different classes to be treated as objects of a common superclass. A common example in Python is "duck typing": if it walks like a duck and quacks like a duck, it's a duck. If different objects have methods with the same name, you can call that method on any of them, and each object will perform its own version of the action.
+Here is a great example from the curriculum that demonstrates encapsulation in action.
+
+```python
+
+class SmartLamp:
+    def __init__(self, color):
+        # The setter is called during instantiation
+        self.color = color
+
+    @property  # This decorator defines the getter
+    def color(self):
+        return self._color
+
+    @color.setter  # This decorator defines the setter for the 'color' property
+    def color(self, new_color):
+        # Validation logic is placed inside the setter property
+        if not isinstance(new_color, str):
+            raise TypeError('Color must be a color name.')
+
+        self._color = new_color
+
+    def glow(self):
+        # This method can now use the public property or the internal variable
+        return (f'The lamp glows {self.color}.')
+
+
+lamp = SmartLamp('blue')
+print(lamp.glow())          # The lamp glows blue.
+
+# We use simple attribute assignment, which calls the setter method
+lamp.color = 'red'
+print(lamp.glow())          # The lamp glows red.
+
+# Accessing the attribute calls the getter method
+print(f"The lamp's current color is: {lamp.color}") # The lamp's current color is: red
+
+# The setter's validation logic still protects the object's state
+try:
+    lamp.color = 12345
+except TypeError as e:
+    print(e)                # Color must be a color name.
+```
+
+**How It Works**
+
+1. **​The Getter (`@property`)**​: 
+
+The `@property` decorator is placed above a method with the same name as the desired property (color). This turns the method into a "getter." Now, when you access `lamp.color`, Python automatically calls this method and returns its result.
+
+2. **​The Setter** (`@color.setter`)​: The setter decorator is named after the getter method (`@color.setter`). This links it to the color property. When you assign a value, like `lamp.color = 'red'`, Python calls this setter method, passing `'red'` as the new_color argument. This is where we place our validation logic.
+
+3. **​The `__init__` Method**​: Notice the change in `__init__`. Instead of assigning directly to `self._color`, we now assign to `self.color`. This is a crucial improvement. It means that the validation logic inside the setter is executed ​even when the object is first created​. If you tried to create a SmartLamp with an invalid initial color (`SmartLamp(99)`), it would raise the `TypeError` immediately.
+
+4. **​The Underlying Variable**​: The actual data is still stored in `self._color` by convention. The properties `color` and `color.setter` act as the public interface that controls access to this internal variable.This approach gives you the best of both worlds: the safety of validation from getter/setter methods and the clean, intuitive syntax of direct attribute access.
+
+#### Polymorphism
+
+**Polymorphism** means "many forms." In programming, ​polymorphism​ is the ability of different types of objects to respond to the same method call, often in their own unique ways. The term itself comes from the Greek words "​poly​" (many) and "​morph​" (form). Essentially, it means you can have one common interface for many different underlying forms or data types.When you're writing code and you don't need to know the specific type of an object to call a method on it, you're taking advantage of polymorphism.
+
+**Use Polymorphism When**:
+* You have multiple related types with common behavior
+* You need to extend functionality frequently
+* Building frameworks or plugin systems
+* Testing requires mocking/stubbing
+
+**❌ Avoid Polymorphism When**:
+* The problem is simple and unlikely to change
+* Performance is absolutely critical
+* Only one implementation exists (YAGNI principle)
+* It makes the code harder to understand
+
+##### What are different ways to implement polymorphism?
+
+In Python, there are three primary ways to implement polymorphism:
+
+* **Inheritance**: Different classes share a common superclass. Subclasses can either override inherited methods to provide unique behavior or use the superclass implementation, allowing client code to treat different types interchangeably as generic versions of the parent class.
+
+Subclasses override a method inherited from a common superclass, allowing client code to treat them as generic versions of that superclass.
+
+```python
+
+class Animal:    
+    def move(self):        
+        print(f'I am a {self.__class__.__name__}: I am not moving.')
+
+class Fish(Animal):    
+    def move(self):        
+        print(f'I am a {self.__class__.__name__}: I am swimming.')
+        
+class Cat(Animal):    
+    def move(self):        
+        print(f'I am a {self.__class__.__name__}: I am walking.')
+
+class Sponge(Animal):    
+    pass
+    
+class Coral(Animal):    
+    pass
+
+animals = [Fish(), Cat(), Sponge(), Coral()]
+for animal in animals:    
+    animal.move()
+
+# Expected Output:
+# I am a Fish: I am swimming. 
+# I am a Cat: I am walking.
+# I am a Sponge: I am not moving.
+# I am a Coral: I am not moving.
+
+```
+
+All the classes are explicitly related through the Animal superclass.
+
+* The `Fish` and `Cat` classes override the move method to provide their own specific behaviors.
+* The `Sponge` and `Coral` classes don't have their own move method, so they inherit the default behavior from the `Animal` class.
+
+Even though the objects are of different types, the for loop can treat them all as Animals and call the move method on each one, demonstrating polymorphism through inheritance.
+
+Here is another example:
+
+```python
+class Wedding:
+    def __init__(self, guests, flowers, songs):
+        self.guests = guests
+        self.flowers = flowers
+        self.songs = songs
+
+    def prepare(self, preparers):
+        for preparer in preparers:
+            preparer.prepare_wedding(self) # One simple, polymorphic call
+
+class WeddingPreparer:
+    def prepare_wedding(self, wedding):
+        pass
+
+class Chef(WeddingPreparer):
+    def prepare_wedding(self, wedding):
+        self.prepare_food(wedding.guests)
+
+    def prepare_food(self, guests):
+        print("Preparing food for the guests.")
+
+class Decorator(WeddingPreparer):
+    def prepare_wedding(self, wedding):
+        self.decorate_place(wedding.flowers)
+
+    def decorate_place(self, flowers):
+        print("Decorating the place with flowers.")
+
+class Musician(WeddingPreparer):
+    def prepare_wedding(self, wedding):
+        self.prepare_performance(wedding.songs)
+
+    def prepare_performance(self, songs):
+        print("Preparing the musical performance.")
+
+wedding = Wedding(100, ['roses'], ['classical music'])
+preparers = [Chef(), Decorator(), Musician()]
+wedding.prepare(preparers)
+
+# Expected Output:
+# Preparing food for the guests.
+# Decorating the place with flowers.
+# Preparing the musical performance.
+```
+
+1. **​Common Superclass**:​ All the preparer classes (`Chef`, `Decorator`, `Musician`) inherit from a common superclass, `WeddingPreparer`. This creates a formal, explicit relationship between them. They are all officially a "type of" `WeddingPreparer`.
+2. **​Explicit Interface**:​ The `WeddingPreparer` class establishes a contract. By inheriting from it, the subclasses are expected to conform to its interface, which includes the `prepare_wedding` method.
+
+* **Duck Typing**: A common example in Python is "duck typing": if it walks like a duck and quacks like a duck, it's a duck. If different objects have methods with the same name, you can call that method on any of them, and each object will perform its own version of the action.
 
 ```python
 class Dog:
@@ -459,48 +629,68 @@ animal_sound(cat) # Output: Meow
 
 Here, `animal_sound` works with both `Dog` and `Cat` objects because they both have a `make_sound` method. This is polymorphism in action.
 
-### What are different ways to implement polymorphism?
+This occurs when unrelated types implement the same method names with compatible arguments and return values. Python focuses on whether an object has the required behavior rather than its specific class, enabling polymorphic use without a shared superclass. 
 
-In Python, there are three primary ways to implement polymorphism:
-
-* Inheritance: Different classes share a common superclass. Subclasses can either override inherited methods to provide unique behavior or use the superclass implementation, allowing client code to treat different types interchangeably as generic versions of the parent class.
+Here's Wedding again, except this time as duck typing. 
 
 ```python
-Subclasses override a method inherited from a common superclass, allowing client code to treat them as generic versions of that superclass.
-class Animal:
-    def move(self):
-        print("I am moving.")
+class Wedding:
+    # ... (attributes like guests, flowers, songs would be here) ...
+    def prepare(self, preparers):
+        for preparer in preparers:
+            # All it knows is that each preparer can `prepare_wedding`
+            preparer.prepare_wedding(self)
 
-class Fish(Animal):
-    def move(self):
-        print("I am swimming.")
-
-class Cat(Animal):
-    def move(self):
-        print("I am walking.")
-
-# The loop treats all as generic 'animals' [5, 6]
-for animal in [Fish(), Cat()]:
-    animal.move()
-```
-
-* Duck Typing: This occurs when unrelated types implement the same method names with compatible arguments and return values. Python focuses on whether an object has the required behavior rather than its specific class, enabling polymorphic use without a shared superclass.
-
-```python
 class Chef:
     def prepare_wedding(self, wedding):
-        print("Preparing the food.")
+        self.prepare_food(wedding.guests)
+
+    def prepare_food(self, guests):
+        print("Preparing food...")
+
+class Decorator:
+    def prepare_wedding(self, wedding):
+        self.decorate_place(wedding.flowers)
+
+    def decorate_place(self, flowers):
+        print("Decorating the place...")
 
 class Musician:
     def prepare_wedding(self, wedding):
-        print("Preparing the performance.")
+        self.prepare_performance(wedding.songs)
 
-# Unrelated classes respond to the same call [9, 10]
-for preparer in [Chef(), Musician()]:
-    preparer.prepare_wedding(my_wedding)
+    def prepare_performance(self, songs):
+        print("Preparing the performance...")
+
+# Example usage:
+wedding = Wedding(...)
+chef = Chef()
+decorator = Decorator()
+musician = Musician()
+preparers = [chef, decorator, musician]
+wedding.prepare(preparers)
 ```
 
-* Mix-ins: Often called "interface inheritance," mix-ins allow you to share common behaviors across unrelated classes. By mixing a small, focused class into others, you provide a consistent interface for shared functionality.
+The `Wedding.prepare` method is much simpler and more flexible. It just iterates and calls `prepare_wedding` on each object.
+
+The `Chef`, `Decorator`, and `Musician` objects are all treated as "preparers" because they all "quack" the same way—they all have a `prepare_wedding` method.If you wanted to add a new `Photographer` class, you would just need to make sure it also has a `prepare_wedding` method. You wouldn't have to change the `Wedding` class at all! This is the power of duck typing.
+
+We've now seen `Wedding` in two different guises: **Comparing the Two Approaches**
+
+So, what's the difference?  ​
+1. Relationship:    
+    * ​Duck Typing:​ The `Chef`, `Decorator`, and `Musician` classes are ​unrelated​. They just happen to share a common behavior (the `prepare_wedding` method). The relationship is informal and based on capability.    
+
+    * ​Inheritance:​ The `Chef`, `Decorator`, and `Musician` classes are ​formally related​. They all share an "is-a" relationship with `WeddingPreparer`. A `Chef` ​is a​ `WeddingPrepare`r. This relationship is explicit in the code.
+
+2.  ​Flexibility:    
+    * Duck Typing:​ This approach is often considered more flexible and "Pythonic." Any object from any class can be used as a preparer, as long as it has a prepare_wedding method. You don't need to change its inheritance structure.   
+     
+    * ​Inheritance:​ This is more rigid. An object can only be treated as a WeddingPreparer if its class inherits from WeddingPreparer. However, this rigidity can also be a benefit, as it creates a clear contract and allows you to share common code in the superclass.Both approaches achieve polymorphism, but they do so in different ways.
+
+Both approaches achieve polymorphism, but they do so in different ways.
+
+* **Mix-ins**: Mix-ins help achieve polymorphism by ​providing a common interface (a set of methods) to classes that are otherwise unrelated. By mixing a small, focused class into others, you provide a consistent interface for shared functionality. As Polymorphism is the ability to call the same method on different objects and have each object respond appropriately. A mix-in is a tool that injects that "same method" into different classes.
 
 Interface inheritance is the practice of using mix-ins to share specific behaviors across classes, especially when those classes do not share a hierarchical "is-a" relationship. Instead of inheriting an object type from a superclass, the class inherits an interface, which is a focused, standard set of methods. Using this approach allows you to reuse code in multiple unrelated classes as if the methods were copied and pasted directly into them.
 
@@ -509,13 +699,23 @@ class ColorMixin:
     def set_color(self, color):
         self._color = color
 
-class Car(ColorMixin):
-    pass
+class Car(ColorMixin):    
+    def __init__(self, color):        
+        self.set_color(color)
 
-class House(ColorMixin):
-    pass
+class House(ColorMixin):    
+    def __init__(self, color):        
+        self.set_color(color)
 
-# Both classes now share the set_color interface [13, 14]
+my_car = Car('red')
+my_house = House('white')
+things = [my_car, my_house]
+for item in things:       
+    item.set_color('blue') 
+    
+# Output:
+# Color set to blue
+# Color set to blue
 ```
 
 Page Reference: [Classes and Objects, Object Oriented Programming with Python](https://launchschool.com/books/oo_python/read/classes_objects)
@@ -528,23 +728,81 @@ Page Reference: [Classes and Objects, Object Oriented Programming with Python](h
 
 **Inheritance** is a key principle of OOP that allows a class to acquire (or inherit) attributes from another class. The class that inherits is called the **subclass** (or derived class), and the class it inherits from is the **superclass** (or base class).
 
-This creates a class **hierarchy**, which describes the relationships between classes. For example, a `Car` is a specific type of `Vehicle`. Therefore, it makes sense for a `Car` class to inherit from a `Vehicle` class, gaining its general vehicle-related behaviors.
+This creates a class **hierarchy**, which describes the relationships between classes. For example, a `Car` is a specific type of `Vehicle`. Therefore, it makes sense for a `Car` class to inherit from a `Vehicle` class, gaining its general vehicle-related behaviors. 
 
 ```python
-class Vehicle:
-    def __init__(self, year):
-        self.year = year
+class Vehicle:    
+    def __init__(self, wheels):        
+        self._wheels = wheels        
+        print(f'I have {self._wheels} wheels.')    
+    
+    def drive(self):        
+        print('I am driving.')
 
-    def start_engine(self):
-        return 'Vrroooom!'
+class Car(Vehicle):    
+    def __init__(self):        
+        print('Creating a car.')        
+        super().__init__(4)
 
-class Car(Vehicle):
-    pass
+class Truck(Vehicle):    
+    def __init__(self):        
+        print('Creating a truck.')        
+        super().__init__(18)
 
-my_car = Car(2023)
-print(my_car.year)           # 2023 (inherited from Vehicle)
-print(my_car.start_engine()) # Vrroooom! (inherited from Vehicle)
+class Motorcycle(Vehicle):    
+    def __init__(self):        
+        print('Creating a motorcycle.')        
+        super().__init__(2)    
+    
+    def drive(self):        
+        super().drive()        
+        print('No! I am riding!')
+
+car = Car() 
+#Output:
+# Creating a car. 
+# I have 4 wheels.
+
+truck = Truck()
+# Output: 
+# Creating a truck.
+# I have 18 wheels.
+
+motorcycle = Motorcycle()
+motorcycle.drive()
+
+# Output:
+# Creating a motorcycle.
+# I have 2 wheels.
+# I am driving. 
+# No! I am riding!
+
 ```
+
+### Benefits of Inheritance
+
+* The primary benefit of inheritance is ​code reuse​. It allows you to extract common behaviors from multiple classes into a single superclass. This adheres to the "Don't Repeat Yourself" (DRY) principle.
+
+* ​Centralized Logic​: By placing shared methods and attributes in a superclass, you have a single place to maintain and update that logic. If you need to change how all vehicles drive, you only need to modify the drive method in the `Vehicle` class.
+
+* ​Hierarchical Relationships​: Inheritance creates a clear and logical structure that can model real-world "is-a" relationships. A Car is a Vehicle, which makes the code more intuitive to understand.
+
+* ​Polymorphism​: Inheritance is one of the main ways to achieve polymorphism. It allows you to treat objects of different subclasses as if they were objects of the superclass. This lets you write more flexible and generic code that can work with a variety of related object types through a common interface. 
+
+As the curriculum notes, when you use inheritance, you can "extract common behaviors from classes that share that behavior, and move it to a superclass. This lets us keep logic in one place."
+
+
+### Risks and Disadvantages of Inheritance
+
+While powerful, inheritance also introduces some risks if not used carefully.
+
+* **​Tight Coupling**​: A subclass is tightly coupled to its superclass. This means that a change in the superclass can have unintended consequences and potentially break functionality in its subclasses. For example, if we changed the `Vehicle` class's `__init__` method to require a color argument, all of our subclass `__init__` methods (`Car`, `Truck`, etc.) would immediately break until they were updated to provide that argument.
+
+* **​Rigid Hierarchy**​: Sometimes, a strict "is-a" relationship doesn't fit perfectly. In many languages, a class can only inherit from one superclass. This can be limiting. What if you wanted an `AmphibiousVehicle` that has behaviors of both a `Car` and a `Boat`? This rigid structure can sometimes make it difficult to share behavior from different, unrelated sources.
+
+* ​Complexity​: Deep or wide inheritance hierarchies (many layers of subclasses, or many subclasses from one parent) can become complex and difficult to reason about. It can be hard to trace where a particular method comes from, especially if it's overridden multiple times.
+
+In summary, inheritance is a fundamental tool in OOP for creating logical hierarchies and reusing code. The key is to use it when there is a clear "is-a" relationship between your classes. For other situations where you just want to share a common behavior without implying a hierarchical relationship, other patterns like using mix-ins or composition might be more appropriate.
 
 
 ### Understanding `self` and `cls` with Inheritance
@@ -603,25 +861,79 @@ print(my_car.make)  # Initialized by Car's __init__
 
 **Mix-ins** are classes that provide specific behaviors to other classes but are not meant to be instantiated on their own. They are a way to "mix in" functionality. This is often described as **interface inheritance**, because the subclass is inheriting a set of methods (an interface), not a more general object type.
 
-Mix-ins are useful when you want to share a common behavior among classes that don't share a logical "is-a" relationship. For instance, a `Car`, a `House`, and a `SmartLight` can all have a color, but it doesn't make sense for them to inherit from a common `ColorfulThing` superclass. A `ColorMixin` is a better solution.
+Mix-ins are classes that provide specific, reusable functionality but are not intended to be instantiated on their own. They are "mixed in" to other classes.
 
 ```python
-class ColorMixin:
-    def set_color(self, color):
-        self._color = color
 
-    def get_color(self):
-        return self._color
+# --- Mix-ins defining specific behaviors (interfaces) ---
+class WalkableMixin:    
+    def walk(self):        
+        return f"{self.name} is walking."
 
-class Car(ColorMixin):
-    def __init__(self, color):
-        self.set_color(color)
+class SwimmableMixin:    
+    def swim(self):        
+        return f"{self.name} is swimming."
+        
+# --- Base class ---
+class Animal:    
+    def __init__(self, name):        
+        self.name = name
 
-my_car = Car('red')
-print(my_car.get_color()) # red
-my_car.set_color('blue')
-print(my_car.get_color()) # blue
+# --- Concrete classes using the Pythonic mix-in order ---
+class Dog(WalkableMixin, SwimmableMixin, Animal):    
+    def bark(self):        
+        return "Woof!"
+
+class Cat(WalkableMixin, Animal):    
+    def meow(self):        
+        return "Meow!" 
+
+class Fish(SwimmableMixin, Animal):    
+    pass
+    
+# --- Demonstration (output remains the same) ---
+
+fido = Dog("Fido")
+print(fido.walk())  # => Fido is walking. 
+print(fido.swim())  # => Fido is swimming.
+
+whiskers = Cat("Whiskers")
+print(whiskers.walk()) # => Whiskers is walking.
+
+nemo = Fish("Nemo")
+print(nemo.swim())   # => Nemo is swimming.
 ```
+
+1. **​Unrelated Behaviors**​: Walking and swimming are distinct abilities. A `Dog` has both, a `Cat` has one, and a `Fish` has the other. There's no clean "is-a" hierarchy that could provide these methods to the correct classes without also giving them to classes that shouldn't have them.
+
+2. **​Code Reusability (DRY)**​: The logic for walk and swim is defined only once in their respective mix-ins. We don't have to copy and paste the same method into the `Dog`, `Cat`, or `Fish` classes.
+
+3. **​Clear Intent** ​: When you look at the class definition class `Dog(Animal, WalkableMixin, SwimmableMixin)`:, it's immediately clear what a `Dog` is and what it can do. It's an `Animal` that "has the ability to" walk and swim.4.  ​Flexibility​: If we wanted to create a Duck class later, we could easily give it both walking and swimming capabilities: class Duck(Animal, WalkableMixin, SwimmableMixin):. We just pick and choose the behaviors we need.This pattern of using mix-ins to provide optional or shared capabilities is a cornerstone of flexible object-oriented design in Python.
+
+
+#### Benefits and Risks 
+
+##### Benefits   
+
+* **​Code Reuse (DRY)​**: It allows you to write common behaviors once and reuse them across unrelated classes, adhering to the "Don't Repeat Yourself" principle.
+* **​Flexibility**​: It avoids creating rigid and deep inheritance hierarchies. You can add specific functionalities to any class as needed.
+* **​Clear Intent**​: Using a mix-in signals that you are adding a specific set of behaviors, not defining a parent-child type relationship.
+
+##### Risks   
+
+* **​Multiple Inheritance Complexity**​: Because mix-ins use multiple inheritance, they can introduce complexity. If multiple parent classes define methods with the same name, it can be hard to predict which one will be called without inspecting the MRO.
+
+* **​Naming Collisions**​: If a class and its mix-in, or two different mix-ins, define attributes or methods with the same name, they can overwrite each other, leading to unexpected bugs.
+
+##### What's the Most Pythonic Approach?
+
+Using mix-ins for interface inheritance is a very Pythonic pattern. It aligns with the principle of ​Composition Over Inheritance (COI)​, which many developers prefer.
+* Inheritance​ establishes an ​"is-a"​ relationship (e.g., a Motorcycle is a Vehicle).
+* ​Composition and Mix-ins​ establish a ​"has-a"​ relationship (e.g., a Car ​has the ability​ to be colored).
+
+#### Final Note: Mixins go on the left of the arguments
+
+Placing the mix-in to the left of the main parent class is the most common and "Pythonic" way to do it.The reason for this convention comes down to Python's **​Method Resolution Order (MRO)**​. When you call a method on an object, Python looks for that method in a specific sequence determined by the order of parent classes in your class definition. Placing mix-ins to the left of the superclass is the standard convention because it ensures their methods take precedence, which is almost always why you're using a mix-in in the first place.
 
 ### "Is-a" vs. "Has-a"
 
@@ -634,6 +946,151 @@ These terms describe the two primary relationships between objects in OOP and he
     - A `Car` **has an** `Engine` (it is composed of an Engine object that it collaborates with).
 
 Many developers prefer "has-a" relationships over "is-a" relationships, a principle known as **Composition Over Inheritance**. This approach is often more flexible and leads to more modular code.
+
+### More on Composition
+
+In OOP, ​composition​ is a design principle where a class uses one or more objects of other classes to provide some of its functionality. This is a powerful way to build complex objects by combining simpler ones. 
+
+The key idea behind composition is the ​"has-a" relationship​. For example, you could say a Car object "has an" Engine object. The Car class doesn't inherit from the Engine class (a car is not an engine), but it contains an instance of Engine and delegates tasks to it, like starting the car.
+
+This use of other objects is a form of ​collaboration​. The objects that a class interacts with to perform its responsibilities are often called collaborators.
+
+This use of other objects is a form of ​collaboration​. The objects that a class interacts with to perform its responsibilities are often called collaborators.Here's a simple conceptual example:
+
+```python
+class Engine:    
+    def start(self):        
+        return "Engine started!"
+
+class Car:    
+    def __init__(self):        # The Car object is "composed" of an Engine object.   
+        self.engine = Engine() # It has an Engine.        
+           
+    def start_car(self):        
+        # The Car class delegates the work to its collaborator object.        
+        return self.engine.start()
+        
+my_car = Car()
+print(my_car.start_car())  # Outputs: Engine started!
+```
+
+#### What Makes a Strong Composition?
+
+A strong composition is built on a clear and logical ​"has-a" relationship​. The primary characteristics are:
+
+1. **​Clear Delegation**:​ The main (or "composing") class delegates specific responsibilities to the objects it contains. For example, a `Car` class doesn't manage the details of combustion; it tells its Engine object to `start()`, and the `Engine` handles the rest.
+
+2. **Collaboration**:​ The objects work together to achieve a goal. The curriculum notes that **"merely having an object inside your class isn't collaboration. At least one of the class's instance methods must use that object to aid the containing class's behavior."**
+
+3. **Logical Containment**:​ The relationship makes sense in the real world or the problem domain. A Person "has a" `Name`, and a `Car` "has an" `Engine`. The composed object is an integral part of the container. In many strong composition scenarios, the contained object's lifecycle is tied to the container—when the `Car` is destroyed, its specific `Engine` instance is also destroyed.
+
+
+#### Risks and Benefits 
+
+Thinking about these tradeoffs is a key part of becoming a proficient developer.
+
+##### Benefits
+
+* **Flexibility**:​ This is the primary advantage. You can easily swap out components. For example, you could give your `Car` a `V8Engine `or an `ElectricMotor` object. As long as they both have a start method, the `Car` class doesn't need to change. This is much harder to do with inheritance.
+
+* **​High Cohesion / Single Responsibility**:​ Each class can focus on doing one thing well. The `Car` class worries about car-related things, while the `Engine` class worries about engine-related things. This makes your code easier to understand, test, and maintain.
+
+* **​Lower Coupling**:​ Composition reduces dependencies between classes. Unlike inheritance, where a change in a superclass can break all its subclasses, changes to a composed object's internal implementation won't break the container class, as long as its public interface remains the same.
+
+##### Risks (or Tradeoffs):
+
+* **​Increased Indirection**:​ To understand how a `Car` starts, you have to look at the `Car` class and then navigate to the `Engine` class. This can sometimes make the code flow harder to trace compared to a single, larger class.
+
+* **​More Boilerplate Code**:​ The container class often needs to write methods that simply call the corresponding method on the composed object. This is known as "forwarding" or "delegating," and it can sometimes feel like you're writing extra code just to pass a message along.
+
+
+#### Some more Examples of Composition
+
+##### Example 1: A Person and their Job
+
+A `Person` object isn't a type of `Job`, but it certainly "has a" Job. This is a classic "has-a" relationship.
+
+```python
+class Job:
+    def __init__(self, title, salary):
+        self.title = title
+        self.salary = salary
+
+    def get_description(self):
+        return f"Works as a {self.title} for ${self.salary:,} per year."
+
+class Person:
+    def __init__(self, name, job_title, job_salary):
+        self.name = name
+        # The Person object is composed of a Job object
+        self.job = Job(job_title, job_salary)
+
+    def introduce(self):
+        # The Person class delegates the job description to the Job object
+        print(f"Hi, I'm {self.name}. I {self.job.get_description()}")
+
+# Create an instance
+engineer_job = Person("Maria", "Software Engineer", 120000)
+engineer_job.introduce()
+# Output: Hi, I'm Maria. I Works as a Software Engineer for $120,000 per year.
+```
+
+##### Example 2: A Library and its Books
+
+A `Library` is not a `Book`, but it "has" many `Book` objects. This shows composition with a collection of objects.
+
+```python
+class Book:
+    def __init__(self, title, author):
+        self.title = title
+        self.author = author
+
+    def __str__(self):
+        return f'"{self.title}" by {self.author}'
+
+class Library:
+    def __init__(self, name):
+        self.name = name
+        # The Library is composed of a list of Book objects
+        self.books = []
+
+    def add_book(self, book):
+        self.books.append(book)
+
+    def list_books(self):
+        print(f"Books at {self.name}:")
+        for book in self.books:
+            # The Library interacts with its collaborator objects
+            print(f"- {book}")
+
+# Create instances
+my_library = Library("City Center Library")
+my_library.add_book(Book("The Hobbit", "J.R.R. Tolkien"))
+my_library.add_book(Book("1984", "George Orwell"))
+
+my_library.list_books()
+# Output:
+# Books at City Center Library:
+# - "The Hobbit" by J.R.R. Tolkien
+# - "1984" by George Orwell
+```
+
+#### Isn't Composition more "Pythonic" than Inheritance?
+
+While there's no official rule, the general consensus in the Python community—and modern object-oriented design—leans heavily in favor of composition. You could say that ​favoring composition is often more "Pythonic"​ because it aligns with core Python philosophies like simplicity and explicitness. 
+
+Here's why:
+
+1. **​Flexibility and Simplicity**​: Composition leads to more flexible and loosely-coupled designs. A class that is composed of other objects is less dependent on their internal implementation than a subclass is on its superclass. This makes your system easier to change and maintain, which aligns with the Zen of Python's "Simple is better than complex."
+
+2. **​Avoiding Complex Hierarchies**​: Inheritance can lead to deep and complicated class hierarchies that are difficult to understand and reason about. Composition keeps relationships flatter and more explicit. You can see exactly what components an object has by looking at its` __init__` method.
+
+3.  **​The "Composition Over Inheritance" Principle**​: As the curriculum mentions, this is a widely-accepted design principle. The reasoning is that "using mix-ins and composition in preference to inheritance is more flexible and safer." By following this principle, you often end up with code that is easier to test and reuse. 
+
+However, this doesn't mean inheritance is "un-Pythonic" or should be avoided entirely. ​Inheritance is the right tool when you have a clear "is-a" relationship​. For example, a `GoldenRetriever` truly ​is a​ `Dog`. Using inheritance here is natural and correctly models the relationship. The problem arises when developers force an "is-a" relationship where it doesn't really fit, just to reuse some code.
+
+In summary, the Pythonic approach is to choose the design that most clearly and simply models your problem. More often than not, that turns out to be composition.
+
 
 ### The Influence of Inheritance on Scope
 
