@@ -1727,8 +1727,994 @@ Summary of Differences:
 | __class__ | An instance       | The class object | my_instance.__class__ returns MyClass |
 
 [Back to the top](#top)
+*** 
 
----
+## Exceptions
+
+### What are Exceptions?
+
+An exception is an event that occurs during the execution of a program that disrupts its normal flow. This can happen for various reasons, like logical errors, invalid user input, or trying to access a file that doesn't exist. If the exception is not handled, the program stops and prints a traceback. They are defined with classes that inherit from a base class, creating a hierarchy that we'll discuss shortly. 
+
+#### Examples of common exceptions
+
+`ZeroDivisionError`: Division by zero
+`TypeError`: Wrong type for an operation
+`ValueError`: Incorrect value
+`IndexError`: Index out of range
+`KeyError`: Dictionary key doesn't exist
+`FileNotFoundError`: File doesn't exist
+`AttributeError`: Attribute doesn't exist on an object
+
+### Exceptions are objects too
+
+In Python, exceptions are objects that represent an error. Yes, the error itself becomes an object. 
+
+Since the error is an object, that means it has a 
+
+1. Type (what kind of object it is)
+2. Value (what data it holds)
+3. Methods (things you can do with it)
+
+```python
+result = 10 / 0 # This line causes a ZeroDivisionError: 
+```
+Behind the scenes, Python does this:
+
+```python
+# Python creates an exception object:
+exception_object = ZeroDivisionError("division by zero")
+
+# Then it "raises" (throws) that object:
+raise exception_object
+```
+
+You can see this in action:
+```python
+try:
+    result = 10 / 0
+except ZeroDivisionError as e:
+    print(type(e))        # <class 'ZeroDivisionError'>
+    print(isinstance(e, Exception))  # True
+    print(e)              # division by zero
+```
+
+**_The variable `e` holds the actual exception object._**
+
+#### What Does It Mean That Errors are Objects?
+
+1. **Errors have properties (attributes)**
+
+```python
+try:
+    result = 10 / 0
+except ZeroDivisionError as e:
+    # The exception object has properties:
+    print(e.args)  # The arguments passed to it
+    print(type(e))  # The type of the object
+
+```
+
+2. **Errors have methods**
+```python
+try:
+    result = 10 / 0
+except ZeroDivisionError as e:
+    # You can call methods on the exception object:
+    print(e.__str__())  # Get the string representation
+    print(e.__class__)  # Get the class
+```
+
+3. **Custom exceptions can have custom properties**
+
+```python
+class InsufficientFundsError(Exception):
+    def __init__(self, balance, amount):
+        self.balance = balance  # Property 1
+        self.amount = amount    # Property 2
+        super().__init__(f"Balance {balance} is less than {amount}")
+
+try:
+    raise InsufficientFundsError(100, 500)
+except InsufficientFundsError as e:
+    # e is an object!   It has properties:
+    print(e.balance)  # Access property:  100
+    print(e. amount)   # Access property: 500
+    print(e)          # Get the message: "Balance 100 is less than 500"
+```
+
+#### Concrete Example: Seeing the Object
+
+Let me show you the exception object more directly:
+```python
+# Create an exception object WITHOUT raising it: 
+error_obj = ValueError("This is invalid!")
+
+# It's just an object sitting there:
+print(error_obj)  # This is invalid! 
+print(type(error_obj))  # <class 'ValueError'>
+print(error_obj.args)  # ('This is invalid!',)
+
+# You can pass it around like any object:
+def log_error(error):
+    print(f"Error type: {type(error)}")
+    print(f"Error message: {error}")
+
+log_error(error_obj)
+# Error type: <class 'ValueError'>
+# Error message: This is invalid! 
+
+# You can raise it later:
+raise error_obj
+```
+
+#### The Object Lifecycle
+
+Here's what happens step by step:
+
+```python
+# Step 1: An error occurs
+result = 10 / 0
+
+# Step 2: Python creates an exception object
+# (This happens automatically, behind the scenes)
+
+# Step 3: Python "raises" (throws) that object
+# (Program stops and the exception travels up)
+
+# Step 4: You catch the object
+try:
+    result = 10 / 0
+except ZeroDivisionError as e:
+    # Step 5: Now you have the object in your hands! 
+    # e is the exception object
+    print(e)
+    print(type(e))
+    print(e.args)
+```
+
+#### Why Does This Matter?
+
+**Reason 1**: You can store and examine the error.
+
+```Python
+try:
+    risky_function()
+except Exception as e:
+    # You have the error object! 
+    error_type = type(e).__name__  # Get the error type
+    error_message = str(e)          # Get the message
+    
+    # Log it, send it somewhere, etc.
+    log_to_file(error_type, error_message)
+```
+
+**Reason 2**: You can extract custom data from it
+```Python
+try:
+    account. withdraw(500)
+except InsufficientFundsError as e:
+    # e is an object with custom properties! 
+    print(f"You need ${e.shortfall} more")
+```
+
+**Reason 3**: You can create your own exception objects.
+
+```python
+# Create your own error object:
+my_error = CustomError("Something went wrong", error_code=42)
+
+# Store it:
+errors = [my_error]
+
+# Raise it later:
+raise errors[0]
+```
+
+Think of it like this:
+
+```python
+# Regular objects:
+person = {
+    "name": "Alice",
+    "age": 30
+}
+
+# Exception objects:
+error = InsufficientFundsError(
+    balance=100,
+    amount=500
+)
+
+# Both are objects with properties! 
+print(person["name"])  # Alice
+print(error.balance)   # 100
+```
+
+The exception is just a special kind of object designed to represent an error.
+
+"Exceptions are objects" means:
+
+✅ When an error occurs, Python creates an object to represent that error
+✅ That object has properties (like balance, amount)
+✅ That object has methods (like __str__())
+✅ You can catch that object with except and examine it
+✅ You can store it in variables
+✅ You can create custom exception objects with your own properties
+
+The error doesn't just disappear—it becomes a concrete object that you can work with!
+
+### Catching Exceptions with `try/except`
+
+To manage potential errors gracefully without crashing your program, you can use a `try...except` block.
+
+1. **​try block**​: You place the code that might cause an exception inside the `try` block.
+2. **​except block**​: If an exception occurs in the `try` block, Python stops execution of that block and looks for a matching `except` block. If it finds one that handles the specific type of exception raised, the code inside that `except` block is executed. Here is an example that handles two different potential exceptions:
+
+```python
+try:
+    num_str = input("Enter a number: ")
+    num = int(num_str)
+    result = 10 / num
+except ValueError:
+    print("Invalid input, you didn't enter a number.")
+except ZeroDivisionError:
+    print("Cannot divide by zero.")
+else:
+    print(f"Result: {result}")
+finally:
+    print("Exception handling complete.")
+```
+
+In this code:
+
+* If the user enters non-numeric text, a `ValueError` is raised by `int()`, and the first except block runs.   
+* If the user enters `0`, a `ZeroDivisionError` is raised, and the second except block runs.
+* The optional `else` block runs only if no exceptions occurred.
+* The optional finally block runs every time, whether an exception happened or not.
+
+#### What goes in a try/except block?
+
+Here are the essential and optional elements:
+
+* **`​try` Block (Required)**​:  This is the starting point. You place the code that you anticipate might raise an exception inside this block.
+
+* **`​except` Block** (At least one except or finally is required)​: This block catches and handles exceptions.    
+    * It must follow the `try` block.    
+    * You can have multiple except blocks to handle different types of exceptions. Python will execute the ​first​ one that matches the type of exception raised.    
+    * You can optionally capture the exception object using `as e` to get more details about the error.
+
+*  **​else Block (Optional)**​: This block contains code that will run **_​only if no exceptions were raised​_** in the `try` block. It must be placed after all the `except` blocks. This is useful for separating the code that should run on success from the main logic being monitored for errors.
+
+*  **​finally Block (Optional)**​: This block contains code that will ​always​ run, no matter what happens—whether an exception was raised, caught, or not. It is typically used for cleanup actions, like closing a file or releasing network resources. If included, it must be the very last block.
+
+Here is a complete example from the curriculum that shows all four elements in the correct order:
+
+```python
+try:    # 1. The code that might cause an error goes here.    
+    num_str = input("Enter a number: ")    
+    num = int(num_str)    
+    result = 10 / num
+except ValueError:    # 2. This runs if a ValueError occurs (e.g., input is not a number).    
+    print("Invalid input, you didn't enter a number.")
+except ZeroDivisionError:    # 3. This runs if a ZeroDivisionError occurs (e.g., input is '0').    
+    print("Cannot divide by zero.")
+else:    # 4. (Optional) This runs ONLY if no exceptions occurred in the 'try' block.    
+    print(f"Result: {result}")
+finally:    # 5. (Optional) This code ALWAYS runs, regardless of what happened.    
+    print("Exception handling complete.")
+```
+
+### Raising Exceptions
+
+Besides catching exceptions that Python raises automatically, you can also trigger them yourself using the raise statement. This is useful when you detect a condition in your code that makes it impossible to proceed as intended. You can raise built-in exceptions or custom ones you've created.
+
+```python
+def set_age(age):
+    if age < 0:
+        raise ValueError("Age cannot be negative.")
+    print(f"Age is set to {age}")
+
+try:
+    set_age(-5)
+except ValueError as e:
+    print(e)  # Prints: Age cannot be negative.
+```
+
+**Raising with a Message**
+```python 
+ TypeError("Expected a string, got int instead")
+```
+
+**Re-raising an exception (catch, then re-raise)**:
+```python
+try:
+    risky_operation()
+except ValueError as e:
+    print("Logging the error...")
+    raise  # Re-raise the same exception
+```
+
+The `raise` statement is the core command for signaling that an error or an exceptional condition has occurred that prevents the program from continuing its normal flow. The most common and useful way to use it is by providing an instance of an exception class, usually with an informative message. Syntax:​ `raise ExceptionClassName("A descriptive error message")`
+
+Here is a practical example:
+
+```python
+def process_payment(amount):
+    if amount <= 0:
+        # Create an instance of ValueError and raise it
+        raise ValueError("Payment amount must be a positive number.")
+    print(f"Processing payment of ${amount}...")
+
+try:
+    process_payment(-50)
+except ValueError as e:
+    print(f"Error: {e}")
+
+# Output:
+# Error: Payment amount must be a positive number.
+```
+
+In this code, the `raise` statement actively stops the function and creates a `ValueError` object. The `try...except` block then catches this object, and its message is printed. The `raise` statement works specifically with objects that are instances of a class that inherits from Python's built-in `Exception` class.
+
+When you write r`aise ValueError("...")`, you are doing two things at once:   
+1. Creating a new object: `ValueError("...")` instantiates the `ValueError` class.    
+2. "Throwing" that object up the call stack for an `except` block to catch.
+
+All standard built-in exceptions like `ValueError`, `TypeError`, and `FileNotFoundError` are classes that inherit from the base `Exception` class. This shared ancestry is what makes the whole system work. An except block can catch a specific exception or any of its parent classes.
+
+Custom Exceptions follow the same rule:​ When you create your own custom exception, you must make it a subclass of `Exception` (or one of its children).
+
+
+#### What are the best practices for writing an exception block?
+
+* ​Be Specific:​ Catch the most specific exception you can. Avoid catching a generic `Exception` or using a bare `except:` clause unless you have a very good reason (like logging all unexpected errors before terminating). A bare `except:` can hide bugs by catching things you didn't anticipate, like a `SystemExit` or `KeyboardInterrupt`.
+
+* Keep `try` Blocks Minimal:​ Only wrap the single line or small section of code that you actually expect to fail. This makes it crystal clear where an error might originate and prevents you from accidentally catching an exception from an unrelated part of the code.
+
+* ​Provide Meaningful Recovery or Feedback:​ Don't let an except block do nothing (e.g., except ValueError: pass).
+
+This silently swallows errors and can lead to very confusing behavior. Instead, you should:    
+1. Log the error for later debugging. 
+2. Show a user-friendly message.    
+3. Return a default value or `None`.    
+4. Re-raise the exception if the current function can't handle it.
+5. ​Use `finally` for Cleanup:​ If you have actions that ​must​ happen regardless of whether an exception occurred (like closing a file or releasing a resource), place them in a `finally` block.
+
+
+#### How does this fit in with properties and setters?
+
+Setters are the perfect place to raise exceptions to enforce data validation and business rules. A setter's job is to act as a gatekeeper for an attribute. It ensures that the attribute is never set to an invalid state. If the calling code tries to assign an invalid value, the setter should signal this error clearly, and raising an exception is the most Pythonic way to do it. Here is a practical example:
+
+```python
+class Product:    
+    def __init__(self, name, price):        
+        self.name = name        
+        self.price = price  # This calls the setter    
+        
+        @property    
+        def price(self):        
+            return self._price    
+        
+        @price.setter    
+        def price(self, value):        
+            if not isinstance(value, (int, float)):            
+                # Rule 1: Price must be a number            
+                raise TypeError("Price must be a number.")        
+            if value < 0:            
+                # Rule 2: Price cannot be negative            
+                raise ValueError("Price cannot be negative.")        s
+            self._price = value
+            
+# --- Usage ---# This works fine
+try:    
+    product = Product("Laptop", 1200)    
+    print(f"{product.name} costs ${product.price}")
+    except (ValueError, TypeError) as e:    
+        print(f"Error creating product: {e}") # This will be caught by the exception handler
+        
+try:    
+    product = Product("Broken Laptop", -100)
+    except (ValueError, TypeError) as e:    
+        print(f"Error creating product: {e}") 
+
+# Output:
+# Laptop costs $1200
+# Error creating product: Price cannot be negative.
+```
+
+In this example, the price setter validates the incoming value. If the value violates the rules, the setter raises an appropriate exception. The code that attempts to create the Product can then use a `try...except` block to gracefully handle the invalid data, preventing the program from crashing and allowing it to respond to the bad input.
+
+### The Exception Hierarchy
+
+Python's exceptions are organized into a class hierarchy. All exception classes inherit from the `BaseException` class. The most important subclass for day-to-day programming is Exception. Nearly all common, built-in exceptions inherit from `Exception`. This hierarchy is significant because you can catch exceptions using their specific type or any of their parent types. For example, since `ZeroDivisionError` is a subclass of `ArithmeticError`, an except `ArithmeticError`: block would catch a `ZeroDivisionError`. Understanding this hierarchy helps you write more flexible exception handlers, though you don't need to memorize the exact structure.
+
+But because you are curious, here's the structure:
+
+```
+BaseException
+├── SystemExit
+├── KeyboardInterrupt
+├── GeneratorExit
+└── Exception
+    ├── ArithmeticError
+    │   ├── ZeroDivisionError
+    │   └── OverflowError
+    ├── LookupError
+    │   ├── IndexError
+    │   └── KeyError
+    ├── ValueError
+    ├── TypeError
+    ├── FileNotFoundError
+    └── ... many others ...
+```
+
+### What's going on under the hood with the `Exception` class?
+
+This is where your OOP knowledge comes into play. The `Exception` class is not just a marker; it's a fully functional Python class that provides the core behavior for all exceptions. Here’s what’s happening "under the hood":
+
+1. ​**​Initialization (`__init__`)​**: When you raise `ValueError("some message")`, you are creating an instance of the `ValueError` class. The string "some message" is passed to its `__init__` method. The base Exception class's `__init__` method takes all the arguments you provide and stores them in an attribute called `.args`. 
+
+2. **​​String Representation (`__str__`)**​: When you `print(e)`, Python implicitly calls the `__str__` magic method on the exception object. The `Exception` class's `__str__` method is designed to format the contents of `.args` into a user-friendly string—which is the error message you see.You can see this in action by creating a custom exception and overriding these methods:
+
+```python
+class MyCustomError(Exception):
+    """An example of what's going on inside an exception class."""
+    def __init__(self, message, error_code):
+        # Call the parent's __init__ to store the message
+        super().__init__(message)
+        # Add our own custom attributes
+        self.error_code = error_code
+
+    def __str__(self):
+        # Override __str__ to create a custom, detailed error message
+        # Get the original message from the parent class
+        original_message = super().__str__()
+        return f"[ERROR CODE: {self.error_code}] {original_message}"
+
+# --- Usage ---
+try:
+    raise MyCustomError("Network connection failed", 503)
+except MyCustomError as e:
+    print(e)
+    # Access the custom attribute we added
+    print(f"The internal error code was: {e.error_code}")
+    # You can also inspect the args from the base class
+    print(f"The .args attribute is: {e.args}")
+
+# Output:
+# [ERROR CODE: 503] Network connection failed
+# The internal error code was: 503
+# The .args attribute is: ('Network connection failed',)
+```
+
+So, under the hood, an exception is just a regular Python object with a special purpose. The `raise` statement "throws" this object, and the except statement "catches" it, all using the standard OOP principles of instantiation, inheritance, and magic methods you've learned.
+
+### Be more specific, what is `e`?
+
+**`e`** doesn't stand for anything specific. It's just a variable name that programmers chose by convention. The primary reason for doing this is to get the descriptive error message associated with the exception. When you `print(e)` or use `e` in an f-string, you are seeing the human-readable message that the exception object carries.
+
+```python
+try:
+    result = 10 / 0
+except ZeroDivisionError as e:
+    print(e)
+```
+
+The `as e` part means: "Capture the exception object and store it in a variable named e." When Python raises an exception,it's actually creating an instance of an exception class (like `ValueError`). The as e syntax allows you to capture that specific object into the variable e so you can interact with it inside your `except` block.
+
+You could use any variable name you want:
+```python
+# Using 'e' (common convention):
+try:
+    result = 10 / 0
+except ZeroDivisionError as e:
+    print(e)
+
+# Using 'error' (also clear):
+try:
+    result = 10 / 0
+except ZeroDivisionError as error:
+    print(error)
+
+# Using 'exc' (abbreviation for exception):
+try:
+    result = 10 / 0
+except ZeroDivisionError as exc:
+    print(exc)
+
+# Using 'my_exception' (very explicit):
+try:
+    result = 10 / 0
+except ZeroDivisionError as my_exception:
+    print(my_exception)
+
+# Even 'x' or 'foo' would work (but it's confusing):
+try:
+    result = 10 / 0
+except ZeroDivisionError as x:
+    print(x)
+```
+
+All of these do the exact same thing. `e` is just tradition — most Python programmers use e because it's short and everyone understands it means "exception."
+
+##### Be more specific about `e.args`?
+
+```python
+class InsufficientFundsError(Exception):
+    def __init__(self, balance, amount):
+        self.balance = balance
+        self.amount = amount
+        super().__init__(f"Balance {balance} is less than {amount}")
+
+try:
+    raise InsufficientFundsError(100, 500)
+except InsufficientFundsError as e:
+    print(f"e.args: {e.args}")
+    print(f"e.balance: {e.balance}")
+    print(f"e.amount: {e.amount}")
+
+# Output:
+# e.args: ('Balance 100 is less than 500',)
+# e.balance: 100
+# e.amount: 500
+```
+
+Notice that `.args` contains the message passed to `super().__init__()`, while `e.balance` and `e.amount` are the custom attributes we created.
+
+### Custom Exception Classes
+
+You can define your own exception types by creating a new class that inherits from the built-in `Exception` class or one of its subclasses. This is very useful for creating more specific and descriptive errors related to your application's domain.
+
+When creating custom exceptions, it's good practice to:
+
+* End the class name with `Error`.
+* Provide a clear, helpful default error message.
+
+Most exceptions inherit from `Exception`. This means:
+
+* `except Exception`: catches most runtime errors (but not `SystemExit` or `KeyboardInterrupt`)
+* Specific exceptions are more precise: `except ValueError:`  is better than `except Exception:`
+
+Here's an example:
+
+```python
+class ValidationError(Exception):    
+    def __init__(self, message="Invalid data provided"):        
+        super().__init__(message)
+    
+    def validate_username(username):    
+        if len(username) < 3:        
+            raise ValidationError("Username must be at least 3 characters long.")
+            try:    
+                validate_username("Al")
+            except ValidationError as e:    
+                print(f"Validation failed: {e}")
+```
+
+```python
+class InvalidAgeError(Exception):
+    """Custom exception for age validation"""
+    pass
+
+def register_person(name, age):
+    if age < 18:
+        raise InvalidAgeError(f"{name} must be 18 or older to register")
+    return f"{name} registered successfully"
+
+try:
+    register_person("Alice", 16)
+except InvalidAgeError as e:
+    print(f"Registration failed: {e}")
+```
+
+**Custom Exceptions with additional functionality**
+
+```python
+class InsufficientFundsError(Exception):
+    def __init__(self, balance, amount):
+        self.balance = balance
+        self.amount = amount
+        super().__init__(f"Balance {balance} is less than {amount}")
+
+class BankAccount:
+    def __init__(self, balance):
+        self.balance = balance
+    
+    def withdraw(self, amount):
+        if amount > self.balance:
+            raise InsufficientFundsError(self.balance, amount)
+        self.balance -= amount
+        return self.balance
+
+try:
+    account = BankAccount(100)
+    account.withdraw(150)
+except InsufficientFundsError as e:
+    print(f"Cannot withdraw: {e}")
+    print(f"Current balance: {e.balance}")
+```
+
+#### Breaking Down Custom Exception Classes
+
+```python
+# VERSION 1: Bare minimum
+class SimpleError(Exception):
+    pass
+
+# VERSION 2: With custom message
+class CustomMessageError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+# VERSION 3: With custom data (like the BankAccount example)
+class InsufficientFundsError(Exception):
+    def __init__(self, balance, amount):
+        self.balance = balance
+        self. amount = amount
+        super().__init__(f"Balance {balance} is less than {amount}")
+
+# Using all three:
+try:
+    raise SimpleError()
+except SimpleError as e:
+    print(f"1. {e}")  # Output: (empty, no message)
+
+try:
+    raise CustomMessageError("Something went wrong!")
+except CustomMessageError as e: 
+    print(f"2. {e}")  # Output: Something went wrong!
+
+try:
+    raise InsufficientFundsError(100, 150)
+except InsufficientFundsError as e:
+    print(f"3. {e}")  # Output: Balance 100 is less than 150
+    print(f"   Balance: {e.balance}, Needed: {e.amount}")
+```
+
+| Component                 | Required?         | Purpose                                      |
+|---------------------------|-------------------|----------------------------------------------|
+| Inherit from Exception    | ✅ Yes            | Makes it an exception class                  |
+| `__init__` method         | ❌ No*            | Only if you need custom parameters           |
+| `super().__init__(message)` | ✅ Yes (if using `__init__`) | Sets the error message         |
+| Store custom attributes   | ❌ No*            | Only if you need to access data later        |
+
+Creating custom exceptions like `ValidationError` makes your code more readable and allows you to handle your application's specific error conditions distinctly from Python's built-in errors.
+
+#### Deep Dive: The `__init__` Method in Custom Exception Classes
+
+For exceptions, the `__init__` works in much the same way in your routine classes.
+
+```python
+class MyError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+# When you raise it:
+raise MyError("Something went wrong")  # __init__ is called automatically
+```
+
+##### Why Do You Need `__init__` in Exception Classes?
+
+**Reason 1**: To Accept Custom Parameters
+
+Without `__init__`, you can only raise an exception with a default message:
+
+```python
+class SimpleError(Exception):
+    pass
+
+raise SimpleError()  # You can only do this
+raise SimpleError("custom message")  # This works but gets messy
+```
+
+With `__init__`, you have control:
+
+```python
+class SimpleError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+raise SimpleError("Now I control the message!")  # Clean and clear
+```
+
+**Reason 2**: To Store Data for Later Access
+
+Without `__init__`, you can't easily store data to access in the except block:
+
+```python
+class BadError(Exception):
+    pass
+
+try:
+    raise BadError("Amount was 500 but balance was 100")
+except BadError as e:
+    print(e)  # "Amount was 500 but balance was 100"
+    # But you can't easily extract the numbers!
+    # You'd have to parse the string
+```
+
+With `__init__`, you store the data directly:
+
+```python
+class GoodError(Exception):
+    def __init__(self, balance, amount):
+        self.balance = balance
+        self.amount = amount
+        super().__init__(f"Balance {balance} is less than {amount}")
+
+try:
+    raise GoodError(100, 500)
+except GoodError as e:
+    print(e)  # "Balance 100 is less than 500"
+    print(e.balance)  # 100  (easy access!)
+    print(e.amount)   # 500  (easy access!)
+```
+
+**What does `super().__init__()` do?**
+
+The Exception class (the parent) has its own `__init__` that expects a message:
+
+```python
+# This is roughly what Exception's __init__ looks like:
+class Exception:
+    def __init__(self, *args):
+        self.args = args  # Store the message(s)
+```
+
+When you call `super().__init__("my message")`, you're telling the parent class to store that message.
+
+**What happens if you DON'T call `super().__init__()`?**
+
+```python
+class BadError(Exception):
+    def __init__(self, balance, amount):
+        self.balance = balance
+        self.amount = amount
+        # OOPS!  Forgot to call super().__init__()
+
+try:
+    raise BadError(100, 500)
+except BadError as e:
+    print(e)  # Output: (empty!)  No message! 
+    print(e.balance)  # Works:  100
+```
+
+The exception exists and you can access the data, but the error message is missing!
+
+**Correct Way**
+
+```python
+class GoodError(Exception):
+    def __init__(self, balance, amount):
+        self.balance = balance
+        self.amount = amount
+        super().__init__(f"Balance {balance} is less than {amount}")
+
+try:
+    raise GoodError(100, 500)
+except GoodError as e:
+    print(e)  # Output: "Balance 100 is less than 500"  Perfect!
+    print(e.balance)  # 100
+```
+
+##### The pattern you will always see
+
+```python
+class MyException(Exception):
+    def __init__(self, param1, param2):
+        # Store the data you'll need later
+        self.param1 = param1
+        self. param2 = param2
+        
+        # Call the parent's __init__ with a formatted message
+        super().__init__(f"Error: {param1} and {param2}")
+```
+
+##### Complete Practical Example
+
+```python
+class InsufficientFundsError(Exception):
+    def __init__(self, account_holder, balance, amount):
+        self.account_holder = account_holder
+        self.balance = balance
+        self.amount = amount
+        self.shortfall = amount - balance
+        super().__init__(
+            f"{account_holder}:  Tried to withdraw ${amount} "
+            f"but only have ${balance}.  Need ${self.shortfall} more."
+        )
+
+class BankAccount:
+    def __init__(self, holder, balance):
+        self.holder = holder
+        self.balance = balance
+    
+    def withdraw(self, amount):
+        if amount > self. balance:
+            raise InsufficientFundsError(self. holder, self.balance, amount)
+        self.balance -= amount
+        return self.balance
+
+# Using it:
+try:
+    account = BankAccount("Alice", 100)
+    account.withdraw(150)
+except InsufficientFundsError as e:
+    # You can use the message: 
+    print(f"Error: {e}")  # Error: Alice: Tried to withdraw $150 but only have $100. Need $50 more.
+    # Or access the specific data:
+    print(f"Account: {e.account_holder}") #Account: Alice
+    print(f"Balance: ${e.balance}") #Balance: $100
+    print(f"Attempted:  ${e.amount}") #Attempted: $150
+    print(f"Shortfall:  ${e.shortfall}") #Shortfall:  $50
+```
+
+#### Wait, why do we want to store data in exception objects?
+
+Without storing data, you're trapped with just the error message. With stored data, you can make intelligent decisions based on the actual values!
+
+```python
+class PaymentError(Exception):
+    def __init__(self, transaction_id, amount, reason, retry_possible=False):
+        self.transaction_id = transaction_id
+        self. amount = amount
+        self.reason = reason
+        self.retry_possible = retry_possible
+        super().__init__(
+            f"Payment failed for transaction {transaction_id}: {reason}"
+        )
+
+def process_payment(card, amount):
+    transaction_id = generate_id()
+    
+    try:
+        charge_card(card, amount)
+    except PaymentError as e: 
+        # Use the stored data to handle the error intelligently:
+        
+        # 1. Decide whether to retry:
+        if e.retry_possible:
+            print(f"Retrying transaction {e.transaction_id}...")
+            # retry_payment(e.transaction_id)
+        else:
+            print(f"Cannot retry.  Reason: {e.reason}")
+        
+        # 2. Refund if already charged:
+        if charge_already_processed(e.transaction_id):
+            issue_refund(e.transaction_id, e.amount)
+            print(f"Refunded ${e.amount}")
+        
+        # 3. Notify the user with specific information:
+        notify_user(
+            f"Payment of ${e.amount} failed: {e.reason}.  "
+            f"Reference: {e.transaction_id}"
+        )
+        
+        # 4. Log for fraud detection:
+        if "suspicious" in e.reason:
+            flag_for_fraud_review(e.transaction_id, e.amount)
+
+process_payment(my_card, 99.99)
+```
+
+
+### Exceptions in Practice
+
+1. **Graceful File Handling**
+
+A common task is reading from a file. But what if the file doesn't exist? Instead of crashing, your program can handle this situation gracefully using a try...except block. This approach follows the "Ask Forgiveness, Not Permission" (AFNP) philosophy, where you try an operation and handle the error if it fails.
+
+```python
+def read_user_settings(file_path="settings.txt"):
+    """
+    Tries to read user settings from a file.
+    If the file doesn't exist, it returns default settings.
+    """
+    try:
+        with open(file_path, 'r') as f:
+            print("Settings file found. Loading user settings.")
+            # In a real app, you would parse the file content here
+            return f.read()
+    except FileNotFoundError:
+        print(f"Warning: '{file_path}' not found. Using default settings.")
+        return {'theme': 'dark', 'notifications': 'enabled'} # Return a default value
+
+# --- Usage ---
+settings = read_user_settings()
+print(f"Current settings: {settings}")
+
+# If 'settings.txt' does not exist, the output will be:
+# Warning: 'settings.txt' not found. Using default settings.
+# Current settings: {'theme': 'dark', 'notifications': 'enabled'}
+```
+
+Here, the except `FileNotFoundError`: block prevents the program from terminating and provides a sensible fallback, making the application more robust.
+
+2. **Enforcing Business Rules with Custom Exceptions**
+
+Custom exceptions are perfect for signaling when a specific business rule or application constraint has been violated. They make your code's intent much clearer than using a generic exception like `ValueError`. 
+
+Imagine a `BankAccount` class. You want to prevent a withdrawal that would overdraw the account.
+
+```python
+class InsufficientFundsError(Exception):
+    """Custom exception raised for withdrawals exceeding the available balance."""
+    def __init__(self, balance, amount_to_withdraw):
+        message = (f"Attempted to withdraw ${amount_to_withdraw} "
+                   f"but only ${balance} is available.")
+        self.balance = balance
+        self.amount_to_withdraw = amount_to_withdraw
+        super().__init__(message)
+
+class BankAccount:
+    def __init__(self, starting_balance=0):
+        self.balance = starting_balance
+
+    def withdraw(self, amount):
+        if amount > self.balance:
+            # Raise our custom exception to signal the specific error
+            raise InsufficientFundsError(self.balance, amount)
+        self.balance -= amount
+        print(f"Successfully withdrew ${amount}. New balance: ${self.balance}")
+
+# --- Usage ---
+account = BankAccount(100)
+try:    
+    account.withdraw(50)  # This will succeed    
+    account.withdraw(75)  # This will fail and raise the exception 
+except:
+    InsufficientFundsError as e:    
+        print(f"Transaction failed: {e}")
+
+# Output:
+# Successfully withdrew $50. New balance: $50
+# Transaction failed: Attempted to withdraw $75 but only $50 is available.
+```
+
+Using `InsufficientFundsError` makes it obvious exactly what went wrong and allows the calling code to handle that specific scenario.
+
+3. **Retrying Network Operations**
+
+When interacting with external services over a network (like an API), connections can sometimes fail temporarily. Instead of giving up immediately, you can use exception handling to implement a retry mechanism.This example simulates fetching data from an API that might fail.
+
+```python
+import time
+import random
+
+def fetch_data_from_api():    
+    
+    """Simulates a network request that might fail."""    
+    if random.random() < 0.7: # 70% chance of failure        
+    raise ConnectionError("Failed to connect to the server")    
+    return {"user_id": 123, "data": "API response"}
+
+def get_data_with_retries(max_retries=3):    
+    for attempt in range(max_retries):        
+        try:            
+            print(f"Attempt {attempt + 1}...")            r
+            eturn fetch_data_from_api()        
+        except ConnectionError as e:            
+            print(f"Failed: {e}.")            
+            if attempt < max_retries - 1:                
+                print("Retrying in 1 second...")                
+                time.sleep(1)            
+            else:                
+                print("All attempts failed.")                
+                raise # Re-raise the final exception    
+
+# --- Usage ---
+try:    
+    data = get_data_with_retries()   
+     print(f"Success! Data received: {data}")
+except ConnectionError:    
+    print("Could not retrieve data from the API after multiple attempts.")
+```
+
+In this pattern, the `except` block does more than just log an error—it controls the program's flow to retry the failed operation. If all retries fail, it re-raises the exception with raise to let the caller know that the operation was ultimately unsuccessful.
+
+[Back to the top](#top)
+
+*** 
 
 ## What are Collaborator Objects?
 
