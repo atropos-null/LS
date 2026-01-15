@@ -108,8 +108,8 @@ lotr = Book("The Lord of the Rings", 1178)
 short_book = Book("Essays", 310)
 
 print(hobbit < lotr)      # True - fewer pages
-print(hobbit == short_book)  # True - same pages and title? No! Same pages, different title
-print(hobbit <= short_book)  # True - same number of pages
+print(hobbit == short_book)  # False - same pages but different titles
+print(hobbit <= short_book)  # True - same number of pages (310 <= 310)
 
 # Now you can sort books!
 books = [lotr, hobbit, short_book]
@@ -777,10 +777,11 @@ def apply_interest(self):
 - When a book is checked out, it should know which member has it
 - You should be able to list all books a member has checked out
 
-**Practice:** Write this yourself before looking at the solution!
+**Practice:** Write this yourself before looking at the solution below!
 
-<details>
-<summary>Solution (Try it yourself first!)</summary>
+---
+
+**Solution:**
 
 ```python
 class Library:
@@ -867,7 +868,8 @@ print(book1)  # "The Hobbit" by J.R.R. Tolkien (checked out by Alice)
 alice.return_book(book1)
 bob.check_out(book1)  # Bob checked out The Hobbit
 ```
-</details>
+
+---
 
 ---
 
