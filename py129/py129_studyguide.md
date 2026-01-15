@@ -8,6 +8,7 @@
 - [Classes and Objects](#classes-and-objects)
 - [Inheritance](#inheritance)
 - [The `is` Operator and `id()` Function](#the-is-operator-and-id-function)
+- [Exceptions](#exceptions)
 - [Reading OO Code](#reading-oo-code)
 - [Create a Code Spike](#create-a-code-spike)
 
