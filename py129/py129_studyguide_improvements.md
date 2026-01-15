@@ -107,8 +107,8 @@ hobbit = Book("The Hobbit", 310)
 lotr = Book("The Lord of the Rings", 1178)
 short_book = Book("Essays", 310)
 
-print(hobbit < lotr)      # True - fewer pages
-print(hobbit == short_book)  # False - same pages but different titles
+print(hobbit < lotr)         # True - fewer pages (310 < 1178)
+print(hobbit == short_book)  # False - different titles despite same page count
 print(hobbit <= short_book)  # True - same number of pages (310 <= 310)
 
 # Now you can sort books!
@@ -129,7 +129,7 @@ class Book:
     
     def __eq__(self, other):
         if not isinstance(other, Book):
-            return NotImplemented  # This allows Python to try other.eq(self)
+            return NotImplemented  # This allows Python to try other.__eq__(self)
         return self.pages == other.pages
 
 book = Book(100)
