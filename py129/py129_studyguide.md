@@ -4049,7 +4049,9 @@ Now that we have this knowledge, the code has served its purpose and we can disc
 "The 3-Step Assessment Strategy"
 Add this "How-To" at the very end of your notes. It’s a cheat sheet for when the interviewer says: "Can you show me how X works?"
 
-#### When asked to spike a concept during the interview:
+#### When asked to spike a concept during the interview
+
+Do the following
 
 1. **State the Goal**: "I'm going to create a minimal class structure to demonstrate how [Concept] works."
 2. **Write the "Simple Case"**: Create the parent/child classes with just one or two methods. Keep it to nouns like Parent/Child or A/B/C so you don't get bogged down in real-world logic.
