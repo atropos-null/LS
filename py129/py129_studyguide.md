@@ -56,10 +56,13 @@ The assessment recognizes that being able to clearly communicate technical conce
 ## Classes and Objects
 
 > OOP is not about classes.
+
 > It is about managing complexity by controlling how responsibility flows through time.
 
 >Classes are scaffolding.
+
 >Objects are actors.
+
 >Methods are conversations.
 
 A **class** is a blueprint or template for creating objects. It defines a set of attributes (data) and methods (behaviors) that the objects created from it will have.
@@ -70,9 +73,12 @@ Think of a `GoodDog` class. The class itself defines what every dog has (like a 
 
 ```python
 class GoodDog:    
+
     def __init__(self, name):        
-    self.name = name    def speak(self):        
-    print(f'{self.name} says Woof!')
+        self.name = name    
+    
+    def speak(self):        
+        print(f'{self.name} says Woof!')
 
 sparky = GoodDog('Sparky')
 sparky.speak()#  Output: Sparky says Woof!
@@ -82,30 +88,30 @@ sparky.speak()#  Output: Sparky says Woof!
 
 ##### 1. The "Encapsulation" Focus (Technical)
 
->"An object is a self-contained entity that encapsulates both data (attributes) and behavior (methods). It is a runtime 
-> instance of a class that occupies a specific block of memory."
+"An object is a self-contained entity that encapsulates both data (attributes) and behavior (methods). It is a runtime 
+instance of a class that occupies a specific block of memory."
 
 Why this is good: It uses the term "encapsulates," which is a core OOP pillar often tested in exams.
 
 ##### 2. The "Blueprint" Analogy (Conceptual)
 
->"If a class is the blueprint, an object is the actual house built from it. While all houses from that blueprint share the same structure, each individual object has its own unique state (e.g., its own paint color or address)."
+"If a class is the blueprint, an object is the actual house built from it. While all houses from that blueprint share the same structure, each individual object has its own unique state (e.g., its own paint color or address)."
 
 Why this is good: It clearly distinguishes between the definition (class) and the manifestation (object).
 
 ##### 3. The "Identity, State, and Behavior" Trio (Academic)
 
-> "An object is characterized by three things:
+"An object is characterized by three things:
 
-> Identity: Its unique location in memory.
-> State: The data stored in its attributes at any given time.
-> Behavior: The actions it can perform via methods defined in its class."
+Identity: Its unique location in memory.
+State: The data stored in its attributes at any given time.
+Behavior: The actions it can perform via methods defined in its class."
 
 Why this is good: Many OOP exams look for these specific three terms (Identity, State, Behavior).
 
 ##### 4. The Concise Pythonic Definition
 
->"An object is a realization of a class that bundles variables (state) and functions (behavior) into a single unit."
+"An object is a realization of a class that bundles variables (state) and functions (behavior) into a single unit."
 
 
 ### Instantiation and `__init__`
