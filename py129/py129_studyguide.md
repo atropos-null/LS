@@ -56,13 +56,13 @@ The assessment recognizes that being able to clearly communicate technical conce
 ## Classes and Objects
 
 > OOP is not about classes.
-
+>
 > It is about managing complexity by controlling how responsibility flows through time.
-
+>
 >Classes are scaffolding.
-
+>
 >Objects are actors.
-
+>
 >Methods are conversations.
 
 A **class** is a blueprint or template for creating objects. It defines a set of attributes (data) and methods (behaviors) that the objects created from it will have.
@@ -104,7 +104,9 @@ Why this is good: It clearly distinguishes between the definition (class) and th
 "An object is characterized by three things:
 
 Identity: Its unique location in memory.
+
 State: The data stored in its attributes at any given time.
+
 Behavior: The actions it can perform via methods defined in its class."
 
 Why this is good: Many OOP exams look for these specific three terms (Identity, State, Behavior).
@@ -151,11 +153,11 @@ Analogies to use:
 
 ##### Exam-Ready Summary:
 
->"Instantiation is the 'birth' of an object. It transforms a static class (the code) into a dynamic object (an active entity > in the computer's memory) with its own distinct identity."
+> "Instantiation is the 'birth' of an object. It transforms a static class (the code) into a dynamic object (an active entity in the computer's memory) with its own distinct identity."
 
 Checklist of terms to use if you get a long-answer question:
 
-* **Constructor**: The method that handles instantiation (in Python, usually referred to as `__init__`).
+* **Constructor**: The method that handles instantiation (in Python, usually referred to as `__init__`). It is called automatically when a new object is created from a class, and it is used to initialize the object's attributes.
 * **Memory Allocation**: The system setting aside space for the new object.
 * **Initialization**: Setting the starting state of the object.
 
@@ -176,34 +178,34 @@ Class Variables are shared by all instances of a class. They belong to the class
 
 * **Definition**: Variables that are shared by all instances of a class. They represent class-level state or constants.
 * **Location**: Defined directly within the class body, outside any methods.
-* **Access**: Can be accessed via the Class name (`GoodCat.number_of_cats`) or an instance (`cat1.number_of_cats`).
+* **Access**: Can be accessed via the Class name (`GoodCat.NUMBER_OF_CATS`) or an instance (`cat1.NUMBER_OF_CATS`).
 * **Storage**: They live in the class’s namespace (`Class.__dict__`).
 
 
 ```python
 class GoodCat:
     # A class variable shared by all instances
-    number_of_cats = 0
+    NUMBER_OF_CATS = 0
 
     def __init__(self, name):
         # An instance variable, unique to each instance
         self.name = name
-        GoodCat.number_of_cats += 1
+        GoodCat.NUMBER_OF_CATS += 1
 
 cat1 = GoodCat('Paws')
 cat2 = GoodCat('Whiskers')
 
 print(cat1.name)                # Paws
 print(cat2.name)                # Whiskers
-print(GoodCat.number_of_cats)   # 2
+print(GoodCat.NUMBER_OF_CATS)   # 2
 ```
 
 
 #### We also have Scope
 
-**Scope** refers to where these variables can be accessed. Instance variables are tied to the object's scope, while class variables are tied to the class's scope. What happens if you try to change a class variable using self?
+**Scope** determines where variables can be accessed. Instance variables belong to the object, while class variables belong to the class. If you try to change a class variable using self, it may create a new instance variable instead of modifying the class variable.
 
-The Common Pitfall: "Shadowing" (Shadowing is a frequent exam question)
+##### The Common Pitfall: "Shadowing" 
 
 The Oops:
 
@@ -219,26 +221,26 @@ The Yeah:
 
 ```python
 class GoodCat:
-    number_of_cats = 0  # Class variable
+    NUMBER_OF_CATS = 0  # Class variable
 
     def __init__(self, name):
         self.name = name  # Instance variable
-        GoodCat.number_of_cats += 1
+        GoodCat.NUMBER_OF_CATS += 1
 
 cat1 = GoodCat('Paws')
 cat2 = GoodCat('Whiskers')
 
 # CORRECT way to modify/access class variables
-print(GoodCat.number_of_cats)  # 2
+print(GoodCat.NUMBER_OF_CATS )  # 2
 
 # THE PITFALL: Accidental Shadowing
-cat1.number_of_cats = 999  # This creates an INSTANCE variable on cat1
-print(cat1.number_of_cats)    # 999 (looks at instance first)
-print(cat2.number_of_cats)    # 2 (looks at class)
-print(GoodCat.number_of_cats) # 2 (class variable remains unchanged)
+cat1.NUMBER_OF_CATS  = 999  # This creates an INSTANCE variable on cat1
+print(cat1.NUMBER_OF_CATS )    # 999 (looks at instance first)
+print(cat2.NUMBER_OF_CATS )    # 2 (looks at class)
+print(GoodCat.NUMBER_OF_CATS ) # 2 (class variable remains unchanged)
 ```
 
- If an exam question asks "how many copies of a class variable exist?", the answer is always **one**. If it asks "how many copies of an instance variable exist?", the answer is **one per instance**.
+If an exam question asks "how many copies of a class variable exist?", the answer is always **one**. If it asks "how many copies of an instance variable exist?", the answer is **one per instance**.
 
 ### Instance Methods vs. Class Methods vs. Static Methods
 
@@ -255,8 +257,15 @@ print(GoodCat.number_of_cats) # 2 (class variable remains unchanged)
 
 ```python
 class GoodDog:
+
+    def __init__(self, name):
+        self.name = name
+
     def speak(self): # Instance method
         return f'{self.name} says arf!'
+
+dog = GoodDog("Pugsly")
+print(dog.speak()) # Pugsly says arf!
 ```
 
 #### Class Methods ("The Factories")
@@ -275,6 +284,9 @@ class Animal:
     @classmethod
     def make_sound(cls): # Class method
         print(f'{cls.__name__}: A generic sound')
+
+dog = Animal()
+dog.make_sound() # Animal: A generic sound
 ```
 
 #### Static Methods (The "Namespace Utilities")
@@ -293,6 +305,9 @@ class TheGame:
     @staticmethod
     def show_rules(): # Static method
         print("These are the rules of the game.")
+
+uno = TheGame()
+uno.show_rules()
 ```
 
 #### Advanced Example: The "All-in-One" Class
@@ -304,7 +319,7 @@ class Pizza:
 
     # 1. Instance Method: Needs the specific pizza's ingredients
     def __repr__(self):
-        return f'Pizza({self.ingredients!r})'
+        return f'Pizza({self.ingredients})'
 
     # 2. Class Method: A "Factory" to create a specific type of pizza
     @classmethod
@@ -331,7 +346,7 @@ print(Pizza.validate_ingredient('pineapple')) # False (Static utility)
 
 > "State is the configuration of an object's properties at a specific moment in time. It represents the object's identity and determines how it will react to methods."
 
-**State (The "Snapshot")** refers to the data that an object holds at any given time. This data is stored in its instance variables. For example, a GoodDog object's state would include its name and age. State is dynamic; it changes as the program runs (e.g., a bank_account.balance changes after a deposit).
+**State (The "Snapshot")** refers to the data that an object holds at any given time. This data is stored in its instance variables. For example, a `GoodDog` object's state might include its name and age. State is dynamic; it changes as the program runs (e.g., a `bank_account.balance `changes after a deposit).
 
 **Another way to say it**:  "State is encapsulated within data attributes (instance variables). If you change the value of an instance variable, you have changed the object's state."
 
@@ -346,9 +361,9 @@ print(Pizza.validate_ingredient('pineapple')) # False (Static utility)
 **Fun Fact**: You can see all of an object's data attributes by looking at `object.__dict__`.
 
 Attributes: Any member of a class or object that is accessed via dot notation.
-    - **Data Attributes**: Store data (Variables like `self.name`).
-    - **Methods**: Store logic/behavior (Functions like `self.speak()`).
-    - **Python Fact**: In Python, methods are technically "callable attributes."
+- **Data Attributes**: Store data (Variables like `self.name`).
+- **Methods**: Store logic/behavior (Functions like `self.speak()`).
+- **Python Fact**: In Python, methods are technically "callable attributes."
 
 #### The "Everything is an Attribute" Example
 
@@ -374,24 +389,25 @@ print(sparky.__dict__)          # {'name': 'Sparky'}
 ```
 
 **Question**: "What is the relationship between state and attributes?" 
+
 **Answer**: "State is the current value of an object's data attributes. Attributes is the broader category that includes both the data (State) and the methods (Behavior)."
 
 ### Calling and Accessing Attributes: `self`, `cls`, `obj.__class__`
 
 > Both `self` and `cls` are conventions. Python automatically passes the instance or class as the first argument, and by convention, we name that parameter `self` or `cls`.
 
-- **`self` ("The Instance Binder")**: Inside an instance method, `self` is a reference to the specific object instance the method was called on. It's used to access that object's attributes, like `self.name`. `self` is the bridge between the method and the object’s memory space.
+* **`self` ("The Instance Binder")**: Inside an instance method, `self` is a reference to the specific object instance the method was called on. It's used to access that object's attributes, like `self.name`. `self` is the bridge between the method and the object’s memory space.
 
 **Alternative way to say it**: "`self` represents the explicit binding of an instance to a method. Python requires `self` to be explicitly defined in the signature so the method knows whose state it is modifying."
 
 **Exam Phrase**: "`self` allows for encapsulation by ensuring that a method only interacts with the data belonging to the specific object that called it."
 
-- **`cls` ("The Class Binder")**: Inside a class method, `cls` is a reference to the class itself. It's used to access class-level attributes, like a class variable or another class method.
+* **`cls` ("The Class Binder")**: Inside a class method, `cls` is a reference to the class itself. It's used to access class-level attributes, like a class variable or another class method.
 
 **Alternative way to say it**: "`cls` is a reference to the class itself, ensuring that even if a class is inherited, the class method has access to the correct class context (the child or the parent) that invoked it."
 
 
-- **`obj.__class__` ("The 'Genetic' Link")**: This is an attribute on any object that points back to the class it was created from. You can use it to access class attributes from an instance. For example, `sparky.__class__.number_of_dogs` would work if `number_of_dogs` were a class variable.
+* **`obj.__class__` ("The 'Genetic' Link")**: This is an attribute on any object that points back to the class it was created from. You can use it to access class attributes from an instance. For example, `sparky.__class__.number_of_dogs` would work if `number_of_dogs` were a class variable.
 
 **Alternative way to say it**: "This is a metadata attribute that reveals the 'type' of the object. It allows an instance to 'look up' and see the blueprints it was built from."
 
@@ -414,11 +430,12 @@ For the exam, it's worth noting:
 - `type(sparky)` is the built-in function that retrieves it.
 - They both point to the same thing: <class '__main__.GoodDog'>.
 
-"In Python, `self` and `cl`s are not reserved keywords, but conventions. They represent the first argument passed to methods. This design choice makes the connection between an object and its methods explicit rather than hidden."
+> "In Python, `self` and `cl`s are not reserved keywords, but conventions. They represent the first argument passed to methods. This design choice makes the connection between an object and its methods explicit rather than hidden."
 
 **Explicit vs Implicit**:
 
 Explicit Definition: You must include `self` or `cls` as the first parameter when writing the method code.
+
 Implicit Calling: You do not pass `self` or `cls` when you call the method. Python's "syntactic sugar" handles it for you.
 
 ```python
@@ -448,6 +465,9 @@ class GoodDog:
         if not isinstance(new_name, str):
             raise TypeError('Name must be a string')
         self._name = new_name
+
+sparky = GoodDog("Sparky")
+print(sparky.name()) #Sparky
 ```
 
 **Properties** are the more "Pythonic" way to manage getters and setters. They let you use the simple attribute access syntax (e.g., `sparky.name`) while still running your getter and setter methods in the background.
@@ -474,53 +494,52 @@ kate.name = 'Katherine'  # Calls the setter
 
 #### The "Uniform Access Principle" 
 
-The "Uniform Access Principle" is the formal name for why we use properties.
-
-**Definition**: "The Uniform Access Principle" states that all services offered by an object should be available through a uniform notation, which does not betray whether they are implemented through storage (variables) or computation (methods)."
+**Definition**: The "Uniform Access Principle" (UAP) is the formal name for why we use properties. The UAP suggests that the way an object's services are accessed should be consistent, regardless of whether they are implemented as variables or methods. This is where properties in Python come in handy, as they allow you to use the same syntax for accessing both attributes and methods, providing a uniform interface.
 
 **In plain English**: The person using your class shouldn't have to care if `kate.name` is a simple variable or a complex method. They just use the dot.
-
 
 ### Python Setters Explained
 
 #### How Python Connects `__init__` to a Setter
 
-When you assign a value to an attribute in `__init__` (or anywhere else), Python automatically uses the **setter** if that attribute is defined as a **property**. 
+When you assign a value to an attribute in `__init__`, Python automatically uses the **setter** if that attribute is defined as a **property**. 
 
 ##### Example
 
 ```python
 class Example:
     def __init__(self, value):
-        self._value = None
-        self.value = value  # ← This line calls the setter!
+        self._value = None  # private attribute used to store the actual value
+        self.value = value  # This line calls the setter!
     
     @property
     def value(self):
         """Getter method"""
         return self._value
     
-    @value. setter
+    @value.setter
     def value(self, new_value):
         """Setter method"""
         print(f"Setting value to {new_value}")
         if new_value < 0:
             raise ValueError("Value must be non-negative")
         self._value = new_value
+
+ten = Example(10) # Setting value to 10
 ```
 
 #### How It Works
 
-1. The `@property` decorator creates a property object for `value`
-2. When you write `self.value = something`, Python checks if `value` is a property
-3. If it finds a property with a setter defined, it calls the setter method
-4. This works through Python's **descriptor protocol** - properties are descriptors that intercept attribute access
+1. The `@property` decorator creates a property object for `value`.
+2. When you write `self.value = something`, Python checks if `value` is a property.
+3. If it finds a property with a setter defined, it calls the setter method.
+4. This works through Python's **descriptor protocol** - properties are descriptors that intercept attribute access.
 
 #### Behind the Scenes
 
 ```python
 # When you do this:
-self. value = 10
+self.value = 10
 
 # Python essentially does this:
 type(self).value.__set__(self, 10)  # Calls the setter method
@@ -540,12 +559,14 @@ If a property doesn't have a setter, Python raises an **AttributeError** when yo
 class Example:
     def __init__(self, value):
         self._value = value
-        self.value = 10  # ❌ AttributeError: property 'value' has no setter
+        self.value = 10  # AttributeError: property 'value'  of 'Example' has no setter
     
     @property
     def value(self):
         """Only a getter, no setter"""
         return self._value
+    
+ten = Example(10)
 ```
 
 **The Workaround:** Set the internal attribute directly
@@ -698,6 +719,7 @@ Python doesn't have strict private attributes like some other languages. Instead
 
 Btw, there's also a deleter property but its not covered in the materials.
 
+
 | Decorator        | Action  | Triggered by...         | Typical Use                  |
 |------------------|---------|-------------------------|------------------------------|
 | `@property`      | Getter  | `x = obj.attr`          | Formatting data for display  |
@@ -712,15 +734,20 @@ Btw, there's also a deleter property but its not covered in the materials.
 * Instead of saying "it runs a method in the background," use "intercepts attribute access."
 * Instead of "adding logic to variables," try  "managed attributes."
 
+
 ### Encapsulation and Polymorphism
 
 These are two fundamental principles of OOP.
 
 #### Encapsulation
 
-**Encapsulation** is the practice of bundling data (attributes) and the methods that operate on that data together within a single unit (a class). It also involves hiding the internal state of an object from the outside world and only exposing a controlled public interface (through methods and properties). Getters, setters, and the underscore conventions are tools for encapsulation.
+**Encapsulation** refers to two things:
+1. It is the practice of bundling data (attributes) and the methods that operate on that data together within a single unit (a class).
+2. It is also the hiding of the internal state of an object from the outside world and only exposing a controlled public interface (through methods and properties). 
 
-Here is a great example from the curriculum that demonstrates encapsulation in action.
+Getters, setters, and the underscore conventions are tools for encapsulation.
+
+Here is an example from the curriculum that demonstrates encapsulation in action.
 
 ```python
 
@@ -765,11 +792,9 @@ except TypeError as e:
 
 **How It Works**
 
-1. **​The Getter (`@property`)**​: 
+1. **​The Getter** (`@property`)​: The `@property` decorator is placed above a method with the same name as the desired property (color). This turns the method into a "getter." Now, when you access `lamp.color`, Python automatically calls this method and returns its result.
 
-The `@property` decorator is placed above a method with the same name as the desired property (color). This turns the method into a "getter." Now, when you access `lamp.color`, Python automatically calls this method and returns its result.
-
-2. **​The Setter** (`@color.setter`)​: The setter decorator is named after the getter method (`@color.setter`). This links it to the color property. When you assign a value, like `lamp.color = 'red'`, Python calls this setter method, passing `'red'` as the new_color argument. This is where we place our validation logic.
+2. **​The Setter** (`@color.setter`)​: The setter decorator is named after the getter method (`@color.setter`). This links it to the color property. When you assign a value, like `lamp.color = 'red'`, Python calls this setter method, passing `'red'` as the `new_color` argument. This is where we place our validation logic.
 
 3. **​The `__init__` Method**​: Notice the change in `__init__`. Instead of assigning directly to `self._color`, we now assign to `self.color`. This is a crucial improvement. It means that the validation logic inside the setter is executed ​even when the object is first created​. If you tried to create a SmartLamp with an invalid initial color (`SmartLamp(99)`), it would raise the `TypeError` immediately.
 
@@ -785,21 +810,16 @@ The `@property` decorator is placed above a method with the same name as the des
 
 Encapsulation treats an object as a 'Black Box.' The outside world knows what the box can do (its public methods/properties), but it doesn't need to know how it does it or what's inside. This is called **Information Hiding**.
 
-Encapsulation is not only about hiding data. It's actually two things:
-1. **Bundling**: Keeping data and methods in the same unit (the Class).
-2. **Access Control**: Hiding the internal state (the `_` variables) and providing a public interface (the properties).
-
-
 **"What is the main advantage of encapsulation?"**
 
-**Maintenance**: You can change the internal code without breaking external code.
-**Validation**: You can prevent garbage data from entering your object.
-**Readability**: It provides a clean, consistent way to interact with objects.
+* **Maintenance**: You can change the internal code without breaking external code.
+* **Validation**: You can prevent garbage data from entering your object.
+* **Readability**: It provides a clean, consistent way to interact with objects.
 
 
 #### Polymorphism
 
-**Polymorphism** means "many forms." In programming, it is the ability of different types of objects to provide a **consistent interface** for different underlying implementations. Instead of needing to know the specific type of an object, your code can be **type-agnostic**—it simply calls a method and trusts the object to respond appropriately.
+**Polymorphism** means "many forms." In programming, polymorphism is the ability of different types of objects to provide a consistent interface for different underlying implementations. Instead of needing to know the specific type of an object, your code can be **type-agnostic**—it simply calls a method and trusts the object to respond appropriately.
 
 *   **Greek Roots:** "Poly" (many) and "Morph" (form).
 *   **The Goal:** To allow one common interface to control many different data types.
@@ -816,14 +836,14 @@ Encapsulation is not only about hiding data. It's actually two things:
 * Only one implementation exists (YAGNI principle)
 * It makes the code harder to understand
 
-##### What are different ways to implement polymorphism?
+#### What are different ways to implement polymorphism?
 
 In Python, there are four primary ways to implement polymorphism:
 
 * **Primary 1: Inheritance (Formal / "Is-A" Relationship)**: Subclasses **override** a method inherited from a common superclass. This allows client code to treat them as generic versions of that superclass.
 
-    * **Key Concept: Method Overriding:** When a child class provides a specific implementation for a method already defined in its parent.
-    * **Key Concept: Dynamic Dispatch:** The "magic" where Python decides which version of a method to run **at runtime** based on the actual object type, not the variable type.
+    * **Method Overriding**: When a child class provides a specific implementation for a method already defined in its parent.
+    * **Dynamic Dispatch**: The "magic" where Python decides which version of a method to run **at runtime** based on the actual object type, not the variable type.
 
 Subclasses override a method inherited from a common superclass, allowing client code to treat them as generic versions of that superclass.
 
@@ -844,15 +864,17 @@ class Cat(Animal):
 animals = [Fish(), Cat(), Animal()]
 for animal in animals:    
     animal.move() # Dynamic Dispatch happens here
+
+#Output
+#I am a Fish: I am swimming.
+#I am a Cat: I am walking.
+#I am a Animal: I am not moving.
 ```
 
 
-All the classes are explicitly related through the Animal superclass.
+All the classes are explicitly related through the Animal superclass. The `Fish` and `Cat` classes override the move method to provide their own specific behaviors.
 
-* The `Fish` and `Cat` classes override the move method to provide their own specific behaviors.
-* The `Sponge` and `Coral` classes don't have their own move method, so they inherit the default behavior from the `Animal` class.
-
-Even though the objects are of different types, the for loop can treat them all as Animals and call the move method on each one, demonstrating polymorphism through inheritance.
+Even though the objects are of different types, the `for` loop can treat them all as Animals and call the move method on each one, demonstrating polymorphism through inheritance.
 
 Here is another example:
 
@@ -905,7 +927,7 @@ wedding.prepare(preparers)
 1. **​Common Superclass**:​ All the preparer classes (`Chef`, `Decorator`, `Musician`) inherit from a common superclass, `WeddingPreparer`. This creates a formal, explicit relationship between them. They are all officially a "type of" `WeddingPreparer`.
 2. **​Explicit Interface**:​ The `WeddingPreparer` class establishes a contract. By inheriting from it, the subclasses are expected to conform to its interface, which includes the `prepare_wedding` method.
 
-* **Primary Method 2: Duck Typing**: Often called **Structural Typing**. Python prioritizes an object's **behavior** (what it can do) over its **inheritance lineage** (what it is). If different objects implement methods with the same name, you can call those methods interchangeably.
+* **Primary Method 2:  Duck Typing**: Often called **Structural Typing**. Python prioritizes an object's **behavior** (what it can do) over its **inheritance lineage** (what it is). If different objects implement methods with the same name, you can call those methods interchangeably.
 
 > "If it walks like a duck and quacks like a duck, it's a duck."
 
@@ -930,13 +952,18 @@ animal_sound(cat) # Output: Meow
 
 Here, `animal_sound` works with both `Dog` and `Cat` objects because they both have a `make_sound` method. This is polymorphism in action.
 
-This occurs when unrelated types implement the same method names with compatible arguments and return values. Python focuses on whether an object has the required behavior rather than its specific class, enabling polymorphic use without a shared superclass. 
+Duck typing occurs when unrelated types implement the same method names with compatible arguments and return values. Python focuses on whether an object has the required behavior rather than its specific class, enabling polymorphic use without a shared superclass. 
 
 Here's Wedding again, except this time as duck typing. 
 
 ```python
 class Wedding:
-    # ... (attributes like guests, flowers, songs would be here) ...
+    
+    def __init__(self, guests, flowers, songs):
+        self.guests = guests
+        self.flowers = flowers
+        self.songs = songs
+
     def prepare(self, preparers):
         for preparer in preparers:
             # All it knows is that each preparer can `prepare_wedding`
@@ -964,10 +991,13 @@ class Musician:
         print("Preparing the performance...")
 
 # Example usage:
-wedding = Wedding(...)
+wedding = Wedding(100, "dahlias", "Pachbel's Canon")
 chef = Chef()
 decorator = Decorator()
 musician = Musician()
+preparers = [chef, decorator, musician]
+wedding.prepare(preparers)
+
 preparers = [chef, decorator, musician]
 wedding.prepare(preparers)
 ```
@@ -983,12 +1013,12 @@ So, what's the difference?  ​
 1. Relationship:    
     * ​Duck Typing:​ The `Chef`, `Decorator`, and `Musician` classes are ​unrelated​. They just happen to share a common behavior (the `prepare_wedding` method). The relationship is informal and based on capability.    
 
-    * ​Inheritance:​ The `Chef`, `Decorator`, and `Musician` classes are ​formally related​. They all share an "is-a" relationship with `WeddingPreparer`. A `Chef` ​is a​ `WeddingPrepare`r. This relationship is explicit in the code.
+    * ​Inheritance:​ The `Chef`, `Decorator`, and `Musician` classes are ​formally related​. They all share an "is-a" relationship with `WeddingPreparer`. A `Chef` ​is a​ `WeddingPreparer`. This relationship is explicit in the code.
 
 2.  ​Flexibility:    
     * Duck Typing:​ This approach is often considered more flexible and "Pythonic." Any object from any class can be used as a preparer, as long as it has a prepare_wedding method. You don't need to change its inheritance structure.   
      
-    * ​Inheritance:​ This is more rigid. An object can only be treated as a WeddingPreparer if its class inherits from WeddingPreparer. However, this rigidity can also be a benefit, as it creates a clear contract and allows you to share common code in the superclass.Both approaches achieve polymorphism, but they do so in different ways.
+    * ​Inheritance:​ This is more rigid. An object can only be treated as a `WeddingPreparer` if its class inherits from `WeddingPreparer`. However, this rigidity can also be a benefit, as it creates a clear contract and allows you to share common code in the superclass. Both approaches achieve polymorphism, but they do so in different ways.
 
 
 | Feature | Inheritance | Duck Typing |
@@ -1000,7 +1030,7 @@ So, what's the difference?  ​
 
 Both approaches achieve polymorphism, but they do so in different ways.
 
-* **Primary Method 3 Mix-ins (Component / "Can-Do" Relationship)** 
+* **Primary Method 3: Mix-ins (Component / "Can-Do" Relationship)** 
 
 Mix-ins use **Multiple Inheritance** to inject a set of methods into classes that are otherwise unrelated. You use these to share a "Can-Do" capability (like `CanColor` or `CanJSONify`) across your codebase.
 
@@ -1033,8 +1063,7 @@ for item in things:       
 # Color set to blue
 ```
 
-* **Primary Method 4: Operator Overloading (Symbolic Polymorphism)**
-The ability of a single operator (like `+` or `*`) to have different meanings depending on the data types it is working with.
+* **Primary Method 4: Operator Overloading (Symbolic Polymorphism)** The ability of a single operator (like `+` or `*`) to have different meanings depending on the data types it is working with.
 
 - **How it works:** Python uses "Magic Methods" (Dunder methods). By defining these in your class, you make your objects polymorphic with Python’s built-in operators.
 - **Common Dunder Methods:** `__add__` (+), `__len__` (len()), `__str__` (print()).
@@ -1253,37 +1282,35 @@ nemo = Fish("Nemo")
 print(nemo.swim())   # => Nemo is swimming.
 ```
 
+#### Benefits and Risks
+
+#### Benefits
+
 1. **​Unrelated Behaviors**​: Walking and swimming are distinct abilities. A `Dog` has both, a `Cat` has one, and a `Fish` has the other. There's no clean "is-a" hierarchy that could provide these methods to the correct classes without also giving them to classes that shouldn't have them.
 
 2. **​Code Reusability (DRY)**​: The logic for walk and swim is defined only once in their respective mix-ins. We don't have to copy and paste the same method into the `Dog`, `Cat`, or `Fish` classes.
 
-3. **​Clear Intent** ​: When you look at the class definition class `Dog(Animal, WalkableMixin, SwimmableMixin)`:, it's immediately clear what a `Dog` is and what it can do. It's an `Animal` that "has the ability to" walk and swim.4.  ​Flexibility​: If we wanted to create a Duck class later, we could easily give it both walking and swimming capabilities: class Duck(Animal, WalkableMixin, SwimmableMixin):. We just pick and choose the behaviors we need.This pattern of using mix-ins to provide optional or shared capabilities is a cornerstone of flexible object-oriented design in Python.
+3. **​Clear Intent** ​: When you look at the class definition class `Dog(Animal, WalkableMixin, SwimmableMixin)`:, it's immediately clear what a `Dog` is and what it can do. It's an `Animal` that "has the ability to" walk and swim.
+
+4. **​Flexibility**​: If we wanted to create a `Duck` class later, we could easily give it both walking and swimming capabilities. We just pick and choose the behaviors we need. This pattern of using mix-ins to provide optional or shared capabilities is a cornerstone of flexible object-oriented design in Python.
 
 
-#### Benefits and Risks 
-
-##### Benefits   
-
-* **​Code Reuse (DRY)​**: It allows you to write common behaviors once and reuse them across unrelated classes, adhering to the "Don't Repeat Yourself" principle.
-* **​Flexibility**​: It avoids creating rigid and deep inheritance hierarchies. You can add specific functionalities to any class as needed.
-* **​Clear Intent**​: Using a mix-in signals that you are adding a specific set of behaviors, not defining a parent-child type relationship.
-
-##### Risks   
+#### Risks   
 
 * **​Multiple Inheritance Complexity**​: Because mix-ins use multiple inheritance, they can introduce complexity. If multiple parent classes define methods with the same name, it can be hard to predict which one will be called without inspecting the MRO.
 
 * **​Naming Collisions**​: If a class and its mix-in, or two different mix-ins, define attributes or methods with the same name, they can overwrite each other, leading to unexpected bugs.
 
-##### What's the Most Pythonic Approach?
+#### What's the Most Pythonic Approach?
 
-Using mix-ins for interface inheritance is a very Pythonic pattern. It aligns with the principle of ​Composition Over Inheritance (COI)​, which many developers prefer.
-* Inheritance​ establishes an ​"is-a"​ relationship (e.g., a Motorcycle is a Vehicle).
-* ​Composition and Mix-ins​ establish a ​"has-a"​ relationship (e.g., a Car ​has the ability​ to be colored).
+Using mix-ins for interface inheritance is a very Pythonic pattern. It aligns with the principle of ​**Composition Over Inheritance** (COI)​, which many developers prefer.
+
+* Inheritance​ establishes an ​"is-a"​ relationship (e.g., a `Motorcycle` is a `Vehicle`).
+* ​Composition and Mix-ins​ establish a ​"has-a"​ relationship (e.g., a `Car` ​has the ability​ to be colored).
 
 #### Final Note: Mixins go on the left of the arguments
 
-Placing the mix-in to the left of the main parent class is the most common and "Pythonic" way to do it.The reason for this convention comes down to Python's **​Method Resolution Order (MRO)**​. When you call a method on an object, Python looks for that method in a specific sequence determined by the order of parent classes in your class definition. Placing mix-ins to the left of the superclass is the standard convention because it ensures their methods take precedence, which is almost always why you're using a mix-in in the first place.
-
+Placing the mix-in to the left of the main parent class is the most common and "Pythonic" way to do it.The reason for this convention comes down to Python's **​Method Resolution Order**​. When you call a method on an object, Python looks for that method in a specific sequence determined by the order of parent classes in your class definition. Placing mix-ins to the left of the superclass is the standard convention because it ensures their methods take precedence, which is almost always why you're using a mix-in in the first place.
 
 
 ### "Is-a" vs. "Has-a"
@@ -1302,11 +1329,11 @@ Many developers prefer "has-a" relationships over "is-a" relationships, a princi
 
 In OOP, ​composition​ is a design principle where a class uses one or more objects of other classes to provide some of its functionality. This is a powerful way to build complex objects by combining simpler ones. 
 
-The key idea behind composition is the ​"has-a" relationship​. For example, you could say a Car object "has an" Engine object. The Car class doesn't inherit from the Engine class (a car is not an engine), but it contains an instance of Engine and delegates tasks to it, like starting the car.
+The key idea behind composition is the ​"has-a" relationship​. For example, you could say a `Car` object "has an" `Engine` object. The Car class doesn't inherit from the `Engine` class (a car is not an engine), but it contains an instance of `Engine` and delegates tasks to it, like starting the car.
 
 This use of other objects is a form of ​collaboration​. The objects that a class interacts with to perform its responsibilities are often called collaborators.
 
-This use of other objects is a form of ​collaboration​. The objects that a class interacts with to perform its responsibilities are often called collaborators.Here's a simple conceptual example:
+This use of other objects is a form of ​collaboration​. The objects that a class interacts with to perform its responsibilities are often called collaborators. Here's a simple conceptual example:
 
 ```python
 class Engine:    
@@ -1314,14 +1341,15 @@ class Engine:    
         return "Engine started!"
 
 class Car:    
-    def __init__(self):        # The Car object is "composed" of an Engine object.   
-        self.engine = Engine() # It has an Engine.        
+    def __init__(self, engine):        # The Car object is "composed" of an Engine object.   
+        self.engine = engine         
            
     def start_car(self):        
         # The Car class delegates the work to its collaborator object.        
         return self.engine.start()
-        
-my_car = Car()
+
+v6 = Engine() 
+my_car = Car(v6)
 print(my_car.start_car())  # Outputs: Engine started!
 ```
 
@@ -1333,22 +1361,21 @@ A strong composition is built on a clear and logical ​"has-a" relationship​.
 
 2. **Collaboration**:​ The objects work together to achieve a goal. The curriculum notes that **"merely having an object inside your class isn't collaboration. At least one of the class's instance methods must use that object to aid the containing class's behavior."**
 
-3. **Logical Containment**:​ The relationship makes sense in the real world or the problem domain. A Person "has a" `Name`, and a `Car` "has an" `Engine`. The composed object is an integral part of the container. In many strong composition scenarios, the contained object's lifecycle is tied to the container—when the `Car` is destroyed, its specific `Engine` instance is also destroyed.
+3. **Logical Containment**:​ The relationship makes sense in the real world or the problem domain. A `Person` "has a" `Name`, and a `Car` "has an" `Engine`. The composed object is an integral part of the container. In many strong composition scenarios, the contained object's lifecycle is tied to the container—when the `Car` is destroyed, its specific `Engine` instance is also destroyed.
 
 
 #### Risks and Benefits 
 
-Thinking about these tradeoffs is a key part of becoming a proficient developer.
 
-##### Benefits
+#### Benefits
 
 * **Flexibility**:​ This is the primary advantage. You can easily swap out components. For example, you could give your `Car` a `V8Engine `or an `ElectricMotor` object. As long as they both have a start method, the `Car` class doesn't need to change. This is much harder to do with inheritance.
 
-* **​High Cohesion / Single Responsibility**:​ Each class can focus on doing one thing well. The `Car` class worries about car-related things, while the `Engine` class worries about engine-related things. This makes your code easier to understand, test, and maintain.
+* **​Single Responsibility**:​ Each class can focus on doing one thing well. The `Car` class worries about car-related things, while the `Engine` class worries about engine-related things. This makes your code easier to understand, test, and maintain.
 
 * **​Lower Coupling**:​ Composition reduces dependencies between classes. Unlike inheritance, where a change in a superclass can break all its subclasses, changes to a composed object's internal implementation won't break the container class, as long as its public interface remains the same.
 
-##### Risks (or Tradeoffs):
+#### Risks (or Tradeoffs):
 
 * **​Increased Indirection**:​ To understand how a `Car` starts, you have to look at the `Car` class and then navigate to the `Engine` class. This can sometimes make the code flow harder to trace compared to a single, larger class.
 
@@ -1357,9 +1384,9 @@ Thinking about these tradeoffs is a key part of becoming a proficient developer.
 
 #### Some more Examples of Composition
 
-##### Example 1: A Person and their Job
+#### Example 1: A `Person` and their `Job`
 
-A `Person` object isn't a type of `Job`, but it certainly "has a" Job. This is a classic "has-a" relationship.
+A `Person` object isn't a type of `Job`, but it certainly "has a" `Job`. This is a classic "has-a" relationship.
 
 ```python
 class Job:
@@ -1368,7 +1395,7 @@ class Job:
         self.salary = salary
 
     def get_description(self):
-        return f"Works as a {self.title} for ${self.salary:,} per year."
+        return f"work as a {self.title} for ${self.salary:,} per year."
 
 class Person:
     def __init__(self, name, job_title, job_salary):
@@ -1383,7 +1410,7 @@ class Person:
 # Create an instance
 engineer_job = Person("Maria", "Software Engineer", 120000)
 engineer_job.introduce()
-# Output: Hi, I'm Maria. I Works as a Software Engineer for $120,000 per year.
+# Output: Hi, I'm Maria. I work as a Software Engineer for $120,000 per year.
 ```
 
 ##### Example 2: A Library and its Books
@@ -1428,7 +1455,7 @@ my_library.list_books()
 
 #### Isn't Composition more "Pythonic" than Inheritance?
 
-While there's no official rule, the general consensus in the Python community—and modern object-oriented design—leans heavily in favor of composition. You could say that ​favoring composition is often more "Pythonic"​ because it aligns with core Python philosophies like simplicity and explicitness. 
+While there's no official rule, the general consensus in the Python community—and modern object-oriented design— leans heavily in favor of composition. You could say that ​favoring composition is often more "Pythonic"​ because it aligns with core Python philosophies like simplicity and explicitness. 
 
 Here's why:
 
@@ -1454,7 +1481,7 @@ It's important to remember that instance variables belong to the object instance
 
 ### Method Resolution Order (MRO)
 
-The **Method Resolution Order (MRO)** is the exact path Python follows to search for a method in a class hierarchy. Python has a well-defined algorithm for this to handle complex scenarios, including multiple inheritance and mix-ins.
+The **Method Resolution Order (MRO)** is the exact path Python follows to search for a method in a class hierarchy. Python has a well-defined algorithm for this to handle complex scenarios, including multiple inheritance and mix-ins. The algorithm is the **C3 Linearization Algorithm** and is used to create a linear order of classes that respects the inheritance hierarchy and ensures that subclasses are considered before their superclasses. This order is then used to determine which method to call when there are multiple possibilities due to inheritance.
 
 You can see the MRO for any class by calling the `.mro()` method on the class itself.
 
@@ -1488,6 +1515,31 @@ Output:
 ```
 
 When you call a method on a `Human` instance, Python will search for that method in this exact order, stopping as soon as it finds it. The search starts with the class itself (`Human`), moves through its mix-ins from left to right, and then proceeds to its superclass (`Primate`) and does the same for it, all the way up to the base `object` class.
+
+The MRO helps to prevent the "Diamond Problem", a common issue in multiple inheritance, where a class inherits from two classes that both inherit from a common superclass. This creates a "diamond" shape in the inheritance hierarchy.
+
+For example, consider the following classes:
+
+```python
+class A:
+    def method(self):
+        print("A")
+
+class B(A):
+    def method(self):
+        print("B")
+
+class C(A):
+    def method(self):
+        print("C")
+
+class D(B, C):
+    pass
+```
+
+In this example, class `D` inherits from both `B` and `C`, which both inherit from `A`. If you create an instance of `D` and call method, it’s unclear whether `B`’s or `C`’s method should be called. The C3 Linearization Algorithm helps resolve this ambiguity by determining a consistent order for method resolution.
+
+**`D` would call `B` first**. In the above example, the MRO for class `D` would be `D`, `B`, `C`, `A`. So, when you call method on an instance of D, it would first look in B, then C, and finally A. The C3 Linearization Algorithm ensures that this order is consistent and respects the inheritance hierarchy.
 
 [Back to the top](#top)
 
