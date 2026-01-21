@@ -1551,20 +1551,22 @@ Further References:
 
 ## The is Operator and id() Function
 
-Let's review a fundamental concept in Python, **The "Three Pillars" of an Object**:
+Let's remember the most fundamental tenant of Python,
 
-It’s helpful to remember that every object in Python has three distinct properties:
+ **The "Three Pillars" of an Object**:
+
+Every object in Python has three distinct properties:
 
 1. **Identity**: Its address in memory (checked with `is` or `id()`).
-2. **Type**: Its class (checked with `type()` or i`sinstance()`).
+2. **Type**: Its class (checked with `type()` or `isinstance()`).
 3. **Value**: The data it contains (checked with `==`).
 
 
 The built-in `id()` function and the `is` operator are closely related. They both deal with an object's **identity**.
 
-- **id() function**: The `id()` function returns a unique integer for an object that is constant for its entire lifetime. In many Python implementations, this is the object's memory address. You can think of it as a unique "serial number" for that specific object in memory.
+- **`id()` function**: The `id()` function returns a unique integer for an object that is constant for its entire lifetime. In many Python implementations, this is the object's memory address. You can think of it as a unique "serial number" for that specific object in memory.
 
-- **is operator**: The `is` operator compares the identity of two objects. It evaluates to `True` only if two variables point to the exact same object in memory. In other words, `a is b` is equivalent to `id(a) == id(b)`.
+- **`is` operator**: The `is` operator compares the identity of two objects. It evaluates to `True` only if two variables point to the exact same object in memory. In other words, `a is b` is equivalent to `id(a) == id(b)`.
 
 This is different from the `==` operator, which compares the **values** of two objects. You can have two different objects in memory that have the same value, so `==` would be `True` but `is` would be `False`.
 
@@ -1590,11 +1592,13 @@ print(person2 is person3) # True - same object
 
 ### Magic Methods (Dunder Methods)
 
-Magic methods, also known as "dunder" methods (for **d**ouble **under**score), are special methods that let you customize the behavior of your classes. Their names always start and end with double underscores (e.g., `__init__`, `__str__`). You typically don't call these methods directly. Instead, Python calls them for you when you use certain syntax, like operators (`+`, `==`) or built-in functions (`str()`, `repr()`).
+Magic methods, also known as "dunder" methods (for **double underscore**), are special methods that let you customize the behavior of your classes. They help make your classes more intuitive and integrate better with Python's built-in functions and operators.
+
+Their names always start and end with double underscores (e.g., `__init__`, `__str__`). You typically don't call these methods directly. Instead, Python calls them for you when you use certain syntax, like operators (`+`, `==`) or built-in functions (`str()`, `repr()`).
 
 #### Custom Comparison Methods: `__eq__`, `__ne__`, `__lt__`, etc.
 
-These methods allow you to define how instances of your custom class behave with comparison operators.
+These methods allow you to define how instances of your custom class behave with comparison operators. Specifically, the dunder comparison methods allow you to define how operators like `==`, `!=`, `<`, and `>` work with instances of your classes.
 
 - `__eq__`: For equality (`==`)
 - `__ne__`: For inequality (`!=`)
@@ -1603,32 +1607,15 @@ These methods allow you to define how instances of your custom class behave with
 - `__gt__`: For greater than (`>`)
 - `__ge__`: For greater than or equal to (`>=`)
 
-By defining these, you give Python instructions on how to determine if one of your objects is equal to, not equal to, or greater/less than another object.
-
-### Custome Comparison Methods: `__eq__`, `__gt__`, `__lt__`, etc:
-
-What are Dunder Comparison Methods? In Python, methods with names surrounded by double underscores (like `__init__`) are called "magic methods" or "dunder methods." They let you customize the behavior of your objects to integrate with Python's core features.
 
 The dunder comparison methods allow you to define how operators like `==`, `!=`, `<`, and `>` work with instances of your classes.
-
-Here are the primary comparison methods:
-* `__eq__`: Corresponds to the `==` (equal to) operator.
-* `__ne__`: Corresponds to the `!=` (not equal to) operator.
-* `__lt__`: Corresponds to the `<` (less than) operator.
-* `__le__`: Corresponds to the `<=` (less than or equal to) operator.   
-* `__gt__`: Corresponds to the `>` (greater than) operator.
-* `__ge__`: Corresponds to the `>=` (greater than or equal to) operator.
 
 
 #### Equality Methods: `__eq__` and `__ne__`
 
-By default, Python's `==` operator checks if two variables refer to the ​same object​ (identity), which is the same as using the is operator. This is often not what you want. You usually want to consider two objects equal if their ​state​ is the same.
+By default, Python's `==` operator checks if two variables refer to the ​same object​ (identity), which is the same as using the `is` operator. This is often not what you want. You usually want to consider two objects equal if their ​state​ is the same.
 
 You can define your own logic for equality by implementing the `__eq__` method. 
-
-* `==` checks value equality (uses `__eq__`) (Value equality is officially known as "Semantic Equality")
-* `is` checks identity (same object in memory)
-* If you don't define `__eq__`, Python defaults to comparing object identity
 
 When Python encounters `a == b`, it effectively calls `a.__eq__(b)`. Here's an example. Without a custom `__eq__` method, two different `Cat` objects with the same name are not considered equal:
 
@@ -1651,7 +1638,6 @@ class Cat:
         self.name = name
 
     def __eq__(self, other):
-        # It's good practice to check if the other object is of the same type
         if not isinstance(other, Cat):
             return NotImplemented
         return self.name == other.name
@@ -1661,6 +1647,7 @@ fluffy2 = Cat('Fluffy')
 
 print(fluffy == fluffy2)      # True, because their names are the same
 ```
+
 While defining `__eq__` often gives you a working `__ne__` for free, it's best practice to define `__ne__` yourself to handle all cases correctly, especially when dealing with different types.
 
 Another example:
@@ -1676,11 +1663,8 @@ class Person:
         This method is called when you use ==
         It must return True or False
         """
-        # ALWAYS check if 'other' is the right type first!
         if not isinstance(other, Person):
-            return NotImplemented  # Let Python try other comparison methods
-        
-        # Now define what makes two Person objects "equal"
+            return NotImplemented 
         return self.name == other.name and self.age == other.age #NOTICE YOU CAN OPERATOR CHAIN THEM
 
 # Why is this important?
@@ -1698,7 +1682,7 @@ print(alice1 is alice2)  # False - different objects in memory
 
 #### Ordered Comparison Methods: `__lt__`, `__gt__`, etc.
 
-If you try to compare custom objects using operators like < or > without defining the corresponding methods, Python will raise a TypeError.
+If you try to compare custom objects using operators like < or > without defining the corresponding methods, Python will raise a `TypeError`.
 
 ```python
 class Person:
@@ -1709,10 +1693,10 @@ class Person:
 ted = Person('Ted', 33)
 carol = Person('Carol', 49)
 
-# The following line would raise a TypeError
-# if ted < carol:
-#     print('Ted is younger than Carol')
+if ted < carol:
+    print('Ted is younger than Carol') #TypeError: '<' not supported between instances of 'Person' and 'Person'
 ```
+
 
 To fix this, you need to implement the ordered comparison methods. Let's add `__lt__ `(less than) and `__gt__` (greater than) to compare Person objects based on their age.
 
@@ -1764,7 +1748,7 @@ print(t == "cold")  # False (Returns NotImplemented, Python defaults to False)
 
 #### A Note on `NotImplemented`
 
-In the examples above, you can see return`NotImplemented`. This is a special singleton value that you should return from a comparison method if it doesn't know how to handle the other object's type.
+In the examples above, you can see `NotImplemented` returned. This is a special singleton value that you should return from a comparison method if it doesn't know how to handle the other object's type.
 
 When a method returns `NotImplemented`, Python knows to try the "reflected" operation on the other object. For example, if `a < b` calls `a.__lt__(b)` and it returns `NotImplemented`, Python will then try `b.__gt__(a)`. If all attempts fail, a `TypeError` is raised. This makes your custom classes more robust and able to interact with other types gracefully.
 
@@ -1812,7 +1796,7 @@ class Movie:
     def __eq__(self, other):
         if not isinstance(other, Movie):
             return NotImplemented
-        return self.title == other.title and self.rating == other.rating
+        return self.title == other.title and self.rating == other.rating #Notice the chaining! 
 
     # Inequality
     def __ne__(self, other):
@@ -1878,9 +1862,9 @@ print(f"movie_a >= movie_c: {movie_a >= movie_c}")  # True, because 8.1 is great
 
 ##### Breakdown of the Methods
 
-1. `__eq__` and `__ne__` check for value equality. In this case, two Movie objects are only considered equal if both their title and rating are identical.   
+1. `__eq__` and `__ne__` check for value equality. In this case, two `Movie` objects are only considered equal if both their title and rating are identical.   
 2. The ordered comparison methods (`__lt__`, `__le__`, `__gt__`, `__ge__`) are all based on a single attribute: the rating. This allows you to sort a list of `Movie` objects or find the one with the highest rating. 
-3. Notice that each method includes if not `isinstance(other, Movie): return NotImplemented`. This is a robust way to handle comparisons with objects of different types, as covered in the curriculum.
+3. Notice that each method includes `if not isinstance(other, Movie): return NotImplemented`. This is a robust way to handle comparisons with objects of different types, as covered in the curriculum.
 
 
 #### Custom Arithmetic Methods: `__add__`, `__sub__`, `__mul__`, etc.
@@ -1890,7 +1874,11 @@ These methods let you define how arithmetic operators work with your objects. Fo
 - `__add__`: Defines behavior for the `+` operator.
 - `__iadd__`: Defines behavior for the augmented assignment `+=` operator.
 - `__sub__`: Defines behavior for the `-` operator.
+- `__isub__`: Defines behavior for the augmented assignment `-=` operator.
 - `__mul__`: Defines behavior for the `*` operator.
+- `__imul__`: Defines behavor for the augmented assignment `*=` operator.
+- `__truediv__`: Defines behavior for the `/` operator.
+- `__itruediv__`: Defines behavior for the augmented assignment `/=` operator.
 
 ```python
 class Vector:
@@ -1953,6 +1941,22 @@ class Vector:
         self.y *= scalar
         return self
 
+    def __truediv__(self, scalar):
+        """Defines the behavior for the `/` operator with a number."""
+        if not isinstance(scalar, (int, float)):
+            return NotImplemented
+        new_x = self.x / scalar
+        new_y = self.y / scalar
+        return Vector(new_x, new_y)
+
+    def __itruediv__(self, scalar):
+        """Defines the behavior for the `/=` operator (in-place)."""
+        if not isinstance(scalar, (int, float)):
+            return NotImplemented
+        self.x /= scalar
+        self.y /= scalar
+        return self
+
 ```
 
 **How to Use It**
@@ -1996,16 +2000,26 @@ print(f"v1 before *=: {v1}")
 v1 *= 2
 print(f"v1 after  *=: {v1}\n")
 
+# --- Scalar Division (/) ---
+# Calls v1.__truediv__(2) and returns a new Vector
+quotient_vector = v1 / 2
+print(f"v1 / 2        = {quotient_vector}")
+print(f"v1 is unchanged: {v1}\n")
+
+# --- In-place Scalar Division (/=) ---
+# Calls v1.__itruediv__(2) and modifies v1 in-place
+v1 /= 2
+print(f"v1 /= 2       = {v1}")
+print(f"v1 is modified:  {v1}")
+
 ```
 
 ##### Key Patterns to Notice
 
 1.  **​Standard vs. In-Place Operators**​:
 
-* The standard methods (`__add__`, `__sub__`, `__mul__`) do not change the original object (`self`). They perform the calculation and return a ​new instance​ of the class with the result.
-    - Returns a NEW object. This is "immutable-like" behavior.
-* The in-place, or augmented assignment, methods (`__iadd__`, `__isub__`, `__imul__`) ​mutate the object​ (`self)`. The curriculum emphasizes that you must return self from these methods for them to work correctly.
-    - Modifies the EXISTING object (`self`). This is "mutable" behavior.
+* The standard methods (`__add__`, `__sub__`, `__mul__`, `__truediv__`) do not change the original object (`self`). They perform the calculation and return a NEW OBJECT of the class with the result. This is "immutable-like" behavior.
+* The in-place, or augmented assignment, methods (`__iadd__`, `__isub__`, `__imul__`) ​mutate the EXISTING object​ (`self`). The curriculum emphasizes that you must return `self` from these methods for them to work correctly. This is "mutable" behavior.
 
 If you define `__add__` but forget to define `__iadd__`, Python will actually fall back to using `__add__` (thereby creating a new object) for the `+=` operation. However, defining `__iadd__` explicitly is better for performance because it avoids creating a new object.
 
@@ -2026,8 +2040,8 @@ The Solution: Python then looks for `v1.__radd__(5)`.
 
 3.  **​Type Checking and `NotImplemented`**​:
 
-* It is a best practice to check if the other operand is of a compatible type. In our example, `__add__` expects another Vector, while `__mul__` expects a number (int or float).
-* If the operation is not supported with the given type, you should return the special singleton value `NotImplemented`. This allows Python to try other ways to complete the operation (for instance, if the right-hand operand's class also defines the operation).
+* It is a best practice to check if the other operand is of a compatible type. In our example, `__add__` expects another Vector, while `__mul__`  and `__truediv__` expects a number (int or float).
+* If the operation is not supported with the given type, don't forget to return `NotImplemented`. This allows Python to try other ways to complete the operation (for instance, if the right-hand operand's class also defines the operation).
 
 4.  **​Consistency**​:
 
@@ -2067,11 +2081,73 @@ cat = Cat('Fuzzy')
 
 print(str(cat))  # Fuzzy (calls __str__)
 print(repr(cat)) # Cat('Fuzzy') (calls __repr__)
+
+```
+To format the `__repr__` method, you typically return a string that includes the class name and the values of the important attributes of the object. This helps to clearly identify the object and its state.
+
+```python
+
+# for numbers
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __repr__(self):
+        return f"Point(x={self.x}, y={self.y})"
+
 ```
 
-They were created to solve a fundamental problem: an object can have more than one useful string representation, depending on the audience.
+In this example, the __repr__ method returns a string that includes the class name (Point) and the values of the `x` and `y` attributes. This way, when you print a `Point` object or look at it in a debugger, you can easily see its state.
+
+```python
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def __repr__(self):
+        return f"Person(name='{self.name}', age={self.age})"
+```
+
+In this example, the `name` attribute is a string, so it’s enclosed in quotes in the `__repr__` method. This helps to distinguish string values from other types of values, like numbers.
+
+**What if there are more than two values??**
+
+If your object has more than two attributes, you can include all of them in the `__repr__` string. Just separate them with commas, like in the examples we’ve seen. The goal is to provide a clear and complete representation of the object’s state.
+
+```python
+
+class Car:
+    def __init__(self, make, model, year, features):
+        self.make = make
+        self.model = model
+        self.year = year
+        self.features = features
+
+    def __repr__(self):
+        return f"Car(make='{self.make}', model='{self.model}', year={self.year}, features={self.features})"
+
+``` 
+
+If your object has a mix of data types, you can format the `__repr__` method to include all of them, just like in the previous examples. You can include strings in quotes, numbers as they are, and other data types in a way that makes sense for that type.
+
+```python
+class Product:
+    def __init__(self, name, price, quantity):
+        self.name = name
+        self.price = price
+        self.quantity = quantity
+
+    def __repr__(self):
+        return f"Product(name='{self.name}', price={self.price}, quantity={self.quantity})"
+```
+
+In this example, name is a string, so it’s enclosed in quotes, while price and quantity are numbers, so they’re included as is.
 
 **The "Why": Different Audiences, Different Goals**
+
+`__str__` and `__repr__` were created to solve a fundamental problem: an object can have more than one useful string representation, depending on the audience.
 
 The core reason for having two separate methods is to serve two distinct audiences:
 
@@ -2111,7 +2187,7 @@ This is perhaps the most important rule to remember about their relationship:
 
 This behavior is why it's a common best practice to ​always implement `__repr__`​ for your custom classes. If you provide a good `__repr__`, you get a reasonable default behavior for `str()` for free. You can then add a` __str__` later if you need a more user-friendly version.
 
-2. **Containers Use __repr__ for Their Elements**
+2. **Containers Use `__repr__` for their elements**
 
 This is a subtle but powerful point. When you print a container object like a list or a dictionary, the container's own `__str__` method is called. However, to represent the ​items inside it​, it calls `__repr__` on each element. This is done to ensure the output is unambiguous. Consider a list of `Cat` objects:
 
@@ -2142,7 +2218,7 @@ print(cats)
 
 If the list used `__str__` for its elements, the output would be `[A cat named Fuzzy, A cat named Whiskers]`, which is much less clear and not useful for debugging. The `__repr__ `output tells you exactly what objects are in the list.
 
-3. **String Interpolation (f-strings) `Uses __str__`**
+3. **String Interpolation (f-strings) Uses `__str__`**
 
 When you embed an object in an f-string, Python implicitly calls `str()` on it.
 ```python
@@ -2162,20 +2238,9 @@ class Card:
         self.suit = suit
     
     def __str__(self):
-        """
-        Called by str() and print()
-        Purpose: User-friendly, readable output
-        Audience: End users of your program
-        """
         return f"{self.rank} of {self.suit}"
     
     def __repr__(self):
-        """
-        Called by repr() and when you type the object name in REPL
-        Purpose: Unambiguous, developer-friendly representation
-        Audience: Developers debugging code
-        Ideal: Should be valid Python code that recreates the object
-        """
         return f"Card('{self.rank}', '{self.suit}')"
 
 # Demonstrating the difference
@@ -2215,7 +2280,7 @@ Page Reference: [Object Oriented Programming with Python, Magic Methods](https:/
 
 #### The `__name__` Attribute
 
-The `__name__` attribute has two common contexts: modules and classes.
+This attribute is used to get the name of a class as a string. It’s often used for debugging or logging purposes, to identify the class of an object. The `__name__` attribute has two common contexts: modules and classes.
 
 1. **`__name__` in a Module**
 
@@ -2274,9 +2339,11 @@ class Child(Parent):
 print(Child.get_my_name()) # Output: 'Child'
 ```
 
-The Lesson: `__name__` always reflects the name of the specific class it is called on, even if the method was inherited from a parent.
+**The Lesson**: `__name__` always reflects the name of the specific class it is called on, even if the method was inherited from a parent.
 
 #### The `__class__` Attribute
+
+This attribute is used to get the class of an object. It returns the class object itself, not just the name. This means you can use it to create new instances of the class or access class variables. 
 
 The `__class__` attribute is accessed on an ​​instance​​ of a class. It returns a reference to the class object that the instance was created from. This is incredibly useful for finding out what type of object you are working with at runtime.
 
@@ -2330,10 +2397,10 @@ print(whiskers.__class__.__name__) # Output: 'Cat'
 
 ##### The String vs. Object Distinction
 
-* `__name__` returns a String (e.g., "Cat").
+* `__name__` returns a string (e.g., "Cat").
 * `__class__` returns the Class Object itself (e.g., `<class 'Cat'>`).
 
-Why it matters: You can't call a method on a string, but you can use the class object to create new instances or access class variables.
+Why it matters: You can't call a method on a string, but you can use the class object to create new instances or access class variables. This is because the class object contains all the methods and variables defined in the class, while the name is just a string.
 
 
 Summary of Differences:
@@ -2376,7 +2443,7 @@ An exception is an event that occurs during the execution of a program that disr
 
 In Python, exceptions are objects that represent an error. Yes, _the error itself becomes an object_. 
 
-Since the error is an object, that means it has a 
+Since the error is an object, that means it has a: 
 
 1. Type (what kind of object it is)
 2. Value (what data it holds)
@@ -2384,13 +2451,13 @@ Since the error is an object, that means it has a
 
 
 ```python
-result = 10 / 0 # This line causes a ZeroDivisionError: 
+result = 10 / 0 # This line causes a ZeroDivisionError
 ```
 
-Behind the scenes, Python does this:
+Behind the scenes, Python does this with `result = 10 / 0`:
 
 ```python
-# Python creates an exception object:
+# Python creates an exception object
 exception_object = ZeroDivisionError("division by zero")
 
 # Then it "raises" (throws) that object:
@@ -2418,8 +2485,8 @@ try:
     result = 10 / 0
 except ZeroDivisionError as e:
     # The exception object has properties:
-    print(e.args)  # The arguments passed to it
-    print(type(e))  # The type of the object
+    print(e.args)   # ('division by zero',)
+    print(type(e))  # <class 'ZeroDivisionError'>
 
 ```
 
@@ -2429,8 +2496,8 @@ try:
     result = 10 / 0
 except ZeroDivisionError as e:
     # You can call methods on the exception object:
-    print(e.__str__())  # Get the string representation
-    print(e.__class__)  # Get the class
+    print(e.__str__())  # Get the string representation: division by zero
+    print(e.__class__)  # Get the class: <class 'ZeroDivisionError'>
 ```
 
 3. **Custom exceptions can have custom properties**
@@ -2438,17 +2505,17 @@ except ZeroDivisionError as e:
 ```python
 class InsufficientFundsError(Exception):
     def __init__(self, balance, amount):
-        self.balance = balance  # Property 1
-        self.amount = amount    # Property 2
+        self.balance = balance  # Attribute 1
+        self.amount = amount    # Attribute 2
         super().__init__(f"Balance {balance} is less than {amount}")
 
 try:
     raise InsufficientFundsError(100, 500)
 except InsufficientFundsError as e:
-    # e is an object!   It has properties:
-    print(e.balance)  # Access property:  100
-    print(e. amount)   # Access property: 500
-    print(e)          # Get the message: "Balance 100 is less than 500"
+    # e is an object!   It has attributes!
+    print(e.balance)   # Access attribute:  100
+    print(e. amount)   # Access attribute: 500
+    print(e)           # "Balance 100 is less than 500"
 ```
 
 #### Concrete Example: Seeing the Object
@@ -2460,18 +2527,16 @@ Let's watch the exception object directly:
 error_obj = ValueError("This is invalid!")
 
 # It's just an object sitting there:
-print(error_obj)  # This is invalid! 
-print(type(error_obj))  # <class 'ValueError'>
+print(error_obj)       #This is invalid! 
+print(type(error_obj)) # <class 'ValueError'>
 print(error_obj.args)  # ('This is invalid!',)
 
 # You can pass it around like any object:
 def log_error(error):
-    print(f"Error type: {type(error)}")
-    print(f"Error message: {error}")
+    print(f"Error type: {type(error)}") # Error type: <class 'ValueError'>
+    print(f"Error message: {error}") # Error message: This is invalid!
 
 log_error(error_obj)
-# Error type: <class 'ValueError'>
-# Error message: This is invalid! 
 
 # You can raise it later:
 raise error_obj
@@ -2485,18 +2550,17 @@ Here's what happens step by step:
 # Step 1: An error occurs
 result = 10 / 0
 
-# Step 2: Python creates an exception object
-# (This happens automatically, behind the scenes)
+# Step 2: Python creates an exception object. This happens automatically, behind the scenes
 
-# Step 3: Python "raises" (throws) that object
-# (Program stops and the exception propagates up the call stack.)
+# Step 3: Python "raises" (throws) that object. Program stops and the exception propagates up the call stack.
 
 # Step 4: You catch the object
 try:
     result = 10 / 0
 except ZeroDivisionError as e:
-    # Step 5: Now you have the object in your hands! 
-    # e is the exception object
+
+# Step 5: Now you have the object in your hands! 
+# e is the exception object
     print(e)
     print(type(e))
     print(e.args)
@@ -2521,7 +2585,7 @@ except Exception as e:
 **Reason 2**: You can extract custom data from it
 ```Python
 try:
-    account. withdraw(500)
+    account.withdraw(500)
 except InsufficientFundsError as e:  # e is an object with custom properties! 
     print(f"You need ${e.shortfall} more")
 ```
@@ -2549,10 +2613,7 @@ person = {
 }
 
 # Exception objects:
-error = InsufficientFundsError(
-    balance=100,
-    amount=500
-)
+error = InsufficientFundsError(balance=100, amount=500)
 
 # Both are objects with properties! 
 print(person["name"])  # Alice
@@ -2616,22 +2677,6 @@ The essential and optional elements are:
 
 *  **​finally Block (Optional)**​: This block contains code that will ​always​ run, no matter what happens—whether an exception was raised, caught, or not. It is typically used for cleanup actions, like closing a file or releasing network resources. If included, it must be the very last block.
 
-Here is a complete example from the curriculum that shows all four elements in the correct order:
-
-```python
-try:    # 1. The code that might cause an error goes here.    
-    num_str = input("Enter a number: ")    
-    num = int(num_str)    
-    result = 10 / num
-except ValueError:    # 2. This runs if a ValueError occurs (e.g., input is not a number).    
-    print("Invalid input, you didn't enter a number.")
-except ZeroDivisionError:    # 3. This runs if a ZeroDivisionError occurs (e.g., input is '0').    
-    print("Cannot divide by zero.")
-else:    # 4. (Optional) This runs ONLY if no exceptions occurred in the 'try' block.    
-    print(f"Result: {result}")
-finally:    # 5. (Optional) This code ALWAYS runs, regardless of what happened.    
-    print("Exception handling complete.")
-```
 
 | Block     | When does it run?                | Common Purpose                                        |
 |-----------|----------------------------------|-------------------------------------------------------|
@@ -2701,19 +2746,80 @@ All standard built-in exceptions like `ValueError`, `TypeError`, and `FileNotFou
 
 Custom Exceptions follow the same rule:​ When you create your own custom exception, you must make it a subclass of `Exception` (or one of its children).
 
+#### What is the difference between 'raising' an exception and 'catching' an exception?
+
+In Python, raising and catching exceptions are two sides of the same coin: one triggers an error state, and the other handles it.
+
+1. Raising Exceptions
+
+Raising is the act of manually triggering an exception. You do this when your code encounters a situation it cannot or should not handle internally, or when a specific condition (like invalid input) is met.
+
+Keyword: `raise`
+Purpose: To signal that something has gone wrong.
+Direction: Sends the error up the call stack.
+When to Use: When a function detects it cannot fulfill its task.
+
+Example:
+```python
+def set_age(age):
+    if age < 0:
+        # We manually trigger an error because age cannot be negative
+        raise ValueError("Age cannot be negative.")
+    print(f"Age set to {age}")
+
+set_age(-5) # This will crash the program unless "caught"
+```
+
+2. Catching Exceptions
+
+Catching is the act of intercepting an exception that has been raised (either by your code, a library, or Python itself) so that you can handle it gracefully instead of letting the program crash.
+
+Keywords: `try`, `except`
+Purpose: To recover from errors and keep the program running.
+Direction: Stops the error from moving up the stack.
+When to Use: When you want to provide a fallback or log an error without crashing.
+
+Example:
+```python
+try:
+    set_age(-5)
+except ValueError as e:
+    # We "catch" the error here
+    print(f"Caught an error: {e}")
+    # The program continues running from here
+```
+
+**The Flow**
+1. A function raises an exception.
+2. Python looks for a catch (`except` block) in the current function.
+3. If not found, it moves up to the caller, then the caller's caller (the "call stack").
+4. If it reaches the top level without being caught, the program terminates with a Traceback.
+
+**Philosophies: "Fail Fast" vs. "Graceful Degradation"**
+
+Raising is about "Failing Fast": It is often better to raise an error immediately when a problem is detected (e.g., a function receives a string instead of an integer) rather than allowing the program to continue with corrupted data.
+
+Catching is about "Graceful Degradation": You catch exceptions at "boundaries" (like a UI or a web API endpoint) to show a user-friendly message or provide a default value instead of showing a raw code crash.
+
+**Best Practice Tip: Be Specific**
+
+When Raising: Raise the most specific exception possible (e.g., ValueError instead of just Exception).
+
+
 #### What are the best practices for writing an exception block?
 
-* ​Be Specific:​ Catch the most specific exception you can. Avoid catching a generic `Exception` or using a bare `except:` clause unless you have a very good reason (like logging all unexpected errors before terminating). A bare `except:` can hide bugs by catching things you didn't anticipate, like a `SystemExit` or `KeyboardInterrupt`.
+* ​Be Specific:​ Raise the most specific exception possible (e.g., `ValueError` instead of just `Exception`). Avoid catching a generic `Exception` or using a bare `except:` clause unless you have a very good reason (like logging all unexpected errors before terminating). A bare `except:` can hide bugs by catching things you didn't anticipate, like a `SystemExit` or `KeyboardInterrupt`.
 
 Why not bare excepts?
 
-**The Reason**: It catches `BaseException` subclasses like `KeyboardInterrupt` (Ctrl+C) and `SystemExit`.
+**The Reason 1**: It catches `BaseException` subclasses like `KeyboardInterrupt` (Ctrl+C) and `SystemExit`.
+**The Reason 2** It's considered a 'code smell'.
 **The Result**: If you use a bare `except:`, the user might not be able to stop your program using the keyboard!
 **The Rule**: Always catch Exception (which ignores those system-level signals) or a specific subclass.
 
 * Keep `try` Blocks Minimal:​ Only wrap the single line or small section of code that you actually expect to fail. This makes it crystal clear where an error might originate and prevents you from accidentally catching an exception from an unrelated part of the code.
 
-* ​Provide Meaningful Recovery or Feedback:​ Don't let an except block do nothing (e.g., except ValueError: pass).
+* ​Provide Meaningful Recovery or Feedback:​ Don't let an except block do nothing (e.g., `except ValueError: pass`).
 
 This silently swallows errors and can lead to very confusing behavior. Instead, you should:    
 1. Log the error for later debugging. 
@@ -2722,7 +2828,7 @@ This silently swallows errors and can lead to very confusing behavior. Instead, 
 4. Re-raise the exception if the current function can't handle it.
 5. ​Use `finally` for Cleanup:​ If you have actions that ​must​ happen regardless of whether an exception occurred (like closing a file or releasing a resource), place them in a `finally` block.
 
-##### `raise...from`
+#### `raise...from`
 
 Sometimes you catch an exception and want to raise a different one, but you don't want to lose the original "cause."
 
@@ -2769,15 +2875,15 @@ except (TypeError, ValueError) as e:
 
 In this example, the price setter validates the incoming value. If the value violates the rules, the setter raises an appropriate exception. The code that attempts to create the Product can then use a `try...except` block to gracefully handle the invalid data, preventing the program from crashing and allowing it to respond to the bad input.
 
-##### Deep Dive: How the "Handshake" Works between the constructor and the setter
+#### Deep Dive: How the "Handshake" Works between the constructor and the setter
 
 1. Instantiation: You call product = `Product("Laptop", 1200)`.
 2. Constructor Execution: The `__init__` method starts.
 3. The Trigger: Python reaches `self.price = price`.
 4. The Interception: Python sees that price is a managed property. Instead of creating a simple variable, it "intercepts" the assignment and redirects it to the `@price.setter method`.
-5. Validation: The setter runs. It checks if 1200 is a number and if it's positive.
-6. Storage: Since 1200 is valid, the setter saves it into `self._color` (the internal, "hidden" variable).
-7. Error Handling: If you had passed -10, the setter would have raised an exception, immediately stopping the `__init__` process and sending the error up to your `try/except block`.
+5. Validation: The setter runs. It checks if `1200` is a number and if it's positive.
+6. Storage: Since `1200` is valid, the setter saves it into `self._color` (the internal, "hidden" variable).
+7. Error Handling: If you had passed `-10`, the setter would have raised an exception, immediately stopping the `__init__` process and sending the error up to your `try/except block`.
 
 
 ### The Exception Hierarchy
@@ -2856,7 +2962,7 @@ except ZeroDivisionError as e:
     print(e)
 ```
 
-The `as e` part means: "Capture the exception object and store it in a variable named e." When Python raises an exception,it's actually creating an instance of an exception class (like `ValueError`). The as `e` syntax allows you to capture that specific object into the variable e so you can interact with it inside your `except` block.
+The `as e` part means: "Capture the exception object and store it in an instance named e." When Python raises an exception,it's actually creating an instance of an exception class (like `ValueError`).  The `as e` part allows you to refer to this instance using the variable name `e`. So, `e` is a variable that holds the exception instance.
 
 You could use any variable name you want:
 
@@ -2894,7 +3000,7 @@ except ZeroDivisionError as x:
 
 All of these do the exact same thing. `e` is just tradition — most Python programmers use e because it's short and everyone understands it means "exception."
 
-##### Be more specific about `e.args`?
+### Be more specific about `e.args`?
 
 ```python
 class InsufficientFundsError(Exception):
@@ -2919,15 +3025,15 @@ except InsufficientFundsError as e:
 Notice that `.args` contains the message passed to `super().__init__()`, while `e.balance` and `e.amount` are the custom attributes we created.
 
 
-##### `as` vs. `from`
+### `as` vs. `from`
 
 **`except ... as ...` (The "Capture")**
 
 Here is the breakdown of the two different keywords and how they work together:
 
-This is used only in the `except` block. Its purpose is to capture the exception object and give it a variable name (usually e) so you can look at its data.
+This is used only in the `except` block. Its purpose is to capture the exception object and give it a variable name (usually `e`) so you can look at its data.
 
-Think of it as: "Catch the error and put it in a glove labeled e."
+Think of it as: "Catch the error and put it in a glove labeled `e`."
 
 ```python
 try:
@@ -3297,12 +3403,11 @@ def process_payment(card, amount):
 process_payment(my_card, 99.99)
 ```
 
-
 ### Exceptions in Practice
 
 1. **Graceful File Handling**
 
-A common task is reading from a file. But what if the file doesn't exist? Instead of crashing, your program can handle this situation gracefully using a try...except block. This approach follows the "Ask Forgiveness, Not Permission" (AFNP) philosophy, where you try an operation and handle the error if it fails.
+A common task is reading from a file. But what if the file doesn't exist? Instead of crashing, your program can handle this situation gracefully using `a try...except` block. This approach follows the "Ask Forgiveness, Not Permission" (AFNP) philosophy, where you try an operation and handle the error if it fails.
 
 ```python
 def read_user_settings(file_path="settings.txt"):
@@ -3490,7 +3595,7 @@ In our example,`Person` uses the list's `append` method, making it a collaborato
 
 Collaborator objects are central to object-oriented design because they allow you to model real-world relationships and build complex systems from smaller, more focused components.
 
-1.  **Modeling the Problem Domain:** They represent the connections between different actors in your program. A car **has an** engine, a customer **has an** order, a person **has pets**. This makes your code more intuitive and easier to understand.
+1.  **Modeling the Problem Domain**: They represent the connections between different actors in your program. A car **has an** engine, a customer **has an** order, a person **has pets**. This makes your code more intuitive and easier to understand.
 2.  **Delegating Responsibility:** Classes can delegate tasks to their collaborators. A `Car` object doesn't need to know the intricate details of combustion; it just tells its `Engine` collaborator to `start()`. This keeps each class focused on a single responsibility.
 3.  **Flexibility and Maintainability:** Composition makes your code more flexible. You can easily swap out a collaborator for a different one without changing the containing class, as long as the new collaborator responds to the same methods. This makes your system easier to update and maintain over time.
 
@@ -3502,11 +3607,12 @@ While Collaborator Objects allow us to link classes together, we must be careful
 
 In OOP terms, a method should only call methods on:
 
-* The object itself (self).
+* The object itself (`self`).
 * Objects passed in as arguments.
 * Objects held in its own instance variables (its direct collaborators).
 
 Example: Avoiding the "Train Wreck"
+
 If you see a line of code with multiple dots, it’s often a violation of this law (sometimes called a "Train Wreck").
 
 ```python
@@ -3537,7 +3643,7 @@ class Engine:
 
 class Car:
     def __init__(self, engine):
-        self.engine = engine  # Car now has an Engine object
+        self.engine = engine  # An engine object will be passed to Car
 
     def start(self):
         # Car delegates the action of starting to its collaborator
@@ -3553,7 +3659,7 @@ class Driver:
 
 # Create the collaborators first
 engine = Engine()
-car = Car(engine)
+car = Car(engine) #Engine object passed to Car
 driver = Driver(car)
 
 print(driver.drive()) # Output: Engine started!
@@ -3570,7 +3676,9 @@ This chain of collaboration allows each class to have a single, focused responsi
 
 While the terms "tight coupling" and "loose coupling" are not explicitly defined in the PY120 curriculum, they are vital software design principles that you will encounter frequently as you progress. They describe the degree of dependence between different parts of a system.
 
-* **​Tight Coupling​**: This is when two or more classes are highly dependent on each other. A class that is tightly coupled to another knows too much about the inner workings of that class. A change in one class will often force you to make changes in the other. This makes the code brittle and hard to maintain. ​Example of Tight Coupling:
+* **​Tight Coupling​**: This is when two or more classes are highly dependent on each other. A class that is tightly coupled to another knows too much about the inner workings of that class. A change in one class will often force you to make changes in the other. This makes the code brittle and hard to maintain. 
+
+​Example of Tight Coupling:
 
 ```python
 class Car:
@@ -3602,12 +3710,13 @@ Dependency Injection is a specific design pattern used to achieve **​loose cou
 Let's refactor our tightly coupled `Car` example to use dependency injection.
 
 Example of Loose Coupling via Dependency Injection:
+
 ```python
 # --- Define different types of engines ---
 class V6Engine:
     def start(self):
         return "V6 engine started!"
-
+                                        # Notice that they both have start methods.
 class ElectricEngine:
     def start(self):
         return "Electric motor started quietly!"
@@ -3788,6 +3897,13 @@ Understanding this boundary allows you to use a class effectively without needin
 
 Putting all this together can be challenging, and as the curriculum says, "putting them together to construct an object-oriented (OO) program isn't easy." The same is true for reading one. It takes practice to develop the skill of seeing not just lines of code, but a network of collaborating objects.
 
+### Cheat Sheet: To Do List
+
+1. Name the responsibility.
+2. Name the object that owns it.
+3. Explain why another object should not own it.
+4. Mention what would change if requirements changed
+
 
 ### Example OOP Code
 
@@ -3862,8 +3978,7 @@ First, identify the main components.
 Next, break down the superclass to understand the shared state and behavior.
 
 - "The `Pet` class has a *class variable*, `_total_pets`. The leading underscore signifies that this is intended for internal use, a convention for *access control* in Python."
-- "It also has a *class method*, `get_total_pets`, decorated with `@classmethod`.  
-  It operates on the class itself (via the `cls` parameter), not an instance, to access the `_total_pets` class variable."
+- "It also has a *class method*, `get_total_pets`, decorated with `@classmethod`. It operates on the class itself (via the `cls` parameter), not an instance, to access the `_total_pets` class variable."
 - "The `__init__` method sets up the *state* for each `Pet` instance by creating *instance variables* `self.name` and `self.owner`."
 - "The class defines a *magic method*, `__str__`. This provides a user-friendly string representation for `Pet` objects, which is used when I call `print(sparky)`."
 
@@ -4104,12 +4219,13 @@ This spike has given us a deep, practical understanding of Python's attribute lo
 Now that we have this knowledge, the code has served its purpose and we can discard the `spike.py` file.
 
 
-"The 3-Step Assessment Strategy"
-Add this "How-To" at the very end of your notes. It’s a cheat sheet for when the interviewer says: "Can you show me how X works?"
+### "The 3-Step Assessment Strategy"
+
+A cheat sheet for when the interviewer says: "Can you show me how X works?"
 
 #### When asked to spike a concept during the interview
 
-Do the following
+Do the following:
 
 1. **State the Goal**: "I'm going to create a minimal class structure to demonstrate how [Concept] works."
 2. **Write the "Simple Case"**: Create the parent/child classes with just one or two methods. Keep it to nouns like Parent/Child or A/B/C so you don't get bogged down in real-world logic.
