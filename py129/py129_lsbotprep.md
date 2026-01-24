@@ -1521,6 +1521,21 @@ Use a private `_celsius` attribute. Create a property fahrenheit with a getter a
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Temperature:    
+    
+    def __init__(self, fahrenheit_value):        
+        self.fahrenheit = fahrenheit_value  
+        
+        @property    
+        def fahrenheit(self):        
+            return (self._celsius * 9/5) + 32    
+            
+        @fahrenheit.setter    
+        def fahrenheit(self, value):        
+            self._celsius = (value - 32) * 5/9
+```
 </details>
 
 ### 41. **Difficulty: Advanced(Inhertance and Collaboration)** You are building a system for a library.
@@ -1534,6 +1549,77 @@ Use a private `_celsius` attribute. Create a property fahrenheit with a getter a
 4. Both `Book` and `Magazine` should override the display method. They must first call the parent class's display method using `super()` and then print their own specific information (genre for `Book`, issue date for `Magazine`).
 
 5.  Finally, implement a custom `__str__` method for the Publication class that returns the string `"{title}" by {writer's name}`.
+
+<details> 
+<summary>Possible Solution</summary>
+
+```python
+class Writer:
+    
+    def __init__(self, name):
+        self.name = name
+
+    def __str__(self):
+        return f"{self.name}"
+
+class Publication:
+
+    def __init__(self, title, writer):
+        self.title = title
+        self.writer = writer #dependency injection
+
+    def display(self):
+        # The display method prints the information
+        print(f"Title: {self.title}")
+        print(f"Writer: {self.writer.name}")
+
+    def __str__(self):
+        return f"{self.title} by {self.writer}"
+
+class Book(Publication):
+
+    def __init__(self, title, writer, genre):
+        super().__init__(title, writer)
+        self.genre = genre
+
+    def display(self):
+        # Call the parent's display method first
+        super().display()
+        print(f"Genre: {self.genre}")
+
+
+class Magazine(Publication):
+
+    def __init__(self, title, writer, issue_date):
+        super().__init__(title, writer)
+        self.issue_date = issue_date
+
+    
+    def display(self):
+        # Call the parent's display method first
+        super().display()
+        print(f"Issue Date: {self.issue_date}")
+
+    def __str__(self):
+        super().__str__
+        return f"{self.title} by {self.writer}. Issue Date: {self.issue_date}"
+    
+
+rachel_reid = Writer("Rachel Reid")
+heated_rivalry = Book("Heated Rivalry", rachel_reid, "Romance")
+
+national_geographic = Writer("The Editors of National Geographic")
+secret_life = Magazine("The Secret Life of Cats", national_geographic, "September 2, 2022")
+
+# Using the display method
+heated_rivalry.display()
+secret_life.display()
+
+# Using the __str__ method (which is inherited by the subclasses)
+print(str(heated_rivalry))
+print(str(secret_life))
+```
+</details>
 
 ### 42. **Difficulty: Advanced (Code Reading: MRO and `super()`)** Predict the output of the following code.
 
@@ -1589,6 +1675,31 @@ Create a Book class that has title and author attributes. Implement the magic me
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Book:
+
+    def __init__(self, title, author):
+        self.title = title
+        self.author = author
+
+    def __str__(self):
+        return f"{self.title} by {self.author}"
+    
+    def __eq__(self, other):
+        if not isinstance(other, Book):
+            return NotImplemented
+        return self.title == other.title and self.author == other.author
+    
+
+subtle_art1 = Book("The Subtle Art of Not Giving a F*ck", "Mark Manson")
+subtle_art2 = Book("The Subtle Art of Not Giving a F*ck", "Mark Manson")
+courage = Book("The Courage to be Disliked", "Ichiro Kishimi")
+
+print(subtle_art1 == subtle_art2) #True
+print(subtle_art2 == courage) #False
+```
+
 </details>
 
 
@@ -1598,6 +1709,28 @@ Define a class `Vehicle` with an `__init__` method that accepts make and model a
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Vehicle:
+
+    def __init__(self, make, model):
+        self.make = make
+        self.model = model
+
+class Car(Vehicle):
+
+    def __init__(self, make, model):
+        super().__init__(make, model)
+        self.wheels = 4
+
+    def __str__(self):
+        return f"A {self.make} {self.model} has {self.wheels} wheels."
+    
+
+toyota_camry = Car("Toyota", "Camry")
+print(str(toyota_camry))
+```
+
 </details>
 
 ### 45. Difficulty: Intermediate    
@@ -1606,6 +1739,34 @@ Write a class `Person` with a "private" attribute `_age`. Implement a getter and
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+
+class Person:
+
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+    
+    @property
+    def age(self):
+        return self._age
+    
+    @age.setter
+    def age(self, value):
+        if value < 0:
+            raise ValueError("Age must be greater than 0")
+        self._age = value
+
+    def __str__(self):
+        return f"{self.name} is {self.age}"
+
+tommy = Person("Tommy", 10) #Tommy is 10
+print(str(tommy))
+embryo = Person("Unborn baby", -1) #ValueError: Age must be greater than 0
+
+```
 </details>
 
 
@@ -1615,6 +1776,52 @@ Create a `ShoppingCart` class that can hold Item objects. The `ShoppingCart` sho
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Item:    
+    
+    def __init__(self, name, price):        
+        self.name = name        
+        self.price = price    
+    
+    def __str__(self):        
+        return f"{self.name}"
+    
+    class ShoppingCart:    
+        def __init__(self):        
+            self.items = []    
+            
+        def add_item(self, item):        
+            self.items.append(item)        
+            print(f"Added {item.name} to cart.")    
+        
+        def remove_item(self, item):               
+            if item in self.items:            
+                self.items.remove(item)             
+                print(f"Removed {item.name} from cart.")        
+            else:            
+                print(f"{item.name} is not in the cart.")    
+                
+        def view_cart(self):        
+            if not self.items:            
+                print("The cart is empty.")            
+                return        
+            print("Items in cart:")        
+            for item in self.items:                        
+                print(f"- {item.name}: ${item.price:.2f}")#
+                
+ cable = Item("USB-C Cable", 10.99)
+ shampoo = Item("Shampoo", 5.50)
+ socks = Item("Socks", 7.00)
+ new_cart = ShoppingCart()
+ new_cart.add_item(cable)
+ new_cart.add_item(shampoo)
+ new_cart.add_item(socks)
+ new_cart.remove_item(socks)
+ new_cart.view_cart()
+ new_cart.remove_item(socks) #Test for error
+ 
+```
 </details>
 
 ### ​47. Difficulty: Intermediate    
@@ -1623,6 +1830,58 @@ Explain polymorphism and provide a Python code example. Your example should incl
 
 <details> 
 <summary>Possible Solution</summary> 
+
+Polymorphism means different objects respond to the same message in their own way.
+
+```python
+class Animal:
+
+    def __init__(self, name):
+        self.name = name
+
+    def identify(self):
+        print(f"I am a ")
+
+    def speak(self):
+        print(f"This {self.__class__.__name__} named {self.name} makes noises!")
+    
+class Dog(Animal):
+
+    def __init__(self, name):
+        super().__init__(name)
+
+    def speak(self):
+        print(f"This {self.__class__.__name__} named {self.name}  makes barks!")
+
+class Bird(Animal):
+
+    def __init__(self, name):
+        super().__init__(name)
+
+    def make_sounds(self):
+        print(f"This {self.__class__.__name__} makes chirps!")
+
+class Cat(Animal):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def speak(self):
+        print(f"This {self.__class__.__name__} named {self.name} makes chirps!")
+
+
+animal = Animal("Bobby")
+cat = Cat("Whiskers")
+dog = Dog("Fido")
+bird = Bird("Pete")
+
+def make_animal_speak(animal_object):
+    animal_object.speak()
+
+animals = [animal, cat, dog, bird]
+for animal in animals:
+    make_animal_speak(animal)
+```
+
 </details>
 
 ### 48. ​Difficulty: Advanced    
@@ -1631,6 +1890,43 @@ Create a custom exception class called `OutOfStockError`. Then, create a `Vendin
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class OutOfStockError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+class VendingMachine:
+    def __init__(self):
+        self.items = {"O.B. tampons": 1000, 
+                      "Apple 60W USB-C Charge Cable (1 m)": 10000, 
+                      "Pampers Premium Diapers": 5000,
+                      "Apple M5 MacBook Air": 0}
+    
+    def dispense_item(self, item_name):
+        if item_name not in self.items:
+            print(f"Item '{item_name}' not found.")
+            return
+        if self.items[item_name] == 0:
+            raise OutOfStockError(f"The item '{item_name}' is currently unavailable.")
+        
+        self.items[item_name] -= 1
+        print(f"Successfully dispensed {item_name}.")
+
+vm = VendingMachine()
+
+try:
+    # Attempt to get the MacBook Air (which has 0 quantity)
+    vm.dispense_item("Apple M5 MacBook Air")
+except OutOfStockError as e:
+    print(f"{e}")
+
+try:
+    vm.dispense_item("Pampers Premium Diapers")
+except OutOfStockError as e:
+    print(e)
+```
+
 </details>
 
 ## Pass 4, `__repr__`
@@ -1654,6 +1950,25 @@ class Book:        
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Book:
+
+    def __init__(self, title, author): 
+        self.title = title 
+        self.author = author
+        
+    def __repr__(self):
+        return f"Book({repr(self.title)}, {repr(self.author)})"
+
+# Example usage:    
+book = Book("The Hitchhiker's Guide to the Galaxy", "Douglas Adams") 
+print(repr(book)) 
+
+#Expected output:    
+#Book('The Hitchhiker's Guide to the Galaxy', 'Douglas Adams')
+```
+
 </details>
 
 ### 50. Consider a class named Gadget. 
@@ -1667,6 +1982,83 @@ Predict the output of `print(str(my_gadget))` and `print(repr(my_gadget))` in th
 
 <details> 
 <summary>Possible Solution</summary> 
+
+If class had both a __str__ and a __repr__ as in Scenario D, the following would be expected:
+```python
+  def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return f"Gadget({repr(self.name)})"
+    
+    def __str__(self):
+        return f"This is a {self.name}"
+    
+doohickey = Gadget("Doohickey")
+print(repr(doohickey)) #Gadget('Doohickey')
+print(str(doohickey)) # This is a Doohickey 
+```
+
+However, in Scenario A it has only a __str__ so you can expect:
+
+```python
+class Gadget:
+
+    def __init__(self, name):
+        self.name = name
+
+    #def __repr__(self):
+     #   return f"Gadget({repr(self.name)})"
+    
+    def __str__(self):
+        return f"This is a {self.name}"
+    
+doohickey = Gadget("Doohickey")
+print(repr(doohickey)) #<__main__.Gadget object at 0x7920ce5ce900>
+print(str(doohickey)) # This is a Doohickey 
+``` 
+
+Without a __repr__, the object identity is given where the repr would have been. __str__ behaves normally. 
+
+In Scenario B, the reverse is there, only a repr but not a str.
+
+```python
+class Gadget:
+
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return f"Gadget({repr(self.name)})"
+    
+    #def __str__(self):
+     #   return f"This is a {self.name}"
+    
+doohickey = Gadget("Doohickey")
+print(repr(doohickey)) #Gadget('Doohickey')
+print(str(doohickey)) #Gadget('Doohickey')
+```
+
+In this case the str falls back to the repr who represents str. 
+
+Scenario C, no repr, no str you get just the memory address
+
+```python
+class Gadget:
+
+    def __init__(self, name):
+        self.name = name
+
+    #def __repr__(self):
+    #    return f"Gadget({repr(self.name)})"
+    
+    #def __str__(self):
+     #   return f"This is a {self.name}"
+    
+doohickey = Gadget("Doohickey")
+print(repr(doohickey)) #<__main__.Gadget object at 0x7a84d6b2a900>
+print(str(doohickey)) #<__main__.Gadget object at 0x7a84d6b2a900>
+```
 </details>
 
 ### 51. The `__repr__` method in the `Person` class below is incomplete. 
@@ -1691,6 +2083,26 @@ print(repr(p1)) # Works as expected  
 print(repr(p2)) # Produces invalid Python code
 ```
 
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+class Person:        
+    def __init__(self, name):            
+        self.name = name        
+        
+    def __repr__(self):            
+        # This implementation is flawed            
+        return f"Person('{repr(self.name)}')"    
+        
+# Test cases:    
+p1 = Person("Alice")    
+p2 = Person("Bob O'Malley")    
+print(repr(p1)) # Works as expected   
+print(repr(p2)) # Produces invalid Python code
+```
+</details>
+
 ### 52. Advanced​: Why is `__repr__` important?
 
 When implementing `__repr__`, it is a common best practice to use the `repr()` built-in function on the instance's attributes within the returned string. 
@@ -1701,6 +2113,38 @@ Explain why this practice is important for creating a robust and reliable repres
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Cat: 
+    def __init__(self, name): 
+        self.name = name 
+        
+    def __repr__(self): 
+        return f"Cat({repr(self.name)})" 
+        
+# Test cases:    
+whiskers = Cat("Whiskers") 
+roger = Cat("Roger") 
+print(repr(whiskers)) #Cat('Whiskers') 
+print(repr(roger)) #Cat('Roger')
+```
+
+The call to `repr()` inside my `__repr__` method is not calling the `Cat.__repr__` method again. Instead, it's calling `repr()` on a different object—in this case, a string object (`self.name`).
+
+When my code calls `print(repr(whiskers))`, Python's built-in `repr()` function is called with the book object as its argument.
+
+The `repr()` function sees that `whiskers` is an instance of the `Cat` class. It then looks for and calls the `__repr__` method defined in the `Cat` class.
+
+Inside `Cat.__repr__`, Python evaluates the f-string: `f"Cat({repr(self.name)})"`
+
+To build this string, it must first execute `repr(self.name)`, `self.name `is a string.
+
+Now, the built-in `repr()` function is called with a ​string object​ as its argument. Python then calls the `__repr__` method that belongs to the built-in str class.
+
+The `str.__repr__` method does its job: it takes the string and returns a version of it surrounded by quotes, with any internal special characters escaped. 
+
+This is a fundamental concept in object-oriented programming: the same operation `(repr)` behaves differently depending on the type of object it's acting upon.
+
 </details>
 
 ### 53. Create a `Vector` class that represents a 2D vector. 
@@ -1725,6 +2169,24 @@ print(v2) # Expected output: Vector(-1, 5)
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Vector:
+        def __init__(self, x, y):
+            self.x = x
+            self.y = y
+
+        def __repr__(self):
+             return f"Vector({repr(self.x)}, {repr(self.y)})"
+
+    # Example usage:
+v1 = Vector(2, 3)
+v2 = Vector(-1, 5)
+
+print(v1) # Expected output: Vector(2, 3)
+print(v2) # Expected output: Vector(-1, 5)
+```
+
 </details>
 
 ### 54. You are building a system to manage sports teams. 
@@ -1749,6 +2211,20 @@ print(repr(giants))
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Team:
+        def __init__(self, name, players):
+            self.name = name
+            self.players = players
+
+        def __repr__(self):
+              return f"Team({repr(self.name)}, {repr(self.players)})"
+
+# Example usage:
+giants = Team("Giants", ["Eli Manning", "Odell Beckham Jr."])
+print(repr(giants))
+```
 </details>
 
 ### 55. A `Product` class needs two different string representations: 
@@ -1790,6 +2266,37 @@ print(products_list)
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Product:
+        def __init__(self, name, price):
+            self.name = name
+            self.price = price
+
+        def __str__(self):
+              return f"{self.name}: ${self.price}"
+
+        def __repr__(self):
+              return f"Product({repr(self.name)}, {repr(self.price)})"
+
+
+# Example usage:
+book = Product("Python Crash Course", 29.99)
+products_list = [book]
+
+print(str(book))
+# Expected output for str(book):
+# Python Crash Course: $29.99
+
+print(repr(book))
+# Expected output for repr(book):
+# Product('Python Crash Course', 29.99)
+
+print(products_list)
+# Expected output for printing the list:
+# [Product('Python Crash Course', 29.99)]
+```
+
 </details>
 
 
@@ -1798,10 +2305,6 @@ print(products_list)
 You need to implement `__repr__` for both. Create an `Author` class and a `Book` class. A `Book` object should be initialized with a title and an `Author` object.
 
 Ensure the `__repr__` of a `Book` object correctly represents the nested `Author` object.
-
-<details> 
-<summary>Possible Solution</summary> 
-</details>
 
 ```python
 class Author:        
@@ -1826,7 +2329,31 @@ print(repr(book))    # Expected output:    # Book('The Hobbit', Author('J.R.
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Author: 
+    def __init__(self, name):
+        self.name = name 
+    
+    def __repr__(self):
+        return f"Author({repr(self.name)})"
+    
+class Book: 
+    def __init__(self, title, author): 
+        self.title = title 
+        self.author = author  # author is expected to be an Author object     
+        
+    def __repr__(self):
+        return f"Book({repr(self.title)}, {repr(self.author)}"
+        
+# Example usage:    
+author = Author("J.R.R. Tolkien") 
+book = Book("The Hobbit", author) 
+print(repr(book)) # Expected output:    # Book('The Hobbit', Author('J.R.R. Tolkien'))
+```
+
 </details>
+
 
 ### 57. Advanced​: You are creating an `InventoryItem` class for a warehouse management system. 
 
@@ -1852,6 +2379,23 @@ print(repr(item))    
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class InventoryItem: 
+    def __init__(self, name, quantity, tags): 
+        self.name = name 
+        self.quantity = quantity
+        self.tags = tags 
+        
+    def __repr__(self):
+        return f"InventoryItem({repr(self.name)}, {repr(self.quantity)}, {repr(self.tags)})"
+
+
+item = InventoryItem("Laptop", 15, {"electronics", "computer", "office"}) 
+print(repr(item)) 
+# Possible expected output (order of set elements may vary):    
+# InventoryItem('Laptop', 15, {'office', 'computer', 'electronics'})
+```
 </details>
 
 
@@ -1870,7 +2414,7 @@ Create a custom exception hierarchy for a data processing application.
 Test cases:
 
 ```python
-Valid data
+
 try:
     print(validate_user_data({'username': 'testuser', 'email': 'test@example.com'}))
 except DataValidationError as e:
@@ -1894,6 +2438,58 @@ except DataValidationError as e:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class DataValidationError(Exception):
+    
+    def __init__(self, message):
+        super().__init__(message)
+
+class MissingDataError(DataValidationError):
+    pass
+
+class InvalidTypeError(DataValidationError):
+    pass
+
+
+def validate_user_data(data):
+    def validate_user_data(data):
+    required_keys = ['username', 'email']
+    
+    # Check for missing keys
+    for key in required_keys:
+        if key not in data:
+            raise MissingDataError(f"Missing required key: '{key}'")
+    
+    # Check for invalid types
+    for key in required_keys:
+        if not isinstance(data[key], str):
+            raise InvalidTypeError(f"'{key}' must be a string.")
+            
+    return True
+
+
+try:
+    print(validate_user_data({'username': 'testuser', 'email': 'test@example.com'}))
+except DataValidationError as e:
+    print(e)
+# Expected: True
+
+# Missing 'email'
+try:
+    validate_user_data({'username': 'testuser'})
+except DataValidationError as e:
+    print(f"Caught expected error: {type(e).__name__} - {e}")
+# Expected: Caught expected error: MissingDataError - Missing required key: 'email'
+
+# Invalid type for 'username'
+try:
+    validate_user_data({'username': 123, 'email': 'test@example.com'})
+except DataValidationError as e:
+    print(f"Caught expected error: {type(e).__name__} - {e}")
+# Expected: Caught expected error: InvalidTypeError - 'username' must be a string.
+```
+
 </details>
 
 ### 59. Advanced: Resource Cleanup with `finally`
@@ -1953,6 +2549,48 @@ Caught a processing error: Simulated processing error
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class ResourceConnector:
+    def __init__(self, name):
+        self.name = name
+        self.connected = False
+
+    def connect(self):
+        print(f"Connecting to {self.name}...")
+        self.connected = True
+
+    def disconnect(self):
+        print(f"Disconnecting from {self.name}...")
+        self.connected = False
+
+    def process_data(self, fail=False):
+        if not self.connected:
+            raise ConnectionError("Not connected.")
+        if fail:
+            print("Processing failed!")
+            raise ValueError("Simulated processing error")
+        print("Processing data successfully.")
+
+def process_resource(connector, should_fail=False):
+    connector.connect()
+    try:
+        connector.process_data(fail=should_fail)
+    finally:
+        # This block ALWAYS runs, even if an exception occurs above
+        connector.disconnect()
+
+# Successful run
+res1 = ResourceConnector("DB1")
+process_resource(res1, should_fail=False)
+
+print("-" * 20)
+
+# Failing run
+res2 = ResourceConnector("API2")
+process_resource(res2, should_fail=True)
+```
+
 </details>
 
 ### 60. Advanced: Exception Chaining
@@ -1993,6 +2631,38 @@ Original cause: 'db_host'
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+class ConfigurationError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+
+def load_config(config_dict):
+
+    try:
+        return config_dict['db_host']
+    except KeyError as e:
+
+        raise ConfigurationError(f"Config failed: '{e.args[0]}' is missing") from e
+
+
+# Successful case
+try:
+    host = load_config({'db_host': 'localhost'})
+    print(f"DB Host: {host}")
+except ConfigurationError as e:
+    print(e)
+
+# Failing case
+try:
+    load_config({'user': 'admin'})
+except ConfigurationError as e:
+    print(f"Configuration Error: {e}")
+    print(f"Original cause: {e.__cause__}")
+```
+
 </details>
 
 
@@ -2035,6 +2705,40 @@ Error: ValueError - Email must be at least 5 characters long.
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class User:
+    
+    def __init__(self, email):
+        self.email = email
+
+    @property
+    def email(self):
+        return self._email
+    
+    @email.setter
+    def email(self, value):
+        if not isinstance(value, str):
+            raise TypeError("Must be a string")
+        if "@" not in value:
+            raise ValueError("Must have an @ symbol")
+        if len(value) < 5:
+            raise ValueError("Must be 5 characters or more")
+        self._email = value
+        
+def create_user(email):
+    try:
+        user = User(email)
+        print(f"User created with email: {user.email}")
+    except (TypeError, ValueError) as e:
+        print(f"Error: {type(e).__name__} - {e}")
+
+create_user("test@example.com")
+create_user(12345)
+create_user("test.com")
+create_user("a@b")
+```
+
 </details>
 
 
@@ -2073,6 +2777,33 @@ except ZeroDivisionError as e:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def process_data_refactored(data_list, index):
+
+    try:
+        value = int(data_list[index])
+        result = 100 / value
+        print(f"Result is {result}")
+    except ValueError as e:
+        print("Invalid data format: cannot convert to integer.")
+    except IndexError as e:
+        print("Invalid index: index is out of range")
+
+
+# Should print "Invalid data format: cannot convert to integer."
+process_data_refactored(['10', '20', 'abc'], 2)
+
+# Should print "Invalid index: index is out of range."
+process_data_refactored(['10', '20', '30'], 5)
+
+# Should raise a ZeroDivisionError
+try:
+    process_data_refactored(['10', '0', '30'], 1)
+except ZeroDivisionError as e:
+    print(f"Caught an unexpected but specific error: {e}")
+```
+
 </details>
 
 ### 63. Advanced: Meaningful Use of the else Block
@@ -2112,11 +2843,32 @@ Cleanup.
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def attempt_connection(should_fail=False):
+    print("Attempting to connect...")
+    try:
+        if should_fail:
+            raise TimeoutError("Connection timed out")
+        # Simulate successful connection
+    except TimeoutError as e:
+        print(f"Error: {e}")
+    else:
+        print("Connection successful.")
+        print("Processing data...")
+    finally:
+        print("Cleanup.")
+
+attempt_connection(should_fail=False)
+print("-" * 20)
+attempt_connection(should_fail=True)
+```
+
 </details>
 
 ### 64. Advanced: Custom Exception with Additional Context
 
-Create a custom exception `TransactionError` that, in addition to a message, stores the `transaction_id` and an `error_code`.  Write a function p`rocess_transaction(tx_id, amount)` that raises this exception with relevant context if the amount is negative.
+Create a custom exception `TransactionError` that, in addition to a message, stores the `transaction_id` and an `error_code`.  Write a function `process_transaction(tx_id, amount)` that raises this exception with relevant context if the amount is negative.
 
 Test Cases:
 
@@ -2160,6 +2912,36 @@ Transaction failed!
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class TransactionError(Exception):
+
+    def __init__(self, message, transaction_id, error_code):
+        super().__init__(message)
+        self.transaction_id = transaction_id
+        self.error_code = error_code
+    
+
+def process_transaction(tx_id, amount):
+    print(f"Processing transaction {tx_id}...")
+    if amount < 0:
+        raise TransactionError(
+            "Transaction amount cannot be negative.",
+            transaction_id=tx_id,
+            error_code=101
+        )
+    print("Transaction successful.")
+
+try:
+    process_transaction("TX123", 100)
+    process_transaction("TX456", -50)
+except TransactionError as e:
+    print(f"\nTransaction failed!")
+    print(f"  Message: {e}")
+    print(f"  Transaction ID: {e.transaction_id}")
+    print(f"  Error Code: {e.error_code}")
+```
+
 </details>
 
 ### 65. Advanced: Selective Exception Handling and Re-raising
@@ -2211,4 +2993,50 @@ Original cause: unsupported operand type(s) for /: 'NoneType' and 'int'
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def process_divisions(operations):
+    for num, den in operations:
+        try:
+            result = num / den
+            print(f"{num} / {den} = {result}")
+            
+        except ZeroDivisionError:
+            print(f"Warning: Cannot divide {num} by zero. Skipping.")
+            continue  # Moves to the next item in the list
+            
+        except TypeError as e:
+            if isinstance(num, str) or isinstance(den, str):
+                print(f"Stopping: Invalid input types (found a string: '{num}' or '{den}').")
+                return # Stops the function immediately
+            
+            # If it's a TypeError but not a string (like 'None'), 
+            # we treat it as an "any other exception" case.
+            raise RuntimeError("A type-related processing error occurred.") from e
+            
+        except Exception as e:
+            # 3. Any other exception: catch and re-raise as RuntimeError
+            raise RuntimeError("An unexpected error occurred during processing.") from e
+
+# --- Test Cases ---
+
+ops1 = [(10, 2), (20, 5), (30, 0), (40, 8)]
+print("--- Processing ops1 ---")
+process_divisions(ops1)
+# Result: Processes everything, skips (30, 0) with a warning.
+
+ops2 = [(10, 2), (20, 'a'), (30, 5)]
+print("\n--- Processing ops2 ---")
+process_divisions(ops2)
+# Result: Processes (10, 2), then stops immediately on 'a'.
+
+ops3 = [(10, 2), (None, 5)]
+print("\n--- Processing ops3 ---")
+try: 
+    process_divisions(ops3)
+except RuntimeError as e: 
+    print(f"Caught re-raised error: {e}") 
+    print(f"Original cause: {repr(e.__cause__)}")
+# Result: Processes (10, 2), then re-raises the None error as a RuntimeError.
+```
 </details>

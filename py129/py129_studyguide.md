@@ -51,6 +51,58 @@ Launch School emphasizes practicing speaking about technical topics before the i
 
 The assessment recognizes that being able to clearly communicate technical concepts is as important for a professional software engineer as understanding the concepts themselves.
 
+### The 5 Default Phrases (Memorize These)
+
+1. **Responsibility Anchor**
+
+Use this to start almost any answer.
+
+>“I’d start by clarifying which object owns this responsibility, because that object should also own the state that changes over time.”
+
+This immediately signals:
+
+* OOP maturity
+* encapsulation
+* design-first thinking
+
+2. **Delegation Justification**
+
+Use when explaining why something is not in the current class.
+
+>“This object doesn’t own that state, so it delegates the behavior to a collaborator through a public method.”
+
+This covers:
+
+* collaboration
+* message passing
+* loose coupling
+
+3. **Encapsulation Defense**
+
+Use when explaining why you don’t access attributes directly.
+
+>“I’d avoid reaching into another object’s data and instead ask it for what I need, so its internal representation can change safely.”
+
+4. **Change-Resilience Framing**
+
+Use when asked about refactoring or future changes.
+
+> “This design keeps knowledge localized, so if requirements change, the impact is limited to one object.”
+
+This shows:
+
+* foresight
+* maintainability
+* real-world thinking
+
+5. Pattern Naming Close
+
+Use when you want to wrap up cleanly.
+
+> “The coordinator directs interactions without taking ownership of the collaborators’ internal behavior.”
+
+This gives your answer a clear ending.
+
 [Back to the top](#top)
 
 ## Classes and Objects
@@ -1009,6 +1061,8 @@ Encapsulation treats an object as a 'Black Box.' The outside world knows what th
 #### Polymorphism
 
 **Polymorphism** means "many forms." In programming, polymorphism is the ability of different types of objects to provide a consistent interface for different underlying implementations. Instead of needing to know the specific type of an object, your code can be **type-agnostic**—it simply calls a method and trusts the object to respond appropriately.
+
+**Another way to say it**: “Polymorphism means different objects respond to the same message in their own way.”
 
 *   **Greek Roots:** "Poly" (many) and "Morph" (form).
 *   **The Goal:** To allow one common interface to control many different data types.
@@ -3684,7 +3738,7 @@ def get_data_with_retries(max_retries=3):    
     for attempt in range(max_retries):        
         try:            
             print(f"Attempt {attempt + 1}...")            r
-            eturn fetch_data_from_api()        
+            return fetch_data_from_api()        
         except ConnectionError as e:            
             print(f"Failed: {e}.")            
             if attempt < max_retries - 1:                
@@ -3777,6 +3831,20 @@ It's important to remember that simply storing an object as an instance variable
 For instance, if `Person` just stored a list of pets but never used that list, the list wouldn't truly be collaborating.
 
 In our example,`Person` uses the list's `append` method, making it a collaborator.
+
+### When is `self.collaborator.method()` used...
+
+An object uses a collaborator by holding a reference to it and calling its public methods.
+
+One uses `self.collaborator.method()` when :
+* the collaborator owns the data
+* the collaborator owns the rule
+* you just need the result
+
+The object that owns the state should own the behavior that manipulates that state. If asked why you call a collaborator method, say:
+
+> “This object doesn’t own that responsibility, so it delegates the behavior to its collaborator.”
+
 
 ### High-Level Reasoning: Why Use Collaborators?
 
