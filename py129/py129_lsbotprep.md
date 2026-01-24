@@ -422,10 +422,10 @@ print(alex > bob)
 print(bob > alex)
 ```
 
-`print(alex > bob)` prints out False and `print(bob > alex)` prints out True. This is a tricky question because the value of `bob` is actually Robert. So of course, the length of Robert is longer than the length of Alex. 
-
 <details> 
 <summary>Possible Solution</summary> 
+
+`print(alex > bob)` prints out False and `print(bob > alex)` prints out True. This is a tricky question because the value of `bob` is actually Robert. So of course, the length of Robert is longer than the length of Alex. 
 </details>
 
 ### 17. **Coding**: What is the output of the following code? 
