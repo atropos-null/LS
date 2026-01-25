@@ -1238,8 +1238,6 @@ wedding = Wedding(100, "dahlias", "Pachbel's Canon")
 chef = Chef()
 decorator = Decorator()
 musician = Musician()
-preparers = [chef, decorator, musician]
-wedding.prepare(preparers)
 
 preparers = [chef, decorator, musician]
 wedding.prepare(preparers)
@@ -1247,7 +1245,7 @@ wedding.prepare(preparers)
 
 The `Wedding.prepare` method is much simpler and more flexible. It just iterates and calls `prepare_wedding` on each object.
 
-The `Chef`, `Decorator`, and `Musician` objects are all treated as "preparers" because they all "quack" the same way—they all have a `prepare_wedding` method.If you wanted to add a new `Photographer` class, you would just need to make sure it also has a `prepare_wedding` method. You wouldn't have to change the `Wedding` class at all! This is the power of duck typing.
+The `Chef`, `Decorator`, and `Musician` objects are all treated as "preparers" because they all "quack" the same way—they all have a `prepare_wedding` method. If you wanted to add a new `Photographer` class, you would just need to make sure it also has a `prepare_wedding` method. You wouldn't have to change the `Wedding` class at all! This is the power of duck typing.
 
 We've now seen `Wedding` in two different guises: **Comparing the Two Approaches**
 
