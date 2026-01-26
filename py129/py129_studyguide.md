@@ -1415,6 +1415,7 @@ While powerful, inheritance also introduces some risks if not used carefully.
 *   **Liskov Substitution Principle (LSP):** An academic rule stating that a subclass should be able to replace its superclass without breaking the program. If a subclass changes a method's behavior too much, it violates this principle.
 
 ### Tools for Verifying Inheritance
+
 Exams often test these two built-in functions:
 1.  **`isinstance(obj, Class)`**: Returns `True` if the object is an instance of that class **or** any of its subclasses.
 2.  **`issubclass(Child, Parent)`**: Returns `True` if the first class inherits from the second.
@@ -1727,13 +1728,20 @@ You can see the MRO for any class by calling the `.mro()` method on the class it
 Consider this complex hierarchy:
 
 ```python
-class LandDwellingMixin: pass
-class LanguageMixin: pass
-class BipedalismMixin: pass
-class Creature: pass
-class Mammal(Creature): pass
-class Primate(LandDwellingMixin, Mammal): pass
-class Human(BipedalismMixin, LanguageMixin, Primate): pass
+class LandDwellingMixin: 
+    pass
+class LanguageMixin: 
+    pass
+class BipedalismMixin: 
+    pass
+class Creature: 
+    pass
+class Mammal(Creature): 
+    pass
+class Primate(LandDwellingMixin, Mammal): 
+    pass
+class Human(BipedalismMixin, LanguageMixin, Primate): 
+    pass
 
 # The .mro() method returns a list of classes in lookup order
 print(Human.mro())
@@ -2337,7 +2345,7 @@ class Point:
 
 ```
 
-In this example, the __repr__ method returns a string that includes the class name (Point) and the values of the `x` and `y` attributes. This way, when you print a `Point` object or look at it in a debugger, you can easily see its state.
+In this example, the `__repr__` method returns a string that includes the class name (`Point`) and the values of the `x` and `y` attributes. This way, when you print a `Point` object or look at it in a debugger, you can easily see its state.
 
 ```python
 class Person:
@@ -2515,7 +2523,7 @@ Page Reference: [Object Oriented Programming with Python, Magic Methods](https:/
 
 ### Magic Attributes: `__class__` and `__name__`
 
- `__class__` and `__name__` are provide metadata about your code, which is particularly useful for introspection, debugging, and controlling how modules are executed.
+ `__class__` and `__name__` provide metadata about your code, which is particularly useful for introspection, debugging, and controlling how modules are executed.
 
 #### The `__name__` Attribute
 
@@ -2670,19 +2678,19 @@ An exception is an event that occurs during the execution of a program that disr
 
 #### Examples of common exceptions
 
-`ZeroDivisionError`: Division by zero
-`TypeError`: Wrong type for an operation
-`ValueError`: Incorrect value
-`IndexError`: Index out of range
-`KeyError`: Dictionary key doesn't exist
-`FileNotFoundError`: File doesn't exist
-`AttributeError`: Attribute doesn't exist on an object
+* `ZeroDivisionError`: Division by zero
+* `TypeError`: Wrong type for an operation 
+* `ValueError`: Incorrect value
+* `IndexError`: Index out of range
+* `KeyError`: Dictionary key doesn't exist
+* `FileNotFoundError`: File doesn't exist
+* `AttributeError`: Attribute doesn't exist on an object
 
 ### Exceptions are objects, too
 
 In Python, exceptions are objects that represent an error. Yes, _the error itself becomes an object_. 
 
-Since the error is an object, that means it has a: 
+Since the error is an object, that means it has (yet again, sorry you need to memorize this) a: 
 
 1. Type (what kind of object it is)
 2. Value (what data it holds)
@@ -2864,10 +2872,15 @@ The exception is just a special kind of object designed to represent an error.
 "**Exceptions are objects**" means:
 
 ✅ When an error occurs, Python creates an object to represent that error
+
 ✅ That object has properties (like balance, amount)
+
 ✅ That object has methods (like `__str__()`)
+
 ✅ You can catch that object with except and examine it
+
 ✅ You can store it in variables
+
 ✅ You can create custom exception objects with your own properties
 
 The error doesn't just disappear—it becomes a concrete object that you can work with!
@@ -2905,16 +2918,16 @@ In this code:
 
 The essential and optional elements are:
 
-* **`​try` Block (Required)**​:  This is the starting point. You place the code that you anticipate might raise an exception inside this block.
+* **`​try` Block** (Required)​:  This is the starting point. You place the code that you anticipate might raise an exception inside this block.
 
 * **`​except` Block** (At least one except or finally is required)​: This block catches and handles exceptions.    
     * It must follow the `try` block.    
     * You can have multiple except blocks to handle different types of exceptions. Python will execute the ​first​ one that matches the type of exception raised.    
     * You can optionally capture the exception object using `as e` to get more details about the error.
 
-*  **​else Block (Optional)**​: This block contains code that will run **_​only if no exceptions were raised​_** in the `try` block. It must be placed after all the `except` blocks. This is useful for separating the code that should run on success from the main logic being monitored for errors.
+*  **​else Block** (Optional)​: This block contains code that will run **_​only if no exceptions were raised​_** in the `try` block. It must be placed after all the `except` blocks. This is useful for separating the code that should run on success from the main logic being monitored for errors.
 
-*  **​finally Block (Optional)**​: This block contains code that will ​always​ run, no matter what happens—whether an exception was raised, caught, or not. It is typically used for cleanup actions, like closing a file or releasing network resources. If included, it must be the very last block.
+*  **​finally Block** (Optional)​: This block contains code that will ​always​ run, no matter what happens—whether an exception was raised, caught, or not. It is typically used for cleanup actions, like closing a file or releasing network resources. If included, it must be the very last block.
 
 
 | Block     | When does it run?                | Common Purpose                                        |
@@ -2927,7 +2940,7 @@ The essential and optional elements are:
 
 ### Raising Exceptions
 
-Besides catching exceptions that Python raises automatically, you can also trigger them yourself using the raise statement. This is useful when you detect a condition in your code that makes it impossible to proceed as intended. You can raise built-in exceptions or custom ones you've created.
+Besides catching exceptions that Python raises automatically, you can also trigger them yourself using the `raise` statement. This is useful when you detect a condition in your code that makes it impossible to proceed as intended. You can raise built-in exceptions or custom ones you've created.
 
 ```python
 def set_age(age):
@@ -2994,9 +3007,13 @@ In Python, raising and catching exceptions are two sides of the same coin: one t
 Raising is the act of manually triggering an exception. You do this when your code encounters a situation it cannot or should not handle internally, or when a specific condition (like invalid input) is met.
 
 Keyword: `raise`
+
 Purpose: To signal that something has gone wrong.
+
 Direction: Sends the error up the call stack.
+
 When to Use: When a function detects it cannot fulfill its task.
+
 
 Example:
 ```python
@@ -3014,9 +3031,13 @@ set_age(-5) # This will crash the program unless "caught"
 Catching is the act of intercepting an exception that has been raised (either by your code, a library, or Python itself) so that you can handle it gracefully instead of letting the program crash.
 
 Keywords: `try`, `except`
+
 Purpose: To recover from errors and keep the program running.
+
 Direction: Stops the error from moving up the stack.
+
 When to Use: When you want to provide a fallback or log an error without crashing.
+
 
 Example:
 ```python
@@ -3052,8 +3073,11 @@ When Raising: Raise the most specific exception possible (e.g., ValueError inste
 Why not bare excepts?
 
 **The Reason 1**: It catches `BaseException` subclasses like `KeyboardInterrupt` (Ctrl+C) and `SystemExit`.
+
 **The Reason 2** It's considered a 'code smell'.
+
 **The Result**: If you use a bare `except:`, the user might not be able to stop your program using the keyboard!
+
 **The Rule**: Always catch Exception (which ignores those system-level signals) or a specific subclass.
 
 * Keep `try` Blocks Minimal:​ Only wrap the single line or small section of code that you actually expect to fail. This makes it crystal clear where an error might originate and prevents you from accidentally catching an exception from an unrelated part of the code.
@@ -3072,6 +3096,7 @@ This silently swallows errors and can lead to very confusing behavior. Instead, 
 Sometimes you catch an exception and want to raise a different one, but you don't want to lose the original "cause."
 
 **The Syntax**: raise `MyCustomError("Message") from e`
+
 **Why it matters**: It keeps the "traceback" intact, showing both the original error and your new one.
 
 #### How does this fit in with properties and setters?
@@ -3153,9 +3178,9 @@ BaseException
 
 The `Exception` class is not just a marker; it's a fully functional Python class that provides the core behavior for all exceptions. Here’s what’s happening "under the hood":
 
-1. ​**​Initialization (`__init__`)​**: When you raise `ValueError("some message")`, you are creating an instance of the `ValueError` class. The string "some message" is passed to its `__init__` method. The base Exception class's `__init__` method takes all the arguments you provide and stores them in an attribute called `.args`. 
+1. ​**​Initialization​** (`__init__`): When you raise `ValueError("some message")`, you are creating an instance of the `ValueError` class. The string "some message" is passed to its `__init__` method. The base Exception class's `__init__` method takes all the arguments you provide and stores them in an attribute called `.args`. 
 
-2. **​​String Representation (`__str__`)**​: When you `print(e)`, Python implicitly calls the `__str__` magic method on the exception object. The `Exception` class's `__str__` method is designed to format the contents of `.args` into a user-friendly string—which is the error message you see. You can see this in action by creating a custom exception and overriding these methods:
+2. **​​String Representation** (`__str__`)​: When you `print(e)`, Python implicitly calls the `__str__` magic method on the exception object. The `Exception` class's `__str__` method is designed to format the contents of `.args` into a user-friendly string—which is the error message you see. You can see this in action by creating a custom exception and overriding these methods:
 
 ```python
 class MyCustomError(Exception):
@@ -3327,13 +3352,13 @@ class ValidationError(Exception):    
     def __init__(self, message="Invalid data provided"):        
         super().__init__(message)
     
-    def validate_username(username):    
-        if len(username) < 3:        
-            raise ValidationError("Username must be at least 3 characters long.")
-            try:    
-                validate_username("Al")
-            except ValidationError as e:    
-                print(f"Validation failed: {e}")
+def validate_username(username):    
+    if len(username) < 3:        
+        raise ValidationError("Username must be at least 3 characters long.")
+        try:    
+            validate_username("Al")
+        except ValidationError as e:    
+            print(f"Validation failed: {e}")
 ```
 
 ```python

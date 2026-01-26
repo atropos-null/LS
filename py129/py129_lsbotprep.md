@@ -803,10 +803,11 @@ class Widget:    
     def __init__(self, name):        
         self.name = name           
         self.__class__.widgets_created += 1    
+        Widget.widget_created += 1
         
-        @classmethod    
-        def get_total_widgets(cls):        
-               return cls.widgets_created
+    @classmethod    
+    def get_total_widgets(cls):        
+        return cls.widgets_created
         
 widget1 = Widget("One")
 widget2 = Widget("Two")
@@ -819,6 +820,7 @@ widget3 = Widget("Three")
 print(f"Value for widget2 after new widget: {widget2.widgets_created}") # 3
 print(f"Value for the class after new widget: {Widget.get_total_widgets()}") 
 print(f"Value for widget1 remains unchanged: {widget1.widgets_created}") # 50
+print(f"Value for total Widget: {Widget.widget_created}")
 ```
 
 When you try to ​access​ an attribute on an instance (e.g., `widget2.widgets_created`), Python first checks for an instance attribute with that name. If it doesn't find one, it then looks for a class attribute.However, when you ​assign​ a value to an instance attribute (e.g., `widget1.widgets_created = 50`), Python creates a new attribute directly on that instance, regardless of whether a class attribute with the same name exists. This new instance attribute then "shadows" or hides the class attribute for that specific instance (`widget1`) only.
