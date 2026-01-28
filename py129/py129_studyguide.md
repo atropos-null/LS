@@ -1788,6 +1788,138 @@ In this example, class `D` inherits from both `B` and `C`, which both inherit fr
 
 **`D` would call `B` first**. In the above example, the MRO for class `D` would be `D`, `B`, `C`, `A`. So, when you call method on an instance of D, it would first look in B, then C, and finally A. The C3 Linearization Algorithm ensures that this order is consistent and respects the inheritance hierarchy.
 
+#### `.mro` and `super()`
+
+```python
+class Machine:
+    def identify(self):
+        return "I am a Machine.\n"
+
+class Appliance(Machine):
+    def identify(self):
+        message = super().identify()
+        return f"{message} I am an Appliance.\n"
+
+class Toaster(Machine):
+    def identify(self):
+        message = super().identify()
+        return f"{message} I am a Toaster.\n"
+
+class SmartToaster(Appliance, Toaster):
+    pass
+
+my_toaster = SmartToaster()
+print(my_toaster.identify())
+```
+
+Step 1: What method gets called?
+
+`my_toaster.identify()` is called. `SmartToaster` has no identify, so Python looks up the next class in the MRO `SmartToaster`’s bases are (`Appliance`, `Toaster`), so Python checks `Appliance` first.
+
+✅ So the method that runs is: Appliance.identify.
+
+Step 2: What is the MRO?
+
+Let’s compute it conceptually. For:
+
+```python
+class SmartToaster(Appliance, Toaster):
+    pass
+```
+
+The MRO is: SmartToaster → Appliance → Toaster → Machine → object
+
+Why does `Toaster` appear after `Appliance?` Because you listed (Appliance, Toaster) in that order, and Python merges the parent chains consistently (C3 linearization).
+
+Step 3: What does `super()` mean here?
+
+
+`super()` does not mean “call my parent class.” It means “call the next class in the MRO after the class I’m currently in. So inside `Appliance.identify`, `super().identify()` means:
+
+“Find the next class after Appliance in SmartToaster’s MRO, and call its identify.”
+
+The next class after `Appliance` is `Toaster`. So `super()` inside `Appliance.identify` calls: `Toaster.identify`
+
+Step 4: What happens inside `Toaster.identify`?
+
+Now we’re inside `Toaster.identify`. It also does: `message = super().identify()`. Again: `super()` means “next in the MRO after Toaster”. Next after `Toaster` is `Machine`.
+
+So this calls: `Machine.identify` and `Machine.identify` returns: "I am a Machine.\n"
+
+Step 5: Bubble back up (build the final string)
+
+Now we go back to `Toaster.identify`:
+
+```python
+return f"{message} I am a Toaster.\n"
+```
+
+So `Toaster.identify` returns:
+
+```python
+"I am a Machine.\n I am a Toaster.\n"
+```
+
+Now we go back to `Appliance.identify`:
+
+```python
+return f"{message} I am an Appliance.\n"
+```
+
+Where message is what came back from `Toaster`, so `Appliance `returns:
+
+`"I am a Machine.\n I am a Toaster.\n I am an Appliance.\n"`
+
+So this prints:
+```
+I am a Machine. I am a Toaster. I am an Appliance.
+```
+
+**Why people get this wrong**
+
+Most people assume:
+
+* `Appliance` calls `Machine`
+* `Toaster` calls `Machine`
+* `SmartToaster` calls both somehow
+
+But in multiple inheritance, `super()` is cooperative: it follows the MRO chain so each class gets a turn exactly once. 
+
+> In multiple inheritance, super() calls the next method in the MRO, not “the parent.” Python resolves methods using a single, linear order (the MRO), and super() always moves forward along that line.
+
+**Another way to say it**: “In multiple inheritance, super() follows the method resolution order, so each class’s method is called once in a consistent linear sequence.”
+
+One more for the road:
+
+```python
+class A:
+    def speak(self):
+        return "A"
+
+class B(A):
+    def speak(self):
+        return super().speak() + " B"
+
+class C(A):
+    def speak(self):
+        return super().speak() + " C"
+
+class D(B, C):
+    pass
+
+print(D().speak())
+```
+
+Execution flow:
+
+1. `d.speak()` → looks in `D`, not found
+2. Checks `B` → found! Calls `B.speak()`
+3. `B.speak()` calls `super().speak()` → follows MRO to `C `(not `A`!)
+4. `C.speak()` returns `super().speak()` + "C" → calls `A.speak()`
+5. `A.speak()` returns "A"
+6. Back to `C`: returns "A" + "C" = "AC"
+7. Back to `B`: returns "AC" + "B" = "ACB"
+
 [Back to the top](#top)
 
 Further References:
@@ -2520,6 +2652,75 @@ In summary,` __str__` and `__repr__` were created to provide context-appropriate
 
 Page Reference: [Object Oriented Programming with Python, Magic Methods](https://launchschool.com/books/oo_python/read/magic_methods)
 
+
+### Magic Methods + Collaboration 
+
+These notes summarize **Python’s data model** (magic/dunder methods) with a focus on how
+they relate to **object collaboration** and **container-like objects**.
+
+Magic methods are protocol hooks Python calls when you use common syntax.
+
+- `print(obj)` → calls `obj.__str__()`
+- `obj += x` → calls `obj.__iadd__(x)` if defined
+- `for x in obj` → calls `obj.__iter__()`
+
+> **Rule of thumb:**  
+> Magic methods let objects “participate” in built-in operations without special casing.
+
+
+#### Collaboration Principle (applies everywhere)
+
+> **Containers assemble; collaborators describe themselves.**
+
+Meaning:
+- A container object can *format the whole*
+- Each element/collaborator should format *itself* (`__str__`, `__repr__`, etc.)
+
+#### Illustrative Example: In-place “add” (`__iadd__`) for a Collection-like Object
+
+- `__add__` ( `+` ) typically returns a **new** object
+- `__iadd__` ( `+=` ) often **mutates in place** and returns `self`
+
+```python
+class Bucket:
+    def __init__(self):
+        self._items = []
+
+    def add_many(self, items):
+        # "real logic" goes here (explicit method)
+        self._items.extend(items)
+
+    def __iadd__(self, items):
+        # operator sugar delegates to the real method
+        self.add_many(items)
+        return self
+```
+
+Key Info:
+
+* Returning `self` is important for chaining and expected semantics.
+* In-place mutation means aliases see changes (same object identity).
+
+#### Illustrative Example: Container `__str__` Delegating to Elements
+
+`join()` requires strings, so containers often convert elements via `str(element)`:
+
+```python
+class Container:
+    def __init__(self, elements):
+        self._elements = list(elements)
+
+    def __str__(self):
+        parts = [str(e) for e in self._elements]
+        return "Items: " + ", ".join(parts)
+
+```
+
+**Why `str(e)` matters**
+
+* `str(e)` calls `e.__str__()` if defined
+* each element controls its own representation (encapsulation)
+* container just assembles the overall string
 
 ### Magic Attributes: `__class__` and `__name__`
 
