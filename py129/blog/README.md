@@ -4,6 +4,7 @@
 
 The following blog will be pages from latest to earliest: 
 
+    - [In the Beginning](https://github.com/atropos-null/LS/blob/main/py129/blog/01_inthebeginning.md)
 
 
 ## I came to coding late in life.

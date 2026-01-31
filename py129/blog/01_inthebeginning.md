@@ -144,8 +144,7 @@ Because I am sensitive to implicit structure, I can't just skim, pattern-match a
 
 Python doesn’t label the cats.
 
-So your brain goes:
-“Cool, but which of these will bite me under pressure?”
+So my brain goes: “Cool, but which of these will bite me under pressure?”
 
 Python just winks and giggles, but the hidden rule Python never states:  Python code is readable when responsibility boundaries are obvious, not when syntax is simple. Most Python code is syntactically readable and structurally unreadable.
 
