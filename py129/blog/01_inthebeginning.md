@@ -190,6 +190,88 @@ These are heuristics you can literally memorize:
 * If misuse should be impossible → raise early
 * If future-you must find it fast → localize responsibility
 
+Python looks readable, but it hides its real structure in behavioral triggers, not categories. So instead of:
+* “This is a String Thing”
+* “This is a Math Thing”
+* “This is an OOP Thing”
+
+Python actually works like: “If this quacks, I will treat it like a duck right now.”
+
+That means:
+
+- the same method (`__str__`) participates in printing, joining, formatting.
+- the same operator (`+=`) participates in math and container mutation
+- the same object can suddenly behave differently depending on context
+
+That is a bag of cats — but it’s a bag with rules.
+
+Python is a language where meaning emerges from how objects respond to contexts, not from what category they belong to. If Python defines a special method, it is offering an opt-in behavior — not a promise about domain or intent.
+
+## The Rules of Python
+
+🐈 Rule 1: Python is behavior-first, not category-first
+
+Python does not ask: “What kind of thing is this?” It asks: “What can this thing do in this context?” That’s why math operators aren’t math, strings aren’t just strings, objects aren’t “real-world things.” They are capability bundles.
+
+🐈 Rule 2: Context triggers behavior
+
+Certain contexts are the real drivers:
+| Context you see  | Python asks                              |
+| ---------------- | ---------------------------------------- |
+| `for x in y`     | “Can `y` be iterated?”                   |
+| `+=`             | “Can the left side be updated in place?” |
+| `print(x)`       | “Can `x` become a string?”               |
+| `", ".join(...)` | “Are these already strings?”             |
+| `x == y`         | “How do these compare?”                  |
+| `len(x)`         | “Does `x` define a length?”              |
+
+The context comes first. The method is just the adapter. This is the single most important rule.
+
+🐈 Rule 3: Dunder methods are hooks, not meanings
+
+A dunder method does not describe what something is. It describes what behavior Python will plug it into.
+
+So:
+
+* `__str__` = “I can be used where a string is required”
+
+* `__iadd__` = “I know how to update myself when += appears”
+
+* `__iter__` = “I can be looped over”
+
+* `__getitem__` = “I can be indexed or iterated”
+
+They are ports, not semantics.
+
+🐈 Rule 4: Examples are illustrative, not exhaustive
+
+
+Python examples are pedagogical, simplified and intentionally narrow. But exams assume that if a hook works in one example, you should assume it works in any coherent domain. That’s the hidden leap. Not fair — but now named.
+
+🐈 Rule 5: Composition is the default move
+
+Python expects you to combine small behaviors:
+
+* `__str__ `+ list comprehension + `join`
+* `__iter__` + `for` + unpacking
+* `__iadd__` + container mutation
+* inheritance + polymorphism + method dispatch
+
+Rarely, “write a thing in isolation” but often “plug a thing into a pipeline”. If you see multiple features in one question, assume composition is the point.
+
+Python is behavior-driven: contexts demand capabilities, and objects opt in via explicit hooks. An explicit hook is a named method that Python looks for when a specific context appears.
+
+A hook is:
+
+* explicit → it has a specific, spelled-out name
+* behavioral → Python calls it automatically
+* context-triggered → it only matters when a certain syntax or situation occurs
+
+If the hook exists → Python plugs the object into that behavior.
+If it doesn’t → Python raises an error or falls back.
+
+If Python documents a dunder method, that method is the entire contract for participating in a behavior.
+
 ***
 
 References
