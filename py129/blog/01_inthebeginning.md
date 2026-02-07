@@ -397,7 +397,7 @@ If it doesn’t → Python raises an error or falls back.
 If Python documents a dunder method, that method is the entire contract for participating in a behavior.
 
 
-Up Next: Hadrian's Rome and Python's dispatch
+Up Next: A lullaby
 
 ***
 
