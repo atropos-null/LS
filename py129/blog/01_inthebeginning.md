@@ -399,7 +399,7 @@ If it doesn’t → Python raises an error or falls back.
 If Python documents a dunder method, that method is the entire contract for participating in a behavior.
 
 
-Up Next: A lullaby
+Up Next: [A lullaby](https://github.com/atropos-null/LS/blob/main/py129/blog/02_lullaby.md)
 
 ***
 
