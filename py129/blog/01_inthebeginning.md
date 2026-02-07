@@ -178,11 +178,11 @@ That’s the bag.
 
 ## Python's Fixed Rules (The Non-Negotiables)
 
-These are true at all tmimes, regardless of how code is written.
+These are true at all times, regardless of how code is written.
 
 1. Everything at runtime is an object. No exceptions. Numbers, strings, function, classes, modules, `None` are all objects. If it exists during execution, it is an object.
 
-> Invariant: There are no "raw values" at runtime.
+    >> Invariant: There are no "raw values" at runtime.
 
 2. All behavior happens through dispatch.
 
@@ -200,7 +200,7 @@ Is thus translated into the following:
 * call it on an object
 * follow protocol rules
 
-Invariant: Python never executes behavior directly, it dispatches it.
+    >> Invariant: Python never executes behavior directly, it dispatches it.
 
 3. Operators are syntax for method calls.
 
@@ -212,7 +212,8 @@ Invariant: Python never executes behavior directly, it dispatches it.
 
 `x[y]` -> `x.__getitem__(y)`
 
->Invariant: Operators do not define meaning, objects do
+
+   >> Invariant: Operators do not define meaning, objects do
 
 4. Names do not own values, they reference objects.
 
@@ -220,7 +221,7 @@ Assignment never copies data.
 
 `a = b` means "bind `a` to the same object as `b`
 
->Invariant: Names are labels not containers.
+   >> Invariant: Names are labels not containers.
 
 5. Mutation and rebinding are different.
 
@@ -232,7 +233,7 @@ lst.append(3) # Mutates object
 lst = lst + [3] #Rebinds object
 ```
 
-> Invariant: Mutation affects all references, rebinding affects one name.
+   >> Invariant: Mutation affects all references, rebinding affects one name.
 
 6. Protocols matter more than types. 
 
@@ -242,37 +243,37 @@ Python does not care what something *is*. It cares what it can respond to (The d
 * `for x in y` requires `__iter__`
 * `len(x)` requires `__len__`
 
-> Invariant: Behavior is governed by protocls, not class identity.
+    >> Invariant: Behavior is governed by protocls, not class identity.
 
 7. Built-ins are coordinators, not workers.
 
 Functions like `print`, `str`, `len`, `sum`, `join` do not do the work themselves. They coordinate, delegate and trust collaborators to fulfill the contracts. 
 
-> Invariant: Built-ins assume collaborators behave correctly.
+   >> Invariant: Built-ins assume collaborators behave correctly.
 
 8. Failure happens at the boundary of a violate contract.
 
 Errors usually occur where assumptions meet reality, not where the mistake was made.
 
-> Invariant: Python fails late, at collaboration points.
+   >> Invariant: Python fails late, at collaboration points.
 
 9. Meaning is distributed, not centralized.
 
 The interpreter enforces rules, manages dispatch, coordinates execution. Objects define behavior, define Meaning, define how operations respond.
 
-> Invariant: Python cannot centralize meaning without breaking extensibility.
+   >> Invariant: Python cannot centralize meaning without breaking extensibility.
 
 10. Time matters
 
 Python code executes step by step. State persists. History matters.
 
-> Invariant: Python models computation over time, not just transformations.
+   >> Invariant: Python models computation over time, not just transformations.
 
 11. You cannot opt of these rules.
 
 You can write procedural code or functional code or object-oriented code but all of the above applies.
 
->Invariant: Style is optional. Execution model is not.
+   >> Invariant: Style is optional. Execution model is not.
 
 Python executes by asking objects how to behave, step by step, over time. 
 
