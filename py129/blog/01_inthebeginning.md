@@ -108,6 +108,7 @@ The foundation of Duck Typing then implies that identity is secondary to behavio
 Python methods are not conversations between actors, but callable affordances exposed under a name. Human Conversations require shared meaning (traditional definition of meaning). **Python requires shared interfaces**. An object in Python is something that comes into existence, has identity, can be acted upon, and persists through time until it’s no longer referenced. Objects are code infants that exist to carry state forward through time, so behavior doesn’t have to be recomputed from scratch every moment.
 
 OOP in Python exists because state persists, responsibilities need names, and as a human-derived language, humans like to group related things. Not because: “everything is an object” (that’s marketing), or because the real world is object-shaped.
+
 Explicit OOP modeling is optional. You use it when time matters, identity matters, history matters. Otherwise, Python is happy with functions however that too becomes an object under the hood. On the execution level, Python is always object-based. Every operation we write is dispatched through object protocols. Under the hood, Python is *always* doing object collaboration and that cannot be turned off.
 
 Python is a language designed to make the human understanding of a program the primary artifact — not the program’s formal properties. OOP is a human modeling tool that exists beause state persists across steps, responsibility needs a home, invariants need protection and humans reason better about named agents than floating data. 
@@ -120,7 +121,7 @@ Python is a language designed to make the human understanding of a program the p
 
 3. **Python assumes change is inevitable**. Python is built for evolving requirements, partial understanding, refactoring later. So it delays decisions until runtime, allows flexible interfaces, and avoids freezing structure too early. The belief is that the first design will be wrong — and that’s okay.
 
-4. **Python prefers social contracts over legal ones**. Python does not enforce strict encapsulation, access modifiers, or  interface declarations (at runtime). Instead it relies on naming conventions, documentation, shared understanding. The founders believe that programmers are adults who can negotiate responsibility. Of course that assumes a good faith approach by the developers. Which, YMMV.
+4. **Python prefers social contracts over legal ones**. Python does not enforce strict encapsulation, access modifiers, or interface declarations (at runtime). Instead it relies on naming conventions, documentation, shared understanding. The founders believe that programmers are adults who can negotiate responsibility. Of course that assumes a good faith approach by the developers. Which, YMMV.
 
 5. **Python is comfortable with partial failure**. Python doesn’t try to prevent all errors. It assumes that some mistakes are unavoidable, and that catching them early is enough. Errors are part of reality, not moral failures.
 
@@ -140,9 +141,9 @@ The quiet moral stance Python ultimately takes is that "Complex systems survive 
 
 What **I** must learn are what assumptions Python itself makes, vs which assumptions humans layer on top.
 
-Python is a language where (almost) everything is an object, computation is message-passing, and objects are intentionally allowed to remain ignorant of one another. To make that possible, the interpreter defines fixed protocols and a strict choreography for dispatching operations. Objects do not define Meaning; they participate in it by honoring contracts. When a contract is violated, the system fails loudly rather than adapt silently. This is what allows large systems to work without central control
+Python is a language where (almost) everything is an object, computation is message-passing, and objects are intentionally allowed to remain ignorant of one another. To make that possible, the interpreter defines fixed protocols and a strict choreography for dispatching operations. Objects do not exclusively define Meaning, yet they participate  in it by honoring contracts. When a contract is violated, the system fails loudly rather than adapt silently. This is what allows large systems to work without central control
 
-The interpreter defines what questions may be asked, in what order, with precise fallback rules.  Objects only decide their part. Python gives objects this much power because Meaning cannot be centralized in a language whose purpose is to host many domains. Once you accept that premise, everything else follows inevitably. Objects have power in Python because the language refuses to decide Meaning on their behalf.
+The interpreter defines what questions may be asked, in what order, with precise fallback rules.  Objects only decide their part. Python gives objects this much power because Meaning cannot be centralized in a language whose purpose is to host many domains. Once you accept that premise, everything else follows inevitably. Objects have power in Python because the language refuses to decide Meaning on their behalf and asks for their participation.
 
 Python does have responsibility boundaries — they’re just implicit unless you name them.
 
@@ -331,13 +332,13 @@ That is a bag of cats — but it’s a bag with rules.
 
 Python is a language where meaning emerges from how objects respond to contexts, not from what category they belong to. If Python defines a special method, it is offering an opt-in behavior — not a promise about domain or intent.
 
-## The Rules of Python
+## The Views  of Python
 
-🐈 Rule 1: Python is behavior-first, not category-first
+🐈 View 1: Python is behavior-first, not category-first
 
 Python does not ask: “What kind of thing is this?” It asks: “What can this thing do in this context?” That’s why math operators aren’t math, strings aren’t just strings, objects aren’t “real-world things.” They are capability bundles.
 
-🐈 Rule 2: Context triggers behavior
+🐈 View 2: Context triggers behavior
 
 Certain contexts are the real drivers:
 | Context you see  | Python asks                              |
@@ -351,7 +352,7 @@ Certain contexts are the real drivers:
 
 The context comes first. The method is just the adapter. This is the single most important rule.
 
-🐈 Rule 3: Dunder methods are hooks, not meanings
+🐈 View 3: Dunder methods are hooks, not meanings
 
 A dunder method does not describe what something is. It describes what behavior Python will plug it into.
 
@@ -367,12 +368,12 @@ So:
 
 They are ports, not semantics.
 
-🐈 Rule 4: Examples are illustrative, not exhaustive
+🐈 View 4: Examples are illustrative, not exhaustive
 
 
 Python examples are pedagogical, simplified and intentionally narrow. But exams assume that if a hook works in one example, you should assume it works in any coherent domain. That’s the hidden leap. Not fair — but now named.
 
-🐈 Rule 5: Composition is the default move
+🐈 View 5: Composition is the default move
 
 Python expects you to combine small behaviors:
 
