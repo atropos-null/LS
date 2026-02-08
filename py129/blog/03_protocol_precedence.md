@@ -38,26 +38,26 @@ Returning `NotImplemented` means: “I decline responsibility — ask the other 
 `obj.attr`
 
 Dispatch order:
-1.  `type(obj).__getattribute__(obj, "attr")`
-2.  If `AttributeError`, then: `type(obj).__getattr__(obj, "attr")` (only if defined)
+1.	`type(obj).__getattribute__(obj, "attr")`
+2.	If `AttributeError`, then: `type(obj).__getattr__(obj, "attr")` (only if defined)
 
 Descriptors may intercept during step 1.
 
 ### `obj.attr = value`
 
-1.  `type(obj).__setattr__(obj, "attr", value)`
-2.  Descriptor `__set__ `may intercept
+1.	`type(obj).__setattr__(obj, "attr", value)`
+2.	Descriptor `__set__ `may intercept
 
 ### `del obj.attr`
-1.  `type(obj).__delattr__(obj, "attr")`
-2.  Descriptor `__delete__` may intercept
+1.	`type(obj).__delattr__(obj, "attr")`
+2.	Descriptor `__delete__` may intercept
 
 
 ## 2. CALL PROTOCOL
 
 `obj(...)`
 
-1.  `type(obj).__call__(obj, ...)`
+1.	`type(obj).__call__(obj, ...)`
 
 Invariant: Callable ≠ function.  
 Any object may be callable.
@@ -69,9 +69,9 @@ Any object may be callable.
 
 Dispatch order:
 
-1.  `type(obj).__bool__(obj)` → must return `bool`
-2.  If missing: `type(obj).__len__(obj)` → non-zero is truthy
-3.  If both missing: `True`
+1.	`type(obj).__bool__(obj)` → must return `bool`
+2.	If missing: `type(obj).__len__(obj)` → non-zero is truthy
+3.	If both missing: `True`
 
 
 ## 4. MEMBERSHIP PROTOCOL (in)
@@ -80,10 +80,10 @@ Dispatch order:
 
 Dispatch order:
 
-1.  `type(y).__contains__(y, x)`
-2.  If missing: iteration protocol (`__iter__` → `__next__`)
-3.  If missing: sequence fallback via `__getitem__` starting at 0
-4.  else: `TypeError`
+1.	`type(y).__contains__(y, x)`
+2.	If missing: iteration protocol (`__iter__` → `__next__`)
+3.	If missing: sequence fallback via `__getitem__` starting at 0
+4.	else: `TypeError`
 
 `x not in y` negates result
 
@@ -94,27 +94,27 @@ Exam trap: `__getitem__` enables membership without `__contains__`.
 
 `iter(obj)`
 
-1.  `type(obj).__iter__(obj)`
-2.  If missing: sequence fallback via `__getitem__`
-3.  else: `TypeError`
+1.	`type(obj).__iter__(obj)`
+2.	If missing: sequence fallback via `__getitem__`
+3.	else: `TypeError`
 
 
 `next(it)`  
-1.  `type(it).__next__(it)`
-2.  Must raise `StopIteration`
+1.	`type(it).__next__(it)`
+2.	Must raise `StopIteration`
 
 
 `for x in obj` uses `iter(obj)` → repeated `next()`. 
 
 `reversed(obj)`  
-1.  `type(obj).__reversed__(obj)`
-2.  else: needs both `__len__` and `__getitem__`
+1.	`type(obj).__reversed__(obj)`
+2.	else: needs both `__len__` and `__getitem__`
 
 
 ## 6. INDEXING & SLICING PROTOCOL
 
 `obj[key]` 
-1.  type(obj).__getitem__(obj, key)
+1.	type(obj).__getitem__(obj, key)
 
 Key shape:
 * int → indexing
@@ -122,34 +122,34 @@ Key shape:
 
 
 `obj[key] = value` 
-1.  `type(obj).__setitem__(obj, key, value)`
+1.	`type(obj).__setitem__(obj, key, value)`
 
 
 `del obj[key]`
-1.  `type(obj).__delitem__(obj, key)`
+1.	`type(obj).__delitem__(obj, key)`
 
 
 ## 7. LENGTH PROTOCOL
 
 `len(obj)`
 
-1.  `type(obj).__len__(obj)` → must return non-negative int
+1.	`type(obj).__len__(obj)` → must return non-negative int
 
 
 ## 8. REPRESENTATION & FORMATTING
 
 `repr(obj)` 
-1.  type(obj).__repr__(obj) → str
+1.	type(obj).__repr__(obj) → str
 
 
 `str(obj)` 
-1.  `type(obj).__str__(obj)` → str
-2.  else fallback: `__repr__`
+1.	`type(obj).__str__(obj)` → str
+2.	else fallback: `__repr__`
 
 
 `f-strings / format(obj, spec)`
-1.  `type(obj).__format__(obj, spec)`
-2.  Typically delegates to `__str__`
+1.	`type(obj).__format__(obj, spec)`
+2.	Typically delegates to `__str__`
 
 Hidden coordinator: `str.join`, `print`, and f-strings are callers, not formatters.
 
@@ -159,9 +159,9 @@ Hidden coordinator: `str.join`, `print`, and f-strings are callers, not formatte
 ### Equality
 
 `a == b`  
-1.  `type(a).__eq__(a, b)`
-2.  If `NotImplemented`: `type(b).__eq__(b, a)`
-3.  else: `False`
+1.	`type(a).__eq__(a, b)`
+2.	If `NotImplemented`: `type(b).__eq__(b, a)`
+3.	else: `False`
 
 `a != b` uses `__ne__` if defined, else negates `__eq__`
 
@@ -180,9 +180,9 @@ If unresolved `TypeError`
 ## 10. BINARY ARITHMETIC PROTOCOL
 
 General rule: `a OP b`
-1.  `type(a).__op__(a, b)`
-2.  If `NotImplemented`: `type(b).__rop__(b, a)`
-3.  else: `TypeError`
+1.	`type(a).__op__(a, b)`
+2.	If `NotImplemented`: `type(b).__rop__(b, a)`
+3.	else: `TypeError`
 
 | Syntax | Primary        | Reflected        |
 |--------|---------------|------------------|
@@ -202,9 +202,9 @@ General rule: `a OP b`
 
 Dispatch:
 
-1.  `type(a).__iop__(a, b)`
-2.  If missing or `NotImplemented`: fallback to` a = a OP b`
-3.  Name rebound unless mutated in place
+1.	`type(a).__iop__(a, b)`
+2.	If missing or `NotImplemented`: fallback to` a = a OP b`
+3.	Name rebound unless mutated in place
 
 Key Operators
 
@@ -242,8 +242,8 @@ Exam trap: `__index__` ≠ `__int__`
 ## 14. CONTEXT MANAGER PROTOCOL
 
 `with obj as x`:  
-1.  `type(obj).__enter__(obj)` → bound to x
-2.  `type(obj).__exit__(obj, exc_type, exc, tb)`
+1.	`type(obj).__enter__(obj)` → bound to x
+2.	`type(obj).__exit__(obj, exc_type, exc, tb)`
 
 
 
@@ -287,4 +287,3 @@ Python’s tune is this:
 ## ONE-LINE MORAL INVARIANT
 
 **Python is a protocol engine, syntax is surface, dispatch is truth.**
-
