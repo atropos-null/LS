@@ -2,14 +2,11 @@
 
 What I hum to myself when the noise rises. You can stop here and not read any further.
 
-## The Main Lullaby
+## The Lullaby
 
-> I know what I have
-
-> Someone owns the next move
-
-> Something else can be ignored
-
+> I know what I have  
+> Someone owns the next move  
+> Something else can be ignored  
 > One thing must be True
 
 **I know what I have** -> inventory of what is present in the problem 
@@ -20,43 +17,45 @@ What I hum to myself when the noise rises. You can stop here and not read any fu
 
 **One thing must be True**: literally what has to be `True` for the thing to work.
 
+***
 
-## Algorithmic Lullaby
+### Alternative Lullabies
 
-> What **stays** True?
+The following lullabies are lenses to choose to match the shape of the problem.
 
-> What shrinks each step?
 
+### Procedural Lullaby
+
+> What do I have?  
+> What must I give?  
+> What changes as I move?  
+> What rule lets it live?
+
+### Algorithmic Lullaby
+
+> What **stays** True?  
+> What shrinks each step?  
 > What must be True at the **end**?
 
 
-## Object Collaboration Lullaby
+### Object Collaboration Lullaby
 
-> Objects hold state
+> Who am I right now?  
+> Who owns the move?  
+> Who can I ask?  
+> What must they prove?
 
-> Methods move responsibility
-
-> Calls pass time forward
-
-> Nothing acts alone
-
-## Dispatch Lullaby 
+### Dispatch Lullaby 
 
 For dunder methods, operators etc
 
-> Syntax knocks
-
-> Dispatch decides
-
-> Objects answer
-
+> Syntax knocks  
+> Dispatch decides  
+> Objects answer  
 > Protocols hold
 
 If something surprises you, ask:
 
 > Which object was asked?
 
-
 Up Next: Hadrian's Rome and Dispatch
-
-
