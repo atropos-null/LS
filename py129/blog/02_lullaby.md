@@ -58,4 +58,4 @@ If something surprises you, ask:
 
 > Which object was asked?
 
-Up Next: Hadrian's Rome and Dispatch
+Up Next: Python Protocol Precedence Chart 
