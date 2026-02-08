@@ -284,6 +284,6 @@ Python’s tune is this:
 | f-strings     | `__format__` → `__str__`               |
 | comparison    | NotImplemented → swapped method        |
 
-## ONE-LINE MORAL INVARIANT
+## Remember: 
 
 **Python is a protocol engine, syntax is surface, dispatch is truth.**
