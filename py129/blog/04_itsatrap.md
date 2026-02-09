@@ -209,4 +209,79 @@ Why is this happening to you?
 
 The moral invariant:  When a container formats its contents, it becomes a coordinator, and coordinator must either enforce collaborator contracts or perform the coercion themselves.
 
+## Trap 7: ` __init__` return values are silently discarded** 
+
+**Hidden assumption**: "If I return something from `__init__`, it becomes the instance."
+
+What students overlook: `__init__` has implicit return type `None`. The interpreter always returns the instance created by `__new__`, regardless of what `__init__` returns. Returning a value is syntactically legal but semantically dead code.
+
+**Misconception that exposes it**:
+```python
+class Wrapper:
+    def __init__(self, value):
+        return value  # looks like it might "set" the instance
+
+w = Wrapper(42)
+print(w)  # <__main__.Wrapper object at 0x...>, NOT 42
+print(type(w))  # <class '__main__.Wrapper'>, NOT int
+```
+
+**Why it looks correct at first glance**: Constructors in other languages (Java, C#) sometimes appear to "return" the instance. Students conflate `__init__` (initializer) with `__new__` (allocator) or confuse it with factory functions.
+
+**Correct interpretation**: `__init__` mutates self in place. The instance is already bound to the call result before `__init__` runs. Any return statement in `__init__` raises `TypeError` if it returns non-None (Python 3.10+) or is silently ignored in earlier versions.
+
+## Trap 8: Mutable default arguments are shared across all instances** 
+
+**Hidden assumption**: "Default arguments are evaluated fresh for each call."
+
+**What students overlook**: Default argument expressions are evaluated once, at function definition time, not at call time. If the default is a mutable object (list, dict, set), all instances share the same object reference.
+
+Misconception that exposes it:
+
+```python
+class Counter:
+    def __init__(self, items=[]):
+        self.items = items  # all instances share the same list!
+
+c1 = Counter()
+c1.items.append("a")
+c2 = Counter()
+print(c2.items)  # ["a"] — c2's list was mutated by c1!
+```
+
+**Why it looks correct at first glance**: The syntax mirrors expected behavior: "If no argument is passed, use this default". But the default is a persistent object, not a fresh copy.
+
+**Correct interpretation**: Use `None` as the sentinel and construct the mutable inside `__init__`:
+
+```python
+def __init__(self, items=None):
+    self.items = items if items is not None else []
+```
+
+**Moral Invariant**: Default arguments are cached at definition time; mutable defaults create aliasing bugs across instances.
+
+## Trap 9: `__init__` is not called on subclass instances if subclass defines no `__init__`**
+
+**Hidden assumption**: "Parent `__init__` runs automatically."
+
+**What students overlook**: If a subclass does not define `__init__`, the parent's `__init__` is inherited and called. But if the subclass does define `__init__` and doesn't call `super().__init__(...)`, the parent's initialization is skipped entirely. No error is raised; the instance is allocated but incompletely initialized.
+
+**Misconception that exposes it**:
+```python
+class Animal:
+    def __init__(self, name):
+        self.name = name
+
+class Dog(Animal):
+    def __init__(self, name, breed):
+        self.breed = breed  # forgot super().__init__(name)!
+
+d = Dog("Buddy", "Golden")
+print(d.breed)  # "Golden"
+print(d.name)   # AttributeError: 'Dog' object has no attribute 'name'
+```
+
+Why it looks correct at first glance: The subclass has an `__init__`, so it "obviously" initializes the instance. The parent's initialization is invisible unless explicitly called.
+
+Correct interpretation: Subclasses must explicitly call parent initializers via `super().__init__(...)` if they override `__init__`. The interpreter does not automatically chain them; you must do it manually. This is a handoff of responsibility—the child takes ownership of the full initialization contract.
 

@@ -3042,3 +3042,142 @@ except RuntimeError as e:
 # Result: Processes (10, 2), then re-raises the None error as a RuntimeError.
 ```
 </details>
+
+
+## Pass 6
+
+### Problem 1: Playlist Class
+
+**Description**: Create a `Playlist` class that represents a music playlist. The class should be able to store and manage a collection of song titles.
+
+Initialization:
+
+* The `__init__` method should accept one required argument: the name of the playlist (a string).
+* It should also accept an optional argument, songs, which is a list of initial song titles (strings). If not provided, the playlist should start empty.
+* The `Playlist` object should maintain the state of the songs in the order they are in the list.
+
+
+**Methods**:
+
+* `add_song(song_title)`: Adds a new song title (string) to the end of the playlist.
+* `now_playing()`: Returns the title of the current song. When a playlist is first created, the "current song" is the first song in the list. If the playlist is empty, this method should return None.
+* `play_next()`: Advances to the next song in the playlist. The "current song" becomes the next one in the list. If the current song is the last one in the list, this method should loop back to the first song. If the playlist is empty, this method does nothing.
+
+Inputs:
+```python
+# Input
+    rock_hits = Playlist("Rock Hits", ["Stairway to Heaven", "Bohemian Rhapsody"])
+    print(rock_hits.now_playing())
+    rock_hits.play_next()
+    print(rock_hits.now_playing())
+    rock_hits.add_song("Hotel California")
+    rock_hits.play_next()
+    print(rock_hits.now_playing())
+
+    # Output
+    #Stairway to Heaven
+    #Bohemian Rhapsody
+    #Hotel California
+```
+
+```python
+# Input
+    favorites = Playlist("Favorites", ["Song A", "Song B"])
+    favorites.play_next()
+    print(favorites.now_playing())
+    favorites.play_next() # Should loop back to the start
+    print(favorites.now_playing())
+
+    # Output
+    Song B
+    Song A
+```
+```python
+# Input
+    empty_playlist = Playlist("Empty")
+    print(empty_playlist.now_playing())
+    empty_playlist.play_next()
+    print(empty_playlist.now_playing())
+    empty_playlist.add_song("First Song")
+    print(empty_playlist.now_playing())
+
+    # Output
+    None
+    None
+    First Song
+```
+
+Common Wrong Turns:
+
+1. Using a mutable default argument (like `songs=[]`) in the `__init__` method signature, which can cause unexpected behavior where all playlists share the same initial song list.
+2. Incorrectly managing the index for the current song, leading to `IndexError` or improper looping logic.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+### Problem 2: InventoryItem Class​*
+
+**Description**: Design an InventoryItem class to represent an item in a store's inventory. Each item has a name, price, and quantity.
+
+**Initialization (`__init__`)**:
+
+1. The initializer must accept three arguments: name (string), price (float or integer), and quantity (integer).
+2. During initialization, the method must perform the following validations:
+    •   The price cannot be negative.
+    •   The quantity cannot be negative.
+3. If any of the validation checks fail, the initializer should raise a `ValueError` with an appropriate error message.
+4. If validation passes, the initializer should set the corresponding instance variables.
+
+Methods:
+
+* `get_total_value()`: Returns the total value of the inventory item, calculated as price * quantity.
+*  `__str__()`: Returns a user-friendly string representation of the item in the format: `"{name} - Price: ${price:.2f}, Quantity: {quantity}"`. The price should always be formatted to two decimal places.
+
+I/O Examples:
+
+1.  ​Successful instantiation and usage:
+```   
+ # Input
+    item = InventoryItem("Laptop", 1200.50, 10)
+    print(item)
+    print(item.get_total_value())
+
+    # Output
+    Laptop - Price: $1200.50, Quantity: 10
+    12050.0
+```
+
+ 2.  ​Instantiation with invalid price:
+ 
+ ```
+ # Input
+    try:
+        item = InventoryItem("Keyboard", -50, 25)
+    except ValueError as e:
+        print(e)
+
+    # Output
+    Price cannot be negative.
+```
+
+3.  ​Instantiation with invalid quantity:
+```
+# Input
+    try:
+        item = InventoryItem("Mouse", 25, -5)
+    except ValueError as e:
+        print(e)
+
+    # Output
+    Quantity cannot be negative.
+```    
+
+**Common Wrong Turns**:
+
+1.  Failing to raise a `ValueError`. Instead, some might print an error message or return `None`, which does not correctly prevent the object from being created in an invalid state.
+2.  Implementing validation in separate methods instead of directly within `__init__`, which allows an invalid object to be created before the validation methods are called.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
