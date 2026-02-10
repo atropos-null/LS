@@ -28,14 +28,22 @@ Dunder methods are capabilities, not identities.
 
 Returning `NotImplemented` means: “I decline responsibility — ask the other object.”
 
-### Meta-Rule 4: In-Place ≠ Numeric
+### Meta-Rule 4: Operators Are Protocol Requests, Not Meanings
 
-`+=` does not mean “do math.”  It means “mutate if possible, otherwise rebind.”
+Python operators do not mean “do math” or “compare values.”  
+They mean: “ask the objects involved how they want to handle this operation.”
 
+The symbol is just syntax. The behavior lives in the objects.
+
+* `+=` means “mutate the left-hand object if it supports in-place update; otherwise, fall back to rebinding.” It does not mean “add numbers.”
+* `+` means “produce a new object that represents a combination, as defined by the left operand.” It does not mean arithmetic.  `+` means combine, and math is just one possible combination.”
+* `==` means “do these two objects consider themselves equivalent?” It does not mean “are they the same thing.”
+
+***
 
 ## 1. ATTRIBUTE ACCESS PROTOCOL
 
-`obj.attr`
+#### `obj.attr`
 
 Dispatch order:
 1.	`type(obj).__getattribute__(obj, "attr")`
@@ -43,19 +51,20 @@ Dispatch order:
 
 Descriptors may intercept during step 1.
 
-### `obj.attr = value`
+#### `obj.attr = value`
 
 1.	`type(obj).__setattr__(obj, "attr", value)`
 2.	Descriptor `__set__ `may intercept
 
-### `del obj.attr`
+#### `del obj.attr`
+
 1.	`type(obj).__delattr__(obj, "attr")`
 2.	Descriptor `__delete__` may intercept
 
 
 ## 2. CALL PROTOCOL
 
-`obj(...)`
+#### `obj(...)`
 
 1.	`type(obj).__call__(obj, ...)`
 
@@ -65,7 +74,7 @@ Any object may be callable.
 
 ## 3. TRUTHINESS PROTOCOL
 
-`if obj`:
+#### `if obj`:
 
 Dispatch order:
 
@@ -76,7 +85,7 @@ Dispatch order:
 
 ## 4. MEMBERSHIP PROTOCOL (in)
 
-`x in y`
+#### `x in y`
 
 Dispatch order:
 
@@ -85,35 +94,38 @@ Dispatch order:
 3.	If missing: sequence fallback via `__getitem__` starting at 0
 4.	else: `TypeError`
 
-`x not in y` negates result
+`x not in y` negates result.
 
 Exam trap: `__getitem__` enables membership without `__contains__`.
 
 
 ## 5. ITERATION PROTOCOL
 
-`iter(obj)`
+#### `iter(obj)`
 
 1.	`type(obj).__iter__(obj)`
 2.	If missing: sequence fallback via `__getitem__`
 3.	else: `TypeError`
 
 
-`next(it)`  
+#### `next(it)`  
+
 1.	`type(it).__next__(it)`
 2.	Must raise `StopIteration`
 
 
 `for x in obj` uses `iter(obj)` → repeated `next()`. 
 
-`reversed(obj)`  
+#### `reversed(obj)`  
+
 1.	`type(obj).__reversed__(obj)`
 2.	else: needs both `__len__` and `__getitem__`
 
 
 ## 6. INDEXING & SLICING PROTOCOL
 
-`obj[key]` 
+#### `obj[key]` 
+
 1.	type(obj).__getitem__(obj, key)
 
 Key shape:
@@ -121,33 +133,38 @@ Key shape:
 * slice(start, stop, step) → slicing
 
 
-`obj[key] = value` 
+#### `obj[key] = value` 
+
 1.	`type(obj).__setitem__(obj, key, value)`
 
 
-`del obj[key]`
+#### `del obj[key]`
+
 1.	`type(obj).__delitem__(obj, key)`
 
 
 ## 7. LENGTH PROTOCOL
 
-`len(obj)`
+#### `len(obj)`
 
 1.	`type(obj).__len__(obj)` → must return non-negative int
 
 
 ## 8. REPRESENTATION & FORMATTING
 
-`repr(obj)` 
+#### `repr(obj)` 
+
 1.	type(obj).__repr__(obj) → str
 
 
-`str(obj)` 
+#### `str(obj)` 
+
 1.	`type(obj).__str__(obj)` → str
 2.	else fallback: `__repr__`
 
 
-`f-strings / format(obj, spec)`
+#### `f-strings / format(obj, spec)`
+
 1.	`type(obj).__format__(obj, spec)`
 2.	Typically delegates to `__str__`
 
@@ -156,7 +173,7 @@ Hidden coordinator: `str.join`, `print`, and f-strings are callers, not formatte
 
 ## 9. COMPARISON PROTOCOLS
 
-### Equality
+#### Equality
 
 `a == b`  
 1.	`type(a).__eq__(a, b)`
@@ -241,7 +258,8 @@ Exam trap: `__index__` ≠ `__int__`
 
 ## 14. CONTEXT MANAGER PROTOCOL
 
-`with obj as x`:  
+#### `with obj as x`:  
+
 1.	`type(obj).__enter__(obj)` → bound to x
 2.	`type(obj).__exit__(obj, exc_type, exc, tb)`
 
@@ -258,7 +276,8 @@ Invariant: Equal objects must hash equally.
 
 ## 16. IDENTITY (NOT OVERRIDABLE)
 
-`a is b`
+#### `a is b`
+
 * Pointer identity
 * No dunder
 * No dispatch

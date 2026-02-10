@@ -6,11 +6,28 @@ Can you identify **which protocol is active** and **who is coordinating whom**, 
 
 ## Trap 1: “Looks Like Arithmetic, Isn’t Arithmetic”
 
-Pattern
+Python operators do not mean “do math” or “compare values.”  They mean: “ask the objects involved how they want to handle this operation.”
 
-Using += on a non-numeric object to extend or modify internal state.
+The symbol is just syntax. The behavior lives in the objects.
 
-Example:
+1. `+=`: **In-Place ≠ Numeric**
+
+Critical invariant: `+=` means “mutate the left-hand object if it supports in-place update; otherwise, fall back to rebinding.” It does not mean “add numbers.”
+
+`a += b` is intepreted as:
+
+Try: `a.__iadd__(b)`
+
+If that does not exist or returns `NotImplemented`:
+
+Fall back to: `a = a.__add__(b)`
+
+Consequences:
+
+* Mutable types (like lists) usually mutate in place
+* Immutable types (like ints, tuples, strings) cannot mutate → rebinding occurs
+
+**The trap**:  People assume `+=` is “just `+` with assignment." It is not. It is a mutation request, not a math request.
 
 ```python
 
@@ -31,17 +48,6 @@ What we are thinking incorrectly:
 * “`+=` is just shorthand for +”
 * “Augmentation always creates a new object”
 * “This is numeric behavior applied elsewhere”
-
-What actually happens (protocol-level)
-
-```
-obj += other
-```
-
-This performs protocol dispatch in this order:
-1.	Call `obj.__iadd__(other)` if it exists
-2.	else fall back to `obj = obj.__add__(other)`
-3.	else `raise TypeError`
 
 What isn't obvious:
 
@@ -70,8 +76,76 @@ Spidey senses, look out for these words:
 * “collect”
 
 
-Moral invariant:  `+=` asks an object whether it wants to absorb the change; if it says “yes,” mutation is the point, not the exception.
 
+2. `+`: **Combination, Not Addition**
+
+Critical invariant: `+` means “produce a new object that represents a combination, as defined by the left operand.” It does not mean arithmetic.
+
+What Python actually does: `a + b`  
+translates to: `a.__add__(b)` or (or `b.__radd__(a)` if the first fails)
+
+Consequences: `+` never mutates. The meaning depends entirely on the type.
+
+```python
+[1, 2] + [3]       # list concatenation
+"hello" + "world"    # string concatenation
+3 + 4             # numeric addition
+```
+
+The trap: Students assume: “`+` means math, unless overridden.”
+
+Correct model: “`+` means combine, and math is just one possible combination.”
+
+3. `==`: Agreement, Not Identity
+
+Critical invariant: `==` means “do these two objects consider themselves equivalent?” It does not mean “are they the same thing.”
+
+What Python actually does: `a == b`
+
+means: `a.__eq__(b)` (or possibly `b.__eq__(a)`)
+
+Consequences: Equality is a negotiated protocol.  Two objects can be equal without being the same object
+
+```python
+a = [1, 2]
+b = [1, 2]
+
+a == b    # True  (same value)
+a is b    # False (different objects)
+```
+
+The dangerous blindside:  If you define `__eq__` but don’t define `__hash__`, your object becomes unhashable:
+
+```python
+class User:
+    def __init__(self, id):
+        self.id = id
+
+    def __eq__(self, other):
+        return self.id == other.id
+
+# Now:
+set([User(1)])  # TypeError: unhashable type
+```
+
+Why? Because Python assumes: If equality is custom, hashing must be explicitly reconciled.
+
+**The Operators That Most Often Blindside Students**
+
+This may make sense later:
+
+* `+=` (mutation vs rebinding)
+* `==` (custom equality breaking hashing)
+* `in` (container vs iterator)
+* `[]` (slicing is just `__getitem__`)
+* `*` (repetition + shared references)
+
+
+**THE RULE**: 
+
+Every operator is a protocol request, not an operation.
+The symbol does nothing by itself.
+The left operand decides what happens.
 
 ## Trap 2: “The Output Is a String — But Nobody Said How”
 
