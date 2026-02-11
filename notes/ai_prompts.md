@@ -152,8 +152,6 @@ End with a single sentence that states the moral invariant of {INSERT TOPIC}.
 
 ### Pass 9: MASTER PROMPT: Bridge Pattern Discovery (Level-3). Use this when a topic feels foggy or exam-dangerous.
 
-
-
 Assume I already understand the core concept of {INSERT TOPIC}. I am not missing definitions; I am missing bridges.
 
 I want you to surface Python bridge patterns related to {INSERT TOPIC} — the minimal idiomatic moves that connect intent → implementation under time pressure.
@@ -199,8 +197,6 @@ Who should not know about {INSERT TOPIC} if the design is correct?
 
 What is the hidden contract behind {INSERT TOPIC}, and who relies on it staying invisible?
 
-
-
 ### Step 3: Did I get the information I need?
 
 After using the prompts, make sure you can answer these five silently:
@@ -217,3 +213,10 @@ After using the prompts, make sure you can answer these five silently:
 3.	“Who owns that responsibility?” (this object? collaborator? container?)
 4.	“What is the smallest legal move?” (even a placeholder, even wrong direction)
 
+
+
+## TLDR
+
+Explain the following Python topics to me morally, not rigorously. Tell me the story of why it exists, what pain it solves, and what the ‘moral of the story’ is in one sentence. Then give me the simplest example that demonstrates the moral, and one counterexample where naive intuition fails. After the counterexamples, explicitly state the invariant that all valid uses obey and all failures violate.
+
+Give me {INSERT NUMBER} assessment-style problems for {INSERT TOPIC} that would surprise a very prepared student. Include test cases (I/O only) and name the hidden trap. No solutions.”
