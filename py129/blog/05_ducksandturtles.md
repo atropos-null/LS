@@ -17,13 +17,13 @@ The interpreter does not consider declared types, class hierarchies, interfaces,
 
 Duck typing is the execution strategy. In EVERY case this happens, when Python sees:
 
-`a + b` it asks, “Can I call a.__add__(b)? If not, can I call b.__radd__(a)?”
+`a + b` it asks, “Can I call `a.__add__(b)`? If not, can I call `b.__radd__(a)`?”
 
-`a += b` it asks, “Can I call a.__iadd__(b)? If not, can I fall back to a + b?”
+`a += b` it asks, “Can I call `a.__iadd__(b)`? If not, can I fall back to `a + b?`”
 
-`print(x)` it asks, “Can I call x.__str__()?”
+`print(x)` it asks, “Can I call `x.__str__()`?”
 
-`len(x)` it asks, “Can I call x.__len__()?”
+`len(x)` it asks, “Can I call `x.__len__()`?”
 
 In every case the interpreter tries behavior, success continues execution, failure raises a concrete error. 
 

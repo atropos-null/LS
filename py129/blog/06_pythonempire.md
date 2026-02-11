@@ -16,7 +16,7 @@ But when Augustus time had passed and there was a large territory with different
 
 Hadrian's Rome was different. He didn’t overturn the entire system Augustus and his immediate successors built, but he centralized authority, reformed law,  and made imperial bureacratic administration more systematic. Those changes had significant effects on magistrates’ roles, communication, and provincial governance. Here’s what’s distinctive about Hadrian compared to earlier Principate practice:
 
-1. A More Centralized Imperial Bureaucracy
+1. **A More Centralized Imperial Bureaucracy**
 Hadrian strengthened the central administration around the emperor himself. Whereas earlier emperors still relied heavily on traditional aristocratic networks and sporadic personal influence, Hadrian did two important things: he expanded the imperial secretariat (consilium principis) and staffed it with salaried professionals — mostly equestrians trained in law and administration rather than the imperial freedmen who had held many posts before. This not only increased administrative capacity but also reduced the Senate’s practical influence in high governance.
 
 In effect, the emperor’s office became a bureaucratic center of decision-making, not merely a collection of powers held by one person. That made communication more systematic — formal documents, legal replies (rescripts), and administrative reports were increasingly centralized and recorded.
@@ -27,7 +27,7 @@ Hadrian strengthens the center. Modern Python does the same by steadily expandin
 
 Imagine the CPython’s evaluation loop as the *consilium principis*: salaried professionals (core devs) enforcing uniform procedure, not aristocratic custom. The Senate still exists—users, library authors—but it does not govern execution.
 
-2. Legal System Reform and the Perpetual Edict
+2. **Legal System Reform and the Perpetual Edict**
 One major reform under Hadrian (implemented formally by the jurist Salvius Julianus) was the codification of the praetor’s edict — the annual set of legal principles that praetors in Rome and the provinces had used to guide civil litigation. Hadrian made this “Perpetual Edict” into a fixed, empire-wide code. This reduced discretionary variance by individual magistrates and effectively regularized legal procedure throughout the empire, meaning magistrates and governors operated under a single legal framework.
 
 This is a big difference from earlier in the Principate, when even though the emperor was supreme, provincial judges still exercised more personal leeway in civil law. Hadrian’s reforms began a shift toward an imperial law-centered system in communication and decision-making.
@@ -35,14 +35,13 @@ This is a big difference from earlier in the Principate, when even though the em
 **How this maps to Python**:
 
 Hadrian’s Perpetual Edict, finalized under Salvius Julianus, freezes what had previously been an annually re-issued, magistrate-interpreted body of law, which maps onto Python’s evolution toward fixed semantic contracts that include 
-Data model invariants (“what __eq__ must mean,” identity vs equality), Slot-based dispatch rules, MRO linearization
-along with truthiness, iteration, numeric protocols.
+Data model invariants (“what __eq__ must mean,” identity vs equality), Slot-based dispatch rules, MRO linearization along with truthiness, iteration, numeric protocols.
 
 Earlier Python allowed more praetorian discretion. You could implement half a protocol and get away with it. Now the interpreter increasingly assumes: “If you claim to be X, you must obey all of X’s laws.”
 
 Hadrian's solidification meant that greater legibility and fewer surprises came at the cost of creativity.
 
-3. A More Systematic Legal Correspondence (Rescripts)
+3. **A More Systematic Legal Correspondence (Rescripts)**
 Hadrian is closely associated with formalizing the practice of legal rescripts: written responses from the emperor or his central advisors to legal questions posed by provincial officials or private litigants. That made imperial authority explicit in legal governance and served as a means of communication between center and periphery. In earlier Principate practice, emperors issued legal pronouncements, but Hadrian’s reign marks a point where this rescript system became a recognizable mechanism of governance and law.
 
 This is part of why scholars see Hadrian’s rule as making imperial sovereignty more “legible” and official in administrative and legal channels — not just a matter of personal imperial presence but of documented jurisprudence.
@@ -55,26 +54,25 @@ What this means: Exceptions are not opinions; they are imperial responses.
 
 This is crucial to understand as programmers: Python looks dynamic, but modern Python is highly procedural about who gets to decide. And now, the emperor no longer needs to be present. 
 
-4. Hands-On Provincial Oversight
+4. **Hands-On Provincial Oversight**
 Hadrian is famous for travelling extensively through the provinces, personally inspecting military posts, frontier defenses, and civil administration. He didn’t merely rely on reports sent from governors; he physically toured large parts of the empire. In Britain, for example, he inspected the army and afterward initiated construction of Hadrian’s Wall — part of a defensive stabilization strategy rather than expansion.
 
 This stands in contrast to many earlier emperors (including Augustus, Tiberius, and Trajan) who spent much more time in Rome or relied primarily on reports from others. Hadrian’s tours weren’t symbolic pilgrimages — they were a form of direct oversight, tightening imperial control over local command structures and governance.
 
 **How this maps to Python**:
 
-Hadrian didn’t trust reports alone. He showed up. Python does something analogous through runtime checks, introspection hooks
-and explicit error raising when invariants are violated. Changes to the program are announced and then slowly introduced. 
+Hadrian didn’t trust reports alone. He showed up. Python does something analogous through runtime checks, introspection hooks and explicit error raising when invariants are violated. Changes to the program are announced and then slowly introduced. 
 Essentially, the interpreter *walks the provinces* during execution. If a class violates expectations, it doesn’t quietly misbehave—it gets inspected, corrected, or rejected. This is not laissez-faire Augustus. 
 
 
-5. Provincial Boundaries and Frontier Policy
+5. **Provincial Boundaries and Frontier Policy**
 Hadrian’s emphasis on consolidation rather than expansion had administrative consequences. Where Trajan’s campaigns had pushed Rome’s borders outward, Hadrian sometimes reorganized or even abandoned conquered territory (as in parts of Dacia), placing emphasis on efficient defense and governance. This required adjustments in how governors communicated with the emperor and how military command was linked with civil administration.
 
 **How it maps to Python**:
 
 Modern Python is not aggressively adding new paradigms. Instead, it is choosing to deepen existing protocols, type relationships, increases predictability of dispatch and ensures guarantees around object behavior.  The borders are defended. Inside them, administration improves.
 
-### It's a monster but its my monster
+### It's a monster but its' my monster
 
 When we consider that data scientists, AI coders, regular scientists, kids learning, and a huge eco0 and so forth are all experiencing the same Python, it has allowed to adapt to many different needs. The connecting line between Modern Python and Hadrian’s Rome is that they are and were  systems that reached a scale where informal authority stopped being sufficient.
 

@@ -4,7 +4,10 @@
 
 The following blog will be pages from latest to earliest: 
 
-* [It's a trap]()
+* [A Grothendieck Perspective](https://github.com/atropos-null/LS/blob/main/py129/blog/07_grothendieckperspective.md)
+* [The Pythonic Empire](https://github.com/atropos-null/LS/blob/main/py129/blog/06_pythonempire.md)
+* [On Ducks and Turtles](https://github.com/atropos-null/LS/blob/main/py129/blog/05_ducksandturtles.md)
+* [It's a trap](https://github.com/atropos-null/LS/blob/main/py129/blog/04_itsatrap.md)
 * [Protocol Precedence](https://github.com/atropos-null/LS/blob/main/py129/blog/03_protocol_precedence.md)
 * [A Lullaby](https://github.com/atropos-null/LS/blob/main/py129/blog/02_lullaby.md)
 * [In the Beginning](https://github.com/atropos-null/LS/blob/main/py129/blog/01_inthebeginning.md)
