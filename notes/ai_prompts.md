@@ -219,4 +219,13 @@ After using the prompts, make sure you can answer these five silently:
 
 Explain the following Python topics to me morally, not rigorously. Tell me the story of why it exists, what pain it solves, and what the ‘moral of the story’ is in one sentence. Then give me the simplest example that demonstrates the moral, and one counterexample where naive intuition fails. After the counterexamples, explicitly state the invariant that all valid uses obey and all failures violate.
 
-Give me {INSERT NUMBER} assessment-style problems for {INSERT TOPIC} that would surprise a very prepared student. Include test cases (I/O only) and name the hidden trap. No solutions.”
+For {TOPIC}, generate 3 advanced Launch-School–style assessment prompts starting at {EXAM NUMBER}:
+	1.	Predict & explain a short code snippet’s output
+	2.	Debug a short snippet (state intended behavior)
+	3.	Implement a small function or class with 3 I/O examples
+
+Avoid canonical examples; prefer composition or object collaboration contexts.
+
+Name the hidden trap each prompt is targeting.
+
+Keep each under ~25 lines. No solutions or hints. At least one prompt must rely on a reasonable but incorrect assumption about a protocol or operator.
