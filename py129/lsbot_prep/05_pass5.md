@@ -1,6 +1,6 @@
 # PY129 LSBOT Prep Questions
 
-## ## Pass 5, Exceptions
+## Pass 5, Exceptions
 
 ### 58. Advanced: Custom Exception Hierarchy for Data Validation
 
