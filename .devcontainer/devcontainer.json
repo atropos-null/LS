@@ -1,8 +1,8 @@
-
 {
-    "name": "Python 3",
-    "image": "mcr.microsoft.com/devcontainers/python:latest",
-    "features": {
-      "python": "latest"
-    }
-  }
+  "name": "Python 3",
+  "image": "mcr.microsoft.com/devcontainers/python:latest",
+  "features": {
+    "python": "latest"
+  },
+  "postCreateCommand": "echo 'export PATH=\"/usr/local/python/3.13.2/bin:$PATH\"' >> ~/.bashrc"
+}
