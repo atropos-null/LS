@@ -4,5 +4,14 @@
   "features": {
     "python": "latest"
   },
-  "postCreateCommand": "echo 'export PATH=\"/usr/local/python/3.13.2/bin:$PATH\"' >> ~/.bashrc"
+  "postCreateCommand": "echo 'export PATH=\"/usr/local/python/3.13.2/bin:$PATH\"' >> ~/.bashrc && echo 'alias python=python3' >> ~/.bashrc",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+        "editor.detectIndentation": false
+      }
+    }
+  }
 }
