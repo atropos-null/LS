@@ -85,6 +85,81 @@ except Exception as e:
 # The connection string should remain unchanged
 
 print(connector.get_connection_string()) # Expected: "postgresql://localhost:5432"
+
+# --- Base Case ---
+print("--- Base Case ---")
+settings = {'host': 'localhost', 'port': 5432}
+config = ReadOnlyConfig(settings)
+connector = DatabaseConnector(config)
+print(f"Initial Connection String: {connector.get_connection_string()}")
+# Expected: Initial Connection String: postgresql://localhost:5432
+
+# --- Test 1: Attempt to modify the settings via the getter ---
+# This validates that get_settings() returns a copy, not a reference.
+print("\n--- Test 1: Modifying the dictionary returned by get_settings() ---")
+try:
+    retrieved_settings = config.get_settings()
+    retrieved_settings['port'] = 9999
+    print("Attempted to modify retrieved settings dict.")
+except Exception as e:
+    print(f"Modification failed as expected: {type(e)}")
+
+# The connection string should remain unchanged.
+print(f"Connection String after attempt: {connector.get_connection_string()}")
+# Expected: Connection String after attempt: postgresql://localhost:5432
+
+
+# --- Test 2: Modify the original dictionary after initialization ---
+# This validates that the constructor makes a defensive copy of the input.
+
+print("\n--- Test 2: Modifying the original settings dictionary ---")
+original_settings = {'host': 'db.example.com', 'port': 8000}
+config2 = ReadOnlyConfig(original_settings)
+connector2 = DatabaseConnector(config2)
+print(f"Initial Connection String: {connector2.get_connection_string()}")
+# Expected: Initial Connection String: postgresql://db.example.com:8000
+
+# Now, modify the original dictionary.
+original_settings['port'] = 1234
+print("Original dictionary was modified.")
+
+# The connection string should remain unchanged, proving the config is independent.
+print(f"Connection String after modification: {connector2.get_connection_string()}")
+# Expected: Connection String after modification: postgresql://db.example.com:8000
+
+
+# --- Test 3: Edge Case with incomplete settings ---
+# This tests how the system handles missing required keys.
+# A robust solution should handle this gracefully.
+
+print("\n--- Test 3: Handling incomplete settings ---")
+try:
+    incomplete_settings = {'host': 'onlyhost.com'}
+    config3 = ReadOnlyConfig(incomplete_settings)
+    connector3 = DatabaseConnector(config3)
+    # This line is expected to raise an error.
+    print(connector3.get_connection_string())
+except KeyError as e:
+    print(f"Successfully caught expected error for missing key: {e}")
+except Exception as e:
+    print(f"Caught an unexpected error: {type(e)}")
+# Expected: Successfully caught expected error for missing key: 'port'
+
+
+# --- Test 4: Edge Case with empty settings ---
+# This tests how the system handles an empty configuration.
+print("\n--- Test 4: Handling empty settings ---")
+try:
+    empty_settings = {}
+    config4 = ReadOnlyConfig(empty_settings)
+    connector4 = DatabaseConnector(config4)
+    print(connector4.get_connection_string())
+except KeyError as e:
+    print(f"Successfully caught expected error for missing key: {e}")
+except Exception as e:
+    print(f"Caught an unexpected error: {type(e)}")
+# Expected: Successfully caught expected error for missing key: 'host'
+
 ```
 
 <details> 

@@ -1,3 +1,19 @@
+# PY129 Study Guide, Moral Version
+
+<a name="top"></a>
+
+## Table of Contents
+
+- [What You Are Actually Being Tested On](#what-you-are-actually-being-tested-on)
+- [Classes and Objects](#classes-and-objects)
+- [Inheritance](#inheritance)
+- [The `is` Operator and `id()` Function](#the-is-operator-and-id-function)
+- [Exceptions](#exceptions)
+- [Reading OO Code](#reading-oo-code)
+- [Create a Code Spike](#create-a-code-spike)
+
+Page Reference: [Study Guide](https://launchschool.com/lessons/aa7db174/assignments/6478d2d2)
+
 ## What You are Actually Being Tested On
 
 The PY129 assessment evaluates you on ​two equally important dimensions​: your technical knowledge and your communication abilities.
@@ -2930,8 +2946,8 @@ print(fido.__class__.__name__)      # "Dog" (The class knows its name)
 ## Exceptions
 
 ### What are Exceptions?
-
-An exception is an event that occurs during the execution of a program that disrupts its normal flow. This can happen for various reasons, like logical errors, invalid user input, or trying to access a file that doesn't exist. If the exception is not handled, the program stops and prints a traceback. They are defined with classes that inherit from a base class, creating a hierarchy that we'll discuss shortly. 
+ 
+An exception is an object that represents an abnormal or exceptional condition that interrupts normal control flow. An exception is not just an error message. It is a control-flow mechanism.
 
 #### Examples of common exceptions
 
@@ -4037,6 +4053,208 @@ except ConnectionError:    
 ```
 
 In this pattern, the `except` block does more than just log an error—it controls the program's flow to retry the failed operation. If all retries fail, it re-raises the exception with raise to let the caller know that the operation was ultimately unsuccessful.
+
+
+### Exception Semantics in Python: A Practical Doctrine
+
+An exception is an object that represents an abnormal or exceptional condition that interrupts normal control flow.
+
+Mechanically:
+
+* It is an instance of a subclass of BaseException.
+* When raised, it aborts the current execution path.
+* The interpreter unwinds the call stack until a matching handler is found.
+
+An exception is not just an error message. It is a control-flow mechanism.
+
+#### `raise`
+
+`raise` signals that normal execution cannot continue in the current function.
+
+When executed:
+* The current frame stops immediately.
+* An exception object is propagated upward.
+* The interpreter searches for an except block.
+* If none is found, the program terminates.
+
+`raise` is vertical control transfer.
+
+#### return
+
+`retur`n completes a function normally and hands a value back to the immediate caller.
+
+When executed:
+* The current frame ends.
+* A value is passed back.
+* Control resumes at the call site.
+
+`return` is horizontal control transfer.
+
+
+#### The Three Error Paradigms
+
+All error handling strategies answer one question: Is failure control flow, or is failure data?
+
+
+1. Bubbling Up (Exception Propagation)
+
+Shape:  Lower layers raise. Upper boundary layer handles.
+
+Example layers: Persistence → Service → Controller. Only the controller catches.
+
+Benefits:
+* Minimal boilerplate.
+* Centralized error policy.
+* Clean domain code.
+* Framework-friendly.
+
+Risks
+* Shadow control flow.
+* Hard to see what can be raised.
+* Layer boundaries may leak unexpected exceptions.
+
+Discipline Rule
+
+Catch exceptions only when you can:
+1.	Add meaningful context (raise ... from e)
+2.	Translate to a domain-level exception
+3.	Recover (retry/fallback)
+4.	Guarantee cleanup
+
+Otherwise, let them bubble.
+
+
+2. Water-Tight Handling (Catch & Re-Raise Everywhere)
+
+Shape: Every layer catches and normalizes exceptions.
+
+Benefits
+* Local clarity.
+* Explicit contract per layer.
+
+Risks
+* Boilerplate.
+* Risk of swallowing stack traces.
+* High maintenance cost.
+* Type checkers don’t track exception contracts.
+
+Proper Use: Translate exceptions at layer boundaries, not at every function.
+
+Persistence errors → DomainError
+DomainError → HTTP response
+
+Do not catch for decoration alone.
+
+3. Result Pattern (Never Raise, Always Return)
+
+Shape:  Failure is returned as data.
+
+`Result[Ok, Err]`
+
+Benefits
+* Explicit success/error paths.
+* No shadow jumps.
+* Predictable control flow.
+* Strong mental clarity.
+
+Risks
+* Verbosity.
+* Plumbing overhead.
+* Interop friction with Python ecosystem.
+* Union types can become noisy.
+
+Use for expected, routine failures:
+* Validation errors
+* User input parsing
+* Business rule rejections
+* “Not found”
+
+Not for invariant violations or system failures.
+
+
+
+4. Returning Exceptions or `None`
+
+A lightweight `Resul`t pattern.
+
+Benefits
+* Explicit
+* Type checker friendly
+* No stack unwinding surprises
+
+Risks
+* Easy to ignore
+* Blurs semantics
+* Inconsistent conventions
+
+If you go this route, define a strict convention.
+
+The Layering Rule (Clean Synthesis)
+
+Use both exceptions and return values — but assign them territories.
+
+Use `raise` for:
+* Invariant violations
+* Unexpected states
+* Dependency failures
+* Programmer errors
+
+These represent broken assumptions.
+
+Use `return` for:
+* Expected alternative outcomes
+* Validation failures
+* Domain decisions
+
+These represent legitimate states.
+
+
+#### The Boundary Principle
+
+Catch exceptions at:
+* Request handlers
+* CLI entry points
+* Background job boundaries
+* Layer translation points
+
+Do not catch mid-layer unless you are:
+* Adding information
+* Recovering
+* Translating semantics
+
+#### Shadow Control Flow 
+
+Exceptions create a second invisible execution path.
+
+If overused without discipline:
+* They resemble spaghetti control flow.
+* Debugging becomes archaeology.
+
+Deterioration Pattern to Watch
+
+Systems decay when:
+* Exceptions are caught “just in case.”
+* Broad except Exception blocks hide origin.
+* Logging replaces reasoning.
+* Failure contracts are undocumented.
+
+This is not inherent to exceptions. It is a governance failure.
+
+Clean Doctrine Summary
+1.	Exceptions are control-flow interruption.
+2.	`raise` aborts upward.
+3.	`return` completes normally.
+4.	Use exceptions for unexpected failures.
+5.	Use return values for expected alternatives.
+6.	Catch at boundaries, not everywhere.
+7.	Translate at layer seams.
+8.	Never swallow without intent.
+
+
+Exceptions are not “bad” and `Results` are not “better.” They solve different problems.
+
+Exceptions express that “The world is not in a valid state.” While Return values express: “The world is valid, but this branch is different.”
+
 
 [Back to the top](#top)
 
