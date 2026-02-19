@@ -59,6 +59,47 @@ If something surprises you, ask:
 > Which object was asked?
 
 
+## Responsibility Transfer Signals
+
+When reading a problem or staring at code, highlight any sentence or variable that suggests:
+
+#### Persistence
+“Keep track of…” 
+“Store…” 
+“Remember between rounds…” 
+
+#### Delegation
+“Let the X decide…”  
+“Handled by…”  
+“Uses the Y to…” 
+
+#### Aggregation
+“List of…”  
+“Collection of…”  
+“Multiple…”  
+
+#### Translation
+“Display…”  
+“Format…” 
+“Return as a string…”  
+
+#### Coordination
+“After that…”  
+“Then pass…”  
+“Based on the result…”. 
+
+Every one of those phrases is a neon sign saying: *A single-line transfer is coming*.
+
+And once you see that, you don’t solve the problem yet. You tag the site:
+
+This is a KEEP site  
+This is a GIVE site  
+This is a GET site  
+This is a GATHER site  
+This is a SHOW site. 
+
+You are mapping future handoffs before they happen. That’s the same thing Bill Thurston meant by “morally” understanding something. We must understand the reason movement *must* occur.
+
 ### The Responsibility Lullaby 
 
 **Keep it — if it must persist**
