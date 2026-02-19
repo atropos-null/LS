@@ -1,6 +1,6 @@
 # A Lullaby
 
-What I hum to myself when the noise rises. You can stop here and not read any further.
+What I hum to myself when the noise rises. 
 
 ## The Lullaby
 
@@ -9,7 +9,7 @@ What I hum to myself when the noise rises. You can stop here and not read any fu
 > Something else can be ignored  
 > One thing must be True
 
-**I know what I have** -> inventory of what is present in the problem 
+**I know what I have**:  inventory of what is present in the problem 
 
 **Someone owns the next move**: what is the very next thing that has to be done. Only that very next thing. Which object owns it? 
 
@@ -98,7 +98,7 @@ This is a GET site
 This is a GATHER site  
 This is a SHOW site. 
 
-You are mapping future handoffs before they happen. That’s the same thing Bill Thurston meant by “morally” understanding something. We must understand the reason movement *must* occur.
+You are mapping future handoffs before they happen. That’s the same thing mathematician Bill Thurston meant by “morally” understanding something. We must understand the reason movement *must* occur.
 
 ### The Responsibility Lullaby 
 
