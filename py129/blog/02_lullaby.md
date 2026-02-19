@@ -58,4 +58,51 @@ If something surprises you, ask:
 
 > Which object was asked?
 
-Up Next: Python Protocol Precedence Chart 
+
+### The Responsibility Lullaby 
+
+**Keep it — if it must persist**
+
+> This belongs to me now.
+
+```python
+self.x = x
+```
+
+**Give it — if someone else must act**
+
+> They know what to do with this.
+
+```python
+other.do(x)
+```
+
+**Get it — if I need what they know**
+
+>Ask, don’t assume.
+
+```python
+y = obj.value
+```
+
+**Gather it — if there will be many**
+
+>Track it over time.
+
+```python
+self.items.append(item)
+```
+
+**Show it — if the outside must see**
+
+> Translate for strangers.
+
+```python
+return str(x)
+```
+
+> If it must last — Keep it   
+> If they must act — Give it    
+> If I must know — Get it  
+> If there are many — Gather it  
+> If others must see — Show it  
