@@ -73,7 +73,7 @@ they are partial structures glued in Mix-ins add behavior along a different axis
 
 #### The MRO: the topology of the space
 
-This is the most Grothendieckian topic on the list: Method Resolution Order (MRO) and the influence of inheritance on scope This section is literally about the topology of lookup, which is the path along which questions propagate. MRO is so important becuase it defines continuity, precedence and conflict resolution. This is not an implementation detail. It is the global geometry of the object space.
+This is the most Grothendieckian topic on the list: Method Resolution Order (MRO) and the influence of inheritance on scope. This section is literally about the topology of lookup, which is the path along which questions propagate. MRO is so important becuase it defines continuity, precedence and conflict resolution. This is not an implementation detail. It is the global geometry of the object space.
 
 #### Exceptions: boundaries, failure, and singularities
 
@@ -101,7 +101,7 @@ Python simply operates in a way where relationships and transformations carry me
 
 Every question on this exam is asking **“When the interpreter asks this question, which object answers, and how is that answer found?”**
 
-The syllabus looks like it’s about OOP concepts. It is actually testing whether you can do runtime tracing of responsibility.
+The syllabus looks like it’s about OOP concepts. It is actually testing whether you can trace runtime  responsibility.
 
 Every hard question reduces to one of these:
 
@@ -111,7 +111,7 @@ Every hard question reduces to one of these:
 
 Python never asks “what should happen?” It asks “what method do I call, and where do I find it?”
 
-#### How to answer exam questions (the exact procedure)
+#### How to answer exam questions 
 
 When given any question, do this out loud if needed:
 

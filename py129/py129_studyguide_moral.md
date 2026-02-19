@@ -4,7 +4,6 @@
 
 ## Table of Contents
 
-- [What You Are Actually Being Tested On](#what-you-are-actually-being-tested-on)
 - [Classes and Objects](#classes-and-objects)
 - [Inheritance](#inheritance)
 - [The `is` Operator and `id()` Function](#the-is-operator-and-id-function)
