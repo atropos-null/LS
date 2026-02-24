@@ -41,9 +41,9 @@ def ground_distance():
     IN_CM = {"in": {"cm": 2.54},
              "cm": {"in": 1/2.54}}
 
-    map_distance = input("What is the map distance? ")
+    map_distance = int(input("What is the map distance? "))
     map_distance_unit = input("What is the map unit? Choose 'in' or 'cm' ")
-    ground_distance = input("What is the ground distance?" )
+    ground_distance = int(input("What is the ground distance? " ))
     ground_distance_unit = input("What is the ground distance unit? Choose 'mi' ")
 
 

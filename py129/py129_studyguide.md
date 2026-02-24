@@ -4600,6 +4600,52 @@ It broadcasts a signal (the event). It doesn't know or care who is listening. An
 
 While you've focused more on the first approach in PY120 (polymorphism and collaborators), understanding the concept of event-driven design is valuable as you move into more complex applications, such as web development or graphical user interfaces, where this pattern is very common.
 
+
+### One more code snippet because I wanted to remember
+
+Description​: Create two classes: Book and Library. A Book should have a title and an author. 
+A Library should have a collection of Book objects. The Library should have a method add_book 
+that takes a Book object and adds it to its collection, and a method find_book_by_title that returns 
+the Book object with the matching title.
+
+```python
+
+class Book:
+
+    def __init__(self, title, author):
+        self.title = title
+        self.author = author
+
+    def __str__(self):
+        return f"{self.title}, {self.author}"
+    def __repr__(self):
+        return f"Book({self.title}, {self.author})"
+
+class Library:
+
+    def __init__(self):
+        self.collection = []
+    
+    def add_book(self, book):
+        self.collection.append(book)
+
+    def find_book_by_title(self, title):
+        for item in self.collection: 
+            if item.title == title:
+                return item 
+
+book1 = Book("1984", "George Orwell")
+book2 = Book("The Great Gatsby", "F. Scott Fitzgerald")
+library = Library()
+library.add_book(book1)
+library.add_book(book2)
+found_book = library.find_book_by_title("1984")
+print(found_book.author == "George Orwell")
+```
+
+
+In the find_book_by_title method, item represents each book in the library's collection as the method iterates through it. Therefore, item.title refers to the title of the current book being checked. On the other hand, self refers to the instance of the Library class, so self.title would not make sense in this context.
+
 [Back to the top](#top)
 
 ***
