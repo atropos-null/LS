@@ -1,3 +1,19 @@
+CONSTANTS = {"cm": {"km": 0.00001,
+                        "mi": 0.0000062137,
+                        "nm": 0.0000053996},
+                
+            "in": {"km": 0.0000254,
+                   "mi": 0.000015783,
+                   "nm":  0.000013715}}
+                
+CONSTANTS_REVERSE = {"km": {"cm": 100_000,
+                                "in": 39_370.08},
+
+                "mi": {"cm": 160_934.4,
+                      "in": 63_360},
+
+                "nm": {"cm": 185_200,
+                      "inc": "72_913.39"}}
 
 def retrieve_scale(client_input):
         front_unit, raw_scale = client_input.split(":")
@@ -9,32 +25,15 @@ def retrieve_scale(client_input):
             cleaned_scale = int(raw_scale)
         return cleaned_scale
 
-def map_scale():
+def map_scale(dcts):
      
-    CONSTANTS = {"cm": {"km": 0.00001,
-                        "mi": 0.0000062137,
-                        "nm": 0.0000053996},
-                
-            "in": {"km": 0.0000254,
-                   "mi": 0.000015783,
-                   "nm":  0.000013715}}
-                
-    CONSTANTS_REVERSE = {"km": {"cm": 100_000,
-                                "in": 39_370.08},
-
-                "mi": {"cm": 160_934.4,
-                      "in": 63_360},
-
-                "nm": {"cm": 185_200,
-                      "inc": "72_913.39"}}
-    
     mapscale_input = input("What is your map scale. Please format in `1:x` ")
     scale = retrieve_scale(mapscale_input)  
 
-    for outer_key in CONSTANTS.keys():
-        for key, value in CONSTANTS[outer_key].items():
+    for outer_key in dcts.keys():
+        for key, value in dcts[outer_key].items():
             print(f"At a scale of 1:{scale:,}: 1 {outer_key} on the map equals {value*scale:.3f} {key} on the ground. ")
-    
+        
 
 def ground_distance():
      
@@ -53,7 +52,7 @@ def main():
     selection = input("Choose between 'map scale' or 'map ground distance'")
 
     if selection ==  "map scale":
-        map_scale()
+        map_scale(CONSTANTS)
 
     #if selection == "map ground distance":
     #     ground_distance() 
