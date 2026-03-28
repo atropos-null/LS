@@ -229,3 +229,7 @@ Avoid canonical examples; prefer composition or object collaboration contexts.
 Name the hidden trap each prompt is targeting.
 
 Keep each under ~25 lines. No solutions or hints. At least one prompt must rely on a reasonable but incorrect assumption about a protocol or operator.
+
+## Super TLDR
+
+Give me 2 unsolved assessment-style problems for {TOPIC} that would surprise a very prepared student. Include test cases (I/O only) and name the hidden trap. No solutions.
