@@ -1,27 +1,15 @@
-
-## PYTHON EXECUTION — ONE PAGE HIERARCHY
-
+## Python Execution — One Page Hierarchy
 
 SOURCE (text)
-
-│ 
-
-├── Lexing → tokens
-
-├── Parsing → parse tree
-
-├── AST → structural graph (program meaning) 
- 
-│ 
-
-├── Symbol Table → scope graph (who owns each name)    
-
-│  
-
-├── Control Flow Graph → possible execution paths
-
 │
-
+├── Lexing → tokens
+├── Parsing → parse tree
+├── AST → structural graph (program meaning)
+│
+├── Symbol Table → scope graph (who owns each name)
+│
+├── Control Flow Graph → possible execution paths
+│
 └── COMPILATION
     └── Code Objects (blueprints)
          ├── co_code (bytecode)
@@ -29,9 +17,9 @@ SOURCE (text)
          ├── co_varnames / freevars / cellvars
          └── metadata
 
-══════════════════════════════════════════════
+==================================================
 
-RUNTIME INITIALIZATION (C level)
+### RUNTIME INITIALIZATION (C level)
 │
 ├── Interpreter State (global world)
 │     ├── modules
@@ -43,26 +31,26 @@ RUNTIME INITIALIZATION (C level)
 │     ├── current frame pointer
 │     ├── exception state
 │     ├── recursion depth
-│     └── tracing/profiling
+│     └── tracing / profiling
 │
 └── GIL (execution permission)
       └── only one thread executes bytecode at a time
 
-══════════════════════════════════════════════
+==================================================
 
-EXECUTION ENTRY (bridge from static → dynamic)
+### EXECUTION ENTRY (static → dynamic bridge)
 │
 └── _PyEval_EvalCodeWithName
       ├── takes code object + args + globals + locals
       ├── resolves arguments
       ├── builds frame
       ├── populates fastlocals
-      └── hands off →
+      └── calls →
             PyEval_EvalFrameEx(frame)
 
-══════════════════════════════════════════════
+==================================================
 
-FRAME (execution context)
+### FRAME (execution context)
 │
 ├── code object reference
 ├── value stack
@@ -71,25 +59,25 @@ FRAME (execution context)
 ├── instruction pointer (next_instr)
 └── link to previous frame
 
-══════════════════════════════════════════════
+==================================================
 
-EVALUATION LOOP (PyEval_EvalFrameEx)
+### EVALUATION LOOP (PyEval_EvalFrameEx)
 │
-└── for(;;)  ← infinite loop
+└── for (;;)
      │
-     ├── [FULL ENTRY]
+     ├── FULL ENTRY
      │     ├── GIL check
      │     ├── signal handling
      │     └── tracing hooks
      │
-     ├── [FAST ENTRY] (skips above)
+     ├── FAST ENTRY (skips checks)
      │
      ├── FETCH
      │     └── opcode + oparg from next_instr
      │
      ├── EXECUTE (switch on opcode)
      │
-     │    ├── MECHANICAL OPS (no meaning)
+     │    ├── MECHANICAL OPS (no type dispatch)
      │    │     ├── LOAD_CONST
      │    │     ├── LOAD_FAST / STORE_FAST
      │    │     ├── POP_TOP
@@ -118,7 +106,7 @@ EVALUATION LOOP (PyEval_EvalFrameEx)
      │          ↓
      │      result PyObject*
      │
-     │    └── result pushed back to stack
+     │    └── result pushed to stack
      │
      ├── CONTINUE CONTROL
      │     ├── DISPATCH → full loop (with checks)
@@ -127,49 +115,43 @@ EVALUATION LOOP (PyEval_EvalFrameEx)
      └── EXIT CONDITIONS
            ├── WHY_RETURN
            ├── WHY_EXCEPTION
-           ├── WHY_BREAK / WHY_CONTINUE (internal control)
+           ├── WHY_BREAK / WHY_CONTINUE
            └── frame ends
 
-══════════════════════════════════════════════
+==================================================
 
-## ⚠️ EXCEPTION HANDLING (parallel control system)
+### EXCEPTION HANDLING (parallel control flow)
 
-Exception state lives in:
-    Thread State:
-        ├── curexc_type / value / traceback
-        └── exc_type / value / traceback
+Exception state stored in Thread State:
+    ├── curexc_type / value / traceback
+    └── exc_type / value / traceback
 
-During eval loop:
-
-┌──────────────────────────────────────────┐
-│ If error occurs (e.g. slot fails, lookup fails): │
-│     → set exception in thread state            │
-│     → jump to "error" label                    │
-└──────────────────────────────────────────┘
+When an error occurs:
+    → exception is set
+    → jump to "error" path
 
 Then:
 
 ├── UNWIND_BLOCK
 │     ├── pop stack entries
-│     ├── unwind control blocks
+│     └── unwind control blocks
 │
 ├── UNWIND_EXCEPT_HANDLER
-│     ├── locate matching except block
-│     ├── bind exception to local variables
-│     └── resume execution inside handler
+│     ├── find matching except block
+│     ├── bind exception to local names
+│     └── resume execution
 │
-├── If handler found:
-│     → continue eval loop (normal execution resumes)
+├── If handled:
+│     → continue eval loop
 │
-└── If no handler:
-      → propagate exception upward
-      → previous frame resumes and handles
-      → if top-level: program terminates
+└── If not handled:
+      → propagate to previous frame
+      → repeat
+      → if top-level: program exits
 
+==================================================
 
-══════════════════════════════════════════════
-
-RETURN PATH
+### RETURN PATH
 
 Frame finishes →
     retval set →
