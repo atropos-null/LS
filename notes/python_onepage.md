@@ -5,14 +5,23 @@
 SOURCE (text)
 
 │ 
-├── Lexing → tokens  
-├── Parsing → parse tree 
-├── AST → structural graph (program meaning)  
+
+├── Lexing → tokens
+
+├── Parsing → parse tree
+
+├── AST → structural graph (program meaning) 
+ 
 │ 
+
 ├── Symbol Table → scope graph (who owns each name)    
+
 │  
+
 ├── Control Flow Graph → possible execution paths
+
 │
+
 └── COMPILATION
     └── Code Objects (blueprints)
          ├── co_code (bytecode)
