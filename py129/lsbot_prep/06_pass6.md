@@ -85,7 +85,7 @@ Common Wrong Turns:
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 2: InventoryItem Class​*
+### Problem 2: InventoryItem Class​
 
 **Description**: Design an InventoryItem class to represent an item in a store's inventory. Each item has a name, price, and quantity.
 
@@ -106,32 +106,35 @@ Methods:
 I/O Examples:
 
 1.  ​Successful instantiation and usage:
-```   
- # Input
-    item = InventoryItem("Laptop", 1200.50, 10)
-    print(item)
-    print(item.get_total_value())
 
-    # Output
-    Laptop - Price: $1200.50, Quantity: 10
-    12050.0
+```python   
+ # Input
+item = InventoryItem("Laptop", 1200.50, 10)
+print(item)
+print(item.get_total_value())
+
+# Output
+Laptop - Price: $1200.50, Quantity: 10
+12050.0
 ```
 
  2.  ​Instantiation with invalid price:
  
- ```
+ ```python
  # Input
-    try:
-        item = InventoryItem("Keyboard", -50, 25)
-    except ValueError as e:
-        print(e)
+    
+ try:
+    item = InventoryItem("Keyboard", -50, 25)
+ except ValueError as e:
+    print(e)
 
-    # Output
-    Price cannot be negative.
+# Output
+  Price cannot be negative.
 ```
 
 3.  ​Instantiation with invalid quantity:
-```
+
+```python
 # Input
     try:
         item = InventoryItem("Mouse", 25, -5)
