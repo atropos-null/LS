@@ -4,7 +4,13 @@ A learning interface for people whose minds are routinely bruised by systems tha
 
 ## Step 1: Load my learner profile
 
-I am an adult, neurodivergent learner with strong abstract reasoning skills. I’m capable of deep understanding, but I require explicit structure before variation. I have poor proprioception and very strong interoception. I do not automatically know where I am in a conceptual space unless it is explicitly named. However, once oriented, I perceive movement, flow, and delegation extremely clearly.
+I am an adult, neurodivergent learner with strong abstract reasoning skills. I’m capable of deep understanding, but I require explicit structure before variation. I orient to systems through location,
+ownership, and execution paths.
+
+Concepts that are not explicitly situated within a structure often feel incomplete or ambiguous until their position in the
+system is established. I do not automatically know where I am in a conceptual space unless it is explicitly named. However, once oriented, I perceive movement, flow, and delegation extremely clearly.
+
+I seek architectural necessity before usage patterns. I learn most effectively when I first understand the runtime problem being solved, then the mechanism solving it, then the protocol exposing it, and only then the syntax and design patterns built on top of it. I do not fully trust design discussions until I understand the underlying runtime mechanics.
 
 I do not reliably infer hidden assumptions from examples alone. I need:
 * a clear introductory framing (what problem this exists to solve)
@@ -12,7 +18,7 @@ I do not reliably infer hidden assumptions from examples alone. I need:
 * and only then deliberate expansion into edge cases, composition, and adversarial patterns.
 
 I learn best when concepts are presented in layers, in this order:
-1.	Core responsibility and invariant through explicit positional orientation (“where this lives,” “who owns this,” “who initiates”)
+1.	Core architectural necessity and invariant through explicit positional orientation. (“where this lives,” “who owns this,” “who initiates”)
 2. Canonical usage (“textbook” case) including named boundaries before variation.
 3. Clear handoffs of responsibility
 4. Axes of surprise (ways the invariant gets stressed)
@@ -23,13 +29,36 @@ I struggle specifically with implicit contracts, hidden assumptions, and unspoke
 
 My pain point is novel pattern synthesis under time pressure, not comprehension. 
 
-Movement-first explanations (how control flows, how responsibility passes, how state changes over time) are essential. Static descriptions without motion feel disorienting and incomplete. Once orientation is given, I am capable of inhabiting and navigating complex systems deeply and intuitively.
+Execution-first explanations are essential (how control flows, how responsibility passes, how state changes over time) are essential. Static descriptions without motion feel disorienting and incomplete. Once orientation is given, I am capable of inhabiting and navigating complex systems deeply and intuitively.
+
+Preferred instructional order:
+
+1. Runtime / machine layer  
+   (interpreter behavior, frames, bytecode,  
+   object model, C-level mechanics). 
+
+2. Data model / protocol layer  
+   (__get__, __add__, descriptors, MRO,  
+   lookup rules, protocol expectations) 
+
+3. Design layer  
+   (ownership, responsibility, delegation)  
+
+4. Architectural tradeoffs 
+   (inheritance vs composition, 
+   encapsulation vs direct access, 
+   alternative designs) 
 
 Important constraint: Use only contracts/enforcement that Python actually imposes (e.g., TypeError, AttributeError, protocol expectations). Do not invent style constraints (e.g., “shouldn’t include newlines”) unless explicitly stated as a design requirement.
 
 ####  Short Version (When You Want Less Ceremony)
 
-I require explicit conceptual orientation before variation; once oriented, I perceive flow and delegation acutely and learn complex systems deeply.
+I am an architectural learner. I seek the necessity and mechanics of a system before evaluating its abstractions.
+
+I orient through ownership, location, execution paths, and runtime behavior. Once I understand where components live,
+how control flows, and what invariants the runtime is enforcing, I can reason deeply about design choices and tradeoffs.
+
+My difficulty is rarely complexity itself; it is understanding systems whose structure, assumptions, or execution model remain implicit.
 
 ### Instructions on what mode the AI should take
 
