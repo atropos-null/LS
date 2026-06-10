@@ -307,6 +307,27 @@ Hidden trap is that `__init__` must return `None`, not a value. The constructor 
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+class Document:
+    def __init__(self, text):
+        self.text = text
+
+class Index:
+    def __init__(self, name, document=None):
+        self.name = name
+        self.document = [document]
+        print(f"Index '{self.name}' created.")
+        return self.docs #This is the problem. You don't need a return in an init.
+
+try:
+    doc = Document("Python is a fun language.")
+    idx = Index("Programming", doc)
+    print(idx)
+except Exception as e:
+    print(f"{type(e).__name__}: {e}")
+```
 </details>
 
 ### Problem 4: Debug the Code
@@ -349,6 +370,28 @@ Internal Note: Hidden trap is the confusion between a class and an instance. `se
 </details>
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class DataService:
+    def get_metric(self):
+        return "Current Users: 541"
+
+class Dashboard:
+    def __init__(self):
+        self.service = DataService()    
+        print("Dashboard ready.") 
+
+    def display_metric(self):           
+        metric = self.service.get_metric()
+        print(metric) #Current Users: 541
+
+dashboard = Dashboard()
+dashboard.display_metric()
+
+```
+
+`self.service` was assigned the `DataService` class instead of a `DataService` instance. Since `get_metric` is an instance method, it requires an instance as `self`. Creating a `DataService()` object fixes the collaboration because Dashboard now owns a service object that can respond to `get_metric()`.
+
 </details>
 
 
@@ -358,7 +401,7 @@ Internal Note: Hidden trap is the confusion between a class and an instance. `se
 
 You are given Engine and Wheel classes. Implement a Car class whose constructor accepts one Engine object and a list of four Wheel objects.
 
-The Car instance should have an attribute description that is set during initialization.[10:36 AM]The description should be a string in the format: "A car with a X-horsepower engine and Y-inch wheels.", where X is the engine's horsepower and Y is the diameter of the first wheel in the list.
+The Car instance should have an attribute description that is set during initialization. The description should be a string in the format: "A car with a X-horsepower engine and Y-inch wheels.", where X is the engine's horsepower and Y is the diameter of the first wheel in the list.
 
 Provided Classes:
 
@@ -406,6 +449,56 @@ Internal Note: Hidden trap involves correctly accessing attributes of collaborat
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+class Car:
+
+    def __init__(self, engine, wheels):
+        self.engine = engine
+        self.wheels = wheels
+        self.description = (
+            f"A car with a {engine.horsepower}-horsepower engine "
+            f"and {wheels[0].diameter}-inch wheels."
+        )
+    
+
+class Engine:
+    def __init__(self, horsepower):
+        self.horsepower = horsepower
+
+    def __str__(self):
+        return f"{self.horsepower}"
+
+class Wheel:
+    def __init__(self, diameter):
+        self.diameter = diameter
+
+    def __str__(self):
+        return f"{self.diameter}"
+
+# Example 1
+engine1 = Engine(300)
+wheels1 = [Wheel(18), Wheel(18), Wheel(18), Wheel(18)]
+car1 = Car(engine1, wheels1)
+print(car1.description)
+# Expected Output: A car with a 300-horsepower engine and 18-inch wheels.
+
+# Example 2
+engine2 = Engine(550)
+wheels2 = [Wheel(20), Wheel(20), Wheel(20), Wheel(20)]
+car2 = Car(engine2, wheels2)
+print(car2.description)
+# Expected Output: A car with a 550-horsepower engine and 20-inch wheels.
+
+# Example 3
+engine3 = Engine(180)
+wheels3 = [Wheel(16), Wheel(16), Wheel(16), Wheel(16)]
+car3 = Car(engine3, wheels3)
+print(car3.description)
+# Expected Output: A car with a 180-horsepower engine and 16-inch wheels.
+```
+
 </details>
 
 ### Problem 6: Predict and Explain Output
@@ -446,6 +539,9 @@ Hidden Trap:​ Attribute lookup on a collaborator object. Students might mistak
 
 <details> 
 <summary>Possible Solution</summary> 
+
+`Report.generate()` asks its collaborator `self.formatter` to render the data. Since `self.formatter` is a Template instance, attribute lookup for style happens on the `Template` object and then the `Template` class. It never searches the `Report` class.
+
 </details>
 
 
@@ -501,6 +597,34 @@ Hidden Trap:​ The rebinding behavior of the `+=` operator on immutable types. 
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+class DeviceManager:
+    device_count = 0
+
+    def __init__(self, name):
+        self.name = name
+        self.devices = []
+
+    def add_device(self):
+        DeviceManager.device_count += 1 # This line is the problem which updates to the instance, so each manager indeed had their own count. Fix by updating the class varible.
+        self.devices.append(f"Device_{self.device_count}")
+        print(f"{self.name} added a device. " \
+              f"Total devices: {DeviceManager.device_count}")
+
+manager1 = DeviceManager("Office")
+manager1.add_device() # Office added a device. Total devices: 1
+manager1.add_device() # Office added a device. Total devices: 2
+
+manager2 = DeviceManager("Home")
+manager2.add_device() # Home added a device. Total devices: 1
+
+print(DeviceManager.device_count) # Expected: 3
+print(manager1.device_count)       # Expected: 3
+print(manager2.device_count)       # Expected: 3
+```
+
 </details>
 
 ### Problem 8: Implement a Class
@@ -556,6 +680,43 @@ Hidden Trap:​ Incorrect assumption about attribute lookup fallback. A common m
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+class Task:
+    def __init__(self, name):
+        self.name = name
+
+class Project:
+
+    priority = "Low"
+
+    def __init__(self, name, priority=None):
+        self.name = name
+
+        if priority is not None:
+            self.priority = priority
+
+    def log_task(self, task):
+        
+        return f"[{self.priority}] Project '{self.name}': Task `{task.name}`"
+
+# --- Examples ---
+task1 = Task("Review specifications")
+task2 = Task("Deploy to production")
+
+default_project = Project("Internal Tool")
+urgent_project = Project("Client Hotfix", priority="High")
+
+print(default_project.log_task(task1))
+# Expected Output: [Low] Project 'Internal Tool': Task 'Review specifications'
+
+print(urgent_project.log_task(task2))
+# Expected Output: [High] Project 'Client Hotfix': Task 'Deploy to production'
+
+print(default_project.priority)
+# Expected Output: Low (accesses class attribute)
+```
 </details>
 
 ### Problem 9: Predict and Explain
