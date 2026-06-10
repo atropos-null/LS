@@ -2,7 +2,7 @@
 
 ## Pass 6
 
-Prompt:
+**Prompt**:
 
 For {TOPIC}, generate 3 advanced Launch-School–style assessment prompts starting at PY129:
 	1.	Predict & explain a short code snippet’s output
@@ -83,6 +83,77 @@ Common Wrong Turns:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+class Playlist():
+
+    def __init__(self, title, songs=None):
+        self.title = title
+        self.songs = songs if songs is not None else []
+        self.songs_index = 0
+
+    def __str__(self):
+        return self.title
+    
+    def add_song(self, song_title):
+        self.songs.append(song_title)
+
+    def now_playing(self):
+        if self.songs:
+            return self.songs[self.songs_index]
+        else:
+            return None
+
+    def play_next(self):
+
+        if not self.songs:
+            return
+        
+        self.songs_index += 1
+        if self.songs_index == len(self.songs):
+            self.songs_index = 0
+
+
+# Input
+rock_hits = Playlist("Rock Hits", ["Stairway to Heaven", "Bohemian Rhapsody"])
+print(rock_hits.now_playing())
+rock_hits.play_next()
+print(rock_hits.now_playing())
+rock_hits.add_song("Hotel California")
+rock_hits.play_next()
+print(rock_hits.now_playing())
+
+# # Output
+# #Stairway to Heaven
+# #Bohemian Rhapsody
+# #Hotel California
+
+# Input
+favorites = Playlist("Favorites", ["Song A", "Song B"])
+favorites.play_next()
+print(favorites.now_playing())
+favorites.play_next() # Should loop back to the start
+print(favorites.now_playing())
+
+# Output
+#Song B
+#Song A
+
+# Input
+empty_playlist = Playlist("Empty")
+print(empty_playlist.now_playing())
+empty_playlist.play_next()
+print(empty_playlist.now_playing())
+empty_playlist.add_song("First Song")
+print(empty_playlist.now_playing())
+
+# Output
+#None
+#None
+#First Song
+```
+
 </details>
 
 ### Problem 2: InventoryItem Class​
@@ -114,22 +185,19 @@ print(item)
 print(item.get_total_value())
 
 # Output
-Laptop - Price: $1200.50, Quantity: 10
-12050.0
+#Laptop - Price: $1200.50, Quantity: 10
+#12050.0
 ```
 
  2.  ​Instantiation with invalid price:
  
  ```python
- # Input
-    
+ 
+ # Input   
  try:
     item = InventoryItem("Keyboard", -50, 25)
  except ValueError as e:
-    print(e)
-
-# Output
-  Price cannot be negative.
+    print(e) # Price cannot be negative.
 ```
 
 3.  ​Instantiation with invalid quantity:
@@ -139,10 +207,9 @@ Laptop - Price: $1200.50, Quantity: 10
     try:
         item = InventoryItem("Mouse", 25, -5)
     except ValueError as e:
-        print(e)
+        print(e) #Quantity cannot be negative.
 
-    # Output
-    Quantity cannot be negative.
+    
 ```    
 
 **Common Wrong Turns**:
@@ -152,6 +219,61 @@ Laptop - Price: $1200.50, Quantity: 10
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class InventoryItem():
+    
+    def __init__(self, name, price, quantity):
+        self.name = name
+        self.price = price
+        self.quantity = quantity
+
+    @property
+    def price(self):
+        return self._price
+    
+    @price.setter
+    def price(self, price_amount):
+        if price_amount >= 0:
+            self._price = price_amount
+        else:
+            raise ValueError("Price cannot be negative.")
+        
+    @property
+    def quantity(self):
+        return self._quantity
+    
+    @quantity.setter
+    def quantity(self, quantity_amount):
+        if quantity_amount >= 0:
+            self._quantity = quantity_amount
+        else:
+            raise ValueError("Quantity cannot be negative.")
+
+    def get_total_value(self):
+        return self.quantity * self.price
+    
+    def __str__(self):
+        return f"{self.name} - Price: ${self.price:.2f}, Quantity: {self.quantity}"
+
+# Successful instatiation and usage
+item = InventoryItem("Laptop", 1200.50, 10)
+print(item) #Laptop - Price: $1200.50, Quantity: 10
+print(item.get_total_value()) #12050.0
+
+
+#Instantiation without valid price
+try:
+    item = InventoryItem("Keyboard", -50, 25)
+except ValueError as e:
+    print(e)
+
+#Instantiation with invalid quantity:
+try:
+    item = InventoryItem("Mouse", 25, -5)
+except ValueError as e:
+    print(e) #Quantity cannot be negative.
+```
 </details>
 
 ### Problem 3: Initiation and `__init__`: Predict and Explain
