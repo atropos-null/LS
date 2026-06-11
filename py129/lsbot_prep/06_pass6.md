@@ -765,6 +765,15 @@ Hidden Trap Targeted: Misunderstanding how a shared class-level attribute behave
 
 <details> 
 <summary>Possible Solution</summary> 
+
+`part_factory` is instantiated: as a `Factory` Object collaborating with a `Part` Object.
+part_factory.create_item("Gear") calls create_item and then with it's own _items (note the self), prints "Registering to Part's registry"
+and then "Part: Gear" is added to registry's list
+
+product_factory is instantiated as a Factory object collaborating with a Product object.
+product_factory.create_item calls create_item and then prints "Registering to Product's registry"
+and then "Product: Robot" is added to the registry's list. 
+
 </details>) 
 
 ### Problem 10: Debug This Snippet
@@ -800,10 +809,37 @@ connector.get_users()
 <summary>Hint</summary> 
 
 Hidden Trap Targeted: Incorrectly assuming a static method has access to the instance's context (self) or its attributes.
-
 </details>
+
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Settings:
+    def __init__(self, base_url):
+        self.base_url = base_url
+
+    def __str__(self):
+        return f"{self.base_url}"
+
+class APIConnector:
+    def __init__(self, settings):
+        self.settings = settings
+
+    @staticmethod
+    def build_url(base_url, endpoint):
+        return f"{base_url}/{endpoint}"
+
+      def get_users(self):
+        base_url = self.settings.base_url
+        url = self.build_url(base_url, "users")
+        print(f"Fetching from: {url}")
+
+config = Settings("https://api.example.com")
+connector = APIConnector(config)
+connector.get_users()
+```
+
 </details>
 
 ### Problem 11: Implement This Class
@@ -845,6 +881,53 @@ Hidden Trap Targeted: Confusion about how to correctly invoke a static method fr
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+class FileAuditor:
+
+    total_logs = 0
+
+    def __init__(self, filename):
+        self.filename = filename
+        self.logs = []
+
+    def __str__(self):
+        return self._format_report_name(self.filename)
+
+    def log_access(self, user):
+        self.logs.append(user)
+        FileAuditor.total_logs += 1
+
+    @classmethod
+    def get_total_logs(cls):
+        return cls.total_logs
+
+    @staticmethod
+    def _format_report_name(filename):
+        return f"Auditor for: {filename} "
+
+# Example Input/Output:
+
+auditor1 = FileAuditor('document1.txt')
+auditor1.log_access('user_a')
+auditor1.log_access('user_b')
+
+auditor2 = FileAuditor('document2.txt')
+auditor2.log_access('user_c')
+
+print(FileAuditor.get_total_logs())
+# Expected Output: 3
+
+print(auditor1)
+# Expected Output:
+# Auditor for: document1.txt
+
+print(auditor2)
+# Expected Output:
+# Auditor for: document2.txt
+```
+
 </details>
 
 ### Problem 12: Predict and Explain​*
@@ -878,6 +961,16 @@ Hidden Trap:​ Mutable Class Attributes vs. Instance Attributes.
 
 <details> 
 <summary>Possible Solution</summary> 
+
+We have one class, `Inventory.` Two objects are instantiated, "warehouse" and "store". 
+Inventory is initiated with a location and an instance method that updates a items list.
+
+`warehouse` and `store` both append an item to their singular lists. The output is 
+"Warehouse has: Laptop, Mouse"
+"Store has: Laptop, Mouse"
+
+each item is appending to the class list. 
+
 </details>
 
 ### Problem 13: Debugging​
@@ -919,6 +1012,31 @@ Hidden Trap:​ Incorrect assumption that the `+` operator for lists mutates the
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+class Project:
+    def __init__(self, name):
+        self.name = name
+        self.tasks = []
+
+class Portfolio:
+    def __init__(self, project):
+        self.project_tasks = project.tasks
+
+    def add_task(self, project, task):
+        # This line is buggy. Needed a proper append.
+        self.project_tasks.append(task)
+        
+
+# --- Execution ---
+p1 = Project("Website Redesign")
+portfolio = Portfolio(p1)
+portfolio.add_task(p1, "Login Page")
+
+print(f"Project's tasks: {p1.tasks}")
+print(f"Portfolio's tasks: {portfolio.project_tasks}")
+```
 </details>
 
 ### Problem 14: Implementation​
@@ -930,6 +1048,7 @@ Implement two classes, `ServiceLog` and `Car`. A `Car` instance is composed with
 * The ServiceLog should store a list of these mileage logs.
 
 Examples:
+
 ```python
 #​Input:
 
@@ -971,10 +1090,72 @@ print(log.records)
 <summary>Hint</summary> 
 
 Hidden Trap:​ Correctly managing state through object collaboration, where one object (`Car`) is responsible for triggering state changes in a separate, contained object (`ServiceLog`).
+
 </details>
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class ServiceLog:
+    
+    def __init__(self):
+        self.log = []
+
+    def record_service(self, entry):
+        self.log.append(entry)
+
+    @property
+    def records(self):
+        return {self.log}
+
+class Car:
+    
+    def __init__(self, servicelog):
+        self.service_log = servicelog
+        self.total_km = 0
+
+    def drive(self, km):
+        self.total_km += km
+
+    def service(self):
+        self.service_log.record_service(self.mileage)
+
+    @property
+    def mileage(self):
+        return self.total_km
+    
+   
+log = ServiceLog()
+car = Car(log)
+car.drive(100)
+car.service()
+print(log.records) #​Output: [100]
+
+
+# Input:
+log = ServiceLog()
+car = Car(log)
+car.drive(50)
+car.drive(75)
+car.service() 
+car.drive(25)
+print(log.records) # [125]
+print(car.mileage) # 150
+      
+
+    
+ # Input:
+log = ServiceLog()
+car = Car(log)
+car.service()
+car.drive(30)
+car.service()
+car.drive(40)
+car.service()
+print(log.records) # [0, 30, 70]
+```
+
 </details>
 
 ### Problem 15: Predict and Explain
