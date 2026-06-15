@@ -1023,6 +1023,7 @@ portfolio.add_task(p1, "Login Page")
 print(f"Project's tasks: {p1.tasks}")
 print(f"Portfolio's tasks: {portfolio.project_tasks}")
 ```
+
 </details>
 
 ### Problem 14: Implementation​
@@ -1220,6 +1221,28 @@ Hidden Trap:​ The `is` vs. `__class__` Identity Trap. The programmer incorrect
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+class DefaultTask: 
+    pass 
+
+class UrgentTask: 
+    pass 
+
+class Scheduler:
+    # This should store the class, but is storing an instance 
+    default_task_type = DefaultTask() 
+    
+    @classmethod 
+    def validate_task_class(cls, task_instance): 
+        # Buggy line 
+        is_default = task_instance.__class__ is not cls.default_task_type 
+        print(not is_default) # Setup 
+        
+urgent_task = UrgentTask() 
+Scheduler.validate_task_class(urgent_task)
+```
 </details>
 
 ### Problem 17: Implementation
@@ -1266,6 +1289,39 @@ Hidden Trap:​ The Hardcoded Constructor Trap. A naive implementation of create
 </details>
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Document:
+
+    count = 0
+
+    def __init__(self):
+        self.__class__.count += 1
+
+    def create_new_version(self):
+        return self.__class__()
+    
+class SignedDocument(Document):
+   
+    count = 0 # Subclass gets its own counter
+
+
+# Example 1: Base class functionality
+doc1 = Document()
+doc2 = doc1.create_new_version()
+print(f"Document count: {Document.count}") # Expected: Document count: 2
+print(f"doc2 is a Document: {isinstance(doc2, Document)}") # Expected: doc2 is a Document: True
+
+
+# Example 2: Subclass functionality
+
+signed_doc1 = SignedDocument()
+signed_doc2 = signed_doc1.create_new_version()
+print(f"SignedDocument count: {SignedDocument.count}") # Expected: SignedDocument count: 2
+print(f"Base document count is unchanged: {Document.count}") # Expected: Base document count is unchanged: 2
+print(f"signed_doc2 is a SignedDocument: {isinstance(signed_doc2, SignedDocument)}")# Expected: signed_doc2 is a SignedDocument: True
+```
+
 </details>
 
 ### Problem 18: Predict and Explain Output​
@@ -1318,6 +1374,11 @@ Hidden Trap Targeted:​ This prompt targets the misunderstanding that propertie
 
 <details> 
 <summary>Possible Solution</summary> 
+
+Solution:
+System readiness: offline
+System readiness: online
+
 </details>
 
 ### Problem 19: Debugging​
@@ -1423,6 +1484,58 @@ Hidden Trap Targeted:​ This prompt targets the failure to correctly delegate s
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+# Provided class - DO NOT MODIFY
+class Settings:
+    def __init__(self, initial_config):
+        self.config = initial_config
+
+    def get(self, key):
+        return self.config.get(key)
+
+# Your implementation of ManagedResource goes here
+
+class ManagedResource():
+
+    def __init__(self, initial_settings):
+        self.settings = initial_settings
+    
+    @property
+    def host(self):
+        return self.settings.config['host']
+    
+    @host.setter
+    def host(self, new_host):
+        if isinstance(new_host, str) and "." in new_host:
+            self.settings.config['host'] = new_host
+        else:
+            raise ValueError
+
+
+
+# --- Input/Output Examples ---
+# Example 1
+settings1 = Settings({'host': 'localhost', 'port': 8080})
+resource1 = ManagedResource(settings1)
+resource1.host = 'api.example.com'
+print(resource1.host)   # Expected: api.example.com
+print(settings1.get('host')) # Expected: api.example.com
+
+# Example 2
+settings2 = Settings({'host': 'server1'})
+resource2 = ManagedResource(settings2)
+try:
+    resource2.host = 'invalid-host'
+except ValueError:
+    print("ValueError caught!") # Expected: ValueError caught!
+print(resource2.host) # Expected: server1
+
+# Example 3
+settings3 = Settings({'host': 'db.internal.net'})
+resource3 = ManagedResource(settings3)
+print(resource3.host) # Expected: db.internal.net
+```
 </details>
 
 ### Problem 21: Predict and Explain Code Output
@@ -1464,6 +1577,34 @@ Hidden Trap Targeted​: This prompt targets the misconception that a double-und
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+class Component:
+    def __init__(self):
+        self.__id = 'C-123' #Name mangling in effect,
+
+    def get_id(self):
+        return self.__id
+
+class System(Component):
+    def __init__(self):
+        super().__init__() #Component.__id("C-123") pulled down
+        self.__id = 'S-456' #System.__id('S-456') also present in the init
+
+    def get_component_id(self):
+        return super().get_id() #Pulls the Compoment.__id("C-123")
+
+    def get_system_id(self):
+        return self.__id #Pulls the System.__id("S-456")
+
+sys = System()
+print(sys.get_component_id()) #Expected Output: C-123
+print(sys.get_system_id())  #Expected Output: S-456
+print(sys._System__id)      #Expected Output: S-456
+print(sys._Component__id) #Expected Output: C-123
+```
+
 </details>
 
 
