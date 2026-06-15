@@ -1188,10 +1188,17 @@ Hidden Trap:​ The `self.__class__` Late Binding Trap. When a method defined in
 
 <details> 
 <summary>Possible Solution</summary> 
+
+Can you even do nested classes? Apparently you can.
+
+The code present shows first and foremost that there's inheritance happening:
+1. Class BaseWorker, with a nested Config that has a method display_priority that prints out the class. 
+2. UrgentWorker, what inherits from BaseWorker and has a config labeled HIGH
+3. Output is "HIGH" as self.__class__.Config.priority requires the instance class to be label, which was created with UrgentWorker
 </details>
 
 
-### Problem 15: Debugging
+### Problem 16: Debugging
 
 The `Scheduler` class uses a `Task` collaborator object. The class method `Scheduler.validate_task_class` is intended to check if a given task instance was created from the scheduler's ​default​ `Task` class (DefaultTask). However, the current implementation is flawed and produces an incorrect result. Identify the bug, explain why the comparison fails, and provide the corrected code.
 
@@ -1203,20 +1210,17 @@ The code should print `False`, because `urgent_task` is an instance of `UrgentTa
 class DefaultTask:
     pass
 
-class UrgentTask:
+class UrgentTask(DefaultTask):
     pass
 
 class Scheduler:
-    # This should store the class, but is storing an instance
-    default_task_type = DefaultTask()
+    default_task_type = DefaultTask
 
     @classmethod
     def validate_task_class(cls, task_instance):
-        # Buggy line
-        is_default = task_instance.__class__ is not cls.default_task_type
-        print(not is_default)
+        is_default = isinstance(task_instance, cls.default_task_type)
+        print(is_default)
 
-# Setup
 urgent_task = UrgentTask()
 Scheduler.validate_task_class(urgent_task)
 ```
@@ -1232,7 +1236,7 @@ Hidden Trap:​ The `is` vs. `__class__` Identity Trap. The programmer incorrect
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 16: Implementation
+### Problem 17: Implementation
 
 Implement the Document class according to the following requirements. It must track the total number of `Document` instances created using a class attribute. It must also support a "versioning" system via an instance method, `create_new_version()`, which returns a new document of the ​exact same class​ as the instance the method was called on. This behavior must be preserved in any subclasses.
 
@@ -1278,7 +1282,7 @@ Hidden Trap:​ The Hardcoded Constructor Trap. A naive implementation of create
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 17: Predict and Explain Output​
+### Problem 18: Predict and Explain Output​
 
 Predict the output of the following Python code snippet. Explain step-by-step why the output is what it is, paying close attention to how the `system.component_status` property interacts with the `Component` object and influences the system.readiness property.
 
@@ -1330,7 +1334,7 @@ Hidden Trap Targeted:​ This prompt targets the misunderstanding that propertie
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 18: Debugging​
+### Problem 19: Debugging​
 
 The code below is intended to create a `Report` class that collaborates with a `Log` object. Every time the `report.content` is updated, the change should be automatically recorded in `report.log.entries`. However, running the code raises a `RecursionError`. Identify the bug, explain its cause, and provide the corrected Report class definition.
 
@@ -1380,7 +1384,7 @@ Hidden Trap Targeted:​ This prompt targets the common mistake of causing infin
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 19: Implementation​*
+### Problem 20: Implementation​*
 
 Implement a class named `ManagedResource`. This class must collaborate with a Settings object, which is passed during instantiation. The `Settings` class is provided for you.
 
@@ -1435,7 +1439,7 @@ Hidden Trap Targeted:​ This prompt targets the failure to correctly delegate s
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 20: Predict and Explain Code Output
+### Problem 21: Predict and Explain Code Output
 
 
 Predict the output of the following code snippet. Provide a detailed explanation for each line of output, focusing on how inheritance and name mangling affect attribute access.
@@ -1477,7 +1481,7 @@ Hidden Trap Targeted​: This prompt targets the misconception that a double-und
 </details>
 
 
-### Problem 21: Debug Code
+### Problem 22: Debug Code
 
 
 The following code is intended to allow the addition of two `Wallet` objects using the `+` operator. The expected behavior is for the final line to print `Wallet` with balance: `350`. However, the line `combined_wallet = wallet1 + wallet2` currently raises a `TypeError`. Identify the bug and provide the corrected code.
@@ -1517,7 +1521,7 @@ Hidden Trap Targeted​: This prompt exploits the reasonable but incorrect assum
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 22: Implement a Class
+### Problem 23: Implement a Class
 
 Implement the `AccessLogger` class based on its usage within the `APIClient` class. Your implementation must ensure the provided example code runs without errors and produces the exact output shown. The `APIClient` and `AccessLogger` classes have a composition relationship.
 
@@ -1570,7 +1574,7 @@ print(logger._log_file)
 Hidden Trap Targeted​: This prompt forces the developer to deduce the required attribute names and protection levels from a collaborating object's implementation. The `APIClient`'s direct access to `_AccessLogger__requests_count` dictates that the logger's attribute must be named `__requests_count`. Likewise, the direct access to `logger._log_file `dictates that this attribute must be named `_log_file`, testing the understanding of both conventions in a practical context.
 </details>
 
-### Problem 23: Predict Code Output
+### Problem 24: Predict Code Output
 
 Predict the output of the following code. Explain precisely what happens when `processor.process_all()` is called and why that output is produced.
 
@@ -1609,7 +1613,7 @@ Hidden Trap:​ Name Mangling. Python's name mangling (_ClassName__methodName) p
 </details>
 
 
-### Problem 24: Debug Code
+### Problem 25: Debug Code
 
 The `EventBroadcaster` is intended to send notifications from various sources (`EmailSource`, `SMSSource`) by calling a notify interface on them. The current code fails with a TypeError when processing the `SMSSource`. Identify the bug in the `SMSSource` class, explain why it breaks the polymorphic interface, and provide a corrected version of that class only.
 
@@ -1654,7 +1658,7 @@ Hidden Trap:​ Confusing a property with a method. The @property decorator make
 </details>
 
 
-### Problem 25: Implement a Class
+### Problem 26: Implement a Class
 
 Implement an Inventory class that manages a collection of items.
 
@@ -1695,7 +1699,7 @@ Hidden Trap:​ Incorrect assumption about operator behavior. The `+` operator i
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 26: Predict Code Output
+### Problem 27: Predict Code Output
 
 Predict the output of the following code snippet and provide a step-by-step explanation for how you arrived at your answer. Your explanation should focus on how `cls` is resolved during the method call.
 
@@ -1734,7 +1738,7 @@ Hidden Trap​: Late binding of `cls` in class methods. Students may incorrectly
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 27: Debug Code
+### Problem 28: Debug Code
 
 The following code is intended to create a `LoggingProxy` for a `DatabaseConnector` object. When a method like connect is called on the proxy, it should first log the action and then delegate the call to the actual database connector instance. However, running the code raises an `AttributeError`. Identify the bug, explain why it occurs, and provide the corrected code.
 
@@ -1779,7 +1783,7 @@ Hidden Trap​: Incomplete state initialization due to a missing `super().__init
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 28: Implement a Class
+### Problem 29: Implement a Class
 
 Implement a `Configuration` class and two subclasses of a Validator: `MinLengthValidator` and `TypeValidator`.
 
@@ -1829,7 +1833,7 @@ Hidden Trap​: Misplacing the `__sub__` dunder method. The natural reading of c
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 29: Predict & Explain Output
+### Problem 30: Predict & Explain Output
 
 Predict the output of the following code snippet and be prepared to explain the method resolution order that produces this result.
 
@@ -1864,7 +1868,7 @@ Hidden Trap Targeted:​ Misunderstanding `super()` and Method Resolution Order 
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 30: Debug a Snippet
+### Problem 31: Debug a Snippet
 
 The following code is intended to produce a `ConfigurableReport` that uses a formatter object to generate a titled report. However, it currently raises an `AttributeError`. Identify the bug and explain how to fix it.
 
@@ -1902,7 +1906,7 @@ Hidden Trap Targeted:​ Incomplete state initialization due to a missing `super
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 31: Implement a Class
+### Problem 32: Implement a Class
 
 Implement the `TieredPricing` class. It inherits from `BasePricing` and requires an additional `tier_fee` during initialization. Its calculate method should determine a final price by first getting the base price from its parent and then adding its own `tier_fee` to that amount.
 
@@ -1944,7 +1948,7 @@ Hidden Trap Targeted:​ Incorrectly applying arithmetic operators to the `super
 </details>
 
 
-### Problem 32: Predict and Explain​
+### Problem 33: Predict and Explain​
 
 Predict the output of the following Python code. In your explanation, describe the role of `super()` and detail the specific Method Resolution Order (MRO) that determines which log method is invoked.
 
@@ -1979,7 +1983,7 @@ Hidden Trap:​ MRO Nuances with Multiple Mix-ins
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 33: Debugging​
+### Problem 34: Debugging​
 
 The `ConfigManager` class below uses the Versioned mix-in to track changes to its configuration data. The intended behavior is that calling set_value should update the configuration dictionary and add a version snapshot to the `_history` list. However, running the code raises an exception.
 
@@ -2019,7 +2023,7 @@ Hidden Trap:​ Implicit Contract Violation (and Immutability)
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 34: Implementation​
+### Problem 35: Implementation​
 
 
 You are building a data processing pipeline where some components are retryable. Implement the `Retryable` mix-in, which provides a `.execute() `method. This method should attempt to call `_perform_task()`, a method that will be defined on the host class.
@@ -2094,7 +2098,7 @@ Hidden Trap:​ State Collision and Composition
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 35: Predict and Explain the Output 
+### Problem 36: Predict and Explain the Output 
 
 Predict the output of the following Python code. Provide a step-by-step explanation of how you arrived at your answer, paying close attention to the relationship between the `Logger` and `DataProcessor` classes and how the final output is generated.
 
@@ -2130,7 +2134,7 @@ Hidden Trap:​ Mistaking collaboration for inheritance. A student might incorre
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 36:  Debug the Code
+### Problem 37:  Debug the Code
 
 The following code is intended to model a `Car` that has an `Engine`. When `car.start()` is called, it should delegate the action to its `Engine` object and print "Engine started with Vroom!". However, running the code produces an error. Identify the bug, explain why it occurs, and provide the corrected code.
 
@@ -2168,7 +2172,7 @@ Hidden Trap:​ `NameError` due to incorrect delegation. The code calls `start()
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 37: Implement a Class 
+### Problem 38: Implement a Class 
 
 Implement a `ShoppingList` class that encapsulates a list of items.
 
@@ -2218,7 +2222,7 @@ Hidden Trap:​ Assuming the `+` operator will work "for free". A student might 
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 38: Predict and Explain the Output
+### Problem 39: Predict and Explain the Output
 
 Predict the output of the following code snippet. Explain how instance and class variable scoping rules within the inheritance hierarchy determine the final output.
 
@@ -2258,7 +2262,7 @@ Hidden Trap: Shadowing a class variable with an instance variable in a subclass,
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 39: Debug the Code Snippet
+### Problem 40: Debug the Code Snippet
 
 The following code is intended to allow different Project instances to have independent build settings. Modifying the settings for one project should not affect another. However, the code is buggy and a change to `project_a`'s settings incorrectly alters `project_b`'s settings. Identify the bug and explain why it occurs.
 
@@ -2302,7 +2306,7 @@ Hidden Trap: Mutating a shared, mutable class variable through an instance refer
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 40: Implement the `__add__` Method
+### Problem 41: Implement the `__add__` Method
 
 Complete the `BaseComponent` and `Resistor` classes below. The `__add__` method in `BaseComponent` should allow adding an integer to a component's value, returning a ​new component object of the same class​ with the updated value. The `Resistor` subclass should inherit this behavior without overriding `__add__`.
 
@@ -2351,7 +2355,7 @@ Hidden Trap: Using the correct constructor (`self.__class__` or `type(self)`) wi
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 41: Predict and Explain Output
+### Problem 42: Predict and Explain Output
 
 
 Predict the output of the following code snippet. Provide a step-by-step explanation of how Python's Method Resolution Order (MRO) determines which process method is called and what value is ultimately returned.
@@ -2386,7 +2390,7 @@ Hidden Trap:​ This prompt targets the "left-to-right" rule in MRO. Since `Text
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 42: Debug a Code Snippet
+### Problem 43: Debug a Code Snippet
 
 
 The `StyledButton` class is intended to create a button whose text is first wrapped in a style tag `(<em>)` by the `StylingMixin`, and then rendered into a full button tag `(<button>)` by the `ButtonWidget` class. The final output for an input of "Click Me" should be `<button><em>Click Me</em></button>`.
@@ -2427,7 +2431,7 @@ Hidden Trap:​ This tests the interaction between inheritance order and `super(
 </details>
 
 
-### Problem 43: Implement a Class
+### Problem 44: Implement a Class
 
 
 Implement the `ConfigurableService` class. This class must inherit from `BaseService` and `LoggingMixin`. Its execute method should first log the provided data, and then pass that same data to the execute method from its service parent. The class must correctly initialize with a `service_name`.
@@ -2483,7 +2487,7 @@ Hidden Trap:​ This prompt combines two concepts: MRO for method calls and MRO 
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 44: Predict and Explain
+### Problem 45: Predict and Explain
 
 
 Predict the output of the following code snippet. Explain your reasoning for each printed line, focusing on object identity and the behavior of the is operator.
@@ -2528,7 +2532,7 @@ Hidden Trap:​ This prompt targets the distinction between returning a direct r
 </details>
 
 
-### Problem 45: Debug the Code
+### Problem 46: Debug the Code
 
 
 The following code is intended to manage a single, shared configuration object for multiple service instances. The `LogManager` should ensure that all services access the exact same configuration dictionary. However, the final line prints `False`, indicating a bug. Identify the bug, explain why it causes the issue, and describe how to fix it.
@@ -2579,7 +2583,7 @@ Hidden Trap:​ The trap here is a reasonable but incorrect assumption about the
 </details>
 
 
-### Problem 46: Implement a Class
+### Problem 47: Implement a Class
 
 Implement the `DeviceCache` class. This class must manage `Device` objects. Its `get_device` method should adhere to the following rule: for any given `device_id`, the method must always return the exact same `Device` object. If `get_device` is called with a `device_id` that has not been seen before, it should create and store a new Device instance. Subsequent calls with that same `device_id` must return that stored instance.
 
@@ -2628,7 +2632,7 @@ Hidden Trap:​ The primary trap is correctly managing the storage and retrieval
 </details>
 
 
-### Problem 47: Predict and Explain
+### Problem 48: Predict and Explain
 
 Predict the output of the following code. Explain precisely why it produces that output, detailing the method lookups and comparisons that occur.
 
@@ -2667,7 +2671,7 @@ Hidden Trap: The `!=` operator does not automatically call a negated version of 
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 48: Debugging
+### Problem 49: Debugging
 
 The following code is intended to determine if a new `EventLog` is a promotion from an old one. The rule is that a log is a promotion if its priority is higher. The code is currently failing with an unhandled `TypeError`. Identify the bug, explain its cause, and provide the corrected code.
 
@@ -2708,7 +2712,7 @@ Hidden Trap: Assuming that defining `__lt__ `is sufficient for Python to handle 
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 49: Implementation
+### Problem 50: Implementation
 
 A `GeographicPoint` has latitude and longitude. A `Route` is defined by two `GeographicPoint` objects: a start and an end.
 
@@ -2753,7 +2757,7 @@ Hidden Trap: Complex equality logic with collaborator objects. A simple comparis
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 50: Predict and Explain​*
+### Problem 51: Predict and Explain​*
 
 Predict the output of the code below. Explain the sequence of method calls triggered by the `+` operator in the line that initializes the report variable, detailing how each call contributes to the final state of the report object.
 
@@ -2796,7 +2800,7 @@ Hidden Trap:​ Chaining methods that return new objects.
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 51: Debugging​
+### Problem 52: Debugging​
 
 The code below is intended to allow a Project's hours to be increased by adding `TimeLog` objects using the `+=` operator. The final print statement should display that the project has 12 total hours. However, running the code raises a `TypeError` on the second `+=` operation. Identify the bug, explain its cause, and provide the corrected `Project` class implementation.
 
@@ -2835,7 +2839,7 @@ Hidden Trap:​ The required return value for in-place augmented assignment meth
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 52: Implementation​
+### Problem 53: Implementation​
 
 Implement the `Inventory` class to manage item quantities. The class must support the + operator to combine an `Inventory` object with a `Shipment` object, which contains a dictionary of new items. The operation must be commutative, meaning it should work correctly regardless of whether the `Inventory` or `Shipment` is the left operand. Adding a `Shipment` to an `Inventory` should return a ​new​ I`nventory` object with updated quantities.
 
@@ -2879,7 +2883,7 @@ Hidden Trap:​ Needing `__radd__` to handle operations where the custom class i
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 53: Predict and Explain Output
+### Problem 54: Predict and Explain Output
 
 Predict the output of the following Python code snippet. Explain in detail the process Python uses to determine the string representation for each print call, paying close attention to how container objects format their contents.
 
@@ -2921,7 +2925,7 @@ Hidden Trap:​ This prompt targets the rule that container types (like list, di
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 54: Debug the Code
+### Problem 55: Debug the Code
 
 The following code is intended to display a project's details, including a user-friendly list of its associated tasks. However, the output for the tasks is not as expected. Identify the bug, explain why the current output occurs, and describe the necessary correction to the class definitions.
 
@@ -2963,7 +2967,7 @@ Hidden Trap:​ This prompt targets the fallback behavior where `print(obj)` (wh
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 55: Implement Classes
+### Problem 56: Implement Classes
 
 Implement the `Book` and `Library` classes based on the requirements demonstrated by the I/O examples below. A `Library` is initialized with a name and a list of Book objects. A `Book` has a title and an author. Your implementation must produce the exact output shown for each print call.
 
@@ -3004,7 +3008,7 @@ Hidden Trap:​ This prompt forces the student to recognize that the Book class 
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 56: Predict and Explain​
+### Problem 57: Predict and Explain​
 
 
 Predict the output of the following code snippet. Provide a step-by-step explanation for how you arrived at your answer, detailing what `self`, `__class__`, and `__name__` refer to on each line where they are used.
@@ -3040,7 +3044,7 @@ service.do_work()
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 57: Debug the Code​
+### Problem 58: Debug the Code​
 
 
 The following code is intended to create a Report that uses a DataFormatter collaborator to format its title. The generate method should print a title including the formatter's class name, like "CSVFormatter Report". However, running the code raises an `AttributeError`.
@@ -3073,7 +3077,7 @@ report.generate()
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 58: Implement a Function​
+### Problem 59: Implement a Function​
 
 Implement a function c`reate_factory_log(component)` that takes an object instance representing a machine part. The function should return a string logging the part's class name. The object passed to the function will be a collaborator in a larger factory system.
 
@@ -3115,7 +3119,7 @@ print(create_factory_log(Rotor()))
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 59: Predict Output
+### Problem 60: Predict Output
 
 Predict the output of the following code snippet and explain your reasoning.
 
@@ -3162,7 +3166,7 @@ except Exception as e:
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 60: Debugging
+### Problem 61: Debugging
 
 
 The following function process_all_data is intended to process a list of raw data. It should create `DataEntry` objects for integer values and return a list of those values. For any non-integer data, it should catch the `TypeError` raised by the `DataEntry` constructor, print an error message, and continue processing the rest of the list. The current implementation is buggy. Identify the bug and describe how to fix it.
@@ -3215,7 +3219,7 @@ Hidden Trap: Scope of `try/except` block. Placing an entire loop inside a single
 <summary>Possible Solution</summary> 
 </details>
 
-### Problem 61: Implementation
+### Problem 62: Implementation
 
 
 Implement the `MessageBroadcaster` class below. Its `send_all` method accepts a message string and a list of recipient objects. The method should try to deliver the message to each recipient based on the following logic:
@@ -3283,7 +3287,7 @@ Hidden Trap: Graceful Degradation / Fallback Logic. Correctly implementing the f
 </details>
 
 
-### Problem 62: Predict and Explain
+### Problem 63: Predict and Explain
 
 What will the following code output? Explain your reasoning in detail.
 
@@ -3331,7 +3335,7 @@ Hidden Trap​: Exception hierarchy and except block ordering.
 </details>
 
 
-### Problem 63: Debug the Code
+### Problem 64: Debug the Code
 
 The following code is intended to catch an `InsufficientFundsError` and print a specific, helpful message. However, when the error is caught, it prints an empty line instead of the expected message. Identify the bug and provide the corrected code.
 
@@ -3378,7 +3382,7 @@ Hidden Trap​: Custom exception classes need an `__init__` method that calls `s
 </details>
 
 
-### Problem 64: Implement a Class
+### Problem 65: Implement a Class
 
 Implement the `ConnectionError` custom exception and the Device class to satisfy the requirements outlined in the provided examples.
 
@@ -3442,7 +3446,7 @@ Hidden Trap​: Designing a custom exception to carry state beyond just a messag
 </details>
 
 
-### Problem 65: Predict and Explain the Output
+### Problem 66: Predict and Explain the Output
 
 Predict the output of the following code snippet and explain your reasoning. Your explanation should focus on the interaction between the `Inventory` and `Widget` objects.
 
@@ -3488,7 +3492,7 @@ Hidden Trap:​ Tests understanding of object references vs. copies. The `Invent
 </details>
 
 
-### Problem 66: Debug the Code.
+### Problem 67: Debug the Code.
 
 The following code is intended to manage a team and its members. A `Team` object should be able to add `Member` objects to its roster. The final output should be `['Dana', 'Fox']`. However, the code currently prints an empty list `[]`. Identify the bug and describe how to fix it.
 
@@ -3532,7 +3536,7 @@ Hidden Trap:​ Targets a common incorrect assumption about the `+` operator wit
 </details>
 
 
-### Problem 67: Implement Classes with Collaborators*
+### Problem 68: Implement Classes with Collaborators*
 
 Implement the `Engine`, `Wheel`, and `Car` classes to satisfy the requirements demonstrated by the I/O examples below.
 
