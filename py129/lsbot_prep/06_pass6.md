@@ -36,44 +36,30 @@ Inputs:
 ```python
 # Input
     rock_hits = Playlist("Rock Hits", ["Stairway to Heaven", "Bohemian Rhapsody"])
-    print(rock_hits.now_playing())
+    print(rock_hits.now_playing()) #Stairway to Heaven
     rock_hits.play_next()
-    print(rock_hits.now_playing())
+    print(rock_hits.now_playing())   #Bohemian Rhapsody
     rock_hits.add_song("Hotel California")
     rock_hits.play_next()
-    print(rock_hits.now_playing())
+    print(rock_hits.now_playing())  #Hotel California
 
-    # Output
-    #Stairway to Heaven
-    #Bohemian Rhapsody
-    #Hotel California
-```
 
-```python
 # Input
     favorites = Playlist("Favorites", ["Song A", "Song B"])
     favorites.play_next()
-    print(favorites.now_playing())
+    print(favorites.now_playing()) # Song B
     favorites.play_next() # Should loop back to the start
-    print(favorites.now_playing())
+    print(favorites.now_playing()) # Song A
+   
 
-    # Output
-    Song B
-    Song A
-```
-```python
 # Input
     empty_playlist = Playlist("Empty")
-    print(empty_playlist.now_playing())
+    print(empty_playlist.now_playing()) #None
     empty_playlist.play_next()
-    print(empty_playlist.now_playing())
+    print(empty_playlist.now_playing()) #None
     empty_playlist.add_song("First Song")
-    print(empty_playlist.now_playing())
+    print(empty_playlist.now_playing()) #First Song
 
-    # Output
-    None
-    None
-    First Song
 ```
 
 Common Wrong Turns:
