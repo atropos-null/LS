@@ -15,6 +15,24 @@ Name the hidden trap each prompt is targeting.
 
 Keep each under ~25 lines. No solutions or hints. At least one prompt must rely on a reasonable but incorrect assumption about a protocol or operator.
 
+CRITICAL VALIDATION STEP:
+
+Before presenting any prompt:
+
+Execute the code mentally.
+Verify the stated output exactly matches the code.
+Verify the stated bug actually exists.
+Verify the intended behavior differs from the current behavior.
+Verify all examples are internally consistent.
+If a prompt fails validation, discard it and generate a new one.
+
+After each prompt, include a private validation note (not shown to the student) confirming:
+
+Current behavior
+Intended behavior
+Why the bug exists
+Why the prompt is valid
+
 ### Problem 1: Playlist Class
 
 **Description**: Create a `Playlist` class that represents a music playlist. The class should be able to store and manage a collection of song titles.
@@ -1622,8 +1640,7 @@ class Wallet:
     def __init__(self, amount):
         self._balance = amount
 
-    # This method is intended to overload the `+` operator.
-    def __add__(self, other):
+    def __add(self, other):     
         return Wallet(self._balance + other._balance)
 
     def __repr__(self):
@@ -1701,6 +1718,65 @@ print(logger._log_file)
 Hidden Trap Targeted​: This prompt forces the developer to deduce the required attribute names and protection levels from a collaborating object's implementation. The `APIClient`'s direct access to `_AccessLogger__requests_count` dictates that the logger's attribute must be named `__requests_count`. Likewise, the direct access to `logger._log_file `dictates that this attribute must be named `_log_file`, testing the understanding of both conventions in a practical context.
 </details>
 
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+
+class APIClient:
+    def __init__(self, logger):
+        self._logger = logger # Has-a relationship
+
+    def make_request(self, url):
+        self._logger.log_access(url)
+        print(f"Request to {url} successful.")
+
+    # This MUST access the logger's name-mangled attribute.
+        count = self._logger._AccessLogger__requests_count
+        print(f"Total requests logged: {count}")
+
+# Implement the AccessLogger class below this line.
+# It must have:
+# 1. An initializer that accepts a filename.
+# 2. An attribute for the filename that is accessible externally.
+# 3. A private counter for requests that is accessed by APIClient.
+# 4. A method to log access attempts.
+
+class AccessLogger:
+
+    def __init__(self, filename):
+        self._log_file = filename
+        self.__requests_count = 0
+
+    def log_access(self, url):
+        print(f"Attempting to access: {url}")
+        self.__requests_count += 1
+
+
+
+# Example Usage:
+logger = AccessLogger("system.log")
+client = APIClient(logger)
+
+client.make_request("api/users")
+# Expected Output:
+# Attempting to access: api/users
+# Request to api/users successful.
+# Total requests logged: 1
+
+client.make_request("api/data")
+# Expected Output:
+# Attempting to access: api/data
+# Request to api/data successful.
+# Total requests logged: 2
+
+print(logger._log_file)
+# Expected Output:
+# system.log
+```
+
+</details>
+
 ### Problem 24: Predict Code Output
 
 Predict the output of the following code. Explain precisely what happens when `processor.process_all()` is called and why that output is produced.
@@ -1737,12 +1813,40 @@ Hidden Trap:​ Name Mangling. Python's name mangling (_ClassName__methodName) p
 
 <details> 
 <summary>Possible Solution</summary> 
+
+Name mangling messes up the output. 
+
+```python
+lass Report:
+    def __init__(self, content):
+        self._content = content
+
+    def _format(self):
+        return f"Report content: {self._content}"
+
+class Logger:
+    def process_all(self, reports):
+        for report in reports:
+            try:
+                # Intended to call a private formatting method
+                print(report._format())
+            except Exception as e:
+                print(f"{type(e).__name__}: {e}")
+
+report1 = Report("Annual data.")
+report2 = Report("Quarterly data.")
+processor = Logger()
+processor.process_all([report1, report2])
+```
+
 </details>
 
 
 ### Problem 25: Debug Code
 
 The `EventBroadcaster` is intended to send notifications from various sources (`EmailSource`, `SMSSource`) by calling a notify interface on them. The current code fails with a TypeError when processing the `SMSSource`. Identify the bug in the `SMSSource` class, explain why it breaks the polymorphic interface, and provide a corrected version of that class only.
+
+IGNORE THIS ONE. The solution isn't in keeping with PY129 principles.
 
 Intended Behavior:
 * Calling `broadcaster.broadcast()` should print:
@@ -1756,8 +1860,8 @@ class EmailSource:
 
 class SMSSource:
     @property
-    def notify(self): # BUG IS HERE
-        return lambda message: print(f"Texting: {message}")
+    def notify(self):
+        print("Texting notification ready")
 
 class EventBroadcaster:
     def __init__(self, sources):
@@ -1782,6 +1886,32 @@ Hidden Trap:​ Confusing a property with a method. The @property decorator make
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class EmailSource:
+    def notify(self, message):
+        print(f"Emailing: {message}")
+
+class SMSSource:
+    @property
+    def notify(self): # BUG IS HERE
+        return lambda message: print(f"Texting: {message}")
+
+class EventBroadcaster:
+    def __init__(self, sources):
+        self.sources = sources
+        self.messages = ["User subscribed", "Your code is 1234"]
+
+    def broadcast(self):
+        for source, msg in zip(self.sources, self.messages):
+            source.notify(msg)
+
+sources = [EmailSource(), SMSSource()]
+broadcaster = EventBroadcaster(sources)
+broadcaster.broadcast()
+
+
+```
 </details>
 
 
@@ -1815,6 +1945,8 @@ combined_inv3 = inv5 + inv6
 # expected: combined_inv3.items is {'staples': 5000}
 ```
 
+Remember this one for combining dictionaries!
+
 <details> 
 <summary>Hint</summary> 
 
@@ -1824,6 +1956,48 @@ Hidden Trap:​ Incorrect assumption about operator behavior. The `+` operator i
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+class Inventory:
+
+    def __init__(self, item_dict):
+        self.item_dict = item_dict
+
+    def __repr__(self):
+        return str(self.item_dict)
+
+    def __add__(self, other):
+        if not isinstance(other, Inventory):
+            return NotImplemented
+        new_dict = self.item_dict.copy()
+        for key, value in other.item_dict.items():
+                new_dict[key] = new_dict.get(key, 0) + value
+                
+        return Inventory(new_dict)
+                
+
+# Example 1
+inv1 = Inventory({'screws': 100, 'nails': 50})
+inv2 = Inventory({'nails': 150, 'bolts': 25})
+combined_inv = inv1 + inv2
+print(combined_inv)
+# expected: combined_inv.items is {'screws': 100, 'nails': 200, 'bolts': 25}
+
+# Example 2
+inv3 = Inventory({'widgets': 5})
+inv4 = Inventory({'gadgets': 10})
+combined_inv2 = inv3 + inv4
+print(combined_inv2)
+# expected: combined_inv2.items is {'widgets': 5, 'gadgets': 10}
+
+# Example 3
+inv5 = Inventory({'staples': 2000})
+inv6 = Inventory({'staples': 3000})
+combined_inv3 = inv5 + inv6
+print(combined_inv3)
+# expected: combined_inv3.items is {'staples': 5000}
+```
 </details>
 
 ### Problem 27: Predict Code Output
@@ -1863,6 +2037,8 @@ Hidden Trap​: Late binding of `cls` in class methods. Students may incorrectly
 
 <details> 
 <summary>Possible Solution</summary> 
+
+<XML>hello</XML> A classmethod inherited from a parent still receives the class it was called through.
 </details>
 
 ### Problem 28: Debug Code
@@ -1871,10 +2047,9 @@ The following code is intended to create a `LoggingProxy` for a `DatabaseConnect
 
 Intended Behavior​:
 
-```
 LOG: Attempting to call connect
 Connected to the database.
-```
+
 
 ```python
 class DatabaseConnector:
@@ -1885,14 +2060,20 @@ class DatabaseConnector:
         self._is_connected = True
         print("Connected to the database.")
 
+
 class LoggingProxy(DatabaseConnector):
     def __init__(self, connector_instance):
-        # The collaborator is the connector instance
         self.connector = connector_instance
 
     def connect(self):
-        print(f"LOG: Attempting to call connect")
+        if self._is_connected:
+            print("Already connected.")
+            return
+
+        print("LOG: Attempting to call connect")
         self.connector.connect()
+        self._is_connected = True
+
 
 db = DatabaseConnector()
 proxy = LoggingProxy(db)
@@ -1908,6 +2089,37 @@ Hidden Trap​: Incomplete state initialization due to a missing `super().__init
 
 <details> 
 <summary>Possible Solution</summary> 
+
+
+```python
+class DatabaseConnector:
+    def __init__(self):
+        self._is_connected = False
+
+    def connect(self):
+        self._is_connected = True
+        print("Connected to the database.")
+
+
+class LoggingProxy(DatabaseConnector):
+    def __init__(self, connector_instance):
+        super().__init__()
+        self.connector = connector_instance
+
+    def connect(self):
+        if self._is_connected:
+            print("Already connected.")
+            return
+
+        print("LOG: Attempting to call connect")
+        self.connector.connect()
+        self._is_connected = True
+
+
+db = DatabaseConnector()
+proxy = LoggingProxy(db)
+proxy.connect()
+```
 </details>
 
 ### Problem 29: Implement a Class
