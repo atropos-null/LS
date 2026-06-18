@@ -2170,6 +2170,59 @@ Hidden Trap​: Misplacing the `__sub__` dunder method. The natural reading of c
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Configuration:
+
+    def __init__(self, **kwargs ):
+        self._settings = kwargs
+
+    def __sub__(self, validator):
+        return validator.validate(self)
+
+class Validator:
+
+    def validate(self, config):
+        raise NotImplementedError
+
+class MinLengthValidator(Validator):
+
+    def __init__(self, key, length):
+        self.setting_key = key
+        self.length = length
+
+    def validate(self, config):
+        value = config._settings[self.setting_key]
+        return len(value) >= self.length
+                
+
+
+class TypeValidator(Validator):
+
+    def __init__(self, key, data_type):
+        self.setting_key = key
+        self.data_type = data_type
+
+    def validate(self, config):
+        value = config._settings[self.setting_key]
+        return isinstance(value, self.data_type)
+    
+#Example 1
+config = Configuration(host='localhost', port=8080)
+type_val = TypeValidator('port', int)
+print(config - type_val) # Expected: True
+
+# Example 2
+config = Configuration(user='guest')
+len_val = MinLengthValidator('user', 6)
+print(config - len_val) # Expected: False
+
+# Example 3
+config = Configuration(api_key='ABC-123', retries='5')
+type_val = TypeValidator('retries', int)
+print(config - type_val) # Expected: False
+```
+
 </details>
 
 ### Problem 30: Predict & Explain Output
@@ -2205,6 +2258,21 @@ Hidden Trap Targeted:​ Misunderstanding `super()` and Method Resolution Order 
 
 <details> 
 <summary>Possible Solution</summary> 
+
+Output:
+
+```
+Transmitting data.
+Opening Connection.
+Upstream Process returned: connected
+```
+
+Objects: DataTransmitter, Connection, DataParser
+Ownership: DataTransmitter inherits from Connection and DataParser
+State: what is the output from process
+Teaching target: MRO
+
+Attribute is found on Connection so DataParser is not called.
 </details>
 
 ### Problem 31: Debug a Snippet
@@ -2243,6 +2311,28 @@ Hidden Trap Targeted:​ Incomplete state initialization due to a missing `super
 </details>
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Formatter:
+    def format_title(self, title):
+        return f"=== {title.upper()} ==="
+
+class Report:
+
+    def __init__(self, formatter):
+        self.formatter = formatter
+
+class ConfigurableReport(Report):
+    def __init__(self, title):
+        super().__init__(Formatter()) #Apparently you can insert an object into a super
+        self.title = title
+
+    def generate(self):
+        return self.formatter.format_title(self.title)
+
+report = ConfigurableReport("Weekly Report")
+print(report.generate())
+```
 </details>
 
 ### Problem 32: Implement a Class
@@ -2284,6 +2374,35 @@ Hidden Trap Targeted:​ Incorrectly applying arithmetic operators to the `super
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class BasePricing:
+    def __init__(self, base_rate):
+        self.rate = base_rate
+
+    def calculate(self, units):
+        return self.rate * units
+
+# Your implementation here
+class TieredPricing(BasePricing):
+    
+    def __init__(self, base_rate, tier_fee):
+        super().__init__(base_rate)
+        self.tier_fee = tier_fee
+
+
+    def calculate(self, units):
+        return super().calculate(units) + self.tier_fee
+    
+print(TieredPricing(base_rate=10, tier_fee=5).calculate(units=3))
+#35
+
+print(TieredPricing(base_rate=2, tier_fee=100).calculate(units=50))
+# 200 
+
+print(TieredPricing(base_rate=0, tier_fee=25).calculate(units=1000))
+#25
+```
 </details>
 
 
@@ -2320,13 +2439,46 @@ Hidden Trap:​ MRO Nuances with Multiple Mix-ins
 
 <details> 
 <summary>Possible Solution</summary> 
+
+Answer: ```TIMESTAMP: Data packet received.```
+
 </details>
 
 ### Problem 34: Debugging​
 
-The `ConfigManager` class below uses the Versioned mix-in to track changes to its configuration data. The intended behavior is that calling set_value should update the configuration dictionary and add a version snapshot to the `_history` list. However, running the code raises an exception.
+The `ConfigManager` class below uses the Versioned mix-in to track changes to its configuration data. The intended behavior is that calling set_value should update the configuration dictionary and add a version snapshot to the `_history` list. 
 
 Identify the bug, explain its cause, and provide the corrected code.
+
+```python
+class Versioned:
+    def record_change(self):
+        # Creates a snapshot of the current state for the history
+        self._history += (self._data.copy(),)
+
+class ConfigManager(Versioned):
+    def __init__(self, initial_data):
+        self._data = initial_data
+        self._history = ()
+
+    def set_value(self, key, value):
+        self._data[key] = value
+        self.record_change()
+
+# --- Intended Usage ---
+config = ConfigManager({'theme': 'dark', 'font_size': 12})
+print(config.set_value('font_size', 14))
+```
+
+<details> 
+<summary>Hint</summary> 
+
+Hidden Trap:​ Implicit Contract Violation (and Immutability)
+
+</details>
+
+<details> 
+<summary>Possible Solution</summary> 
 
 ```python
 class Versioned:
@@ -2346,20 +2498,7 @@ class ConfigManager(Versioned):
 # --- Intended Usage ---
 config = ConfigManager({'theme': 'dark', 'font_size': 12})
 config.set_value('font_size', 14)
-
-# Expected `config._history` after execution:
-# [{'theme': 'dark', 'font_size': 14}]
 ```
-
-<details> 
-<summary>Hint</summary> 
-
-Hidden Trap:​ Implicit Contract Violation (and Immutability)
-
-</details>
-
-<details> 
-<summary>Possible Solution</summary> 
 </details>
 
 ### Problem 35: Implementation​
@@ -2433,8 +2572,67 @@ print(f"Final status: {task3.execute(max_attempts=5)}")
 Hidden Trap:​ State Collision and Composition
 
 </details>
+
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+class UnstableTask:
+    def __init__(self, name, fail_count):
+        self.task_name = name
+        self.attempts = 0
+        self.fail_limit = fail_count
+
+    def _perform_task(self):
+        self.attempts += 1
+        if self.attempts > self.fail_limit:
+            print(f"'{self.task_name}' succeeded on attempt {self.attempts}.")
+            return True
+        else:
+            print(f"'{self.task_name}' failed on attempt {self.attempts}.")
+            return False
+
+# --- Your Implementation ---
+# Implement the Retryable mix-in here.
+class Retryable:
+    
+    def execute(self, max_attempts):
+      
+        for _ in range(max_attempts):
+            if self._perform_task():
+                return "Success"
+        return "Failure"
+
+
+
+# --- I/O Examples ---
+class DataUpload(Retryable, UnstableTask):
+    pass
+
+# Example 1: Task succeeds on the second attempt
+task1 = DataUpload(name="Image Upload", fail_count=1)
+print(f"Final status: {task1.execute(max_attempts=3)}\n")
+# Expected Output:
+# 'Image Upload' failed on attempt 1.
+# 'Image Upload' succeeded on attempt 2.
+# Final status: Success
+
+# Example 2: Task fails all attempts
+task2 = DataUpload(name="Database Sync", fail_count=3)
+print(f"Final status: {task2.execute(max_attempts=2)}\n")
+# Expected Output:
+# 'Database Sync' failed on attempt 1.
+# 'Database Sync' failed on attempt 2.
+# Final status: Failure
+
+# Example 3: Task succeeds on the first attempt
+task3 = DataUpload(name="Log Archiving", fail_count=0)
+print(f"Final status: {task3.execute(max_attempts=5)}")
+# Expected Output:
+# 'Log Archiving' succeeded on attempt 1.
+# Final status: Success
+```
 </details>
 
 ### Problem 36: Predict and Explain the Output 
@@ -2471,14 +2669,17 @@ Hidden Trap:​ Mistaking collaboration for inheritance. A student might incorre
 </details>
 <details> 
 <summary>Possible Solution</summary> 
+
+We have two Objects, Logger and DataProcessor. There is no inheritance relationship. Logger initializes with a file name and has a str 
+saying "Logging to {self.file_name}". DataProcessor initializes with a data source and a logger, which is initialized separately and passed 
+into the DataProcessor arguments. DataProcessor has a `process` method that prints out ```"Processing data from API."```
+and then calls the logger object which returns ```"Logging to system.log"```
+
 </details>
 
 ### Problem 37:  Debug the Code
 
 The following code is intended to model a `Car` that has an `Engine`. When `car.start()` is called, it should delegate the action to its `Engine` object and print "Engine started with Vroom!". However, running the code produces an error. Identify the bug, explain why it occurs, and provide the corrected code.
-
-Intended Behavior:
-
 
 Expected Output: `Engine started with Vroom!`
 
@@ -2509,6 +2710,24 @@ Hidden Trap:​ `NameError` due to incorrect delegation. The code calls `start()
 </details>
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Engine:
+    def start(self):
+        return "Engine started with Vroom!"
+
+class Car:
+    def __init__(self):
+        self.engine = Engine()
+
+    def start(self):
+        message = self.engine.start() #This line corrected to connect to engine
+        print(message)
+
+car = Car()
+car.start()
+```
+
 </details>
 
 ### Problem 38: Implement a Class 
@@ -2559,6 +2778,47 @@ Hidden Trap:​ Assuming the `+` operator will work "for free". A student might 
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class ShoppingList:
+    
+    def __init__(self, items=None):
+        self.items = list(items) if items is not None else []
+
+
+    def __add__(self, other):
+        if not isinstance(other, ShoppingList):
+            return NotImplemented
+        new_list = [*self.items, *other.items]
+        return ShoppingList(new_list)
+
+# Example 1
+groceries = ShoppingList(["milk", "eggs"])
+household = ShoppingList(["soap", "paper towels"])
+full_list = groceries + household
+print(full_list.items)
+# Expected Output: ['milk', 'eggs', 'soap', 'paper towels']
+
+
+# Example 2
+list1 = ShoppingList(["apples"])
+print(list1.items) # Check before operation
+# Expected Output: ['apples']
+
+list2 = list1 + ShoppingList(["bananas"])
+print(list1.items) # Verify original is unchanged
+# Expected Output: ['apples']
+print(list2.items)
+# Expected Output: ['apples', 'bananas']
+
+# Example 3
+empty_list = ShoppingList([])
+other_list = ShoppingList(["chair"])
+result = empty_list + other_list
+print(result.items)
+# Expected Output: ['chair']
+```
+
 </details>
 
 ### Problem 39: Predict and Explain the Output
@@ -2597,8 +2857,20 @@ processor.process()
 Hidden Trap: Shadowing a class variable with an instance variable in a subclass, and then calling a method defined in the superclass.
 
 </details>
+
 <details> 
 <summary>Possible Solution</summary> 
+
+We have three Objects:
+
+1) DataParser which holds a list of two delimeters. DataParser has no inits and one method, whose job it is to return the list of delimters.
+2) CsvParser inherits from DataParser. This one has an init that also a variable called ._delimters but this one only has one item in its list.
+3) LogEntryParser's init accepts text and a collaborator object. It has one method, process. 
+
+LogEntryParser.process calls DataParser's ```get_delimters```, and feeds it CsvParser's ```self._delimters``` list.
+
+Output is: ```Using delimiters: [',']```
+
 </details>
 
 ### Problem 40: Debug the Code Snippet
