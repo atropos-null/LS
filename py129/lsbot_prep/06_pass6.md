@@ -2038,7 +2038,7 @@ Hidden Trap​: Late binding of `cls` in class methods. Students may incorrectly
 <details> 
 <summary>Possible Solution</summary> 
 
-<XML>hello</XML> A classmethod inherited from a parent still receives the class it was called through.
+```<XML>hello</XML>``` A classmethod inherited from a parent still receives the class it was called through.
 </details>
 
 ### Problem 28: Debug Code
@@ -3169,11 +3169,51 @@ print(service3.execute("user:token"))
 <details> 
 <summary>Hint</summary> 
 
-Hidden Trap:​ This prompt combines two concepts: MRO for method calls and MRO for initialization. The primary trap is recognizing the need to correctly order the parent classes (`LoggingMixin` must come first) to achieve the desired execute behavior. A second, related trap is handling the `__init__` method. The student must implement an `__init__` in `ConfigurableService` that calls `super().__init__` to properly initialize the service_name from `BaseService`.
-
+Hidden Trap:​ This prompt combines two concepts: MRO for method calls and MRO for initialization. The trap is recognizing the need to correctly order the parent classes (`LoggingMixin` must come first) to achieve the desired execute behavior. 
 </details>
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class BaseService:
+    def __init__(self, service_name):
+        self.service_name = service_name
+
+    def execute(self, data):
+        return f"{self.service_name} processed: {data}"
+
+class LoggingMixin:
+    def execute(self, data):
+        print(f"Logging data: {data}")
+        return super().execute(data)
+
+# Your implementation of ConfigurableService here
+class ConfigurableService(LoggingMixin, BaseService):
+    pass
+
+service1 = ConfigurableService("DataProcessor")
+# Expected output:
+# Logging data: payload123
+# DataProcessor processed: payload123
+print(service1.execute("payload123"))
+
+print("-" * 20)
+
+service2 = ConfigurableService("FileHandler")
+# Expected output:
+# Logging data: document.txt
+# FileHandler processed: document.txt
+print(service2.execute("document.txt"))
+
+print("-" * 20)
+
+service3 = ConfigurableService("Auth")
+# Expected output:
+# Logging data: user:token
+# Auth processed: user:token
+print(service3.execute("user:token"))
+```
+
 </details>
 
 ### Problem 45: Predict and Explain
@@ -3218,6 +3258,34 @@ Hidden Trap:​ This prompt targets the distinction between returning a direct r
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Component:
+    def __init__(self, name):
+        self.name = name
+        self.settings = {'active': True}
+
+    def get_settings(self):
+        # Returns a copy of the settings dictionary
+        return self.settings.copy()
+
+class System:
+    def __init__(self):
+        self.component = Component("Core")
+
+    def get_component(self):
+        return self.component
+
+sys = System() #initializes a System Object
+comp1 = sys.get_component() #calls the get_component method on the sys object, which returns a Component object, called Core.
+comp_settings = comp1.get_settings() #returns a copy of the settings dictionary, {'active': True}
+
+comp_settings['active'] = False #resets the dictionary to {'active': False}
+
+print(f"1: {sys.component.settings['active']}") #True
+print(f"2: {comp1 is sys.get_component()}") #True, returns the actual same Component object stored at:
+print(f"3: {sys.component.settings is comp_settings}")  #False
+```
 </details>
 
 
@@ -3269,6 +3337,35 @@ Hidden Trap:​ The trap here is a reasonable but incorrect assumption about the
 </details>
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class LogManager:
+    def __init__(self):
+        self.config = {'level': 'INFO', 'file': 'app.log'}
+
+    def update_config(self, new_settings):
+        self.config.update(new_settings)
+
+class Service:
+    def __init__(self, name, manager):
+        self.name = name
+        self.log_manager = manager
+
+    def get_log_config(self):
+        return self.log_manager.config
+
+log_mgr = LogManager() #Initiate a LogManager Object
+service1 = Service("AuthService", log_mgr) #Initiate a Service Object, passing "AuthService" as its name and the LogManager object as its collaborator
+config1 = service1.get_log_config() #returns {'level': 'INFO', 'file': 'app.log'} for LogManager object
+print(config1)
+log_mgr.update_config({'level': 'DEBUG'}) #Calls update_config method on log_mgr, copies it, changing level to "DEBUG" Now there are two 
+
+service2 = Service("DataService", log_mgr) #A second service object is created and the same log_mgr object is passed to it.
+config2 = service2.get_log_config() #{'level': 'DEBUG', 'file': 'app.log'}
+print(config2)
+print(config1 is config2) # Output is False, but should be True
+
+```
 </details>
 
 
@@ -3287,10 +3384,11 @@ class Device:
         print(f"Initializing new device: {self.device_id}")
 
 # Your implementation of DeviceCache goes here.
-
+```
 
 I/O Examples:
 
+```python
 # Example 1: Retrieving the same device twice
 cache = DeviceCache()
 d1 = cache.get_device("d-101")
@@ -3318,6 +3416,49 @@ Hidden Trap:​ The primary trap is correctly managing the storage and retrieval
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Device:
+    """A simple class representing a hardware device."""
+    def __init__(self, device_id):
+        self.device_id = device_id
+        # The following print statement helps verify when a new object is made.
+        print(f"Initializing new device: {self.device_id}")
+
+# Your implementation of DeviceCache goes here.
+class DeviceCache:
+
+    def __init__(self):
+        self.devices = {}
+
+    def get_device(self, device_id):
+        
+        if device_id not in self.devices:
+            self.devices[device_id] = Device(device_id)
+
+        return self.devices[device_id]
+    
+    
+
+# Example 1: Retrieving the same device twice
+cache = DeviceCache()
+d1 = cache.get_device("d-101")
+d2 = cache.get_device("d-101")
+print(f"Example 1 check: {d1 is d2}")
+# Expected Output: True
+
+# Example 2: Retrieving two different devices
+d3 = cache.get_device("d-205")
+print(f"Example 2 check: {d1 is d3}")
+# Expected Output: False
+
+# Example 3: Verifying separate caches
+cache2 = DeviceCache()
+d4 = cache2.get_device("d-101")
+print(f"Example 3 check: {d1 is d4}")
+# Expected Output: False
+```
+
 </details>
 
 
@@ -3358,6 +3499,35 @@ Hidden Trap: The `!=` operator does not automatically call a negated version of 
 </details>
 <details> 
 <summary>Possible Solution</summary> 
+
+"""
+Predict the output of the following code. Explain precisely why it produces that output, detailing the method lookups and comparisons that occur.
+
+"""
+
+```python
+class Authorization:
+    def __init__(self, level):
+        self.level = level
+
+    def __eq__(self, other):
+        print("Authorization.__eq__ called") #output 1: Authorization.__eq__ called
+        if not isinstance(other, Authorization):
+            return NotImplemented
+        return self.level == other.level
+
+class User:
+    def __init__(self, auth_level):
+        self.auth = Authorization(auth_level)
+
+    def can_access(self, required_level):
+        required_auth = Authorization(required_level)
+        return self.auth != required_auth #Output 2: False because the __eq__ doesn't have an __ne__. 
+
+user = User(auth_level=5)
+print(user.can_access(required_level=5))
+```
+
 </details>
 
 ### Problem 49: Debugging
@@ -3372,10 +3542,10 @@ class EventLog:
         self.priority = priority
         self.message = message
 
-    def __lt__(self, other):
+    def __eq__(self, other):
         if not isinstance(other, EventLog):
             return NotImplemented
-        return self.priority < other.priority
+        return self.priority == other.priority
 
 class SystemMonitor:
     @staticmethod
@@ -3394,11 +3564,40 @@ print(SystemMonitor.is_promotion(old_log, new_log))
 <summary>Hint</summary> 
 
 
-Hidden Trap: Assuming that defining `__lt__ `is sufficient for Python to handle `>` comparisons automatically through reflection in all cases. While Python may try `a > b` by evaluating `b < a`, relying on this is fragile. The direct implementation of `__gt__` is missing, causing a `TypeError` when the `>` operator is used.
+Hidden Trap:  The direct implementation of `__gt__` is missing, causing a `TypeError` when the `>` operator is used.
 
 </details>
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class EventLog:
+    def __init__(self, priority, message):
+        self.priority = priority
+        self.message = message
+
+    def __eq__(self, other):
+        if not isinstance(other, EventLog):
+            return NotImplemented
+        return self.priority == other.priority
+    
+    def __gt__(self, other):
+        if not isinstance(other, EventLog):
+            return NotImplemented
+        return self.priority > other.priority
+    
+class SystemMonitor:
+    @staticmethod
+    def is_promotion(old_log, new_log):
+        # A new log is a promotion if it is "greater than" the old one.
+        return new_log > old_log
+
+old_log = EventLog(priority=1, message="System OK")
+new_log = EventLog(priority=5, message="Critical Failure")
+
+print(SystemMonitor.is_promotion(old_log, new_log))
+```
+
 </details>
 
 ### Problem 50: Implementation
@@ -3444,6 +3643,60 @@ Hidden Trap: Complex equality logic with collaborator objects. A simple comparis
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+class GeographicPoint:
+
+    def __init__(self, lat, lon):
+        self.lat = lat
+        self.lon = lon
+
+    def __eq__(self, other):
+        return (isinstance(other, GeographicPoint) and self.lat == other.lat and self.lon == other.lon)
+
+# Your Route class implementation here...
+class Route:
+    def __init__(self, start, end, is_scenic):
+        self.start = start
+        self.end = end
+        self.is_scenic = is_scenic
+
+    def __eq__(self, other):
+        if not isinstance(other, Route):
+            return NotImplemented
+
+        same_direction = (
+            self.start == other.start and
+            self.end == other.end
+        )
+
+        reverse_direction = (
+            self.start == other.end and
+            self.end == other.start
+        )
+
+        return (
+            self.is_scenic == other.is_scenic and
+            (same_direction or reverse_direction)
+        )
+
+
+# I/O Examples:
+p1 = GeographicPoint(40.7128, -74.0060) # NYC
+p2 = GeographicPoint(34.0522, -118.2437) # LA
+p3 = GeographicPoint(49.2827, -123.1207) # Vancouver
+
+route1 = Route(p1, p2, is_scenic=True)
+route2 = Route(p2, p1, is_scenic=True) # Reversed points
+route3 = Route(p1, p2, is_scenic=False) # Different scenic status
+route4 = Route(p1, p3, is_scenic=True) # Different endpoint
+
+print(route1 == route2) # Expected: True
+print(route1 == route3) # Expected: False
+print(route1 == route4) # Expected: False
+```
+
 </details>
 
 ### Problem 51: Predict and Explain​*
