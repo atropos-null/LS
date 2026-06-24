@@ -51,7 +51,9 @@ Initialization:
 * `play_next()`: Advances to the next song in the playlist. The "current song" becomes the next one in the list. If the current song is the last one in the list, this method should loop back to the first song. If the playlist is empty, this method does nothing.
 
 Inputs:
+
 ```python
+
 # Input
     rock_hits = Playlist("Rock Hits", ["Stairway to Heaven", "Bohemian Rhapsody"])
     print(rock_hits.now_playing()) #Stairway to Heaven
@@ -77,7 +79,6 @@ Inputs:
     print(empty_playlist.now_playing()) #None
     empty_playlist.add_song("First Song")
     print(empty_playlist.now_playing()) #First Song
-
 ```
 
 Common Wrong Turns:
@@ -212,8 +213,6 @@ print(item.get_total_value())
         item = InventoryItem("Mouse", 25, -5)
     except ValueError as e:
         print(e) #Quantity cannot be negative.
-
-    
 ```    
 
 **Common Wrong Turns**:
@@ -554,6 +553,7 @@ Hidden Trap:​ Attribute lookup on a collaborator object. Students might mistak
 The `DeviceManager` class is intended to track the total number of connected devices across all manager instances. However, the code below is not working as expected. Each manager seems to have its own independent count. Identify the bug, explain the flaw in its logic, and provide the corrected code.
 
 Intended Behavior:
+
 ```python
 manager1 = DeviceManager("Office")
 manager1.add_device()
@@ -2915,6 +2915,38 @@ Hidden Trap: Mutating a shared, mutable class variable through an instance refer
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class BaseSettings:
+
+    def __init__(self):
+        self.config = {'version': '1.0', 'strict_mode': False}
+
+    def enable_strict_mode(self):
+        self.config['strict_mode'] = True
+
+class PythonProjectSettings(BaseSettings):
+    pass
+
+class Project:
+    def __init__(self, name):
+        self.name = name
+        self.settings = PythonProjectSettings()
+
+# --- Intended Behavior ---
+project_a = Project("Project A")
+project_b = Project("Project B")
+
+# Enable strict mode only for Project A
+project_a.settings.enable_strict_mode()
+
+# Check settings for both projects
+print(f"{project_a.name} strict_mode: "
+      f"{project_a.settings.config['strict_mode']}")
+print(f"{project_b.name} strict_mode: "
+      f"{project_b.settings.config['strict_mode']}")
+
+```
 </details>
 
 ### Problem 41: Implement the `__add__` Method
@@ -2962,8 +2994,46 @@ print(f"New Resistor Tolerance: {r2.TOLERANCE}")
 Hidden Trap: Using the correct constructor (`self.__class__` or `type(self)`) within a superclass method to ensure polymorphic instantiation, rather than hardcoding the base class name.
 
 </details>
+
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class BaseComponent:
+    def __init__(self, value):
+        self.value = value
+
+    def __repr__(self):
+        return f"{type(self).__name__}({self.value})"
+
+    def __add__(self, num):
+
+        if not isinstance(num, int):
+            return NotImplemented
+        self.value = self.value + num
+        return self.__class__(self.value + num)    
+
+class Resistor(BaseComponent):
+    # A class attribute specific to Resistor
+    TOLERANCE = 0.05
+
+# --- I/O Examples ---
+# 1. Adding to a BaseComponent instance
+c1 = BaseComponent(100)
+c2 = c1 + 20
+print(f"Result: {c2}, Type: {type(c2)}")
+# Expected: Result: BaseComponent(120), Type: <class '__main__.BaseComponent'>
+
+# 2. Adding to a Resistor instance
+r1 = Resistor(500)
+r2 = r1 + 50
+print(f"Result: {r2}, Type: {type(r2)}")
+# Expected: Result: Resistor(550), Type: <class '__main__.Resistor'>
+
+# 3. Verifying subclass attributes are preserved
+print(f"New Resistor Tolerance: {r2.TOLERANCE}")
+# Expected: New Resistor Tolerance: 0.05
+```
 </details>
 
 ### Problem 42: Predict and Explain Output
@@ -2999,7 +3069,11 @@ Hidden Trap:​ This prompt targets the "left-to-right" rule in MRO. Since `Text
 </details>
 <details> 
 <summary>Possible Solution</summary> 
+
+```pipeline`` instantiated which inherits from first TextProcessor and then JsonProcessor. Output: ```LAUNCH```. Python satisfies process with the first in the MRO, Text Processor, which just returns an uppered string 
+
 </details>
+
 
 ### Problem 43: Debug a Code Snippet
 
@@ -3039,6 +3113,10 @@ Hidden Trap:​ This tests the interaction between inheritance order and `super(
 </details>
 <details> 
 <summary>Possible Solution</summary> 
+
+
+You get only ```<button>ClickMe<button>``` because the MRO quits after ```ButtonWidget```.
+
 </details>
 
 
