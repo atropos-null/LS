@@ -3740,6 +3740,17 @@ Hidden Trap:​ Chaining methods that return new objects.
 </details>
 <details> 
 <summary>Possible Solution</summary> 
+
+We have two classes: `DataPoint` and `Report`. 
+`DataPoint` collaborates with `Report`.
+`Report` has a dunder add which checks what the other is:
+is it a `DataPoint` object? then it returns a `new Repor`t object with the same title, but with the data and value added together for a new sum
+is it a `Report` Object? then it returns a new `Report` object with a newly combined title and newly summed data
+
+```report = initial + point + adjustment``` tries to add together `Report` objects.
+then we are calling print on how many elements are in this instance of Report.data:  2
+and then we are calling print on what is the final title: "Q1 Sales & Adjustments"
+
 </details>
 
 ### Problem 52: Debugging​
@@ -3759,7 +3770,7 @@ class Project:
     def __iadd__(self, other):
         if isinstance(other, TimeLog):
             self.hours_logged += other.hours
-        # Missing return statement here
+        
 
 # --- Main execution ---
 alpha = Project("Project Alpha")
@@ -3779,11 +3790,37 @@ Hidden Trap:​ The required return value for in-place augmented assignment meth
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class TimeLog:
+    def __init__(self, hours):
+        self.hours = hours
+
+class Project:
+    def __init__(self, name):
+        self.name = name
+        self.hours_logged = 0
+
+    def __iadd__(self, other):
+        if not isinstance(other, TimeLog):
+            return NotImplemented
+        self.hours_logged += other.hours
+        return self # <= _iadd__ requires the return of self
+
+# --- Main execution ---
+alpha = Project("Project Alpha")
+alpha += TimeLog(8)
+alpha += TimeLog(4) # This line causes a TypeError
+
+# Expected output: Project Alpha has 12 hours logged.
+print(f"{alpha.name} has {alpha.hours_logged} hours logged.")
+```
+
 </details>
 
 ### Problem 53: Implementation​
 
-Implement the `Inventory` class to manage item quantities. The class must support the + operator to combine an `Inventory` object with a `Shipment` object, which contains a dictionary of new items. The operation must be commutative, meaning it should work correctly regardless of whether the `Inventory` or `Shipment` is the left operand. Adding a `Shipment` to an `Inventory` should return a ​new​ I`nventory` object with updated quantities.
+Implement the `Inventory` class to manage item quantities. The class must support the + operator to combine an `Inventory` object with a `Shipment` object, which contains a dictionary of new items. The operation must be commutative, meaning it should work correctly regardless of whether the `Inventory` or `Shipment` is the left operand. Adding a `Shipment` to an `Inventory` should return a ​new​ `Inventory` object with updated quantities.
 
 ```python
 class Shipment:
@@ -3823,6 +3860,58 @@ Hidden Trap:​ Needing `__radd__` to handle operations where the custom class i
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Shipment:
+    def __init__(self, items):
+        self.items = items
+
+class Inventory:
+    
+    def __init__(self, items):
+        self.items = items
+
+    def __str__(self):
+        return str(self.items)
+    
+    @property
+    def stock(self):
+        return self.items
+
+    def __add__(self, other):
+        
+        if isinstance(other, Inventory) or isinstance(other, Shipment):  
+            new_dict = self.items.copy() 
+            for key, value in other.items.items():
+                new_dict[key] = new_dict.get(key, 0) + value               
+            return Inventory(new_dict)
+        return NotImplemented
+    
+    def __radd__(self, other):
+
+        return self.__add__(other)
+          
+
+# --- Examples ---
+
+# Example 1: inventory + shipment
+inv = Inventory({'apples': 10, 'bananas': 20})
+shipment1 = Shipment({'bananas': 5, 'oranges': 15})
+new_inv1 = inv + shipment1
+# Expected: new_inv1.stock is {'apples': 10, 'bananas': 25, 'oranges': 15}
+print(new_inv1.stock)
+
+# Example 2: shipment + inventory
+inv2 = Inventory({'staplers': 50, 'pens': 100})
+shipment2 = Shipment({'pens': 25, 'paper': 200})
+new_inv2 = shipment2 + inv2
+# Expected: new_inv2.stock is {'staplers': 50, 'pens': 125, 'paper': 200}
+print(new_inv2.stock)
+
+# Example 3: Original inventory is not mutated
+print(inv.stock) # Expected: {'apples': 10, 'bananas': 20}
+```
+
 </details>
 
 ### Problem 54: Predict and Explain Output
@@ -3865,6 +3954,33 @@ Hidden Trap:​ This prompt targets the rule that container types (like list, di
 </details>
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Component:
+
+    def __init__(self, name):
+        self.name = name
+
+    def __str__(self):
+        return self.name.capitalize()
+
+    def __repr__(self):
+        return f"Component(name='{self.name}')"
+
+class System:
+
+    def __init__(self, system_id, components):
+        self.system_id = system_id
+        self.components = components
+
+    def __str__(self):
+        return f"System ID: {self.system_id}"
+
+main_system = System("SYS-101", [Component("sensor"), Component("actuator")])
+
+print(main_system) #System ID: SYS-101
+print(main_system.components) #[Component(name='sensor'), Component(name='actuator')]
+```
 </details>
 
 ### Problem 55: Debug the Code
@@ -3907,6 +4023,33 @@ Hidden Trap:​ This prompt targets the fallback behavior where `print(obj)` (wh
 </details>
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Task: 
+    
+    def __init__(self, description, priority):
+        self.description = description 
+        self.priority = priority 
+        
+    def __str__(self): 
+        if self.priority == 'High': 
+            return f"{self.priority}-priority" 
+        return f"{self.priority}" 
+    
+class Project: 
+    
+    def __init__(self, name, tasks): 
+        self.name = name 
+        self.tasks = tasks 
+    
+    def __str__(self): #Didn't need a repr 
+        return f"Project: {self.name}, Tasks: [{", ".join(str(task) for task in self.tasks)}]" 
+
+task1 = Task("Implement API", "High") 
+task2 = Task("Code Review", "Review") 
+project = Project("Data Migration", [task1, task2]) 
+print(project)
+```
 </details>
 
 ### Problem 56: Implement Classes
@@ -3948,6 +4091,51 @@ Hidden Trap:​ This prompt forces the student to recognize that the Book class 
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Book: 
+    
+    def __init__(self, title, author):
+        self.title = title
+        self.author = author
+
+    def __str__(self):
+        return f"{self.title} by {self.author}"
+
+    def __repr__(self):
+        return f"Book({self.title!r}, {self.author!r})"
+
+class Library:
+    
+    def __init__(self, branch, books=None):
+        self.branch = branch
+        self.books = books if books is not None else []
+
+    def __str__(self):
+        return f"{self.branch} Library"
+
+
+# Do not change the code below
+book1 = Book("The Hobbit", "J.R.R. Tolkien")
+book2 = Book("1984", "George Orwell")
+my_library = Library("City Central", [book1, book2])
+
+# Example 1
+print(book1)
+# Expected Output 1:
+# The Hobbit by J.R.R. Tolkien
+
+# Example 2
+print(my_library)
+# Expected Output 2:
+# City Central Library
+
+# Example 3
+print(my_library.books)
+# Expected Output 3:
+# [Book('The Hobbit', 'J.R.R. Tolkien'), Book('1984', 'George Orwell')]
+```
+
 </details>
 
 ### Problem 57: Predict and Explain​
@@ -3984,6 +4172,26 @@ service.do_work()
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+class Notifier:
+    def send(self, message):
+        print(f"Sending notification: {message}")
+
+class Service:
+    def __init__(self):
+        self.notifier = Notifier()
+
+    def do_work(self):
+        print(f"Starting work in {self.__class__.__name__}...") #Starting work in Service
+        self.notifier.send("Work in progress") #sending notification: Work in progress
+        print(f"Notifier's class is: {self.notifier.__class__.__name__}") #Notifier's class is: Notifier
+
+service = Service()
+service.do_work()
+```
+
 </details>
 
 ### Problem 58: Debug the Code​
@@ -4016,12 +4224,29 @@ report.generate()
 
 </details>
 <details> 
-<summary>Possible Solution</summary> 
+<summary>Possible Solution</summary>
+
+```python
+class CSVFormatter:
+    pass
+
+class Report:
+    def __init__(self, formatter):
+        self.formatter = formatter
+
+    def generate(self):
+        # Intended to print: "CSVFormatter Report"
+        print(f"{self.formatter.__class__.__name__} Report")
+
+report = Report(CSVFormatter())
+report.generate()
+```
+
 </details>
 
 ### Problem 59: Implement a Function​
 
-Implement a function c`reate_factory_log(component)` that takes an object instance representing a machine part. The function should return a string logging the part's class name. The object passed to the function will be a collaborator in a larger factory system.
+Implement a function `create_factory_log(component)` that takes an object instance representing a machine part. The function should return a string logging the part's class name. The object passed to the function will be a collaborator in a larger factory system.
 
 Your implementation must work for any object, not just the examples shown.
 
@@ -4059,6 +4284,32 @@ print(create_factory_log(Rotor()))
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+class Gear:
+    pass
+
+class Piston:
+    pass
+
+class Rotor:
+    pass
+
+def create_factory_log(part_collaborator):
+    return f"Component of type '{part_collaborator.__class__.__name__}' received."
+    
+
+print(create_factory_log(Gear()))
+# Expected: "Component of type 'Gear' received."
+
+print(create_factory_log(Piston()))
+# Expected: "Component of type 'Piston' received."
+
+print(create_factory_log(Rotor()))
+# Expected: "Component of type 'Rotor' received."
+```
+
 </details>
 
 ### Problem 60: Predict Output
