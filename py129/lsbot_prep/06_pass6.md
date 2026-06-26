@@ -4355,8 +4355,40 @@ except Exception as e:
 ​Hidden Trap: Exception Specificity and Propagation. An except block for a specific exception (`IndexError`) will not catch a different exception type (`AttributeError`). The unhandled exception propagates up the call stack until a suitable handler (except `Exception`) is found.​
 
 </details>
+
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Song: #We have a Song class that initiates with a title
+    def __init__(self, title):
+        self.title = title #Title of the song, notice there's no artist.
+
+class Playlist: #We have a Playlist clast that initiates with a name for the Playlist and an empty holding list. 
+    def __init__(self, name):
+        self.name = name
+        self.songs = [] #What are the odds this becomes a problem. 
+
+    def add_song(self, song): #an add_song method that appends a song to the list.
+        self.songs.append(song)
+
+    def get_first_song_details(self):
+        try:
+            song = self.songs[0] #tries to retrieve the first element in the list
+            
+            return f"{song.title} by {song.artist}" #Well, there's no song.artist attribute anywhere.
+        except IndexError:
+            return "Playlist is empty."
+
+playlist = Playlist("My Jams") #This is all fine except for a title as lame as "My Jams"
+song1 = Song("Stairway to Heaven") #AI's who wrote this, Stairway to Heaven probably isn't on that many playlists anymore
+playlist.add_song(song1) #Stairway to heaven added to the list.
+
+try:
+    print(playlist.get_first_song_details()) #Attribute error when run
+except Exception as e:
+    print(f"Caught a general exception: {type(e).__name__}") #Predicted output: Caught a general exception: AttributeError
+```
 </details>
 
 ### Problem 61: Debugging
@@ -4365,7 +4397,7 @@ except Exception as e:
 The following function process_all_data is intended to process a list of raw data. It should create `DataEntry` objects for integer values and return a list of those values. For any non-integer data, it should catch the `TypeError` raised by the `DataEntry` constructor, print an error message, and continue processing the rest of the list. The current implementation is buggy. Identify the bug and describe how to fix it.
 
 ```python
-class `DataEntry`:
+class DataEntry:
     def __init__(self, value):
         if not isinstance(value, int):
             raise TypeError("DataEntry value must be an integer.")
@@ -4410,6 +4442,34 @@ Hidden Trap: Scope of `try/except` block. Placing an entire loop inside a single
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class DataEntry:
+    def __init__(self, value):
+        if not isinstance(value, int):
+            raise TypeError("DataEntry value must be an integer.")
+        self.value = value
+
+    def get_value(self):
+        return self.value
+
+def process_all_data(raw_data_list):
+    processed_values = []
+    for raw_data in raw_data_list:
+        try: #Changed the order of the for loop with the try/except so that the try keeps going and doesn't terminate.
+            entry = DataEntry(raw_data)
+            processed_values.append(entry.get_value())
+        except TypeError as e:
+            print(f"Error processing entry: {e}")
+
+    return processed_values
+
+# Example Usage:
+data = [10, "invalid", 20, 30, "bad_data"]
+result = process_all_data(data)
+print(f"Processed: {result}")
+```
+
 </details>
 
 ### Problem 62: Implementation
@@ -4477,6 +4537,70 @@ Hidden Trap: Graceful Degradation / Fallback Logic. Correctly implementing the f
 </details>
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class MessageBroadcaster:
+
+    def send_all(self, message, recipients):
+
+        count = 0
+
+        for recipient in recipients:
+            try:
+                recipient.send(message)
+                count += 1
+            except AttributeError:
+                try:
+                    recipient.write(message)
+                    count += 1
+                except AttributeError:
+                    pass
+
+        return count
+                
+
+# --- I/O Examples ---
+# Helper classes for testing
+class EmailRecipient:
+    def send(self, message):
+        print(f"Emailing: {message}")
+
+class FileLogger:
+    def write(self, message):
+        print(f"Logging: {message}")
+
+# Example 1
+broadcaster = MessageBroadcaster()
+recipients1 = [EmailRecipient(), EmailRecipient()]
+count1 = broadcaster.send_all("Hello", recipients1)
+print(count1)
+# Expected Output:
+# Emailing: Hello
+# Emailing: Hello
+# 2
+
+# Example 2
+broadcaster = MessageBroadcaster()
+recipients2 = [EmailRecipient(), FileLogger(), EmailRecipient()]
+count2 = broadcaster.send_all("Update", recipients2)
+print(count2)
+# Expected Output:
+# Emailing: Update
+# Logging: Update
+# Emailing: Update
+# 3
+
+# Example 3
+broadcaster = MessageBroadcaster()
+recipients3 = [FileLogger(), 42, EmailRecipient()]
+count3 = broadcaster.send_all("Final notice", recipients3)
+print(count3)
+# Expected Output:
+# Logging: Final notice
+# Emailing: Final notice
+# 2
+```
+
 </details>
 
 
@@ -4525,6 +4649,40 @@ Hidden Trap​: Exception hierarchy and except block ordering.
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class DataValidationError(Exception): #We have a bespoke Exception class that inherits from Exception and otherwise is without any info.
+    pass
+
+class DataValidator: #A class with takes an unspecified collection
+    def __init__(self, required_keys):
+        self.required_keys = set(required_keys) #Unspecified collection is forced into a set data structure
+
+    def validate(self, data): #validate method that checks if the required_keys is a subset of passed in 'data' argument
+        if not self.required_keys.issubset(data.keys()): #the required keys is checked if its a subet of the passed in data. 
+            raise DataValidationError("Missing required data keys.") #if not a subset, Datavalidation Error triggers, which triggers Exception
+        return True
+
+class Report: #A class that takes a data argument
+    def __init__(self, data, validator):
+        self.data = data #Data argument is a dictionary, interesting.
+        self.validator = validator #DataValidator collaborator
+
+    def generate(self): #generate method which tries to validate the data
+        try:
+            self.validator.validate(self.data)
+            print("Report generated successfully.")
+        except Exception: #The more general exception is listed first, which would trigger first
+            print("A generic error occurred.") 
+        except DataValidationError: #More specific exception wouldn't get triggered because its too general
+            print("Data validation failed.")
+
+validator = DataValidator(['id', 'timestamp']) #required keys
+invalid_data = {'id': 101} #the fullset it would be compared to
+report = Report(invalid_data, validator)
+report.generate() #invalid data is not a subset of the required keys. It's reversed. Thus an error is triggered and the general "A generic Error occurred" would be triggered.
+```
+
 </details>
 
 
@@ -4572,6 +4730,39 @@ Hidden Trap​: Custom exception classes need an `__init__` method that calls `s
 </details>
 <details> 
 <summary>Possible Solution</summary> 
+
+Note: The above code as originally written works perfectly well. But the hint wants an init.
+
+```python
+class InsufficientFundsError(Exception):
+    
+    def __init__(self, message):
+        super().__init__(message)
+
+class Account:
+    def __init__(self, account_id, balance):
+        self.account_id = account_id
+        self.balance = balance
+
+    def withdraw(self, amount):
+        if amount > self.balance:
+            msg = f"Insufficient funds in account {self.account_id}."
+            raise InsufficientFundsError(msg)
+        self.balance -= amount
+
+class PaymentProcessor:
+    def process_payment(self, account, amount):
+        try:
+            account.withdraw(amount)
+            print("Payment successful.")
+        except InsufficientFundsError as e:
+            print(e)
+
+my_account = Account(12345, 100)
+processor = PaymentProcessor()
+processor.process_payment(my_account, 150)
+```
+
 </details>
 
 
@@ -4634,8 +4825,64 @@ except ConnectionError as e:
 Hidden Trap​: Designing a custom exception to carry state beyond just a message string.
 
 </details>
+
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+#Helper class (do not modify)
+class Network:
+    def __init__(self, status):
+        self.status = status
+
+# Your implementation here:
+class ConnectionError(Exception):
+    
+    def __init__(self, msg, error_code):
+        self.error_code = error_code
+        super().__init__(msg)
+
+class Device:
+    
+    def __init__(self, name):
+        self.name = name
+
+    def connect_to(self, network):
+
+        if network.status == 'offline':
+            raise ConnectionError(f"{self.name} failed to connect.", 101)
+        else:
+            return True
+        
+
+# --- Examples ---
+
+# 1. Successful Connection
+online_net = Network('online')
+my_device = Device('Router')
+print(my_device.connect_to(online_net))
+# Expected Output:
+# True
+
+# 2. Failed Connection (general catch)
+offline_net = Network('offline')
+my_pc = Device('My PC')
+try:
+    my_pc.connect_to(offline_net)
+except Exception as e:
+    print(e)
+# Expected Output:
+# My PC failed to connect.
+
+# 3. Failed Connection (specific catch with error code)
+try:
+    my_pc.connect_to(offline_net)
+except ConnectionError as e:
+    print(f"Error Code: {e.error_code}, Message: {e}")
+# Expected Output:
+# Error Code: 101, Message: My PC failed to connect.
+```
+
 </details>
 
 
@@ -4680,8 +4927,42 @@ print(widget_a.inspections)
 Hidden Trap:​ Tests understanding of object references vs. copies. The `Inventory `object holds references to the original `Widget` objects, not copies. Modifying a widget's state via the warehouse object also mutates the original `widget_a` object because they are the exact same object in memory.
 
 </details>
+
 <details> 
+
 <summary>Possible Solution</summary> 
+
+```python
+lass Widget: #We have a Widget class whose init has a name and an inspection count, unique to each instance. 
+    def __init__(self, name):
+        self.name = name
+        self.inspections = 0
+
+    def inspect(self): #The inspect method increases the count of the inspections attribute.
+        self.inspections += 1
+
+class Inventory: #We have an Inventory class whose init takes what appears to be a list of widget objects
+    def __init__(self, initial_widgets):
+        self.widgets = initial_widgets
+
+    def run_quality_check(self): #run_quality_check method iterates over the widgets list and calls the inspect method on each
+        for widget in self.widgets:
+            widget.inspect() 
+
+    def get_total_inspections(self):
+        return sum(w.inspections for w in self.widgets) #sums the inspection attributes
+
+widget_a = Widget('A')
+widget_b = Widget('B')
+main_stock = [widget_a, widget_b]
+
+warehouse = Inventory(main_stock) 
+warehouse.run_quality_check() 
+
+print(warehouse.get_total_inspections()) #2
+print(widget_a.inspections) #1
+```
+
 </details>
 
 
@@ -4726,6 +5007,29 @@ Hidden Trap:​ Targets a common incorrect assumption about the `+` operator wit
 </details>
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Member:
+    def __init__(self, name):
+        self.name = name
+
+class Team:
+    def __init__(self, name, members=None):
+        self.name = name
+        self.members = members if members is not None else []
+
+    def add_member(self, member):
+        self.members.append(member)
+
+    def get_roster(self):
+        return [m.name for m in self.members]
+
+special_ops = Team("Special Ops")
+special_ops.add_member(Member("Dana"))
+special_ops.add_member(Member("Fox"))
+
+print(special_ops.get_roster())
+```
 </details>
 
 
@@ -4784,6 +5088,61 @@ Hidden Trap:​ Tests the ability to correctly model a "has-a" relationship (com
 </details>
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Engine:
+    
+    def get_status(self):
+        return "Engine is on."
+    
+class Wheel:
+    
+    def get_status(self):
+        return "Tire pressure is normal."
+    
+class Car:
+    
+    def __init__(self, engine, wheels=None):
+        self.engine = engine
+        self.wheels = wheels if wheels is not None else []
+
+    def run_diagnostics(self):
+        diagnostics = {}
+        diagnostics['engine'] = self.engine.get_status()
+        for i in range(len(self.wheels)):
+            diagnostics[f"wheel_{i+1}"] = self.wheels[i].get_status()
+        return diagnostics
+
+# --- I/O Examples ---
+
+# 1.
+engine = Engine()
+wheels = [Wheel(), Wheel(), Wheel(), Wheel()]
+car = Car(engine, wheels)
+print(car.run_diagnostics())
+# Expected:
+# {
+#   'engine': 'Engine is on.',
+#   'wheel_1': 'Tire pressure is normal.',
+#   'wheel_2': 'Tire pressure is normal.',
+#   'wheel_3': 'Tire pressure is normal.',
+#   'wheel_4': 'Tire pressure is normal.'
+# }
+
+# 2.
+class RacingEngine(Engine):
+    def get_status(self):
+        return "Engine is supercharged."
+
+car2 = Car(RacingEngine(), [Wheel() for _ in range(4)])
+print(car2.run_diagnostics()['engine'])
+# Expected: Engine is supercharged.
+
+# 3.
+car3 = Car(Engine(), [Wheel() for _ in range(4)])
+print(isinstance(car3.engine, Engine))
+# Expected: True
+```
 </details>
 
 
