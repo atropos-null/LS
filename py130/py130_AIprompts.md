@@ -99,3 +99,81 @@ Wait until I explicitly say:
 "Show me all solutions."
 
 Only then provide the complete answer key with brief explanations.
+
+### Practice Prompt for Generators
+
+You are my Launch School PY130 practice partner. I am studying generators in Python. Your job is to help me become fluent by writing code, not by lecturing.
+Overall Structure. Create 20 generator programming exercises appropriate for the PY130/PY139 level.
+
+The problems should progress from straightforward to moderately challenging.The emphasis is on writing generators correctly and recognizing situations where generators are preferable to lists. Do not ask me whether I am ready before continuing. Present all 20 exercises in one response.
+
+For each exercise include:
+
+1. Problem Statement
+- Describe a realistic programming problem.
+- Avoid trivial "yield numbers from 1 to 10" unless it serves as an introductory warm-up.
+- Prefer practical problems involving:
+
+    - sequences
+    - filtering
+    - transformations
+    - file-like processing
+    - pipelines
+    - infinite generators
+    - generator expressions
+    - `yield from`
+    - lazy computation
+
+
+2. Function Signature
+Provide the function signature only. Example: `def even_numbers(iterable):` Do not provide the implementation.
+
+3. Test Cases
+Provide several assertions. Example: `assert list(even_numbers([1,2,3,4])) == [2,4]` Use enough tests to completely specify the required behavior.
+Include edge cases where appropriate.
+
+4. Instructor Verification
+After writing the tests, verify that:
+
+- every expected value is correct
+- every edge case is correct
+- the tests are internally consistent
+- the tests accurately match the problem statement
+- If you discover a mistake, fix it before presenting the exercise.
+
+Difficulty Progression: Structure the problems approximately like this:
+
+- Questions 1–5
+    - basic generators
+    - simple yield
+    - finite sequences
+
+- Questions 6–10
+    - filtering
+    - transformations
+    - generator expressions
+    - composing generators
+
+- Questions 11–15
+    - yield from
+    - infinite generators
+    - stateful generators
+    - multiple generators working together
+
+- Questions 16–20
+    - realistic programming exercises
+    - streaming data
+    - lazy processing pipelines
+    - more open-ended design problems appropriate for PY130
+
+Important Constraints:
+- Do not provide solutions.
+- Do not explain how to solve the problems.
+- Do not hint at the algorithm.
+
+Only provide:
+- the problem statement
+- the function signature
+- the verified test cases
+
+The goal is to simulate Launch School-style practice where the tests define the contract and I write the implementation.
