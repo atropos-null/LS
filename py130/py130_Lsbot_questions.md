@@ -609,7 +609,7 @@ list(map(lambda person: f"{person['name']} is {person['age']} years old", people
 
 </details>
 
-### Generators
+### Generators, on your own practice
 
 
 #### Exercise 1: Generate Squares
@@ -1088,6 +1088,694 @@ assert list(process_temperatures("")) == []
 </details>
 
 
+### Generators, on your own practice
+
+
+#### Exercise 1. Select by Value
+
+Problem Statement:  Create a generator function that yields items from an iterable that are equal to a specified value.
+
+Function Signature:  ```def select_by_value(iterable, value):```
+
+Requirements
+
+•   The function must be a generator.
+•   It must accept an iterable and a value to match.
+•   It must yield each item from the iterable that is equal to value.
+•   The order of yielded items must be the same as their order in the input iterable.
+•   It must handle iterables containing different data types.
+
+Test Cases
+
+```python
+assert list(select_by_value([1, 2, 3, 2, 4, 2], 2)) == [2, 2, 2]
+assert list(select_by_value(('apple', 'banana', 'apple'), 'apple')) == ['apple', 'apple']
+assert list(select_by_value([1, 'a', 2.0, 'a'], 'a')) == ['a', 'a']
+assert list(select_by_value([1, 2, 3], 4)) == []
+assert list(select_by_value([], 1)) == []
+assert list(select_by_value((i for i in [5, 6, 5]), 5)) == [5, 5]
+```
+
+Test Summary:  The tests verify selection for integers, strings, and mixed types. They cover cases with multiple matches, no matches, empty inputs, and generator expression inputs.
+
 <details> 
 <summary>Possible Solution</summary> 
 </details>
+
+#### Exercise 2. Transform to Uppercase
+
+Problem Statement:  Create a generator function that yields the uppercase version of each string in an iterable.
+
+Function Signature: ```def transform_to_uppercase(strings):```
+
+Requirements
+
+•   The function must be a generator.
+•   It must accept an iterable of strings.
+•   It must yield the uppercase version of each string.
+•   The order of yielded strings must correspond to the order of the original strings.
+•   It must handle empty iterables.
+
+Test Cases
+
+```python
+assert list(transform_to_uppercase(['hello', 'world'])) == ['HELLO', 'WORLD']
+assert list(transform_to_uppercase(('Launch', 'School'))) == ['LAUNCH', 'SCHOOL']
+assert list(transform_to_uppercase(['', 'a', 'B'])) == ['', 'A', 'B']
+assert list(transform_to_uppercase([])) == []
+assert list(transform_to_uppercase((s for s in ['one', 'two']))) == ['ONE', 'TWO']
+```
+
+Test Summary: The tests verify the transformation for lists and tuples of strings, including empty strings and mixed-case strings. They also cover empty inputs and generator expression inputs.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 3. Filter Out Short Words
+
+Problem Statement:  Create a generator function that filters out words from an iterable that are shorter than a given length.
+
+Function Signature: ```def filter_out_short_words(words, min_length):```
+
+Requirements
+
+•   The function must be a generator.
+•   It must accept an iterable of strings and an integer min_length.
+•   It must yield only the strings whose length is greater than or equal to min_length.
+•   The order of yielded strings must be the same as their order in the input iterable.
+•   It must handle empty iterables and cases where no words meet the criteria.
+
+Test Cases
+
+```python
+words = ['cat', 'dog', 'elephant', 'mouse', 'lion']
+assert list(filter_out_short_words(words, 5)) == ['elephant', 'mouse']
+assert list(filter_out_short_words(words, 3)) == ['cat', 'dog', 'elephant', 'mouse', 'lion']
+assert list(filter_out_short_words(words, 10)) == []
+assert list(filter_out_short_words([], 4)) == []
+assert list(filter_out_short_words(('a', 'b', 'cde'), 3)) == ['cde']
+```
+
+Test Summary: The tests cover various minimum lengths, including cases where some, all, or no words are selected. They test list, tuple, and empty inputs.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 4. Yield with Index
+
+Problem Statement: Create a generator function that works like enumerate. It should yield tuples containing the index and the value for each item in an iterable.
+
+Function Signature: ``` def yield_with_index(iterable):```
+
+
+Requirements
+
+•   The function must be a generator.
+•   It must accept any iterable.
+•   It must yield a 2-element tuple for each item: (index, value).
+•   The index should start at 0 and increment for each item.
+•   The order of yielded tuples must correspond to the item order in the input iterable.
+•   It must handle empty iterables.
+
+Test Cases
+```python
+assert list(yield_with_index(['a', 'b', 'c'])) == [(0, 'a'), (1, 'b'), (2, 'c')]
+assert list(yield_with_index(('x', 'y'))) == [(0, 'x'), (1, 'y')]
+assert list(yield_with_index([])) == []
+assert list(yield_with_index('hi')) == [(0, 'h'), (1, 'i')]
+assert list(yield_with_index((i for i in [9, 8]))) == [(0, 9), (1, 8)]
+```
+
+Test Summary: The tests verify correct index-value pairing for lists, tuples, strings, and generator expressions. The test for an empty iterable is also included.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+
+#### Exercise 5. Repeat Each Item*
+
+Problem Statement: Create a generator function that yields each item from an iterable a specified number of times before moving to the next item.
+
+Function Signature ```def repeat_each_item(iterable, num_repeats):```
+
+Requirements
+
+•   The function must be a generator.
+•   It must accept an iterable and a non-negative integer num_repeats.
+•   For each item in the iterable, it must yield that item num_repeats times consecutively.
+•   If num_repeats is 0, the generator should yield nothing.
+•   It must handle empty iterables.
+
+Test Cases
+```python
+assert list(repeat_each_item([1, 2], 3)) == [1, 1, 1, 2, 2, 2]
+assert list(repeat_each_item(('a', 'b'), 2)) == ['a', 'a', 'b', 'b']
+assert list(repeat_each_item([1, 2, 3], 1)) == [1, 2, 3]
+assert list(repeat_each_item([1, 2, 3], 0)) == []
+assert list(repeat_each_item([], 5)) == []
+assert list(repeat_each_item((i for i in ['x']), 4)) == ['x', 'x', 'x', 'x']
+```
+
+Test Summary: The tests cover repeating items multiple times, once, or zero times. They verify correct behavior for lists, tuples, empty iterables, and generator expressions.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 6. Yield Every Nth Item
+
+Problem Statement: Create a generator function that yields every Nth item from an iterable, starting with the first item.
+
+Function Signature:  ```def yield_every_nth(iterable, n):```
+
+Requirements
+
+•   The function must be a generator.
+•   It must accept an iterable and a positive integer n.
+•   It must yield the 1st item, the (1+n)th item, the (1+2n)th item, and so on.
+•   The first item (at index 0) should always be yielded if the iterable is not empty.
+•   It must handle empty iterables.
+•   Assume n will be 1 or greater.
+
+Test Cases
+
+```python
+assert list(yield_every_nth([1, 2, 3, 4, 5, 6, 7, 8], 3)) == [1, 4, 7]
+assert list(yield_every_nth('abcdefgh', 2)) == ['a', 'c', 'e', 'g']
+assert list(yield_every_nth(range(10), 1)) == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+assert list(yield_every_nth([10, 20, 30], 5)) == [10]
+assert list(yield_every_nth([], 3)) == []
+assert list(yield_every_nth((i for i in 'python'), 4)) == ['p', 'o']
+```
+
+Test Summary:  The tests verify correct selection with different step values (n), including a step of 1. They cover lists, strings, ranges, empty iterables, and generator inputs.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 7. Yield Until Value
+
+Problem Statement: Create a generator function that yields items from an iterable until a specific value is encountered. The stop value itself should not be yielded.
+
+Function Signature: ```def yield_until_value(iterable, stop_value):```
+
+
+Requirements
+
+•   The function must be a generator.
+•   It must accept an iterable and a stop_value.
+•   It must yield items from the beginning of the iterable.
+•   It must stop yielding as soon as it encounters an item equal to stop_value.
+•   The stop_value item must not be included in the output.
+•   If the stop_value is not found, it should yield all items from the iterable.
+
+Test Cases
+```python
+assert list(yield_until_value([1, 2, 3, 'stop', 4, 5], 'stop')) == [1, 2, 3]
+assert list(yield_until_value(('a', 'b', 'c'), 'd')) == ['a', 'b', 'c']
+assert list(yield_until_value([99, 10, 25, 99, 40], 99)) == []
+assert list(yield_until_value([], 'stop')) == []
+assert list(yield_until_value((i for i in [1, 2, 3]), 3)) == [1, 2]
+
+```
+
+Test Summary:  The tests verify that generation stops correctly, handles cases where the stop value is first or not present, and works with empty and generator inputs.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 8. Flatten One Level
+
+Problem Statement: Create a generator function that takes an iterable of iterables (e.g., a list of lists) and yields each item from the inner iterables, one by one.
+
+Function Signature: ```def flatten_one_level(nested_iterable):```
+
+Requirements
+
+•   The function must be a generator.
+•   It must accept an iterable where each element is itself an iterable.
+•   It must yield each element from each inner iterable in sequence.
+•   The order of yielded elements should correspond to iterating through the outer iterable, and then through each inner iterable.
+•   It should handle empty outer and inner iterables.
+
+Test Cases
+```python
+assert list(flatten_one_level([[1, 2], [3, 4, 5], [6]])) == [1, 2, 3, 4, 5, 6]
+assert list(flatten_one_level([('a', 'b'), ('c',)])) == ['a', 'b', 'c']
+assert list(flatten_one_level([[], [1, 2], []])) == [1, 2]
+assert list(flatten_one_level([])) == []
+assert list(flatten_one_level([[], []])) == []
+assert list(flatten_one_level(['hi', 'world'])) == ['h', 'i', 'w', 'o', 'r', 'l', 'd']
+assert list(flatten_one_level((i for i in [[1], [2]]))) == [1, 2]
+```
+
+Test Summary: The tests cover nested lists, tuples, and strings, including cases with empty inner and outer iterables. A test with a generator expression input is also included.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 9. Filter Dictionary Items
+
+Problem Statement: Create a generator function that yields (key, value) tuples from a dictionary for which a given predicate function returns a truthy value The predicate function will receive the value as its only argument.
+
+Function Signature: `def filter_dict_items(dictionary, predicate):`
+
+
+Requirements
+
+•   The function must be a generator.
+•   It must accept a dictionary and a single-argument function predicate.
+•   It must iterate over the dictionary's items.
+•   For each (key, value) pair, it must call predicate(value).
+•   If the predicate returns a truthy value, the generator must yield the (key, value) tuple.
+•   The order of yielded items is not guaranteed (it depends on the dictionary's iteration order).
+
+Test Cases
+
+```python
+data = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+is_even = lambda x: x % 2 == 0
+result = set(filter_dict_items(data, is_even))
+assert result == {('b', 2), ('d', 4)}
+
+is_string = lambda x: isinstance(x, str)
+data_mixed = {'id': 123, 'name': 'Alice', 'city': 'New York'}
+result_mixed = set(filter_dict_items(data_mixed, is_string))
+assert result_mixed == {('name', 'Alice'), ('city', 'New York')}
+
+assert list(filter_dict_items(data, lambda x: x > 10)) == []
+assert list(filter_dict_items({}, is_even)) == []
+```
+
+Test Summary: The tests verify filtering based on numeric and type-based predicates. They cover cases with some matches, no matches, and an empty dictionary input. Results are converted to a set to handle dictionary order ambiguity.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 10. Yield Unique Items
+
+Problem Statement: Create a generator function that yields only the unique items from an iterable, preserving the order of their first appearance.
+
+Function Signature: `def yield_unique_items(iterable):`
+
+Requirements
+
+•   The function must be a generator.
+•   It must accept an iterable.
+•   It must yield each unique item from the iterable exactly once.
+•   The order of yielded items must be the same as the order of their first appearance in the input iterable.
+•   It must handle different data types, including unhashable types if possible (though tests will only use hashable types).
+•   It must handle empty iterables.
+
+Test Cases
+
+```python
+assert list(yield_unique_items([1, 2, 2, 3, 1, 4, 3])) == [1, 2, 3, 4]
+assert list(yield_unique_items(('a', 'b', 'a', 'c', 'b', 'b'))) == ['a', 'b', 'c']
+assert list(yield_unique_items('abracadabra')) == ['a', 'b', 'r', 'c', 'd']
+assert list(yield_unique_items([1, 2, 3])) == [1, 2, 3]
+assert list(yield_unique_items([])) == []
+assert list(yield_unique_items((i for i in [5, 5, 5]))) == [5]
+```
+
+Test Summary
+The tests verify that duplicates are removed while preserving the order of first appearance for lists, tuples, strings, and generator inputs.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 11. Create a Bounded Range Generator
+
+Problem Statement:  Using a generator expression, create a generator that yields numbers in a sequence with a specified start, stop (exclusive), and step, similar to the built-in range.
+
+Function Signature: ```def bounded_range_generator(start, stop, step):```
+
+Requirements
+
+•   The function must return a generator.
+•   The implementation must use a generator expression.
+•   It must yield numbers starting from start.
+•   It must stop yielding before it reaches or exceeds stop.
+•   Each subsequent number must be the previous number plus step.
+•   It should handle positive and negative steps.
+
+Test Cases
+
+```python
+# Note: The problem asks for the function to return a generator object.
+# We then convert it to a list for testing.
+gen1 = bounded_range_generator(1, 10, 2)
+assert list(gen1) == [1, 3, 5, 7, 9]
+
+gen2 = bounded_range_generator(10, 0, -2)
+assert list(gen2) == [10, 8, 6, 4, 2]
+
+gen3 = bounded_range_generator(5, 5, 1)
+assert list(gen3) == []
+
+gen4 = bounded_range_generator(0, 5, 1)
+assert list(gen4) == [0, 1, 2, 3, 4]
+```
+
+Test Summary: The tests verify the generator expression's output for positive steps, negative steps, and empty ranges, ensuring it behaves like range.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 12. Chain Iterables
+
+Problem Statement: Create a generator function that accepts multiple iterables as arguments and yields all items from the first iterable, then all items from the second, and so on.
+
+Function Signature: ```def chain_iterables(*iterables):```
+
+Requirements
+
+•   The function must be a generator.
+•   It must accept a variable number of iterable arguments.
+•   It must yield all elements from the first iterable, followed by all elements from the second, and so on, in order.
+•   It should handle cases with no arguments or with empty iterables among the arguments.
+•   Consider using yield from for a concise implementation.
+
+Test Cases
+```python
+assert list(chain_iterables([1, 2], ('a', 'b'))) == [1, 2, 'a', 'b']
+assert list(chain_iterables(range(3), "xyz")) == [0, 1, 2, 'x', 'y', 'z']
+assert list(chain_iterables([1], [], [2, 3])) == [1, 2, 3]
+assert list(chain_iterables()) == []
+assert list(chain_iterables(('single',))) == ['single']
+assert list(chain_iterables((i for i in [1,2]), (i for i in [3,4]))) == [1, 2, 3, 4]
+```
+
+Test Summary: The tests verify chaining of different iterable types (list, tuple, range, string). They cover cases with empty iterables, a single iterable, no iterables, and generator inputs.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 13. Interleave Iterables
+
+Problem Statement: Create a generator that accepts two iterables and yields one item from the first, then one from the second, then the next from the first, and so on. If one iterable is exhausted, it should continue yielding items from the other.
+
+Function Signature: ```def interleave_iterables(iter1, iter2):```
+
+Requirements
+
+•   The function must be a generator.
+•   It must accept two iterables.
+•   It must yield items by alternating between iter1 and iter2.
+•   When one iterable is exhausted, the generator must yield all remaining items from the other iterable.
+•   It must handle empty iterables.
+
+Test Cases
+```python
+assert list(interleave_iterables([1, 2, 3], ['a', 'b', 'c'])) == [1, 'a', 2, 'b', 3, 'c']
+assert list(interleave_iterables([1, 2], ['a', 'b', 'c', 'd'])) == [1, 'a', 2, 'b', 'c', 'd']
+assert list(interleave_iterables(range(4), ('x', 'y'))) == [0, 'x', 1, 'y', 2, 3]
+assert list(interleave_iterables([], [1, 2, 3])) == [1, 2, 3]
+assert list(interleave_iterables(['a', 'b'], [])) == ['a', 'b']
+assert list(interleave_iterables([], [])) == []
+```
+
+Test Summary: The tests verify interleaving for iterables of equal length and different lengths. They also cover cases where one or both inputs are empty.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 14. Transform and Filter with a Generator Expression
+
+Problem Statement: Write a function that returns a generator expression. The generator should process an iterable of numbers, selecting only the even ones and yielding their squares.
+
+Function Signature: ```def square_of_evens(numbers):```
+
+
+Requirements
+
+•   The function must return a generator object, created from a generator expression.
+•   The returned generator must iterate over the input numbers.
+•   It must only consider even numbers.
+•   It must yield the square of each even number.
+•   It must handle empty iterables.
+
+Test Cases
+
+```python
+# The function returns a generator, which we then listify for assertion.
+gen1 = square_of_evens([1, 2, 3, 4, 5, 6])
+assert list(gen1) == [4, 16, 36]
+
+gen2 = square_of_evens(range(10))
+assert list(gen2) == [0, 4, 16, 36, 64]
+
+gen3 = square_of_evens([1, 3, 5, 7])
+assert list(gen3) == []
+
+gen4 = square_of_evens([])
+assert list(gen4) == []
+
+```
+
+Test Summary: The tests confirm that the returned generator correctly filters for even numbers and squares them. Cases with no even numbers and empty inputs are included.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 16. Bounded Repetition
+
+Problem Statement: Create a generator that yields items from an iterable, but stops after a certain total number of items have been yielded, or when the iterable is exhausted, whichever comes first.
+
+Function Signature: ```def bounded_repetition(iterable, max_yields):```
+
+
+Requirements
+
+•   The function must be a generator.
+•   It must accept an iterable and a non-negative integer max_yields.
+•   It must yield items from the iterable in their original order.
+•   It must stop yielding after max_yields items have been produced.
+•   If the iterable has fewer than max_yields items, it yields all of them.
+•   If max_yields is 0, it should yield nothing.
+
+Test Cases
+```python
+assert list(bounded_repetition([1, 2, 3, 4, 5, 6], 4)) == [1, 2, 3, 4]
+assert list(bounded_repetition('hello world', 20)) == ['h', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd']
+assert list(bounded_repetition(range(100), 5)) == [0, 1, 2, 3, 4]
+assert list(bounded_repetition([1, 2, 3], 3)) == [1, 2, 3]
+assert list(bounded_repetition([1, 2, 3], 0)) == []
+assert list(bounded_repetition([], 10)) == []
+```
+
+Test Summary: The tests cover cases where the yield limit is reached, the iterable is exhausted first, the limit equals the iterable length, the limit is zero, and the input is empty.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 17. Skip Header and Footer
+
+Problem Statement: Create a generator that yields items from an iterable, but skips a specified number of items at the beginning (header) and at the end (footer).
+
+Function Signature: ```def skip_header_footer(iterable, header_size, footer_size):```
+
+Requirements
+
+•   The function must be a generator.
+•   It must accept an iterable, a non-negative header_size, and a non-negative footer_size.
+•   It must not yield the first header_size items.
+•   It must not yield the last footer_size items.
+•   It should correctly handle cases where header_size + footer_size is greater than or equal to the total number of items.
+
+Test Cases
+```python
+data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+assert list(skip_header_footer(data, 2, 3)) == [3, 4, 5, 6, 7]
+assert list(skip_header_footer('abcdefg', 1, 2)) == ['b', 'c', 'd', 'e']
+assert list(skip_header_footer(range(5), 0, 0)) == [0, 1, 2, 3, 4]
+assert list(skip_header_footer([1, 2, 3, 4], 2, 2)) == []
+assert list(skip_header_footer([1, 2, 3], 5, 2)) == []
+assert list(skip_header_footer([], 2, 2)) == []
+```
+
+Test Summary: The tests verify correct skipping from both ends, no skipping (zero sizes), and cases where the number of items to skip exceeds the iterable's length.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 18. Yield Runs of Consecutive Duplicates
+
+Problem Statement: Create a generator that processes a sorted iterable and yields lists of consecutive identical items.
+
+Function Signature: ```def yield_runs(sorted_iterable):```
+
+
+Requirements
+
+•   The function must be a generator.
+•   It must accept an iterable that is assumed to be sorted.
+•   It must yield a list for each run of consecutive identical items.
+•   Each yielded list should contain all identical items in that run.
+•   It must handle empty iterables.
+
+Test Cases
+```python
+assert list(yield_runs([1, 1, 2, 3, 3, 3, 4, 4])) == [[1, 1], [2], [3, 3, 3], [4, 4]]
+assert list(yield_runs(['a', 'a', 'a', 'b', 'c', 'c'])) == [['a', 'a', 'a'], ['b'], ['c', 'c']]
+assert list(yield_runs([1, 2, 3, 4, 5])) == [[1], [2], [3], [4], [5]]
+assert list(yield_runs([5, 5, 5, 5])) == [[5, 5, 5, 5]]
+assert list(yield_runs([])) == []
+assert list(yield_runs((i for i in 'abbccc'))) == [['a'], ['b', 'b'], ['c', 'c', 'c']]
+```
+
+Test Summary: The tests cover various runs of different lengths, including single-item runs and a single run consuming the whole iterable. Empty and generator inputs are also tested.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 19. Partition by Predicate
+
+Problem Statement: Create a generator that yields items from an iterable in two groups based on a predicate.[11:41 AM]First, it should yield all items for which the predicate is truthy, and then it should yield all items for which the predicate is falsy.
+
+Function Signature: ```def partition_by_predicate(iterable, predicate):```
+
+Requirements
+
+•   The function must be a generator.
+•   It must accept an iterable and a single-argument function predicate.
+•   It must iterate through the entire iterable once, caching the results.
+•   It must first yield from all items for which predicate(item) is truthy, in their original relative order.
+•   After that, it must yield from all items for which predicate(item) is falsy, in their original relative order.
+•   It must handle empty iterables.
+
+Test Cases
+```python
+is_even = lambda n: n % 2 == 0
+data = [1, 2, 3, 4, 5, 6, 7, 8]
+assert list(partition_by_predicate(data, is_even)) == [2, 4, 6, 8, 1, 3, 5, 7]
+
+is_long = lambda s: len(s) > 3
+words = ('cat', 'elephant', 'dog', 'mouse')
+assert list(partition_by_predicate(words, is_long)) == ['elephant', 'mouse', 'cat', 'dog']
+
+assert list(partition_by_predicate(range(5), lambda x: True)) == [0, 1, 2, 3, 4]
+assert list(partition_by_predicate(range(5), lambda x: False)) == [0, 1, 2, 3, 4]
+assert list(partition_by_predicate([], is_even)) == []
+
+```
+
+
+Test Summary: The tests verify correct partitioning for numbers and strings. They also cover edge cases where the predicate is always true or always false, and when the input is empty.
+
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 20. Group By Key
+
+Problem Statement: Create a generator that groups items from an iterable of dictionaries by a common key.[11:41 AM]For each unique value of the specified key, the generator should yield a tuple containing that value and another generator that yields all dictionaries having that value.
+
+Function Signature: ```def group_by_key(iterable, key):```
+
+Requirements
+
+•   The function must be a generator.
+•   It must accept an iterable of dictionaries and a key.
+•   It must identify unique values for the given key in the order they first appear.
+•   For each unique key-value, it must yield a 2-element tuple: (key_value, items_generator).
+•   key_value is the value associated with the specified key.
+•   items_generator is a generator that yields all dictionaries from the original iterable (in their original order) that have key_value for the given key.
+•   It must handle cases where dictionaries are missing the specified key (they should be ignored).
+•   The outer generator should not consume the input iterable more than once.
+
+Test Cases
+```python
+data = [
+    {'name': 'Alice', 'city': 'New York'},
+    {'name': 'Bob', 'city': 'Los Angeles'},
+    {'name': 'Charlie', 'city': 'New York'},
+    {'name': 'David', 'city': 'Chicago'},
+    {'name': 'Eve', 'city': 'Los Angeles'},
+    {'name': 'Frank'},
+]
+grouped = group_by_key(data, 'city')
+result = {city: list(items) for city, items in grouped}
+
+assert 'New York' in result
+assert result['New York'] == [
+    {'name': 'Alice', 'city': 'New York'},
+    {'name': 'Charlie', 'city': 'New York'}
+]
+assert 'Los Angeles' in result
+assert result['Los Angeles'] == [
+    {'name': 'Bob', 'city': 'Los Angeles'},
+    {'name': 'Eve', 'city': 'Los Angeles'}
+]
+assert len(result) == 3
+
+grouped_order = group_by_key(data, 'city')
+assert next(grouped_order)[0] == 'New York'
+assert next(grouped_order)[0] == 'Los Angeles'
+
+assert list(group_by_key([], 'city')) == []
+
+data_gen = (d for d in data)
+grouped_gen = group_by_key(data_gen, 'city')
+result_gen = {city: list(items) for city, items in grouped_gen}
+assert result == result_gen
+```
+
+Test Summary:The tests verify correct grouping, handling of missing keys, preservation of original item order within groups, and preservation of group order. They also confirm it works with empty and generator inputs.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+

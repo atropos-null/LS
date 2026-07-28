@@ -177,3 +177,106 @@ Only provide:
 - the verified test cases
 
 The goal is to simulate Launch School-style practice where the tests define the contract and I write the implementation.
+
+
+### Practice Prompt for Generators, two people
+
+Create 20 generator-writing exercises for two Launch School students working together at the PY130/PY139 level. We will take turns choosing a problem, writing a solution, reviewing each other’s code, and running the supplied tests. Present all 20 exercises at once so we can select and assign them ourselves.
+These should be concrete programming exercises rather than broad discussion prompts. Each problem must have a clear, testable contract. Keep the exercises appropriate for students who have just studied:
+
+- generator functions and yield
+- generator expressions
+- lazy evaluation
+- filtering and transforming values
+- nested iteration
+- combining iterables
+- simple delegation with `yield from`
+
+Use ordinary Python data such as:
+
+- lists
+- tuples
+- strings
+- dictionaries
+- ranges
+- nested collections
+- arbitrary finite iterables
+- simple domain objects represented by dictionaries or small classes
+
+Avoid:
+
+- Fibonacci sequences
+- prime-number generation
+- permutations and combinations
+- random-number generators
+- dates and calendars
+- infinite generators
+- recursion
+- files and streaming data
+- networking
+- concurrency
+- async generators
+- `send()`, `throw()`, and `close()`
+- advanced algorithms
+- LeetCode-style puzzles
+
+Favor practical collection-processing tasks that resemble Launch School exercises. Examples might involve selecting records, transforming values, traversing nested collections one level deep, producing running state, repeating or skipping items, combining finite iterables, and reimplementing simple iterable tools.
+
+For each exercise, provide:
+
+- Exercise title
+- Problem statement
+- Required function signature
+- A precise behavioral contract
+- Comprehensive test cases using assert
+- A brief note stating what each group of tests verifies
+
+Before presenting an exercise, verify the tests yourself. Make sure:
+- every expected result is correct;
+- the tests agree with the written contract;
+- the function signature supports the required behavior;
+- edge cases are defined consistently;
+- the exercise is solvable at the stated level;
+- no test accidentally depends on consuming the same generator twice;
+- tests convert generators to lists only when verifying their yielded values;
+- tests do not incorrectly compare a generator object directly with a list;
+- tests account for one-pass exhaustion where relevant.
+
+Include tests for:
+
+- normal input;
+- empty input;
+- a small boundary case;
+- ordering of yielded values;
+- preservation of duplicates where applicable;
+- behavior with arbitrary iterables rather than only lists, when the contract claims to accept an iterable.
+
+Do not use:
+
+- collections.abc.Iterator
+- itertools
+- any third-party libraries
+
+The tests should only rely on features already introduced in PY130.
+
+Test Summary: After the tests, include a brief note explaining what the tests verify.
+
+Use fresh generator instances in separate tests. Do not reuse an exhausted generator unless exhaustion itself is being tested. When a problem asks for a generator expression rather than a generator function, clearly state that requirement and provide tests appropriate to the returned generator expression.
+
+Do not provide:
+
+- solutions;
+- partial implementations;
+- pseudocode;
+- algorithmic hints;
+- step-by-step guidance;
+- hidden assumptions about how the problem should be solved.
+- The two students should be able to determine the implementation from the contract and tests alone.
+ 
+Arrange the exercises in a gradual progression:
+
+- Exercises 1–5: basic yielding, filtering, and transformation
+- Exercises 6–10: nested loops, stateful finite generators, and arbitrary iterables
+- Exercises 11–15: combining, alternating, grouping, and delegating with yield from
+- Exercises 16–20: richer finite collection-processing problems with multiple contract requirements
+- Avoid merely producing twenty versions of “yield values that satisfy a condition.” Vary the movement of data and the state that must be preserved between yields.
