@@ -1,10 +1,20 @@
 # LS Bot Generated Questions for PY130
 
+<a name="top"></a>
+
+## Table of Contents
+
 Total Questions: 
+
+- [First Class and Higher-Order Functions](#first-class-and-higher-order-functions)
+- [Lambdas](#lambdas)
+- [Generators, on your own practice](#generators-on-your-own-practice)
+- [Generators, on your own practice 2](#generators-on-your-own-practice-2)
+- [Generators, team practice](#generators-team-practice)
 
 ## Lesson 1: Functions, Generators, and Files
 
-### First Class and Higher-Order Functions
+### First Class and Higher Order Functions
 
 
 #### Question 1
@@ -65,7 +75,7 @@ appended to the self.books list attribute. The `my_library `object then calls th
 
 </details>
 
-#### Question 2:
+#### Question 2
 
 Difficulty:​ Easy
 Objective:​ Refactor an explicit loop into `each()`-style iteration and think about what the object vs. the callback is responsible for.
@@ -476,6 +486,7 @@ for item in high_priority:
     
 </details>
 
+[Back to the top](#top)
 
 ### Lambdas
 
@@ -609,8 +620,9 @@ list(map(lambda person: f"{person['name']} is {person['age']} years old", people
 
 </details>
 
-### Generators, on your own practice
+[Back to the top](#top)
 
+### Generators, on your own practice
 
 #### Exercise 1: Generate Squares
 
@@ -1154,8 +1166,9 @@ assert list(process_temperatures("")) == []
 <summary>Possible Solution</summary> 
 </details>
 
+[Back to the top](#top)
 
-### Generators, on your own practice
+### Generators, on your own practice 2
 
 #### Exercise 1. Select by Value
 
@@ -1806,6 +1819,7 @@ Test Summary: The tests verify correct grouping, handling of missing keys, prese
 <summary>Possible Solution</summary> 
 </details>
 
+[Back to the top](#top)
 
 ### Generators, team practice
 
@@ -2178,3 +2192,5 @@ print("Exercise 10 tests passed!")
 <details> 
 <summary>Possible Solution</summary> 
 </details>
+
+[Back to the top](#top)
