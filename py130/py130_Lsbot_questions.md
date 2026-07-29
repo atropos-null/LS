@@ -629,6 +629,13 @@ assert list(generate_squares([-1, -2, 0])) == [1, 4, 0]
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def generate_squares(iterable):
+
+    for number in iterable:
+        yield number ** 2
+```
 </details>
 
 #### Exercise 2: Reverse Sequence
@@ -648,6 +655,13 @@ assert list(reverse_sequence(-1)) == []
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def reverse_sequence(start):
+    for i in range(start, -1, -1):
+        yield i 
+```
+
 </details>
 
 #### Exercise 3: Words from Text
@@ -668,6 +682,14 @@ assert list(words_from_text("")) == []
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def words_from_text(text):
+
+    for word in text.split():
+        yield word 
+```
+
 </details>
 
 
@@ -689,6 +711,14 @@ assert list(dict_items(d2)) == [(1, 'one'), (2, 'two')]
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def dict_items(dictionary):
+
+    for key, value in dictionary.items():
+        yield (key, value)
+```
+
 </details>
 
 #### Exercise 5: Limited Range
@@ -708,6 +738,20 @@ assert list(limited_range(0, 3, 3)) == [0, 1, 2]
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def limited_range(start, stop, limit):
+
+    loop_count = 0
+    count = start 
+    while loop_count < limit:
+        loop_count += 1
+        if count < stop:
+            yield count 
+            count += 1
+```
+
 </details>
 
 
@@ -731,6 +775,15 @@ assert list(filter_long_words([], 5)) == []
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def filter_long_words(words, min_length):
+
+    for word in words:
+        if len(word) > min_length:
+            yield word
+```
+
 </details>
 
 #### Exercise 7: Transform and Filter
@@ -754,6 +807,15 @@ assert list(transform_and_filter([], 0, square)) == []
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def transform_and_filter(numbers, threshold, transform):
+
+    for number in numbers:
+        if number > threshold:
+            yield transform(number)
+```
+
 </details>
 
 #### Exercise 8: enumerate Implementation
@@ -772,6 +834,15 @@ assert list(my_enumerate([])) == []
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def my_enumerate(iterable):
+
+    for element in iterable:
+        indexed = iterable.index(element)
+        yield (indexed, element)
+```
+
 </details>
 
 #### Exercise 9: Conditional Capitalization (Generator Expression)
@@ -784,16 +855,21 @@ Test Cases:
 
 ```python
 words = ['launch', 'school', 'is', 'a', 'great', 'place']
-capitalized_long_words = (word.capitalize() for word in words if len(word) > 4)
+#insert your expression here
 assert list(capitalized_long_words) == ['Launch', 'School', 'Great']
 
 words2 = ['short', 'words']
-capitalized_long_words2 = (word.capitalize() for word in words2 if len(word) > 4)
+#insert your expression here
 assert list(capitalized_long_words2) == ['Short', 'Words']
 ```
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+capitalized_long_words = (word.capitalize() for word in words if len(word) > 4)
+capitalized_long_words2 = (word.capitalize() for word in words2 if len(word) > 4)
+```
 </details>
 
 #### Exercise 10: Chained Generators
@@ -825,13 +901,30 @@ assert list(multiples_of_4) == [0, 4, 8]
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def number_sequence():
+
+    number = 0
+    for i in range(10):
+        yield number
+        number += 1
+
+
+def filter_multiples(iterable, divisor):
+    for number in iterable:
+        if number % divisor == 0:
+            yield number
+```
+
 </details>
 
 #### Exercise 11: Flatten a List of Lists with yield from
 
 Problem Statement:​ Create a generator that takes a list of lists (a nested list) and yields each item from the sublists in order. Use the `yield from` syntax.
 
-Function Signature: ``` def flatten_list(nested_list):```
+Function Signature: ```def flatten_list(nested_list):```
 
 Test Cases:
 
@@ -844,13 +937,22 @@ assert list(flatten_list([])) == []
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def flatten_list(nested_list):
+
+    for single_list in nested_list:
+        yield from single_list
+```
+
 </details>
 
 #### Exercise 12: Running Total
 
 Problem Statement:​ Create a stateful generator that takes an iterable of numbers and yields the cumulative sum at each step.
 
-Function Signature: ``` def running_total(iterable):```
+Function Signature: ```def running_total(iterable):```
 
 Test Cases:
 
@@ -864,88 +966,20 @@ assert list(running_total([5])) == [5]
 
 <details> 
 <summary>Possible Solution</summary> 
-</details>
-
-
-#### Exercise 13: Infinite Fibonacci Sequence
-
-Problem Statement:​ Create a generator that yields numbers in the Fibonacci sequence indefinitely. The sequence starts with 0 and 1.
-
-Function Signature: ``` def fibonacci_sequence():```
-
-
-Test Cases:
 
 ```python
-import itertools
-fib = fibonacci_sequence()
-assert list(itertools.islice(fib, 10)) == [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+def running_total(iterable):
 
-# Reset generator for the next test
-fib = fibonacci_sequence()
-assert list(itertools.islice(fib, 1)) == [0]
-
-# Reset generator for the next test
-fib = fibonacci_sequence()
-assert next(fib) == 0
-assert next(fib) == 1
-assert next(fib) == 1
+    summed = 0
+    for item in iterable:
+        summed += item
+        yield summed
 ```
-<details> 
-<summary>Possible Solution</summary> 
 </details>
 
-#### Exercise 14: Cycle an Iterable
+#### Exercise 13: Sliding Window
 
-Problem Statement:​ Create a generator that takes an iterable and yields its elements repeatedly in a cycle, indefinitely. If the iterable is empty, the generator should yield nothing.
-
-Function Signature: ```def cycle_iterable(iterable):```
-
-Test Cases:
-```python
-
-import itertools
-c = cycle_iterable(['N', 'E', 'S', 'W'])
-assert list(itertools.islice(c, 8)) == ['N', 'E', 'S', 'W', 'N', 'E', 'S', 'W']
-
-c2 = cycle_iterable([1])
-assert list(itertools.islice(c2, 5)) == [1, 1, 1, 1, 1]
-
-c3 = cycle_iterable([])
-assert list(itertools.islice(c3, 10)) == []
-```
-
-<details> 
-<summary>Possible Solution</summary> 
-</details>
-
-#### Exercise 15: Interleave Iterables
-
-Problem Statement:​ Create a generator that takes two iterables and yields elements from them one at a time, alternating. If one iterable is longer than the other, it should yield the remaining elements from the longer iterable after the shorter one is exhausted.
-
-Function Signature: ```def interleave(iter1, iter2):```
-
-
-Test Cases:
-
-```python
-assert list(interleave([1, 2, 3], ['a', 'b', 'c'])) == [1, 'a', 2, 'b', 3, 'c']
-assert list(interleave([1, 2], ['a', 'b', 'c', 'd'])) == [1, 'a', 2, 'b', 'c', 'd']
-assert list(interleave([1, 2, 3, 4], ['a', 'b'])) == [1, 'a', 2, 'b', 3, 4]
-assert list(interleave([], [1, 2, 3])) == [1, 2, 3]
-assert list(interleave([1, 2, 3], [])) == [1, 2, 3]
-assert list(interleave([], [])) == []
-```
-
-<details> 
-<summary>Possible Solution</summary> 
-</details>
-
-
-#### Exercise 16: Sliding Window
-
-Problem Statement:​ Create a generator that yields a "sliding window" of a specified size over an iterable.
-[10:45 AM]Each yield should be a tuple containing the elements in the current window.
+Problem Statement:​ Create a generator that yields a "sliding window" of a specified size over an iterable. Each yield should be a tuple containing the elements in the current window.
 
 Function Signature: ```def sliding_window(iterable, size):```
 
@@ -961,9 +995,66 @@ assert list(sliding_window([], 3)) == []
 ```
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def sliding_window(iterable, size):
+        
+    for i in range(len(iterable) - size + 1):
+        yield tuple(iterable[i : i + size])
+```
+
+Note: Definitely revist this one, has exam smell on it.
+
 </details>
 
-#### Exercise 17: Log File Parser
+#### Exercise 14: Sentence Tokenizer
+
+Problem Statement:​ Given a large string of text, create a generator that yields one sentence at a time. For this exercise, a sentence is a sequence of characters that ends with a '.', '!', or '?'. The punctuation should be included in the yielded sentence.
+
+Function Signature: ```def tokenize_sentences(text):```
+
+
+Test Cases:
+
+```python
+text = "Hello world. This is a test! Are you ready? I am."
+assert list(tokenize_sentences(text)) == ["Hello world.", "This is a test!", "Are you ready?", "I am."]
+text2 = "Single sentence."
+assert list(tokenize_sentences(text2)) == ["Single sentence."]
+text3 = "No punctuation here"
+assert list(tokenize_sentences(text3)) == ["No punctuation here"]
+assert list(tokenize_sentences("")) == []
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+def tokenize_sentences(text):
+    delimiters = {'.', '!', '?'}
+    current_sentence = []
+
+    for char in text:
+        current_sentence.append(char)
+        if char in delimiters:
+            yield "".join(current_sentence).strip()
+            current_sentence = []
+
+    if current_sentence:
+        remaining_text = "".join(current_sentence).strip()
+        if remaining_text:
+            yield remaining_text
+
+```
+Note: Definitely revist this one, has exam smell on it.
+
+</details>
+
+
+#### Note: Come back to the following after you've done Files
+
+#### Exercise 15: Log File Parser
 
 Problem Statement:​ You are processing a large log file. Create a generator that reads through a file-like object (e.g., a list of strings for this exercise) and yields a dictionary for each line that starts with "ERROR:". The dictionary should contain the keys 'level', 'timestamp', and 'message'.
 
@@ -994,7 +1085,7 @@ assert list(parse_error_logs([])) == []
 </details>
 
 
-#### Exercise 18: Simple CSV Reader
+#### Exercise 16: Simple CSV Reader
 
 Problem Statement:​ Create a generator to read CSV (Comma Separated Values) data. Given an iterable of strings (lines of a file), it should yield each row as a list of strings. This simplified version doesn't need to handle all edge cases but should handle basic quoted fields.
 
@@ -1026,31 +1117,7 @@ assert list(read_csv([])) == []
 </details>
 
 
-#### Exercise 19: Sentence Tokenizer
-
-Problem Statement:​ Given a large string of text, create a generator that yields one sentence at a time. For this exercise, a sentence is a sequence of characters that ends with a '.', '!', or '?'. The punctuation should be included in the yielded sentence.
-
-Function Signature: ```def tokenize_sentences(text):```
-
-
-Test Cases:
-
-```python
-text = "Hello world. This is a test! Are you ready? I am."
-expected = ["Hello world.", " This is a test!", " Are you ready?", " I am."]
-assert list(tokenize_sentences(text)) == expected
-text2 = "Single sentence."
-assert list(tokenize_sentences(text2)) == ["Single sentence."]
-text3 = "No punctuation here"
-assert list(tokenize_sentences(text3)) == ["No punctuation here"]
-assert list(tokenize_sentences("")) == []
-```
-
-<details> 
-<summary>Possible Solution</summary> 
-</details>
-
-#### Exercise 20: Data Processing Pipeline
+#### Exercise 17: Data Processing Pipeline
 
 Problem Statement:​ Create a data pipeline using a chain of generators to process temperature data.
 
@@ -1089,7 +1156,6 @@ assert list(process_temperatures("")) == []
 
 
 ### Generators, on your own practice
-
 
 #### Exercise 1. Select by Value
 
@@ -1743,9 +1809,370 @@ Test Summary:The tests verify correct grouping, handling of missing keys, preser
 <summary>Possible Solution</summary> 
 </details>
 
+
+### Generators, team practice
+
+#### Exercise 1​, Generate Squares
+
+Problem Statement​: Create a generator function that yields the square of each number from an input iterable.
+
+Function Signature​: ```def generate_squares(numbers):```
+
+Complete Requirements​:
+
+•   The function must accept an iterable of numbers as an argument.
+•   The function must yield the square of each number in the order they appear in the input.
+•   The function must produce no values if the input iterable is empty.
+
+Ready-to-run Test Code​:
+
+```python
+# Test case 1: Basic functionality
+assert list(generate_squares([1, 2, 3, 4, 5])) == [1, 4, 9, 16, 25]
+
+# Test case 2: Input with zero and negative numbers
+assert list(generate_squares([0, -2, 10])) == [0, 4, 100]
+
+# Test case 3: Empty input
+assert list(generate_squares([])) == []
+
+# Test case 4: Input is a tuple
+assert list(generate_squares((10, 20))) == [100, 400]
+
+print("Exercise 1 tests passed!")
+```
+
 <details> 
 <summary>Possible Solution</summary> 
 </details>
+
+#### Exercise 2​, Filter Short Words
+
+Problem Statement​: Create a generator function that yields only the words from an input iterable that are shorter than a given maximum length.
+
+Function Signature​: ```def filter_short_words(words, max_length):```
+
+Complete Requirements​:
+
+•   The function must accept an iterable of strings and an integer max_length.
+•   The function must yield only the words whose length is strictly less than max_length.
+•   The function must preserve the original relative order of the yielded words.
+•   The function must produce no values if no words meet the criteria.
+
+Ready-to-run Test Code​:
+
+```python
+words_list = ["apple", "banana", "pie", "kiwi", "fig"]
+
+# Test case 1: Words shorter than 5
+assert list(filter_short_words(words_list, 5)) == ["pie", "kiwi", "fig"]
+
+# Test case 2: Words shorter than 4 (boundary)
+assert list(filter_short_words(words_list, 4)) == ["pie", "fig"]
+
+# Test case 3: No words meet the criteria
+assert list(filter_short_words(words_list, 3)) == []
+
+# Test case 4: Empty input list
+assert list(filter_short_words([], 5)) == []
+
+print("Exercise 2 tests passed!")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 3, Generate Indexed Values
+
+Problem Statement​: Create a generator function that behaves like enumerate, yielding a tuple of (index, value) for each item in an input iterable.
+
+Function Signature​: ```def generate_indexed(items):```
+
+Complete Requirements​:
+
+•   The function must accept an iterable as an argument.
+•   The function must yield a tuple (index, value) for each item.
+•   The index must start at 0 and increment for each item.
+•   The function must produce no values if the input iterable is empty.
+
+Ready-to-run Test Code​:
+
+```python
+# Test case 1: List of strings
+assert list(generate_indexed(['a', 'b', 'c'])) == [(0, 'a'), (1, 'b'), (2, 'c')]
+
+# Test case 2: A single-element tuple
+
+[1:18 PM]assert list(generate_indexed(('hello',))) == [(0, 'hello')]
+
+# Test case 3: An empty list
+assert list(generate_indexed([])) == []
+
+# Test case 4: A string iterable
+assert list(generate_indexed('hi')) == [(0, 'h'), (1, 'i')]
+
+print("Exercise 3 tests passed!")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### ​Exercise 4, Flatten a List
+
+Problem Statement​: Create a generator function that takes a list of lists (or other iterables) and yields each item from the nested lists in sequence, effectively "flattening" the structure.
+
+Function Signature​: ```def flatten_list(nested_list):```
+
+Complete Requirements​:
+
+•   The function must accept a list where each element is an iterable.
+•   The function must iterate through each nested iterable and yield its items one by one.
+•   The function must maintain the order of items as they appear.
+•   The function must correctly handle empty nested lists and a top-level empty list.
+
+Ready-to-run Test Code​:
+
+```python
+# Test case 1: Basic functionality with lists
+assert list(flatten_list([[1, 2], [3, 4, 5], [6]])) == [1, 2, 3, 4, 5, 6]
+
+# Test case 2: With empty sublists
+assert list(flatten_list([[], [10, 20], [], [30]])) == [10, 20, 30]
+
+# Test case 3: Top-level list is empty
+assert list(flatten_list([])) == []
+
+# Test case 4: Mixed iterable types (list of tuples)
+assert list(flatten_list([(1, 2), (3, 4)])) == [1, 2, 3, 4]
+
+print("Exercise 4 tests passed!")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 5​, Generate Number Countdown
+
+Problem Statement​: Create a generator function that yields numbers in a countdown sequence, from a given starting number down to and including 0.
+
+Function Signature​: ```def generate_countdown(start):```
+
+Complete Requirements​:
+
+•   The function must accept a non-negative integer start.
+•   The function must first yield the start number, then start - 1, and so on, down to 0.
+•   If start is 0, the function should yield only 0.
+
+Ready-to-run Test Code​:
+
+```python
+# Test case 1: Countdown from 5
+assert list(generate_countdown(5)) == [5, 4, 3, 2, 1, 0]
+
+# Test case 2: Countdown from 1
+assert list(generate_countdown(1)) == [1, 0]
+
+# Test case 3: Countdown from 0 (boundary)
+assert list(generate_countdown(0)) == [0]
+
+print("Exercise 5 tests passed!")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 6​, Generate Dictionary Key-Value Pairs
+
+Problem Statement​: Create a generator function that takes a dictionary and yields each key-value pair as a formatted string.
+
+Function Signature​: ```def format_dict_items(data_dict):```
+
+Complete Requirements​:
+
+•   The function must accept a dictionary as an argument.
+•   The function must yield a string for each item in the format `"Key: <key>, Value: <value>"`.
+•   The order of the yielded strings is not important.
+•   The function must produce no values if the input dictionary is empty.
+
+Ready-to-run Test Code​:
+
+```python
+# Test case 1: Basic dictionary
+inventory = {'apples': 5, 'oranges': 10}
+
+[1:18 PM]expected = {"Key: apples, Value: 5", "Key: oranges, Value: 10"}
+assert set(format_dict_items(inventory)) == expected
+
+# Test case 2: Dictionary with different value types
+mixed_data = {'name': 'Alice', 'age': 30, 'active': True}
+expected = {"Key: name, Value: Alice", "Key: age, Value: 30", "Key: active, Value: True"}
+assert set(format_dict_items(mixed_data)) == expected
+
+# Test case 3: Empty dictionary
+assert set(format_dict_items({})) == set()
+
+print("Exercise 6 tests passed!")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 7, Chain Two Iterables
+
+Problem Statement​: Create a generator function that yields all items from a first iterable, followed by all items from a second iterable.
+You must use `yield from`.
+
+Function Signature​: ```def chain_iterables(iter1, iter2):```
+
+Complete Requirements​:
+
+•   The function must accept two iterables as arguments.
+•   The function must first yield all items from iter1 in their original order.
+•   After iter1 is exhausted, the function must yield all items from iter2 in their original order.
+•   The implementation must use the yield from expression for both iterables.
+
+Ready-to-run Test Code​:
+
+```python
+# Test case 1: Two lists
+assert list(chain_iterables([1, 2], [3, 4])) == [1, 2, 3, 4]
+
+# Test case 2: First iterable is empty
+assert list(chain_iterables([], ('a', 'b'))) == ['a', 'b']
+
+# Test case 3: Second iterable is empty
+assert list(chain_iterables((10, 20), [])) == [10, 20]
+
+# Test case 4: Both iterables are empty
+assert list(chain_iterables((), [])) == []
+
+# Test case 5: Different iterable types
+assert list(chain_iterables('hi', [1, 2])) == ['h', 'i', 1, 2]
+
+print("Exercise 7 tests passed!")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 8, Generate Consecutive Pairs
+
+Problem Statement​: Create a generator function that takes a sequence and yields tuples of each element paired with the element that immediately follows it.
+
+Function Signature​: ```def generate_consecutive_pairs(sequence):```
+
+Complete Requirements​:
+
+•   The function must accept an iterable as an argument.
+•   The function must yield a tuple (item, next_item) for each consecutive pair of items.
+•   The generator should produce no output if the input iterable has fewer than two items.
+
+Ready-to-run Test Code​:
+
+```python
+# Test case 1: List of numbers
+assert list(generate_consecutive_pairs([1, 2, 3, 4])) == [(1, 2), (2, 3), (3, 4)]
+
+# Test case 2: A string
+assert list(generate_consecutive_pairs('abc')) == [('a', 'b'), ('b', 'c')]
+
+# Test case 3: A sequence with two elements
+assert list(generate_consecutive_pairs([10, 20])) == [(10, 20)]
+
+# Test case 4: A sequence with one element
+assert list(generate_consecutive_pairs([100])) == []
+
+# Test case 5: An empty sequence
+assert list(generate_consecutive_pairs([])) == []
+
+print("Exercise 8 tests passed!")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 9​,Generate Running Total
+
+Problem Statement​: Create a generator function that takes an iterable of numbers and yields a running total.
+
+Function Signature​: ```def generate_running_total(numbers):```
+
+Complete Requirements​:
+
+•   The function must accept an iterable of numbers.
+•   The function must maintain an internal state for the current total, initialized to 0.
+•   For each number in the input, the function must add it to the total and yield the new total.
+•   The function must produce no values if the input iterable is empty.
+
+Ready-to-run Test Code​:
+```python
+# Test case 1: Positive integers
+assert list(generate_running_total([1, 2, 3, 4])) == [1, 3, 6, 10]
+
+# Test case 2: Mix of positive and negative numbers
+assert list(generate_running_total([10, -2, 5, -8])) == [10, 8, 13, 5]
+
+
+[1:18 PM]# Test case 3: A single number
+assert list(generate_running_total([100])) == [100]
+
+# Test case 4: Empty input
+assert list(generate_running_total([])) == []
+
+print("Exercise 9 tests passed!")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 10​, Generate Tagged Items from Nested Data
+
+Problem Statement​: You are given a dictionary where keys are tags (strings) and values are lists of items. Create a generator function that yields a tuple (tag, item) for every single item in all the lists.
+
+Function Signature​: ```def generate_tagged_items(data):```
+
+Complete Requirements​:
+
+•   The function must accept a dictionary where values are lists.
+•   The function must iterate through the dictionary's key-value pairs.
+•   For each key (tag) and its corresponding list of items, the function must iterate through the items.
+•   The function must yield a tuple (tag, item) for each item.
+•   The exact order of yielded tuples is not important, but items with the same tag should appear in their original relative order.
+
+Ready-to-run Test Code​:
+```python
+data = {
+    'fruit': ['apple', 'banana'],
+    'vegetable': ['carrot'],
+    'dairy': ['milk', 'cheese']
+}
+
+# Test case 1: Basic functionality
+expected_items = {
+    ('fruit', 'apple'), ('fruit', 'banana'),
+    ('vegetable', 'carrot'),
+    ('dairy', 'milk'), ('dairy', 'cheese')
+}
+assert set(generate_tagged_items(data)) == expected_items
+
+# Test case 2: Dictionary with an empty list
+data_with_empty = {'colors': ['red', 'blue'], 'shapes': []}
+expected_items = {('colors', 'red'), ('colors', 'blue')}
+assert set(generate_tagged_items(data_with_empty)) == expected_items
+
+# Test case 3: Empty dictionary
+assert set(generate_tagged_items({})) == set()
+
+print("Exercise 10 tests passed!")
+```
 
 <details> 
 <summary>Possible Solution</summary> 
@@ -1754,28 +2181,3 @@ Test Summary:The tests verify correct grouping, handling of missing keys, preser
 <details> 
 <summary>Possible Solution</summary> 
 </details>
-
-<details> 
-<summary>Possible Solution</summary> 
-</details>
-
-<details> 
-<summary>Possible Solution</summary> 
-</details>
-
-<details> 
-<summary>Possible Solution</summary> 
-</details>
-
-<details> 
-<summary>Possible Solution</summary> 
-</details>
-
-<details> 
-<summary>Possible Solution</summary> 
-</details>
-
-<details> 
-<summary>Possible Solution</summary> 
-</details>
-

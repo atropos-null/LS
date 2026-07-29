@@ -182,7 +182,111 @@ print(total) #55
 
 </details>
 
-## 
+## [Generators](https://launchschool.com/lessons/807cf3b3/assignments/6fe63cab)
+
+
+### Question 1
+
+Create a generator expression that generates the reciprocals of the numbers from 1 to 10. A reciprocal of a number n is 1 / n. Use a for loop to print each value.
+
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+reciprocals = (1 / x for x in range(1, 11))
+
+for value in reciprocals:
+    print(value)
+```
+</details>
+
+### Question 2
+
+Create a generator function that generates the reciprocals of the numbers from 1 to n, where n is an argument to the function. Use a for loop to print each value.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+def reciprocals(n):
+    for i in range(1, n+1):
+        yield 1 / i
+    
+for recip in reciprocals(10):
+    print(recip)
+```
+
+</details>
+
+### Question 3
+Use a generator expression to capitalize every string in a list of strings. Use a single print invocation to print all the capitalized strings as a tuple.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+strings = ["hello", "world"]
+
+all_caps = (string.capitalize() for string in strings)
+print(tuple(all_caps))
+```
+</details>
+
+### Question 4
+
+Create a generator function that generates the capitalized version of every string in a list of strings. Use a single print invocation to print all the capitalized strings as a tuple.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+strings = ['hello', 'world']
+
+def all_caps(listie):
+    for element in listie:
+        yield element.capitalize()
+
+print(tuple(all_caps(strings)))
+```
+
+</details>
+
+### Question 5
+
+Use a generator expression to capitalize the strings in a list of strings whose length is at least 5. Use a single print invocation to print all the capitalized strings as a set.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+strings = ['hello', 'world', '!']
+
+all_caps = (string.capitalize() for string in strings if len(string) >= 5)
+print(set(all_caps))
+```
+
+</details>
+
+### Question 6
+
+Create a generator function that generates the capitalized version of every string in a list of strings whose length is less than 5. Use a single print invocation to print all the capitalized strings as a set.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+strings = ['hello', 'world', '!']
+
+def all_caps(listie):
+    for element in listie:
+        if len(element) < 5:
+            yield element.capitalize()
+
+print(set(all_caps(strings)))
+```
+
+</details>
 
 <details> 
 <summary>Possible Solution</summary> 
