@@ -1163,13 +1163,13 @@ Problem Statement:  Create a generator function that yields items from an iterab
 
 Function Signature:  ```def select_by_value(iterable, value):```
 
-Requirements
+Requirements:
 
-•   The function must be a generator.
-•   It must accept an iterable and a value to match.
-•   It must yield each item from the iterable that is equal to value.
-•   The order of yielded items must be the same as their order in the input iterable.
-•   It must handle iterables containing different data types.
+* The function must be a generator.
+* It must accept an iterable and a value to match.
+* It must yield each item from the iterable that is equal to value.
+* The order of yielded items must be the same as their order in the input iterable.
+* It must handle iterables containing different data types.
 
 Test Cases
 
@@ -1194,13 +1194,13 @@ Problem Statement:  Create a generator function that yields the uppercase versio
 
 Function Signature: ```def transform_to_uppercase(strings):```
 
-Requirements
+Requirements:
 
-•   The function must be a generator.
-•   It must accept an iterable of strings.
-•   It must yield the uppercase version of each string.
-•   The order of yielded strings must correspond to the order of the original strings.
-•   It must handle empty iterables.
+* The function must be a generator.
+* It must accept an iterable of strings.
+* It must yield the uppercase version of each string.
+* The order of yielded strings must correspond to the order of the original strings.
+* It must handle empty iterables.
 
 Test Cases
 
@@ -1224,15 +1224,15 @@ Problem Statement:  Create a generator function that filters out words from an i
 
 Function Signature: ```def filter_out_short_words(words, min_length):```
 
-Requirements
+Requirements:
 
-•   The function must be a generator.
-•   It must accept an iterable of strings and an integer min_length.
-•   It must yield only the strings whose length is greater than or equal to min_length.
-•   The order of yielded strings must be the same as their order in the input iterable.
-•   It must handle empty iterables and cases where no words meet the criteria.
+* The function must be a generator.
+* It must accept an iterable of strings and an integer min_length.
+* It must yield only the strings whose length is greater than or equal to min_length.
+* The order of yielded strings must be the same as their order in the input iterable.
+* It must handle empty iterables and cases where no words meet the criteria.
 
-Test Cases
+Test Cases:
 
 ```python
 words = ['cat', 'dog', 'elephant', 'mouse', 'lion']
@@ -1255,15 +1255,14 @@ Problem Statement: Create a generator function that works like enumerate. It sho
 
 Function Signature: ``` def yield_with_index(iterable):```
 
+Requirements:
 
-Requirements
-
-•   The function must be a generator.
-•   It must accept any iterable.
-•   It must yield a 2-element tuple for each item: (index, value).
-•   The index should start at 0 and increment for each item.
-•   The order of yielded tuples must correspond to the item order in the input iterable.
-•   It must handle empty iterables.
+* The function must be a generator.
+* It must accept any iterable.
+* It must yield a 2-element tuple for each item: (index, value).
+* The index should start at 0 and increment for each item.
+* The order of yielded tuples must correspond to the item order in the input iterable.
+* It must handle empty iterables.
 
 Test Cases
 ```python
@@ -1287,13 +1286,13 @@ Problem Statement: Create a generator function that yields each item from an ite
 
 Function Signature ```def repeat_each_item(iterable, num_repeats):```
 
-Requirements
+Requirements:
 
-•   The function must be a generator.
-•   It must accept an iterable and a non-negative integer num_repeats.
-•   For each item in the iterable, it must yield that item num_repeats times consecutively.
-•   If num_repeats is 0, the generator should yield nothing.
-•   It must handle empty iterables.
+* The function must be a generator.
+* It must accept an iterable and a non-negative integer num_repeats.
+* For each item in the iterable, it must yield that item num_repeats times consecutively.
+* If `num_repeats` is 0, the generator should yield nothing.
+* It must handle empty iterables.
 
 Test Cases
 ```python
@@ -1317,14 +1316,14 @@ Problem Statement: Create a generator function that yields every Nth item from a
 
 Function Signature:  ```def yield_every_nth(iterable, n):```
 
-Requirements
+Requirements:
 
-•   The function must be a generator.
-•   It must accept an iterable and a positive integer n.
-•   It must yield the 1st item, the (1+n)th item, the (1+2n)th item, and so on.
-•   The first item (at index 0) should always be yielded if the iterable is not empty.
-•   It must handle empty iterables.
-•   Assume n will be 1 or greater.
+* The function must be a generator.
+* It must accept an iterable and a positive integer n.
+* It must yield the 1st item, the (1+n)th item, the (1+2n)th item, and so on.
+* The first item (at index 0) should always be yielded if the iterable is not empty.
+* It must handle empty iterables.
+* Assume n will be 1 or greater.
 
 Test Cases
 
@@ -1350,14 +1349,14 @@ Problem Statement: Create a generator function that yields items from an iterabl
 Function Signature: ```def yield_until_value(iterable, stop_value):```
 
 
-Requirements
+Requirements:
 
-•   The function must be a generator.
-•   It must accept an iterable and a stop_value.
-•   It must yield items from the beginning of the iterable.
-•   It must stop yielding as soon as it encounters an item equal to stop_value.
-•   The stop_value item must not be included in the output.
-•   If the stop_value is not found, it should yield all items from the iterable.
+* The function must be a generator.
+* It must accept an iterable and a stop_value.
+* It must yield items from the beginning of the iterable.
+* It must stop yielding as soon as it encounters an item equal to stop_value.
+* The stop_value item must not be included in the output.
+* If the stop_value is not found, it should yield all items from the iterable.
 
 Test Cases
 ```python
@@ -1381,13 +1380,13 @@ Problem Statement: Create a generator function that takes an iterable of iterabl
 
 Function Signature: ```def flatten_one_level(nested_iterable):```
 
-Requirements
+Requirements:
 
-•   The function must be a generator.
-•   It must accept an iterable where each element is itself an iterable.
-•   It must yield each element from each inner iterable in sequence.
-•   The order of yielded elements should correspond to iterating through the outer iterable, and then through each inner iterable.
-•   It should handle empty outer and inner iterables.
+* The function must be a generator.
+* It must accept an iterable where each element is itself an iterable.
+* It must yield each element from each inner iterable in sequence.
+* The order of yielded elements should correspond to iterating through the outer iterable, and then through each inner iterable.
+* It should handle empty outer and inner iterables.
 
 Test Cases
 ```python
@@ -1412,15 +1411,14 @@ Problem Statement: Create a generator function that yields (key, value) tuples f
 
 Function Signature: `def filter_dict_items(dictionary, predicate):`
 
+Requirements:
 
-Requirements
-
-•   The function must be a generator.
-•   It must accept a dictionary and a single-argument function predicate.
-•   It must iterate over the dictionary's items.
-•   For each (key, value) pair, it must call predicate(value).
-•   If the predicate returns a truthy value, the generator must yield the (key, value) tuple.
-•   The order of yielded items is not guaranteed (it depends on the dictionary's iteration order).
+* The function must be a generator.
+* It must accept a dictionary and a single-argument function predicate.
+* It must iterate over the dictionary's items.
+* For each (key, value) pair, it must call predicate(value).
+* If the predicate returns a truthy value, the generator must yield the (key, value) tuple.
+* The order of yielded items is not guaranteed (it depends on the dictionary's iteration order).
 
 Test Cases
 
@@ -1451,14 +1449,14 @@ Problem Statement: Create a generator function that yields only the unique items
 
 Function Signature: `def yield_unique_items(iterable):`
 
-Requirements
+Requirements:
 
-•   The function must be a generator.
-•   It must accept an iterable.
-•   It must yield each unique item from the iterable exactly once.
-•   The order of yielded items must be the same as the order of their first appearance in the input iterable.
-•   It must handle different data types, including unhashable types if possible (though tests will only use hashable types).
-•   It must handle empty iterables.
+* The function must be a generator.
+* It must accept an iterable.
+* It must yield each unique item from the iterable exactly once.
+* The order of yielded items must be the same as the order of their first appearance in the input iterable.
+* It must handle different data types, including unhashable types if possible (though tests will only use hashable types).
+* It must handle empty iterables.
 
 Test Cases
 
@@ -1484,14 +1482,14 @@ Problem Statement:  Using a generator expression, create a generator that yields
 
 Function Signature: ```def bounded_range_generator(start, stop, step):```
 
-Requirements
+Requirements:
 
-•   The function must return a generator.
-•   The implementation must use a generator expression.
-•   It must yield numbers starting from start.
-•   It must stop yielding before it reaches or exceeds stop.
-•   Each subsequent number must be the previous number plus step.
-•   It should handle positive and negative steps.
+* The function must return a generator.
+* The implementation must use a generator expression.
+* It must yield numbers starting from start.
+* It must stop yielding before it reaches or exceeds stop.
+* Each subsequent number must be the previous number plus step.
+* It should handle positive and negative steps.
 
 Test Cases
 
@@ -1523,13 +1521,13 @@ Problem Statement: Create a generator function that accepts multiple iterables a
 
 Function Signature: ```def chain_iterables(*iterables):```
 
-Requirements
+Requirements:
 
-•   The function must be a generator.
-•   It must accept a variable number of iterable arguments.
-•   It must yield all elements from the first iterable, followed by all elements from the second, and so on, in order.
-•   It should handle cases with no arguments or with empty iterables among the arguments.
-•   Consider using yield from for a concise implementation.
+* The function must be a generator.
+* It must accept a variable number of iterable arguments.
+* It must yield all elements from the first iterable, followed by all elements from the second, and so on, in order.
+* It should handle cases with no arguments or with empty iterables among the arguments.
+* Consider using `yield from` for a concise implementation.
 
 Test Cases
 ```python
@@ -1553,13 +1551,13 @@ Problem Statement: Create a generator that accepts two iterables and yields one 
 
 Function Signature: ```def interleave_iterables(iter1, iter2):```
 
-Requirements
+Requirements:
 
-•   The function must be a generator.
-•   It must accept two iterables.
-•   It must yield items by alternating between iter1 and iter2.
-•   When one iterable is exhausted, the generator must yield all remaining items from the other iterable.
-•   It must handle empty iterables.
+* The function must be a generator.
+* It must accept two iterables.
+* It must yield items by alternating between `iter1` and `iter2`.
+* When one iterable is exhausted, the generator must yield all remaining items from the other iterable.
+* It must handle empty iterables.
 
 Test Cases
 ```python
@@ -1584,13 +1582,13 @@ Problem Statement: Write a function that returns a generator expression. The gen
 Function Signature: ```def square_of_evens(numbers):```
 
 
-Requirements
+Requirements:
 
-•   The function must return a generator object, created from a generator expression.
-•   The returned generator must iterate over the input numbers.
-•   It must only consider even numbers.
-•   It must yield the square of each even number.
-•   It must handle empty iterables.
+* The function must return a generator object, created from a generator expression.
+* The returned generator must iterate over the input numbers.
+* It must only consider even numbers.
+* It must yield the square of each even number.
+* It must handle empty iterables.
 
 Test Cases
 
@@ -1623,14 +1621,14 @@ Problem Statement: Create a generator that yields items from an iterable, but st
 Function Signature: ```def bounded_repetition(iterable, max_yields):```
 
 
-Requirements
+Requirements:
 
-•   The function must be a generator.
-•   It must accept an iterable and a non-negative integer max_yields.
-•   It must yield items from the iterable in their original order.
-•   It must stop yielding after max_yields items have been produced.
-•   If the iterable has fewer than max_yields items, it yields all of them.
-•   If max_yields is 0, it should yield nothing.
+* The function must be a generator.
+* It must accept an iterable and a non-negative integer `max_yields`.
+* It must yield items from the iterable in their original order.
+* It must stop yielding after `max_yields` items have been produced.
+* If the iterable has fewer than `max_yields` items, it yields all of them.
+* If `max_yields` is 0, it should yield nothing.
 
 Test Cases
 ```python
@@ -1654,13 +1652,13 @@ Problem Statement: Create a generator that yields items from an iterable, but sk
 
 Function Signature: ```def skip_header_footer(iterable, header_size, footer_size):```
 
-Requirements
+Requirements:
 
-•   The function must be a generator.
-•   It must accept an iterable, a non-negative header_size, and a non-negative footer_size.
-•   It must not yield the first header_size items.
-•   It must not yield the last footer_size items.
-•   It should correctly handle cases where header_size + footer_size is greater than or equal to the total number of items.
+* The function must be a generator.
+* It must accept an iterable, a non-negative header_size, and a non-negative footer_size.
+* It must not yield the first header_size items.
+* It must not yield the last footer_size items.
+* It should correctly handle cases where header_size + footer_size is greater than or equal to the total number of items.
 
 Test Cases
 ```python
@@ -1685,14 +1683,13 @@ Problem Statement: Create a generator that processes a sorted iterable and yield
 
 Function Signature: ```def yield_runs(sorted_iterable):```
 
+Requirements:
 
-Requirements
-
-•   The function must be a generator.
-•   It must accept an iterable that is assumed to be sorted.
-•   It must yield a list for each run of consecutive identical items.
-•   Each yielded list should contain all identical items in that run.
-•   It must handle empty iterables.
+* The function must be a generator.
+* It must accept an iterable that is assumed to be sorted.
+* It must yield a list for each run of consecutive identical items.
+* Each yielded list should contain all identical items in that run.
+* It must handle empty iterables.
 
 Test Cases
 ```python
@@ -1716,14 +1713,14 @@ Problem Statement: Create a generator that yields items from an iterable in two 
 
 Function Signature: ```def partition_by_predicate(iterable, predicate):```
 
-Requirements
+Requirements:
 
-•   The function must be a generator.
-•   It must accept an iterable and a single-argument function predicate.
-•   It must iterate through the entire iterable once, caching the results.
-•   It must first yield from all items for which predicate(item) is truthy, in their original relative order.
-•   After that, it must yield from all items for which predicate(item) is falsy, in their original relative order.
-•   It must handle empty iterables.
+* The function must be a generator.
+* It must accept an iterable and a single-argument function predicate.
+* It must iterate through the entire iterable once, caching the results.
+* It must first yield from all items for which predicate(item) is truthy, in their original relative order.
+* After that, it must yield from all items for which predicate(item) is falsy, in their original relative order.
+* It must handle empty iterables.
 
 Test Cases
 ```python
@@ -1755,16 +1752,16 @@ Problem Statement: Create a generator that groups items from an iterable of dict
 
 Function Signature: ```def group_by_key(iterable, key):```
 
-Requirements
+Requirements:
 
-•   The function must be a generator.
-•   It must accept an iterable of dictionaries and a key.
-•   It must identify unique values for the given key in the order they first appear.
-•   For each unique key-value, it must yield a 2-element tuple: (key_value, items_generator).
-•   key_value is the value associated with the specified key.
-•   items_generator is a generator that yields all dictionaries from the original iterable (in their original order) that have key_value for the given key.
-•   It must handle cases where dictionaries are missing the specified key (they should be ignored).
-•   The outer generator should not consume the input iterable more than once.
+* The function must be a generator.
+* It must accept an iterable of dictionaries and a key.
+* It must identify unique values for the given key in the order they first appear.
+* For each unique key-value, it must yield a 2-element tuple: (`key_value,` `items_generator)`.
+    * `key_value` is the value associated with the specified key.
+    *  `items_generator` is a generator that yields all dictionaries from the original iterable (in their original order) that have `key_value` for the given key.
+* It must handle cases where dictionaries are missing the specified key (they should be ignored).
+* The outer generator should not consume the input iterable more than once.
 
 Test Cases
 ```python
@@ -1803,7 +1800,7 @@ result_gen = {city: list(items) for city, items in grouped_gen}
 assert result == result_gen
 ```
 
-Test Summary:The tests verify correct grouping, handling of missing keys, preservation of original item order within groups, and preservation of group order. They also confirm it works with empty and generator inputs.
+Test Summary: The tests verify correct grouping, handling of missing keys, preservation of original item order within groups, and preservation of group order. They also confirm it works with empty and generator inputs.
 
 <details> 
 <summary>Possible Solution</summary> 
@@ -1820,9 +1817,9 @@ Function Signature​: ```def generate_squares(numbers):```
 
 Complete Requirements​:
 
-•   The function must accept an iterable of numbers as an argument.
-•   The function must yield the square of each number in the order they appear in the input.
-•   The function must produce no values if the input iterable is empty.
+* The function must accept an iterable of numbers as an argument.
+* The function must yield the square of each number in the order they appear in the input.
+* The function must produce no values if the input iterable is empty.
 
 Ready-to-run Test Code​:
 
@@ -1854,10 +1851,10 @@ Function Signature​: ```def filter_short_words(words, max_length):```
 
 Complete Requirements​:
 
-•   The function must accept an iterable of strings and an integer max_length.
-•   The function must yield only the words whose length is strictly less than max_length.
-•   The function must preserve the original relative order of the yielded words.
-•   The function must produce no values if no words meet the criteria.
+* The function must accept an iterable of strings and an integer `max_length`.
+* The function must yield only the words whose length is strictly less than `max_length`.
+* The function must preserve the original relative order of the yielded words.
+* The function must produce no values if no words meet the criteria.
 
 Ready-to-run Test Code​:
 
@@ -1891,10 +1888,10 @@ Function Signature​: ```def generate_indexed(items):```
 
 Complete Requirements​:
 
-•   The function must accept an iterable as an argument.
-•   The function must yield a tuple (index, value) for each item.
-•   The index must start at 0 and increment for each item.
-•   The function must produce no values if the input iterable is empty.
+* The function must accept an iterable as an argument.
+* The function must yield a tuple (index, value) for each item.
+* The index must start at 0 and increment for each item.
+* The function must produce no values if the input iterable is empty.
 
 Ready-to-run Test Code​:
 
@@ -1927,10 +1924,10 @@ Function Signature​: ```def flatten_list(nested_list):```
 
 Complete Requirements​:
 
-•   The function must accept a list where each element is an iterable.
-•   The function must iterate through each nested iterable and yield its items one by one.
-•   The function must maintain the order of items as they appear.
-•   The function must correctly handle empty nested lists and a top-level empty list.
+* The function must accept a list where each element is an iterable.
+* The function must iterate through each nested iterable and yield its items one by one.
+* The function must maintain the order of items as they appear.
+* The function must correctly handle empty nested lists and a top-level empty list.
 
 Ready-to-run Test Code​:
 
@@ -1962,9 +1959,9 @@ Function Signature​: ```def generate_countdown(start):```
 
 Complete Requirements​:
 
-•   The function must accept a non-negative integer start.
-•   The function must first yield the start number, then start - 1, and so on, down to 0.
-•   If start is 0, the function should yield only 0.
+* The function must accept a non-negative integer start.
+* The function must first yield the start number, then start - 1, and so on, down to 0.
+* If start is 0, the function should yield only 0.
 
 Ready-to-run Test Code​:
 
@@ -1993,10 +1990,10 @@ Function Signature​: ```def format_dict_items(data_dict):```
 
 Complete Requirements​:
 
-•   The function must accept a dictionary as an argument.
-•   The function must yield a string for each item in the format `"Key: <key>, Value: <value>"`.
-•   The order of the yielded strings is not important.
-•   The function must produce no values if the input dictionary is empty.
+* The function must accept a dictionary as an argument.
+* The function must yield a string for each item in the format `"Key: <key>, Value: <value>"`.
+* The order of the yielded strings is not important.
+* The function must produce no values if the input dictionary is empty.
 
 Ready-to-run Test Code​:
 
@@ -2031,10 +2028,10 @@ Function Signature​: ```def chain_iterables(iter1, iter2):```
 
 Complete Requirements​:
 
-•   The function must accept two iterables as arguments.
-•   The function must first yield all items from iter1 in their original order.
-•   After iter1 is exhausted, the function must yield all items from iter2 in their original order.
-•   The implementation must use the yield from expression for both iterables.
+* The function must accept two iterables as arguments.
+* The function must first yield all items from `iter1` in their original order.
+* After `iter1` is exhausted, the function must yield all items from iter2 in their original order.
+* The implementation must use the yield from expression for both iterables.
 
 Ready-to-run Test Code​:
 
@@ -2069,9 +2066,9 @@ Function Signature​: ```def generate_consecutive_pairs(sequence):```
 
 Complete Requirements​:
 
-•   The function must accept an iterable as an argument.
-•   The function must yield a tuple (item, next_item) for each consecutive pair of items.
-•   The generator should produce no output if the input iterable has fewer than two items.
+* The function must accept an iterable as an argument.
+* The function must yield a tuple (item, next_item) for each consecutive pair of items.
+* The generator should produce no output if the input iterable has fewer than two items.
 
 Ready-to-run Test Code​:
 
@@ -2106,10 +2103,10 @@ Function Signature​: ```def generate_running_total(numbers):```
 
 Complete Requirements​:
 
-•   The function must accept an iterable of numbers.
-•   The function must maintain an internal state for the current total, initialized to 0.
-•   For each number in the input, the function must add it to the total and yield the new total.
-•   The function must produce no values if the input iterable is empty.
+* The function must accept an iterable of numbers.
+* The function must maintain an internal state for the current total, initialized to 0.
+* For each number in the input, the function must add it to the total and yield the new total.
+* The function must produce no values if the input iterable is empty.
 
 Ready-to-run Test Code​:
 ```python
@@ -2141,11 +2138,11 @@ Function Signature​: ```def generate_tagged_items(data):```
 
 Complete Requirements​:
 
-•   The function must accept a dictionary where values are lists.
-•   The function must iterate through the dictionary's key-value pairs.
-•   For each key (tag) and its corresponding list of items, the function must iterate through the items.
-•   The function must yield a tuple (tag, item) for each item.
-•   The exact order of yielded tuples is not important, but items with the same tag should appear in their original relative order.
+* The function must accept a dictionary where values are lists.
+* The function must iterate through the dictionary's key-value pairs.
+* For each key (tag) and its corresponding list of items, the function must iterate through the items.
+* The function must yield a tuple (tag, item) for each item.
+* The exact order of yielded tuples is not important, but items with the same tag should appear in their original relative order.
 
 Ready-to-run Test Code​:
 ```python
