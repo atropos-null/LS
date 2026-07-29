@@ -4,7 +4,7 @@
 
 ## Table of Contents
 
-Total Questions: 
+Total Questions: 82
 
 - [First Class and Higher-Order Functions](#first-class-and-higher-order-functions)
 - [Lambdas](#lambdas)
