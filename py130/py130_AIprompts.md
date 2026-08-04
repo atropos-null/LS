@@ -280,3 +280,110 @@ Arrange the exercises in a gradual progression:
 - Exercises 11–15: combining, alternating, grouping, and delegating with yield from
 - Exercises 16–20: richer finite collection-processing problems with multiple contract requirements
 - Avoid merely producing twenty versions of “yield values that satisfy a condition.” Vary the movement of data and the state that must be preserved between yields.
+
+### Bridge Prompt: Generators and Files
+
+Generate 10 programming exercises that bridge the concepts of Generators and Files in Launch School's PY130 course.
+
+Purpose: These exercises are intended to help students discover how generator functions naturally operate on sequences of lines and prepare them to recognize that file objects are iterable.
+
+Assume students know:
+* opening files with open
+* context managers (with)
+* iterating over file objects
+* generator functions
+* `yield`
+* generator expressions
+* lazy evaluation
+* simple uses of `yield from`
+
+Do not assume knowledge of:
+* itertools
+* io.StringIO
+* decorators
+* closures
+* recursion
+* regular expressions
+* asynchronous generators
+* `send`, `throw`, or `close`
+
+Exercise Design: Treat every exercise as if it were completed inside a single Python file in an online coding environment such as CoderPad.
+
+Do not require students to:
+* create external files
+* create additional Python files
+* copy text into data files
+* download resources
+* perform any setup outside the supplied code
+* Instead, whenever an exercise involves "file contents", provide the input as an iterable of strings.
+
+For example:
+```python
+lines = [
+    "Apple",
+    "Banana",
+    "Cherry",
+    "Apple Pie",
+]
+```
+
+```python
+or
+lines = (
+    "Alice,95",
+    "Bob,81",
+    "Carol,90",
+)
+```
+
+Students should write generators that operate on these iterables exactly as they would operate on a file object.
+
+Desired Concepts
+
+Across the ten exercises, naturally introduce ideas such as:
+* consuming an iterable of lines
+* transforming yielded lines
+* filtering yielded lines
+* skipping selected lines
+* composing multiple generators
+* building lazy processing pipelines
+* separating reading from processing
+* passing one generator into another
+
+The exercises should naturally lead students toward designs similar to:
+
+```python
+def matching_lines(lines, pattern):
+    for line in lines:
+        if pattern in line:
+            yield line
+```
+
+without reproducing the same functions directly.
+
+Output Format: For each exercise provide:
+* Title
+* Problem Statement
+* Function Signature
+* Complete contract using bullet points beginning with "The function must..."
+* Complete, ready-to-run assert statements
+* Every exercise must be completely self-contained.
+
+The students should never need to invent:
+* sample data
+* test cases
+* expected output
+* helper functions
+* debugging code
+
+Do Not Include
+* solutions
+* pseudocode
+* implementation hints
+* algorithm descriptions
+
+Before presenting the exercises, verify that:
+* every exercise is internally consistent
+* every expected output is correct
+* every exercise can be solved using only the concepts listed above
+* each exercise builds naturally toward understanding generators over file-like data.
