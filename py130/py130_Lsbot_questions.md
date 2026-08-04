@@ -11,6 +11,7 @@ Total Questions: 82
 - [Generators, on your own practice](#generators-on-your-own-practice)
 - [Generators, on your own practice 2](#generators-on-your-own-practice-2)
 - [Generators, team practice](#generators-team-practice)
+- [Generators and Files](#generators-and-files)
 
 ## Lesson 1: Functions, Generators, and Files
 
@@ -2188,6 +2189,348 @@ print("Exercise 10 tests passed!")
 <details> 
 <summary>Possible Solution</summary> 
 </details>
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+[Back to the top](#top)
+
+### Generators and Files
+
+#### 1. Title Case Lines
+
+Problem Statement: Create a generator function that takes an iterable of strings (lines) and yields each line converted to title case.
+
+Function Signature: ```def title_case_lines(lines):```
+
+Contract
+
+* The function must return a generator object.
+* The function must yield each line from the input iterable, converted to title case using the str.title() method.
+
+Asserts
+```python
+lines_data = ["hello world", "python is fun", "THE end"]
+expected = ["Hello World", "Python Is Fun", "The End"]
+gen = title_case_lines(lines_data)
+assert list(gen) == expected
+
+lines_data_2 = []
+expected_2 = []
+gen_2 = title_case_lines(lines_data_2)
+assert list(gen_2) == expected_2
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 2. Filter Lines by Keyword
+
+Problem Statement: Create a generator function that yields only the lines from an iterable that contain a specific keyword.
+
+Function Signature: ```def filter_lines_by_keyword(lines, keyword):```
+
+Contract
+
+* The function must return a generator object.
+* The function must yield only the lines from the input iterable that contain the keyword as a substring.
+* The matching should be case-sensitive.
+
+Asserts
+
+```python
+lines = [
+    "An apple a day keeps the doctor away.",
+    "Banana is a fruit.",
+    "I love pineapple.",
+    "This line has nothing to do with apples."
+]
+gen = filter_lines_by_keyword(lines, "apple")
+assert next(gen) == "An apple a day keeps the doctor away."
+assert next(gen) == "I love pineapple."
+
+lines_data_2 = ["test", "testing", "tested"]
+expected_2 = ["testing", "tested"]
+assert list(filter_lines_by_keyword(lines_data_2, "test")) == ["test", "testing", "tested"]
+assert list(filter_lines_by_keyword(lines_data_2, "tested")) == ["tested"]
+assert list(filter_lines_by_keyword(lines_data_2, "toast")) == []
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 3. Numbered Non-Blank Lines
+
+Problem Statement: Create a generator function that yields non-blank lines from an iterable, prefixed with a 1-indexed line number.
+
+Function Signature: ```def number_non_blank_lines(lines):```
+
+Contract:
+* The function must return a generator object.
+* The function must skip any line that is empty or contains only whitespace.
+* The function must yield the remaining lines, each prefixed with "N: " where N is the 1-indexed count of the non-blank lines yielded so far.
+
+Asserts
+```python
+lines = [
+    "First real line",
+    "  ",
+    "Second real line",
+    "",
+    "Third real line"
+]
+gen = number_non_blank_lines(lines)
+assert next(gen) == "1: First real line"
+assert next(gen) == "2: Second real line"
+assert next(gen) == "3: Third real line"
+
+lines_data_2 = ["   ", "Non-blank", "  \t ", "Another"]
+expected_2 = ["1: Non-blank", "2: Another"]
+assert list(number_non_blank_lines(lines_data_2)) == expected_2
+assert list(number_non_blank_lines(["", "   "])) == []
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 4. Parse Key-Value Pairs*
+
+Problem Statement: Create a generator function that parses lines of the format "key=value" and yields a tuple of (key, value).
+
+Function Signature: ```def parse_key_value(lines):```
+
+Contract
+
+* The function must return a generator object.
+* The function must parse each line formatted as "key=value", splitting on the first '=' character.
+* The function must yield a two-element tuple (key, value).
+* The function must strip any leading/trailing whitespace from both the key and the value before yielding.
+
+Asserts
+```python
+lines = [
+    "name=Alice",
+    "  age = 30  ",
+    "city=New York",
+    "role=Software Engineer=Advanced"
+]
+gen = parse_key_value(lines)
+assert next(gen) == ("name", "Alice")
+assert next(gen) == ("age", "30")
+assert next(gen) == ("city", "New York")
+assert next(gen) == ("role", "Software Engineer=Advanced")
+
+lines_data_2 = ["item=book", "price=15.99 "]
+expected_2 = [("item", "book"), ("price", "15.99")]
+assert list(parse_key_value(lines_data_2)) == expected_2
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 5. Skip First N Lines
+
+Problem Statement: Create a generator function that yields all lines from an iterable ​after​ skipping the first n lines.
+
+Function Signature:  ```def skip_header(lines, n):```
+
+Contract
+
+* The function must return a generator object.
+* The function must not yield any of the first n lines from the input iterable.
+* The function must yield all subsequent lines in their original order.
+* If the iterable has n or fewer lines, the generator should be empty.
+
+Asserts
+```python
+lines = ["Header 1", "Header 2", "Data 1", "Data 2", "Data 3"]
+gen = skip_header(lines, 2)
+assert next(gen) == "Data 1"
+assert next(gen) == "Data 2"
+assert next(gen) == "Data 3"
+
+lines_data_2 = ["a", "b", "c", "d"]
+assert list(skip_header(lines_data_2, 3)) == ["d"]
+assert list(skip_header(lines_data_2, 4)) == []
+assert list(skip_header(lines_data_2, 5)) == []
+assert list(skip_header(lines_data_2, 0)) == ["a", "b", "c", "d"]
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 6. Extract Log Messages by Level
+
+Problem Statement: Create a generator function that processes log lines with the format "LEVEL: Message". It should filter for a specific log level and yield only the message part.
+
+Function Signature: ```def extract_log_messages(lines, level):```
+
+Contract
+
+* The function must return a generator object.
+* The function must only process lines that start with the prefix f"{level}: ".
+* The prefix matching must be case-sensitive.
+* For each matching line, it must yield the message part (the text after the prefix) with leading/trailing whitespace removed.
+
+Asserts
+```python
+log_lines = (
+    "INFO: System starting up",
+    "DEBUG: Variable x=10",
+    "ERROR:   File not found   ",
+    "INFO: System shutting down",
+    "error: lowercase error",
+)
+gen = extract_log_messages(log_lines, "INFO")
+assert next(gen) == "System starting up"
+assert next(gen) == "System shutting down"
+
+assert list(extract_log_messages(log_lines, "ERROR")) == ["File not found"]
+assert list(extract_log_messages(log_lines, "WARNING")) == []
+assert list(extract_log_messages(log_lines, "error")) == ["lowercase error"]
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 7. Data Processing Pipeline
+
+Problem Statement:  Create two separate generator functions to form a processing pipeline. The first function, clean_lines, should remove comments and extra whitespace. The second function, extract_numbers, should take the output of the first and yield only valid integers.
+
+Function Signatures:
+```def clean_lines(lines):``` 
+```def extract_numbers(cleaned_lines):``` 
+
+Contract for `clean_lines`:
+
+* The function must return a generator object.
+* The function must skip any line that starts with '#'.
+* The function must yield the remaining lines with leading/trailing whitespace removed.
+
+Contract for `extract_numbers`
+
+* The function must return a generator object.
+* The function must take an iterable of cleaned strings as input.
+* The function must attempt to convert each string to an integer.
+* The function must yield only the strings that successfully convert to integers, as int types.
+
+Asserts
+```python
+raw_data = ["100", "# This is a comment", "  250 ", "   -50", "not a number", "42"]
+cleaned = clean_lines(raw_data)
+numbers_gen = extract_numbers(cleaned)
+assert list(numbers_gen) == [100, 250, -50, 42]
+
+data_2 = ["# Header", "1", "2", "  # Another comment", "3", "3.14"]
+expected_2 = [1, 2, 3]
+assert list(extract_numbers(clean_lines(data_2))) == expected_2
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 8. Positive Integers with a Generator Expression
+
+Problem Statement: Write a function that accepts an iterable of numbers and returns a generator that yields only the positive numbers. You must implement this using a generator expression within a single return statement.
+
+Function Signature:  ```def get_positives(numbers):```
+
+Contract
+
+* The function must return a generator object.
+* The implementation must consist of a single line: return (expression).
+* The generator must yield only the numbers from the input iterable that are strictly greater than 0.
+
+Asserts
+```python
+from types import GeneratorType
+
+numbers = [10, -5, 0, 1, 100, -20, 7]
+positive_gen = get_positives(numbers)
+assert isinstance(positive_gen, GeneratorType)
+assert list(positive_gen) == [10, 1, 100, 7]
+
+numbers_2 = [-1, -2, -3, 0]
+assert list(get_positives(numbers_2)) == []
+assert list(get_positives([1, 2, 3])) == [1, 2, 3]
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 9. Chaining Iterables with yield from
+
+Problem Statement: Create a generator function that combines two iterables of lines into a single sequence using yield from.
+
+Function Signature: ```def chain(iter1, iter2):```
+
+Contract
+
+* The function must return a generator object.
+* The function must yield all items from `iter1` in order, followed by all items from `iter2` in order.
+* The implementation must use yield from for both iterables.
+
+Asserts
+```python
+source1 = ["a", "b"]
+source2 = ("c", "d")
+gen = chain(source1, source2)
+assert list(gen) == ["a", "b", "c", "d"]
+
+assert list(chain([], [1, 2])) == [1, 2]
+assert list(chain([1, 2], [])) == [1, 2]
+assert list(chain(range(2), "xy")) == [0, 1, "x", "y"]
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 10. Summarize CSV Data
+
+Problem Statement: Create a generator function that processes CSV data representing fruit inventory. Filter for a specific fruit and yield a formatted summary string for each matching entry.
+
+Function Signature: ```def summarize_fruit_inventory(lines, fruit_name):```
+
+Contract
+
+* The function must return a generator object.
+* The function must process lines of comma-separated values with the format "fruit,quantity,color".
+* The function must filter for lines where the first value matches fruit_name (case-insensitively).
+* For each matching line, the function must yield a formatted string: `"Found {quantity} {color} {fruit_name}(s)."`.
+
+Asserts
+
+```python
+inventory_data = (
+    "apple,100,red",
+    "banana,150,yellow",
+    "Apple,50,green",
+    "grape,200,purple"
+)
+gen = summarize_fruit_inventory(inventory_data, "apple")
+assert next(gen) == "Found 100 red apple(s)."
+assert next(gen) == "Found 50 green apple(s)."
+
+data_2 = ["Banana,20,yellow", "Orange,30,orange"]
+assert list(summarize_fruit_inventory(data_2, "banana")) == ["Found 20 yellow banana(s)."]
+assert list(summarize_fruit_inventory(data_2, "pear")) == []
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+[Back to the top](#top)
 
 <details> 
 <summary>Possible Solution</summary> 
