@@ -1095,6 +1095,23 @@ assert list(parse_error_logs([])) == []
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def parse_error_logs(log_lines):
+
+    for line in log_lines:
+        if line.startswith("ERROR:"):
+            result_dict = {}
+            time_and_message = line.split(": ")[1]
+            tm_split = time_and_message.split(" - ")
+            time = tm_split[0]
+            message = tm_split[1]
+            result_dict['level'] = 'ERROR'
+            result_dict['timestamp'] = time
+            result_dict['message'] = message
+            yield result_dict
+```
 </details>
 
 
@@ -1127,6 +1144,15 @@ assert list(read_csv([])) == []
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+import csv 
+
+reader = csv.reader(lines)
+    for row in reader:
+        yield row
+```
 </details>
 
 
@@ -1165,6 +1191,32 @@ assert list(process_temperatures("")) == []
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def file_reader(raw_data):
+    for line in raw_data.splitlines():
+        yield line
+
+def filter_comments(partially_processed_data):
+    for element in partially_processed_data:
+        if not element.startswith("#"):
+            yield element
+
+def parse_data(almost_processed_data):
+    for element in almost_processed_data:
+        city, temperature_celsius = element.split(",", 1)
+        yield city, float(temperature_celsius)
+
+def process_temperatures(raw_data):
+    lines = file_reader(raw_data)
+    clean_lines = filter_comments(lines)
+    records = parse_data(clean_lines)
+
+    for city, temp_celsius in records:
+        temp_f = temp_celsius* 9 / 5 + 32
+        yield f"{city}: {temp_f:.1f}F"
+```
+
 </details>
 
 [Back to the top](#top)
