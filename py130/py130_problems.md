@@ -288,6 +288,8 @@ print(set(all_caps(strings)))
 
 </details>
 
+## [Arguments and Parameters](https://launchschool.com/lessons/ab8b995d/assignments/6e94e908)
+
 <details> 
 <summary>Possible Solution</summary> 
 </details>

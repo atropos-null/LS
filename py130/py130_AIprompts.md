@@ -387,3 +387,69 @@ Before presenting the exercises, verify that:
 * every expected output is correct
 * every exercise can be solved using only the concepts listed above
 * each exercise builds naturally toward understanding generators over file-like data.
+
+## Lesson 2 Practice Prompts
+
+### Arguments & Parameters Deep Practice
+
+Generate 15 programming exercises for students studying Arguments and Parameters in Launch School's PY130 course. Purpose: These exercises 
+should develop a deep understanding of Python's argument binding rules rather than simply practicing the syntax.
+
+Assume students already know:
+* positional arguments
+* keyword arguments
+* default values
+* positional-only parameters (/)
+* keyword-only parameters (*)
+* *args
+* **kwargs
+
+Do not assume knowledge of decorators, typing, dataclasses, or other later PY130 topics.
+
+Design Philosophy: The goal is to make students reason about how Python matches arguments to parameters.Favor exercises that require students to think about valid and invalid function calls, API design, and function signatures. Avoid repetitive "write another function that accepts *args" problems. Whenever possible, make the central challenge understanding how Python binds arguments to parameters at function call time, rather than memorizing syntax.
+
+Desired Exercise Types
+Include a mixture of:
+* writing function signatures
+* implementing functions
+* correcting incorrect signatures
+* predicting which function calls succeed
+* identifying why particular calls raise TypeError
+* designing APIs with positional-only and keyword-only parameters
+* choosing appropriate parameter kinds for a given contract
+* refactoring an existing function signature to improve usability
+* implementing small utility functions using *args or **kwargs
+* combining multiple parameter kinds correctly
+
+Output Format
+
+Each exercise must include:
+* Title
+* Problem Statement
+* Function Signature (or indicate that the student must design it)
+* Complete contract
+* Ready-to-run assert statements
+* If the exercise concerns invalid calls, include the example calls directly.
+
+For example:
+```python
+foo(1, 2)
+foo(a=1, b=2)
+foo(1, b=2)
+```
+
+The student should determine which succeed and why. Do not require students to invent test cases. Every exercise must be self-contained.
+
+Difficulty: Arrange the exercises from easier to moderately challenging. The final exercises should require combining several parameter kinds correctly.
+
+Do Not Include
+* solutions
+* pseudocode
+* implementation hints
+
+Before presenting the exercises, verify that:
+* every valid call is actually valid;
+* every invalid call genuinely raises a TypeError;
+* every function signature matches the stated contract;
+* every exercise is internally consistent.
+

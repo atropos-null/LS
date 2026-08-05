@@ -1252,6 +1252,15 @@ Test Summary:  The tests verify selection for integers, strings, and mixed types
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def select_by_value(iterable, value):
+
+    for element in iterable:
+        if element == value:
+            yield element
+```
+
 </details>
 
 #### Exercise 2. Transform to Uppercase
@@ -1282,6 +1291,12 @@ Test Summary: The tests verify the transformation for lists and tuples of string
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def transform_to_uppercase(strings):
+    for string in strings:
+        yield string.upper()
+```
 </details>
 
 #### Exercise 3. Filter Out Short Words
@@ -1313,6 +1328,15 @@ Test Summary: The tests cover various minimum lengths, including cases where som
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def filter_out_short_words(words, min_length):
+    for word in words:
+        if len(word) >= min_length:
+            yield word
+```
+
 </details>
 
 #### Exercise 4. Yield with Index
@@ -1343,10 +1367,20 @@ Test Summary: The tests verify correct index-value pairing for lists, tuples, st
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def yield_with_index(iterable):
+
+    i = 0
+    for item in iterable:
+        yield (i, item)
+        i += 1
+```
+
 </details>
 
 
-#### Exercise 5. Repeat Each Item*
+#### Exercise 5. Repeat Each Item
 
 Problem Statement: Create a generator function that yields each item from an iterable a specified number of times before moving to the next item.
 
@@ -1374,6 +1408,19 @@ Test Summary: The tests cover repeating items multiple times, once, or zero time
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def repeat_each_item(iterable, num_repeats):
+
+    target = num_repeats 
+    for item in iterable:
+        while num_repeats > 0:
+            yield item
+            num_repeats -= 1
+        num_repeats = target
+```
+
 </details>
 
 #### Exercise 6. Yield Every Nth Item
@@ -1406,6 +1453,17 @@ Test Summary:  The tests verify correct selection with different step values (n)
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def yield_every_nth(iterable, n):
+
+    i = 0
+    for item in iterable:
+        if i % n == 0:
+            yield item
+        i += 1
+```
+
 </details>
 
 #### Exercise 7. Yield Until Value
@@ -1438,6 +1496,19 @@ Test Summary:  The tests verify that generation stops correctly, handles cases w
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def yield_until_value(iterable, stop_value):
+    i = 0
+    for item in iterable:
+        if item != stop_value:
+            yield item
+            i += 1
+        else:
+            break
+```
+
 </details>
 
 #### Exercise 8. Flatten One Level
@@ -1469,6 +1540,15 @@ Test Summary: The tests cover nested lists, tuples, and strings, including cases
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def flatten_one_level(nested_iterable):
+
+    for iterable in nested_iterable:
+        for element in iterable:
+            yield element
+```
+
 </details>
 
 #### Exercise 9. Filter Dictionary Items
@@ -1507,6 +1587,15 @@ Test Summary: The tests verify filtering based on numeric and type-based predica
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def filter_dict_items(dictionary, predicate):
+    for key, value in dictionary.items():
+        if predicate(value):
+            yield key, value
+```
+
 </details>
 
 #### Exercise 10. Yield Unique Items
@@ -1540,6 +1629,18 @@ The tests verify that duplicates are removed while preserving the order of first
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def yield_unique_items(iterable):
+
+   current_set = set()
+   for item in iterable:
+      if item not in current_set:
+        current_set.add(item)
+        yield item
+```
+
 </details>
 
 #### Exercise 11. Create a Bounded Range Generator
@@ -1579,6 +1680,14 @@ Test Summary: The tests verify the generator expression's output for positive st
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def bounded_range_generator(start, stop, step):
+    for item in range(start, stop, step):
+        yield item
+```
+
 </details>
 
 #### Exercise 12. Chain Iterables
@@ -1609,6 +1718,15 @@ Test Summary: The tests verify chaining of different iterable types (list, tuple
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def chain_iterables(*iterables):
+
+    for iterable in iterables:
+        yield from iterable
+```
+
 </details>
 
 #### Exercise 13. Interleave Iterables
@@ -2583,6 +2701,511 @@ assert list(summarize_fruit_inventory(data_2, "pear")) == []
 </details>
 
 [Back to the top](#top)
+
+## Lesson 2: Advanced Concepts
+
+### Arguments and Parameters
+
+#### 1. Positional vs. Keyword Arguments: Argument Equivalence
+
+Problem Statement​: Below is a function describe_shape and a list of five function calls. For each call, determine if it will execute successfully. Do not run the code; reason about how Python binds the arguments to the parameters.
+
+Function Signature​: 
+
+```python
+def describe_shape(sides, name, color="black"):
+    pass
+```
+
+Contract​:
+* `sides`: An integer representing the number of sides.
+* `name`: A string, the name of the shape.
+* c`olor`: An optional string for the shape's color, defaulting to "black".
+* The function's implementation is not relevant.
+
+Function Calls to Analyze​:
+```python
+# Call 1
+describe_shape(4, "square", "blue")
+
+# Call 2
+describe_shape(name="circle", sides=1)
+
+# Call 3
+describe_shape("triangle", 3)
+
+# Call 4
+describe_shape(5, "pentagon")
+
+# Call 5
+describe_shape(sides=6, name="hexagon", "red")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 2. Enforcing Positional-Only Arguments: API Command Handler
+
+Problem Statement​: Implement a function that takes exactly two arguments: a command name (which must be positional) and a target.
+
+Function Signature​:
+
+```python
+def execute_command(command, /, target):
+    return f"Executing {command} on {target}."
+```
+
+Contract​:
+
+* `command`: A string, the name of the command to execute. Must be passed positionally.
+* `target`: A string, the target of the command. Can be passed positionally or by keyword.
+* ​Returns​: A formatted string confirming the execution.
+
+Test Cases​:
+```python
+assert execute_command("start", "server") == "Executing start on server."
+assert execute_command("stop", target="database") == "Executing stop on database."
+
+# The following call should raise a TypeError:
+execute_command(command="restart", target="worker")
+```
+
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+
+#### 3. Enforcing Keyword-Only Arguments: Configuration Options
+
+Problem Statement​: Write a function signature for configure_system that meets the following requirements:
+
+1. It must accept one required positional argument, hostname.
+2. It must accept two optional keyword-only arguments, `port (default 8080)` and `ssl_enabled (default False)`.
+
+Implement the function to return a dictionary of the final configuration.
+
+Function Signature​: You must design the signature.
+
+Contract​:
+
+* `hostname`: A required string.
+* `port`: An optional integer, keyword-only.
+* `ssl_enabled`: An optional boolean, keyword-only.
+* ​Returns​: A dictionary containing the keys `hostname`, `port`, and `ssl_enabled`.
+
+Test Cases​:
+
+```python
+# Replace `configure_system` with your implementation
+assert configure_system("api.launchschool.com") == {
+    "hostname": "api.launchschool.com",
+    "port": 8080,
+    "ssl_enabled": False,
+}
+assert configure_system("app.launchschool.com", port=443, ssl_enabled=True) == {
+    "hostname": "app.launchschool.com",
+    "port": 443,
+    "ssl_enabled": True,
+}
+
+# The following call should raise a TypeError:
+configure_system("db.launchschool.com", 5432)
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 4. Fixing a Broken Signature
+
+Problem Statement​: The following function signature has a SyntaxError. Correct the signature so that the function can be defined and the provided assertions pass. Do not change the function body.
+
+Function Signature (Incorrect)​:
+
+```python
+def create_product(name, price=0.0, stock_count):
+    return {"name": name, "price": price, "stock_count": stock_count}
+```
+
+Contract​:
+
+* `name`: A required string, the product name.
+* `stock_count`: A required integer, the number of items in stock.
+* `price`: An optional float, the product price.
+* ​Returns​: A dictionary representing the product.
+
+Test Cases​:
+```python
+# Replace `create_product` with your corrected implementation
+assert create_product("Laptop", 50) == {"name": "Laptop", "price": 0.0, "stock_count": 50}
+assert create_product("Mouse", 25, 200) == {"name": "Mouse", "price": 25, "stock_count": 200}
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 5. Aggregating Positional Arguments: Sum of All Numbers
+
+Problem Statement​: Implement a function that accepts any number of numeric arguments and returns their sum. If no arguments are provided, it should return 0.
+
+Function Signature​:
+
+```python
+def sum_all(*numbers):
+    pass # Your implementation here
+```
+
+Contract​:
+
+* `*numbers`: A variable number of integers or floats.
+* Returns​: The sum of all provided numbers.
+
+Test Cases​:
+```python
+assert sum_all(1, 2, 3) == 6
+assert sum_all(10, 20) == 30
+assert sum_all() == 0
+assert sum_all(3.5, 1.5, 2.0) == 7.0
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 6. Handling Arbitrary Keyword Arguments: HTML Attribute Formatter
+
+Problem Statement​: Implement a function that takes any number of keyword arguments and formats them into an HTML attribute string. For example, `id="main"` and `class_="container"` should become `id="main" class="container"`.
+
+Function Signature​: ``` def format_html_attributes(**attributes):```
+
+Contract​:
+
+* `**attributes`: Keyword arguments representing HTML attributes.
+* ​Returns​: A single string with a leading space, containing all attributes formatted as key="value" pairs separated by spaces. The order is not important.
+
+Test Cases​:
+```python
+result1 = format_html_attributes(id="profile-pic", src="user.jpg", alt="User photo")
+assert ' id="profile-pic"' in result1
+assert ' src="user.jpg"' in result1
+assert ' alt="User photo"' in result1
+
+assert format_html_attributes(href="/home", target="_blank") == ' href="/home" target="_blank"'
+assert format_html_attributes() == ""
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 7. Designing a Robust API​: User Profile Creator
+
+Problem Statement​: Design and implement a function create_user_profile that adheres to a strict API contract. The username must be provided positionally and cannot be passed as a keyword. All other profile information (e.g., age, city, bio) must be provided as keyword arguments.
+
+Function Signature​: You must design the signature.
+
+Contract​:
+
+* A required, positional-only username string.
+* Any number of optional keyword arguments for other profile data.
+* ​Returns​: A dictionary containing the username and all other provided profile data.
+
+Test Cases​:
+```python
+# Replace `create_user_profile` with your implementation
+assert create_user_profile("py-student") == {"username": "py-student"}
+assert create_user_profile("js-student", age=25, city="Online") == {
+    "username": "js-student",
+    "age": 25,
+    "city": "Online",
+}
+
+# The following call should raise a TypeError:
+create_user_profile(username="rb-student")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 8. Combining Positional and Variable Arguments: Prefixed Logger
+
+Problem Statement​: Implement a function that takes a required prefix string and any number of additional positional arguments (items). The function should return a list where each item is a string formatted as "[PREFIX] item".
+
+Function Signature​: ```def log_items(prefix, *items):```
+
+Contract​:
+
+*   `prefix`: A string to prepend to each item.
+*   `*items`: A variable number of items to be logged.
+*   ​Returns​: A list of formatted strings.
+
+Test Cases​:
+
+```python
+assert log_items("INFO", "Server starting", "Port 8080") == [
+    "[INFO] Server starting",
+    "[INFO] Port 8080",
+]
+assert log_items("DEBUG") == []
+assert log_items("ERROR", 404, "Not Found") == ["[ERROR] 404", "[ERROR] Not Found"]
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 9. Refactoring for Readability: Refactor Plotting Function
+
+Problem Statement​: The function generate_plot is hard to use because callers must remember the correct order for the boolean flags. Refactor its signature to make show_grid and log_scale keyword-only arguments, improving call-site readability. Do not change the function body.
+
+Function Signature (Original)​:
+
+```python
+def generate_plot(data, show_grid=True, log_scale=False):
+    # Imagine complex plotting logic here
+    return {"data_points": len(data), "grid": show_grid, "log": log_scale}
+```
+
+Contract (for the refactored function)​:
+
+* `data`: A required list of data points.
+* `show_grid`: An optional, keyword-only boolean.
+* `log_scale`: An optional, keyword-only boolean.
+* Returns​: A dictionary summarizing the plot configuration.
+
+Test Cases (for the refactored function)​:
+
+```python
+# Replace `generate_plot` with your refactored implementation
+assert generate_plot([1, 2, 3]) == {"data_points": 3, "grid": True, "log": False}
+assert generate_plot([1, 2, 3], log_scale=True) == {"data_points": 3, "grid": True, "log": True}
+assert generate_plot([1, 2, 3], show_grid=False, log_scale=True) == {
+    "data_points": 3,
+    "grid": False,
+    "log": True,
+}
+
+# The following call should raise a TypeError with the refactored signature:
+generate_plot([1, 2, 3], False)
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 10. Call Analysis with Mixed Parameters​: Event Scheduler Validation
+
+Problem Statement​: Analyze the five calls to the schedule_task function below. For each call, determine if it is valid or if it will raise a TypeError. Explain the reason for any failures.
+
+Function Signature​:
+
+```python
+def schedule_task(task_id, /, due_date, *, priority="normal", assignee=None):
+    pass
+```
+
+Contract​:
+
+* `task_id`: Positional-only integer.
+* `due_date`: Positional or keyword string.
+* `priority`: Keyword-only string.
+* `assignee`: Keyword-only string.
+* The function's implementation is not relevant.
+
+Function Calls to Analyze​:
+```python
+# Call 1
+schedule_task(101, "2024-12-25", priority="high", assignee="Alice")
+
+# Call 2
+schedule_task(102, due_date="2025-01-01")
+
+# Call 3
+schedule_task(103, "2024-11-30", "low")
+
+# Call 4
+schedule_task(task_id=104, due_date="2025-02-01")
+
+# Call 5
+schedule_task(105, "2024-10-31", assignee="Bob")
+```
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 11. Implementing a kwargs Filter: Allowed Options Filter
+
+Problem Statement​: Implement a utility function filter_options that accepts a set of allowed_keys and an arbitrary number of keyword arguments. It should return a new dictionary containing only the key-value pairs from the keyword arguments where the key is present in allowed_keys.
+
+Function Signature​:
+
+```python
+def filter_options(allowed_keys, **options):
+    pass # Your implementation here
+```
+
+Contract​:
+
+* `allowed_keys`: A set of strings representing valid option keys.
+* `**options`: Arbitrary keyword arguments.
+* ​Returns​: A new dictionary with filtered key-value pairs.
+
+Test Cases​:
+```python
+allowed = {"font_size", "color", "background"}
+result = filter_options(allowed, font_size=12, color="blue", margin=10, background="white")
+assert result == {"font_size": 12, "color": "blue", "background": "white"}
+
+allowed2 = {"user", "action"}
+result2 = filter_options(allowed2, user="admin", timestamp="12345")
+assert result2 == {"user": "admin"}
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 12. Choosing the Right Parameter Types: Database Connection String Builder
+
+Problem Statement​: Design a function signature for `build_connection_string`. The function's purpose is to construct a database connection string.
+
+* The db_type (e.g., "postgresql", "mysql") is required and should be positional-only to ensure it's always first.
+* The host is required and can be positional or keyword.
+* All other connection parameters (e.g., user, password, port, dbname) are optional and must be keyword-only for clarity.
+
+Implement the function to return the connection string.
+
+Function Signature​: You must design the signature.
+
+Contract​:
+
+* `db_type`: A required, positional-only string.
+* `host`: A required string.
+* Other parameters are optional and keyword-only.
+* ​Returns​: A formatted connection string. For example: `"postgresql://user:password@host:port/dbname"`. The exact format can vary, but it should include all provided components.
+
+Test Cases​:
+```python
+# Replace `build_connection_string` with your implementation
+# The exact string format is flexible, but it must contain the right info.
+assert build_connection_string("postgresql", "localhost", user="admin", dbname="app_db") == "postgresql://admin@localhost/app_db"
+assert build_connection_string("mysql", "127.0.0.1", port=3306, user="root") == "mysql://root@127.0.0.1:3306"
+
+# The following call should raise a TypeError:
+build_connection_string(db_type="sqlite", host="file.db")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 13. The "Multiple Values for Argument" Error: Uncovering a Tricky TypeError
+
+Problem Statement​: One of the three calls to process_data below will raise a TypeError with the message "got multiple values for argument".Identify which call fails and explain precisely why Python raises this specific error.
+
+Function Signature​:
+```python
+def process_data(item_id, /, content, *, version=1):
+    pass
+```
+
+Function Calls to Analyze​:
+```python
+# Call 1
+process_data(1, "some data", version=2)
+
+# Call 2
+process_data(2, content="more data")
+
+# Call 3
+process_data(3, "extra data", item_id=3)
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 14.Combining Positional-Only, *args, and **kwargs: Universal Function Wrapper
+
+Problem Statement​: Implement a function invoke that acts as a universal wrapper. It takes a callable function func as its first argument (positional-only), followed by any number of positional and keyword arguments, which it then passes on to func.
+
+Function Signature​:
+```python
+def invoke(func, /, *args, **kwargs):
+    return func(*args, **kwargs)
+```
+
+Contract​:
+
+* `func`: A callable object (like a function or method), positional-only.
+* `*args`: Any positional arguments to be passed to func.
+* `**kwargs`: Any keyword arguments to be passed to func.
+* ​Returns​: The return value of func(*args, **kwargs).
+
+Test Cases​:
+```python
+def add(a, b):
+    return a + b
+
+def greet(name, greeting="Hello"):
+    return f"{greeting}, {name}!"
+
+assert invoke(add, 2, 3) == 5
+assert invoke(add, b=5, a=10) == 15
+assert invoke(greet, "World") == "Hello, World!"
+assert invoke(greet, "Python", greeting="Welcome") == "Welcome, Python!"
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 15. The Ultimate Argument Binding Challenge: Deconstruct the Master Signature
+
+Problem Statement​: Below is a complex function signature and a list of function calls. Without running the code, determine which calls are valid and which will raise a TypeError. For each invalid call, state the specific binding rule that is violated.
+
+Function Signature​:
+```python
+def master_assembler(part_id, /, vendor, *components, location="default", **options):
+    pass
+```
+
+Contract​:
+
+* `part_id`: Positional-only integer.
+* `vendor`: Positional or keyword string.
+* `*components`: Variable-length tuple of component strings.
+* `location`: Keyword-only string with a default value.
+* `**options`: Arbitrary keyword arguments (e.g., priority=True, fast_track=False).
+
+Function Calls to Analyze​:
+```python
+# Call 1
+master_assembler(1001, "Launch Inc.", "cpu", "ram", location="lab", priority=True)
+
+# Call 2
+master_assembler(1002, vendor="School Co.", location="warehouse")
+
+# Call 3
+master_assembler(1003, "LS Supplies", "case", "psu", "lab")
+
+# Call 4
+master_assembler(part_id=1004, vendor="LS Supplies")
+
+# Call 5
+master_assembler(1005, "LS Supplies", "gpu", location="lab", components=("ssd",))
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+[Back to the top](#top)
+
 
 <details> 
 <summary>Possible Solution</summary> 
