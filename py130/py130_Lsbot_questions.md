@@ -4,7 +4,6 @@
 
 ## Table of Contents
 
-Total Questions: 82
 
 - [First Class and Higher-Order Functions](#first-class-and-higher-order-functions)
 - [Lambdas](#lambdas)
@@ -12,6 +11,7 @@ Total Questions: 82
 - [Generators, on your own practice 2](#generators-on-your-own-practice-2)
 - [Generators, team practice](#generators-team-practice)
 - [Generators and Files](#generators-and-files)
+- [Arguments and Parameters](#arguments-and-parameters)
 
 ## Lesson 1: Functions, Generators, and Files
 
