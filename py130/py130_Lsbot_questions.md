@@ -2104,9 +2104,7 @@ def group_by_key(iterable, key):
         groups[key_value].append(item)
 
     for key_value in group_order:
-        items_generator = (
-            item for item in groups[key_value]
-        )
+        items_generator = (item for item in groups[key_value])
         yield key_value, items_generator
 ```
 </details>
