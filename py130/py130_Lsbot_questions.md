@@ -1757,6 +1757,30 @@ Test Summary: The tests verify interleaving for iterables of equal length and di
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def interleave_iterables(iter1, iter2):
+
+    iterator1 = iter(iter1)
+    iterator2 = iter(iter2)
+
+    iter1_exhausted = False
+    iter2_exhausted = False
+
+    while not (iter1_exhausted and iter2_exhausted):
+        if not iter1_exhausted:
+            try:
+                yield next(iterator1)
+            except StopIteration:
+                iter1_exhausted = True
+
+        if not iter2_exhausted:
+            try:
+                yield next(iterator2)
+            except StopIteration:
+                iter2_exhausted = True
+```
+
 </details>
 
 #### Exercise 14. Transform and Filter with a Generator Expression
@@ -1796,6 +1820,13 @@ Test Summary: The tests confirm that the returned generator correctly filters fo
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def square_of_evens(numbers):
+    return (x**2 for x in numbers if x % 2 == 0)
+```
+
 </details>
 
 #### Exercise 16. Bounded Repetition
@@ -1828,6 +1859,18 @@ Test Summary: The tests cover cases where the yield limit is reached, the iterab
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def bounded_repetition(iterable, max_yields):
+
+    i = 0
+    for item in iterable:
+        if i < max_yields:
+            yield item
+        i += 1
+
+```
 </details>
 
 #### Exercise 17. Skip Header and Footer
@@ -1859,6 +1902,18 @@ Test Summary: The tests verify correct skipping from both ends, no skipping (zer
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def skip_header_footer(iterable, header_size, footer_size):
+
+    i = 0
+    for item in iterable:
+        if i >= header_size and i <= (len(iterable) - footer_size - 1):
+            yield item   
+        i += 1
+```
+
 </details>
 
 #### Exercise 18. Yield Runs of Consecutive Duplicates
@@ -1889,11 +1944,33 @@ Test Summary: The tests cover various runs of different lengths, including singl
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def yield_runs(sorted_iterable):
+
+    current_run = []
+    current_value = None
+
+    for item in sorted_iterable:
+        if not current_run:
+            current_value = item
+            current_run.append(item)
+        elif item == current_value:
+            current_run.append(item)
+        else:
+            yield current_run
+            current_value = item
+            current_run = [item]
+
+    if current_run:
+       yield current_run
+```
 </details>
 
 #### Exercise 19. Partition by Predicate
 
-Problem Statement: Create a generator that yields items from an iterable in two groups based on a predicate.[11:41 AM]First, it should yield all items for which the predicate is truthy, and then it should yield all items for which the predicate is falsy.
+Problem Statement: Create a generator that yields items from an iterable in two groups based on a predicate. First, it should yield all items for which the predicate is truthy, and then it should yield all items for which the predicate is falsy.
 
 Function Signature: ```def partition_by_predicate(iterable, predicate):```
 
@@ -1928,11 +2005,29 @@ Test Summary: The tests verify correct partitioning for numbers and strings. The
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def partition_by_predicate(iterable, predicate):
+
+    truthy = []
+    falsy = []
+
+    for item in iterable:
+        if predicate(item):
+            truthy.append(item)
+        else:
+            falsy.append(item)
+
+    for element in truthy:
+        yield element
+    for element in falsy:
+        yield element
+```
 </details>
 
 #### Exercise 20. Group By Key
 
-Problem Statement: Create a generator that groups items from an iterable of dictionaries by a common key.[11:41 AM]For each unique value of the specified key, the generator should yield a tuple containing that value and another generator that yields all dictionaries having that value.
+Problem Statement: Create a generator that groups items from an iterable of dictionaries by a common key.For each unique value of the specified key, the generator should yield a tuple containing that value and another generator that yields all dictionaries having that value.
 
 Function Signature: ```def group_by_key(iterable, key):```
 
@@ -1943,7 +2038,7 @@ Requirements:
 * It must identify unique values for the given key in the order they first appear.
 * For each unique key-value, it must yield a 2-element tuple: (`key_value,` `items_generator)`.
     * `key_value` is the value associated with the specified key.
-    *  `items_generator` is a generator that yields all dictionaries from the original iterable (in their original order) that have `key_value` for the given key.
+    * `items_generator` is a generator that yields all dictionaries from the original iterable (in their original order) that have `key_value` for the given key.
 * It must handle cases where dictionaries are missing the specified key (they should be ignored).
 * The outer generator should not consume the input iterable more than once.
 
@@ -1988,6 +2083,32 @@ Test Summary: The tests verify correct grouping, handling of missing keys, prese
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def group_by_key(iterable, key):
+
+    groups = {}
+    group_order = []
+
+    for item in iterable:
+        if key not in item:
+            continue
+
+        key_value = item[key]
+
+        if key_value not in groups:
+            groups[key_value] = []
+            group_order.append(key_value)
+
+        groups[key_value].append(item)
+
+    for key_value in group_order:
+        items_generator = (
+            item for item in groups[key_value]
+        )
+        yield key_value, items_generator
+```
 </details>
 
 [Back to the top](#top)
