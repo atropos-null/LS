@@ -3051,7 +3051,7 @@ def describe_shape(sides, name, color="black"):
 Contract​:
 * `sides`: An integer representing the number of sides.
 * `name`: A string, the name of the shape.
-* c`olor`: An optional string for the shape's color, defaulting to "black".
+* `color`: An optional string for the shape's color, defaulting to "black".
 * The function's implementation is not relevant.
 
 Function Calls to Analyze​:
