@@ -2145,6 +2145,14 @@ print("Exercise 1 tests passed!")
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def generate_squares(numbers):
+    for number in numbers:
+        yield number ** 2
+```
+
 </details>
 
 #### Exercise 2​, Filter Short Words
@@ -2182,6 +2190,14 @@ print("Exercise 2 tests passed!")
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def filter_short_words(words, max_length):
+    for word in words:
+        if len(word) < max_length:
+            yield word
+```
+
 </details>
 
 #### Exercise 3, Generate Indexed Values
@@ -2205,7 +2221,7 @@ assert list(generate_indexed(['a', 'b', 'c'])) == [(0, 'a'), (1, 'b'), (2, 'c')]
 
 # Test case 2: A single-element tuple
 
-[1:18 PM]assert list(generate_indexed(('hello',))) == [(0, 'hello')]
+assert list(generate_indexed(('hello',))) == [(0, 'hello')]
 
 # Test case 3: An empty list
 assert list(generate_indexed([])) == []
@@ -2218,6 +2234,15 @@ print("Exercise 3 tests passed!")
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def generate_indexed(items):
+
+    i = 0
+    for item in items:
+        yield (i, item)
+        i += 1
+```
 </details>
 
 #### ​Exercise 4, Flatten a List
@@ -2253,6 +2278,15 @@ print("Exercise 4 tests passed!")
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def flatten_list(nested_list):
+
+    for sublist in nested_list:
+        for element in sublist:
+            yield element
+```
+
 </details>
 
 #### Exercise 5​, Generate Number Countdown
@@ -2284,6 +2318,17 @@ print("Exercise 5 tests passed!")
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def generate_countdown(start):
+
+    i = 0
+    for _ in range(start+1):
+        result = start - i
+        yield result
+        i += 1
+```
+
 </details>
 
 #### Exercise 6​, Generate Dictionary Key-Value Pairs
@@ -2305,7 +2350,7 @@ Ready-to-run Test Code​:
 # Test case 1: Basic dictionary
 inventory = {'apples': 5, 'oranges': 10}
 
-[1:18 PM]expected = {"Key: apples, Value: 5", "Key: oranges, Value: 10"}
+expected = {"Key: apples, Value: 5", "Key: oranges, Value: 10"}
 assert set(format_dict_items(inventory)) == expected
 
 # Test case 2: Dictionary with different value types
@@ -2321,6 +2366,15 @@ print("Exercise 6 tests passed!")
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def format_dict_items(data_dict):
+
+    for key, value in data_dict.items():
+        result = f"Key: {key}, Value: {value}"
+        yield result
+```
+
 </details>
 
 #### Exercise 7, Chain Two Iterables
@@ -2360,6 +2414,14 @@ print("Exercise 7 tests passed!")
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def chain_iterables(iter1, iter2):
+
+    iterable = [iter1, iter2]
+    for item in iterable:
+        yield from item
+```
 </details>
 
 #### Exercise 8, Generate Consecutive Pairs
@@ -2397,9 +2459,17 @@ print("Exercise 8 tests passed!")
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def generate_consecutive_pairs(sequence):
+
+    for i in range(len(sequence)-1):
+        yield sequence[i], sequence[i+1]
+```
+
 </details>
 
-#### Exercise 9​,Generate Running Total
+#### Exercise 9​, Generate Running Total
 
 Problem Statement​: Create a generator function that takes an iterable of numbers and yields a running total.
 
@@ -2420,8 +2490,7 @@ assert list(generate_running_total([1, 2, 3, 4])) == [1, 3, 6, 10]
 # Test case 2: Mix of positive and negative numbers
 assert list(generate_running_total([10, -2, 5, -8])) == [10, 8, 13, 5]
 
-
-[1:18 PM]# Test case 3: A single number
+# Test case 3: A single number
 assert list(generate_running_total([100])) == [100]
 
 # Test case 4: Empty input
@@ -2432,6 +2501,16 @@ print("Exercise 9 tests passed!")
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def generate_running_total(numbers):
+
+    running_total = 0
+    for number in numbers:
+        running_total += number
+        yield running_total
+```
+
 </details>
 
 #### Exercise 10​, Generate Tagged Items from Nested Data
@@ -2477,11 +2556,16 @@ print("Exercise 10 tests passed!")
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def generate_tagged_items(data):
+
+    for key, values in data.items():
+        for value in values:
+            yield (key, value)
+```
 </details>
 
-<details> 
-<summary>Possible Solution</summary> 
-</details>
 
 [Back to the top](#top)
 
@@ -2513,6 +2597,15 @@ assert list(gen_2) == expected_2
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def title_case_lines(lines):
+
+    for line in lines:
+        yield line.title()
+```
+
 </details>
 
 #### 2. Filter Lines by Keyword
@@ -2549,6 +2642,13 @@ assert list(filter_lines_by_keyword(lines_data_2, "toast")) == []
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def filter_lines_by_keyword(lines, keyword):
+    for line in lines:
+        if keyword in line:
+            yield line
+```
 </details>
 
 #### 3. Numbered Non-Blank Lines
@@ -2584,9 +2684,21 @@ assert list(number_non_blank_lines(["", "   "])) == []
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def number_non_blank_lines(lines):
+
+    line_count = 1
+    for line in lines:
+        if line and not line.isspace():
+            yield f"{line_count}: {line}"
+            line_count += 1
+
+```
+
 </details>
 
-#### 4. Parse Key-Value Pairs*
+#### 4. Parse Key-Value Pairs
 
 Problem Statement: Create a generator function that parses lines of the format "key=value" and yields a tuple of (key, value).
 
@@ -2620,6 +2732,31 @@ assert list(parse_key_value(lines_data_2)) == expected_2
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def parse_key_value(lines):
+  
+    cleaned = []
+    even = []
+    odd = []
+
+    for line in lines:
+        temp_line = line.split("=", 1)
+        for string in temp_line: 
+            result = string.strip()
+            cleaned.append(result)
+
+    for i in range(len(cleaned)):
+        if i % 2 == 0:
+            even.append(cleaned[i])
+        else:
+            odd.append(cleaned[i])
+
+    final = list(zip(even, odd))
+    for item in final:
+        yield item
+```
+
 </details>
 
 #### 5. Skip First N Lines
@@ -2652,6 +2789,16 @@ assert list(skip_header(lines_data_2, 0)) == ["a", "b", "c", "d"]
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def skip_header(lines, n):
+
+   for index, value in enumerate(lines):
+        if index < n:
+            continue
+        yield value
+```
+
 </details>
 
 #### 6. Extract Log Messages by Level
@@ -2687,6 +2834,16 @@ assert list(extract_log_messages(log_lines, "error")) == ["lowercase error"]
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def extract_log_messages(lines, level):
+
+    for line in lines:
+        if line.startswith(level):
+            temp = line.split(": ")
+            yield temp[1].strip()
+```
+
 </details>
 
 #### 7. Data Processing Pipeline
@@ -2724,6 +2881,27 @@ assert list(extract_numbers(clean_lines(data_2))) == expected_2
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def clean_lines(lines):
+    for line in lines:
+        if line.startswith("# "):
+            continue
+        result = line.strip()
+        yield result
+
+def extract_numbers(cleaned_lines):
+
+    for line in cleaned_lines:
+        try: 
+            if line.isdigit() or line.startswith("-"):
+                integered = int(line)
+                yield integered
+            
+        except TypeError:
+            continue
+```
+
 </details>
 
 #### 8. Positive Integers with a Generator Expression
@@ -2754,6 +2932,12 @@ assert list(get_positives([1, 2, 3])) == [1, 2, 3]
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def get_positives(numbers):
+    return (number for number in numbers if number > 0)
+```
+
 </details>
 
 #### 9. Chaining Iterables with yield from
@@ -2782,6 +2966,16 @@ assert list(chain(range(2), "xy")) == [0, 1, "x", "y"]
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def chain(iter1, iter2):
+
+    iterables = [iter1, iter2]
+    for iterable in iterables:
+        for element in iterable:
+            yield element
+```
+
 </details>
 
 #### 10. Summarize CSV Data
@@ -2817,6 +3011,24 @@ assert list(summarize_fruit_inventory(data_2, "pear")) == []
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def summarize_fruit_inventory(lines, fruit_name):
+
+    working = []
+    for line in lines:
+        temp = line.split(",")
+        super_temp = []
+        for word in temp:
+            new_word = word.lower()
+            super_temp.append(new_word)
+        working.append(super_temp)
+
+    for sublist in working:
+        if sublist[0] == fruit_name:
+            yield f"Found {sublist[1]} {sublist[2]} {fruit_name}(s)."
+```
+
 </details>
 
 [Back to the top](#top)
