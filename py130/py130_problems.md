@@ -290,6 +290,154 @@ print(set(all_caps(strings)))
 
 ## [Arguments and Parameters](https://launchschool.com/lessons/ab8b995d/assignments/6e94e908)
 
+
+### Problem 1
+
+Write a function named combine that takes three positional arguments and returns a tuple containing all three. Call this function with three different values.
+
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+def combine(first, second, third):
+
+    first = "uno"
+    second = "dos"
+    third = "tres"
+
+    return (first, second, third)
+
+print(combine("one", "two", "three"))
+```
+
+</details>
+
+### Problem 2
+
+Define a function named `multiply` that accepts two positional-only arguments and returns their product. The function should not allow these parameters to be passed as keyword arguments.
+
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+def multiply(int_1, int_2, /):
+    return int_1 * int_2
+
+print(multiply(3, 5)) #15
+multiply(int_1=3, int_2=5) #TypeError
+```
+
+</details>
+
+### Problem 3
+
+Create a function named `describe_pet` that takes one positional argument animal_type and one keyword argument name with a default value of an empty string. The function should print a description of the pet. The function should not accept more than 1 positional argument.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+def describe_pet(animal_type, *, description="Cutie Patootie"):
+    return f"This {animal_type} is a {description}."
+
+print(describe_pet("dog", description="blood-hound"))
+print(describe_pet("cat", description="purebred"))
+print(describe_pet("bunny"))
+```
+
+</details>
+
+### Problem 4
+
+Write a function named `calculate_average` that accepts any number of numeric arguments and returns their average. Make sure it returns None if no arguments are provided.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+def calculate_average(*args):
+
+    return sum(args)/len(args) if args else None
+```
+</details>
+
+### Problem 5
+
+Create a function named `find_person` that accepts any number of keyword arguments in which each key is someone's name and the value is their associated profession. The function should check whether any of the key/value pairs has a key of "Antonina" and then, if the key is found, print a message that shows Antonina's profession. Otherwise, it should say "Antonina not found". The function should not accept any positional arguments.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+
+    if "Antonina" in kwargs:
+        print(f"Antonina's Profession is {kwargs['Antonina']}")
+    else:
+        print("Antonina not found")
+
+find_person(Wonnie="Engineer", Antonina="Software Engineer")
+# Antonina's profession is Software Engineer
+
+find_person(Sebastian="Engineer", James="Software Engineer")
+# Antonina not found
+```
+
+</details>
+
+### Problem 6
+
+Define a function named `concat_strings` that takes any number of strings and returns the concatenation of all the strings. Add a keyword-only argument sep with a default value of ' ' that specifies the separator to use between the strings.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+def concat_strings(*args, sep=" "):
+
+    return sep.join(args)
+    
+print(concat_strings("Hello, World", "Hello, world?", "World, Hello"))
+```
+
+</details>
+
+### Problem 7
+
+Create a function named `register` that takes exactly three arguments: `username` as positional-only, `password` as keyword-only, and `age` as either a positional or keyword argument. It should return a dictionary that includes username, password, and age keys with the values passed to the the function.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+def register(username, /, age, *, password):
+    return {'username': username, "age": age, "password": password}
+
+print(register('user1', 30, password='pass123'))
+print(register('user2', age=45, password='pass132'))
+```
+
+</details>
+
+### Problem 8
+
+Create a function named `print_message` that requires a keyword-only argument (message) and an optional keyword-only argument (level) with a default value of "INFO". The function should print out the message prefixed with the level. The function shouldn't accept any positional arguments.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+
+</details>
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
 <details> 
 <summary>Possible Solution</summary> 
 </details>
