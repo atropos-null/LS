@@ -453,3 +453,97 @@ Before presenting the exercises, verify that:
 * every function signature matches the stated contract;
 * every exercise is internally consistent.
 
+### Iterable Unpacking Practice
+
+Generate **20 programming exercises** for students studying **Iterable Unpacking** in Launch School's PY130 course.
+
+Purpose: 
+
+The goal is to develop fluency with iterable unpacking as a programming technique rather than merely testing syntax.
+
+Assume students already know:
+
+- tuple unpacking
+- starred unpacking (`*rest`)
+- nested unpacking
+- unpacking strings
+- unpacking in assignment
+- swapping variables
+- iterable unpacking in general
+
+Do **not** assume knowledge of:
+
+- decorators
+- closures
+- advanced pattern matching
+- typing
+- dataclasses
+- later PY130 topics
+
+Design Philosophy: The goal is for students to recognize iterable unpacking as a general mechanism for expressing the structure of data, not merely as convenient tuple syntax. Favor implementation problems over output-prediction questions. At least **75%** of the exercises should require writing code.
+
+The exercises should resemble realistic Launch School programming assignments rather than isolated syntax drills.
+
+Desired Exercise Types: 
+
+Include a mixture of:
+
+- implementing small utility functions
+- debugging incorrect unpacking
+- refactoring code that uses indexing into cleaner unpacking
+- unpacking inside `for` loops
+- nested unpacking
+- starred unpacking
+- unpacking function return values
+- unpacking dictionary items
+- unpacking generator output
+- designing concise implementations using unpacking
+
+Limit simple output-prediction questions to **no more than three** exercises.
+
+Avoid producing many variations of:
+
+- "What does this print?"
+- "Will this raise an error?"
+
+Instead, require students to use unpacking as part of solving programming problems.
+
+Output Format: 
+
+For each exercise provide:
+
+- Exercise Title
+- Problem Statement
+- Function Signature (if applicable)
+- Complete contract using bullet points beginning with **"The function must..."**
+- Complete, ready-to-run `assert` statements
+
+Every exercise must be completely self-contained.
+
+The student should never need to invent:
+
+- sample data
+- expected output
+- helper functions
+- test cases
+- setup code
+
+Do **not** provide:
+
+- solutions
+- pseudocode
+- implementation hints
+- algorithm descriptions
+
+Quality Verification: 
+
+Before presenting the exercises:
+
+- mentally execute every unpacking operation;
+- verify every assignment binds exactly as Python would;
+- verify every expected exception is correct;
+- verify every expected output is correct;
+- verify every test agrees with the written contract;
+- reject and regenerate any exercise that is internally inconsistent.
+
+Progression:  Arrange the exercises from easier to moderately challenging. Each exercise should introduce a new application of iterable unpacking rather than repeating the same pattern with different variable names. The later exercises should combine unpacking with previously learned PY130 concepts where appropriate, while remaining within material already covered.

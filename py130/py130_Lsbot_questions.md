@@ -12,6 +12,7 @@
 - [Generators, team practice](#generators-team-practice)
 - [Generators and Files](#generators-and-files)
 - [Arguments and Parameters](#arguments-and-parameters)
+- [Iterable Unpacking](#iterable-unpacking)
 
 ## Lesson 1: Functions, Generators, and Files
 
@@ -3032,6 +3033,7 @@ def summarize_fruit_inventory(lines, fruit_name):
 </details>
 
 [Back to the top](#top)
+***
 
 ## Lesson 2: Advanced Concepts
 
@@ -3039,7 +3041,7 @@ def summarize_fruit_inventory(lines, fruit_name):
 
 #### 1. Positional vs. Keyword Arguments: Argument Equivalence
 
-Problem Statement​: Below is a function describe_shape and a list of five function calls. For each call, determine if it will execute successfully. Do not run the code; reason about how Python binds the arguments to the parameters.
+Problem Statement​: Below is a function `describe_shape` and a list of five function calls. For each call, determine if it will execute successfully. Do not run the code; reason about how Python binds the arguments to the parameters.
 
 Function Signature​: 
 
@@ -3055,6 +3057,7 @@ Contract​:
 * The function's implementation is not relevant.
 
 Function Calls to Analyze​:
+
 ```python
 # Call 1
 describe_shape(4, "square", "blue")
@@ -3074,6 +3077,26 @@ describe_shape(sides=6, name="hexagon", "red")
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def describe_shape(sides, name, color="black"): #Will Run
+    pass
+
+# Call 1
+describe_shape(4, "square", "blue") #Will Run
+
+# Call 2
+describe_shape(name="circle", sides=1) #Will run
+
+# Call 3
+describe_shape("triangle", 3) #Will run, because they are two positions and nothing in the body that would force a TypeError
+
+# Call 4
+describe_shape(5, "pentagon") #Will run
+
+# Call 5
+describe_shape(sides=6, name="hexagon", "red") #Won't run. Positional arguments cannot appear after keyword arguments.
+```
 </details>
 
 #### 2. Enforcing Positional-Only Arguments: API Command Handler
@@ -3083,7 +3106,7 @@ Problem Statement​: Implement a function that takes exactly two arguments: a c
 Function Signature​:
 
 ```python
-def execute_command(command, /, target):
+def execute_command(#insert arguments here):
     return f"Executing {command} on {target}."
 ```
 
@@ -3105,6 +3128,12 @@ execute_command(command="restart", target="worker")
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def execute_command(command, /, target):
+    return f"Executing {command} on {target}."
+```
+
 </details>
 
 
@@ -3147,6 +3176,17 @@ configure_system("db.launchschool.com", 5432)
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def configure_system(hostname, /, *, port=8080, ssl_enabled=False ):
+    result = {}
+    result['hostname'] = hostname
+    result['port']= port
+    result['ssl_enabled'] = ssl_enabled
+    return result
+
+```
+
 </details>
 
 #### 4. Fixing a Broken Signature
@@ -3171,7 +3211,7 @@ Test Cases​:
 ```python
 # Replace `create_product` with your corrected implementation
 assert create_product("Laptop", 50) == {"name": "Laptop", "price": 0.0, "stock_count": 50}
-assert create_product("Mouse", 25, 200) == {"name": "Mouse", "price": 25, "stock_count": 200}
+assert create_product("Mouse", 200, 25) == {"name": "Mouse", "stock_count": 200, "price": 25}
 ```
 
 <details> 
@@ -3204,6 +3244,15 @@ assert sum_all(3.5, 1.5, 2.0) == 7.0
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def sum_all(*numbers):
+    if not numbers:
+        return 0
+    return sum(numbers)
+```
+
 </details>
 
 #### 6. Handling Arbitrary Keyword Arguments: HTML Attribute Formatter
@@ -3230,6 +3279,16 @@ assert format_html_attributes() == ""
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def format_html_attributes(**attributes):
+
+    result = ""
+    for key, value in attributes.items():
+       result += f' {key}="{value}"'
+    return result 
+```
+
 </details>
 
 #### 7. Designing a Robust API​: User Profile Creator
@@ -3537,6 +3596,570 @@ master_assembler(1005, "LS Supplies", "gpu", location="lab", components=("ssd",)
 
 [Back to the top](#top)
 
+### Iterable Unpacking
+
+
+#### 1. Predict the Unpacking
+
+**Problem Statement:** What will `first`, `middle`, and `last` contain after this code executes? No code is required.
+
+```python
+first, *middle, last = "Python"
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 2. Predict Nested Star Unpacking
+
+**Problem Statement:** What will `name`, `scores`, and `comment` contain after this code executes? No code is required.
+
+```python
+record = ('Alice', 95, 88, 92, "Excellent work")
+name, *scores, comment = record
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 3. Identify the Error
+
+**Problem Statement:** Without running the code, identify the exception and the loop iteration on which it occurs.
+
+```python
+def process_records(records):
+    processed = []
+    for name, age, city in records:
+        processed.append(f"{name} from {city} is {age}")
+    return processed
+
+data = [('Alice', 30, 'New York'), ('Bob', 25), ('Charlie', 35, 'Los Angeles')]
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 4. Format Person Data
+
+Write `format_person(person_tuple)` using unpacking. Input is `(first_name, last_name, age)`; return `"Last, First (Age: Age)"`.
+
+```python
+assert format_person(('John', 'Doe', 35)) == "Doe, John (Age: 35)"
+assert format_person(('Grace', 'Hopper', 85)) == "Hopper, Grace (Age: 85)"
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 5. Refactor Record Parsing from Indexing
+
+Refactor the original function using one unpacking assignment.
+
+```python
+def parse_record_with_indexing(record):
+    return f"ID: {record[0]}, Name: {record[1]}, Score: {record[2]}"
+
+def parse_record_with_unpacking(record):
+    pass
+
+assert parse_record_with_unpacking((101, 'Alice', 95)) == "ID: 101, Name: Alice, Score: 95"
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 6. Unpack a Function's Return Value
+
+Implement `get_division_details(dividend, divisor)`. Call `divmod()` once, unpack its result, and return `{'quotient': ..., 'remainder': ...}`.
+
+```python
+assert get_division_details(10, 3) == {'quotient': 3, 'remainder': 1}
+assert get_division_details(10, 2) == {'quotient': 5, 'remainder': 0}
+assert get_division_details(7, 8) == {'quotient': 0, 'remainder': 7}
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 7. Unpack Tuple as Function Arguments
+
+Implement `calculate_distance(point)` by calling the helper with `*` positional unpacking.
+
+```python
+import math
+def distance_from_origin(x, y):
+    return math.sqrt(x**2 + y**2)
+
+assert calculate_distance((3, 4)) == 5.0
+assert calculate_distance((0, 0)) == 0.0
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 8. Unpack into a Single Starred Variable
+
+Implement `collect_into_list(iterable)` using an assignment of the form `*var, = iterable`.
+
+```python
+assert collect_into_list((1, 2, 3)) == [1, 2, 3]
+assert collect_into_list("abc") == ['a', 'b', 'c']
+assert collect_into_list(range(3)) == [0, 1, 2]
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 9. Extract Head and Tail
+
+Implement `get_head_and_tail(sequence)` using starred unpacking. Return `(head, tail_list)`; input has at least one element.
+
+```python
+assert get_head_and_tail([1, 2, 3, 4]) == (1, [2, 3, 4])
+assert get_head_and_tail(['a', 'b', 'c']) == ('a', ['b', 'c'])
+assert get_head_and_tail([100]) == (100, [])
+assert get_head_and_tail(('first',)) == ('first', [])
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 10. Ignore First and Last
+
+Implement `get_inner_elements(sequence)` using starred unpacking and throwaway variables. Input has at least two elements; return the inner elements as a list.
+
+```python
+assert get_inner_elements([1, 2, 3, 4, 5]) == [2, 3, 4]
+assert get_inner_elements(['a', 'b', 'c', 'd']) == ['b', 'c']
+assert get_inner_elements([1, 10]) == []
+assert get_inner_elements((1, 2, 3)) == [2]
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 11. Extract Edges and Core
+
+Implement `extract_edges_and_core(seq)` with one starred expression; return `(first, core_list, last)`.
+
+```python
+assert extract_edges_and_core((10, 20, 30, 40, 50, 60)) == (10, [20, 30, 40, 50], 60)
+assert extract_edges_and_core(['start', 'middle', 'end']) == ('start', ['middle'], 'end')
+assert extract_edges_and_core((1, 2)) == (1, [], 2)
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 12. Swap First and Last Elements
+
+Implement `swap_first_last(seq)` using unpacking to capture first, middle, and last. Return a new list.
+
+```python
+assert swap_first_last([1, 2, 3, 4]) == [4, 2, 3, 1]
+assert swap_first_last(('a', 'b', 'c')) == ['c', 'b', 'a']
+assert swap_first_last([10, 20]) == [20, 10]
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 13. Refactor with For-Loop Unpacking
+
+Refactor this indexing-based inventory formatter as `format_inventory_unpacked(items)` using loop unpacking and identical output.
+
+```python
+def format_inventory_indexed(items):
+    formatted_strings = []
+    for i in range(len(items)):
+        item = items[i]
+        name = item[0]
+        quantity = item[1]
+        formatted_strings.append(f"{name}: {quantity}")
+    return formatted_strings
+
+inventory = [('Apples', 10), ('Bananas', 5), ('Oranges', 8)]
+assert format_inventory_unpacked(inventory) == ['Apples: 10', 'Bananas: 5', 'Oranges: 8']
+assert format_inventory_unpacked([]) == []
+assert format_inventory_unpacked([('Milk', 1)]) == ['Milk: 1']
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 14. Unpack Dictionary Items
+
+Implement `format_env_vars(env_dict)` using loop unpacking over `.items()`; return `"KEY=VALUE"` strings.
+
+```python
+config = {'USER': 'admin', 'HOME': '/home/admin', 'DEBUG': 'False'}
+expected = ['USER=admin', 'HOME=/home/admin', 'DEBUG=False']
+assert sorted(format_env_vars(config)) == sorted(expected)
+assert format_env_vars({}) == []
+assert format_env_vars({'API_KEY': '12345'}) == ['API_KEY=12345']
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 15. Summarize Configuration Dictionary
+
+Implement `summarize_config(config_dict)` using unpacking over `.items()`. Return sorted `"key -> value"` strings.
+
+```python
+config = {'host': 'localhost', 'port': 8080, 'user': 'admin'}
+assert summarize_config(config) == ['host -> localhost', 'port -> 8080', 'user -> admin']
+assert summarize_config({}) == []
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 16. Create Indexed Log Entries
+
+Implement `create_indexed_logs(events)` using `enumerate` and loop unpacking. Format each item as `"[index] Event: event_description"`.
+
+```python
+assert create_indexed_logs(['Login', 'Update Profile', 'Logout']) == ['[0] Event: Login', '[1] Event: Update Profile', '[2] Event: Logout']
+assert create_indexed_logs([]) == []
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 17. Process Coordinates
+
+Implement `total_manhattan_distance(path)` using loop unpacking. Sum `abs(x) + abs(y)` for all coordinate pairs.
+
+```python
+assert total_manhattan_distance([(1, 1), (2, 3), (-1, -1)]) == 9
+assert total_manhattan_distance([(10, 0), (0, -10)]) == 20
+assert total_manhattan_distance([]) == 0
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 18. Extract Coordinates with a List Comprehension
+
+Implement `extract_coordinates(points)` as one list comprehension using unpacking to discard each point name.
+
+```python
+assert extract_coordinates([('A', 1, 5), ('B', 3, 2), ('C', 9, 8)]) == [(1, 5), (3, 2), (9, 8)]
+assert extract_coordinates([]) == []
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 19. Combine Parallel Lists with Zip
+
+Implement `create_record(headers, values)` using `zip` plus unpacking in a dictionary comprehension.
+
+```python
+assert create_record(['name', 'age', 'city'], ['Alice', 30, 'New York']) == {'name': 'Alice', 'age': 30, 'city': 'New York'}
+assert create_record([], []) == {}
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 20. Unpacking in Comprehensions
+
+Implement `process_with_comprehensions(data)` with dictionary and set comprehensions using unpacking. Return `(last_value_per_key, unique_keys)`.
+
+```python
+dict_res, set_res = process_with_comprehensions([('a', 1), ('b', 2), ('a', 3), ('c', 4)])
+assert dict_res == {'a': 3, 'b': 2, 'c': 4}
+assert set_res == {'a', 'b', 'c'}
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 21. Unpack a Generator's Output
+
+Implement `sum_weighted_values(generator)` using loop unpacking to sum `index * value`.
+
+```python
+def weighted_gen(data):
+    for i, val in enumerate(data):
+        yield (i, val)
+
+assert sum_weighted_values(weighted_gen([10, 20, 30])) == 80
+assert sum_weighted_values(weighted_gen([1, 1, 1, 1, 1])) == 10
+assert sum_weighted_values(weighted_gen([])) == 0
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 22. Unpack Generator of Key-Value Pairs
+
+Implement `generator_to_dict(gen)` using loop unpacking.
+
+```python
+def kv_generator():
+    yield 'key1', 'value1'
+    yield 'key2', 'value2'
+    yield 'key3', 'value3'
+
+assert generator_to_dict(kv_generator()) == {'key1': 'value1', 'key2': 'value2', 'key3': 'value3'}
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 23. Refactor Nested Indexing
+
+Refactor using one nested unpacking assignment.
+
+```python
+def format_contact_indexed(person_data):
+    name = person_data[0]
+    email = person_data[1][0]
+    phone = person_data[1][1]
+    return f"{name}'s contact info is {email} and {phone}."
+
+assert format_contact_unpacked(('Alice', ('alice@example.com', '123-456-7890'))) == "Alice's contact info is alice@example.com and 123-456-7890."
+assert format_contact_unpacked(('Bob', ('bob@work.com', '987-654-3210'))) == "Bob's contact info is bob@work.com and 987-654-3210."
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 24. Process Nested Student Data
+
+Implement `find_high_achievers(students)` with nested loop unpacking. Return names scoring at least 90 in both subjects.
+
+```python
+students = [('Alice', (91, 95)), ('Bob', (88, 92)), ('Charlie', (90, 90)), ('David', (95, 89))]
+assert find_high_achievers(students) == ['Alice', 'Charlie']
+assert find_high_achievers([('Eve', (100, 100))]) == ['Eve']
+assert find_high_achievers([('Frank', (80, 80))]) == []
+assert find_high_achievers([]) == []
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 25. Process Nested Geographic Coordinates
+
+Implement `get_city_latitudes(data)` using nested unpacking. Records have the form `('CityName', ('Country', (latitude, longitude)))`; return `(city, latitude)` tuples.
+
+```python
+data = [('Tokyo', ('Japan', (35.6895, 139.6917))), ('New York', ('USA', (40.7128, -74.0060))), ('London', ('UK', (51.5074, -0.1278)))]
+assert get_city_latitudes(data) == [('Tokyo', 35.6895), ('New York', 40.7128), ('London', 51.5074)]
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 26. Parse Complex Nested Task Data
+
+Implement `get_task_assignments(tasks)` using deeply nested unpacking. Input records are `(id, (project, status), (assignee, email))`; return `(id, project, email)`.
+
+```python
+tasks = [(101, ('Core-API', 'In-Progress'), ('J. Doe', 'j.doe@example.com')), (102, ('UI-Kit', 'Complete'), ('A. Smith', 'a.smith@example.com'))]
+assert get_task_assignments(tasks) == [(101, 'Core-API', 'j.doe@example.com'), (102, 'UI-Kit', 'a.smith@example.com')]
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 27. Parse a Structured Record
+
+Implement `parse_user_record(record)` using unpacking for `(id, name, email, *phone_numbers)`; return keys `id`, `name`, `email`, and `phones`.
+
+```python
+assert parse_user_record((1, 'Alice', 'alice@email.com', '111-222-3333', '444-555-6666')) == {'id': 1, 'name': 'Alice', 'email': 'alice@email.com', 'phones': ['111-222-3333', '444-555-6666']}
+assert parse_user_record((2, 'Bob', 'bob@email.com')) == {'id': 2, 'name': 'Bob', 'email': 'bob@email.com', 'phones': []}
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 28. Debug Unpacking ValueError
+
+Fix the function for 3- or 4-element tuples using starred unpacking to ignore the optional ISBN.
+
+```python
+def get_book_details(book_tuple):
+    title, author, year = book_tuple
+    return f'"{title}" by {author} ({year})'
+
+assert get_book_details_fixed(('The Hobbit', 'J.R.R. Tolkien', 1937)) == '"The Hobbit" by J.R.R. Tolkien (1937)'
+assert get_book_details_fixed(('Dune', 'Frank Herbert', 1965, '0441013597')) == '"Dune" by Frank Herbert (1965)'
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 29. Debug Mismatched Unpacking
+
+Implement `get_pass_list_fixed(grades)`. Each pair may be `[name, score]` or `[score, name]`; distinguish by type, use unpacking, and return passing names (score at least 60).
+
+```python
+grades = [['Alice', 95], ['Bob', 55], [88, 'Charlie'], ['David', 70]]
+assert sorted(get_pass_list_fixed(grades)) == sorted(['Alice', 'Charlie', 'David'])
+assert get_pass_list_fixed([[40, 'Eve'], ['Frank', 90]]) == ['Frank']
+assert get_pass_list_fixed([]) == []
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 30. Process Configuration Tuples
+
+Implement `process_config(config_list)`. Unpack 2- and 3-element tuples; default missing types to `'string'`. Return `{key: {'value': value, 'type': type}}`.
+
+```python
+configs = [('DEBUG', 'True', 'bool'), ('PORT', '8080', 'int'), ('SECRET_KEY', 'my-secret-key')]
+expected = {'DEBUG': {'value': 'True', 'type': 'bool'}, 'PORT': {'value': '8080', 'type': 'int'}, 'SECRET_KEY': {'value': 'my-secret-key', 'type': 'string'}}
+assert process_config(configs) == expected
+assert process_config([]) == {}
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 31. Parse Log Entry
+
+Implement `parse_log_entry(entry)` for `TIMESTAMP LEVEL USER - MESSAGE`. Split and use starred unpacking; the message may contain spaces and must be returned as one string.
+
+```python
+assert parse_log_entry("2023-10-26T10:00:00 INFO admin - User logged in successfully") == {'timestamp': '2023-10-26T10:00:00', 'level': 'INFO', 'user': 'admin', 'message': 'User logged in successfully'}
+assert parse_log_entry("2023-10-26T10:01:30 ERROR root - Disk space is low") == {'timestamp': '2023-10-26T10:01:30', 'level': 'ERROR', 'user': 'root', 'message': 'Disk space is low'}
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 32. Deconstruct File Paths
+
+Implement `deconstruct_path(path)` using `split('/')` and unpacking. Return directory, filename, and extension for a Unix-style path with an extension.
+
+```python
+assert deconstruct_path("/usr/local/bin/script.py") == {'dir': '/usr/local/bin', 'filename': 'script', 'ext': 'py'}
+assert deconstruct_path("docs/images/archive.zip") == {'dir': 'docs/images', 'filename': 'archive', 'ext': 'zip'}
+assert deconstruct_path("main.c") == {'dir': '', 'filename': 'main', 'ext': 'c'}
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 33. Aggregate Sales Data
+
+Implement `aggregate_sales(sales_records)` for `(product_id, amount, *discounts)`. Net is amount minus discounts; aggregate net totals by product.
+
+```python
+sales = [('p1', 100, 10, 5), ('p2', 200), ('p1', 150, 20), ('p3', 50, 5), ('p2', 250, 10, 10, 10)]
+assert aggregate_sales(sales) == {'p1': 215, 'p2': 420, 'p3': 45}
+assert aggregate_sales([]) == {}
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 34. Normalize and Summarize Student Grades
+
+Implement `summarize_grades(student_data)`. Unpack name/scores, sort scores, use starred unpacking to drop the lowest, and return `(name, average_score)` with floating-point averages.
+
+```python
+students = [('Alice', [80, 90, 70, 100]), ('Bob', [100, 100, 100, 0]), ('Charlie', [95, 85])]
+expected = [('Alice', 90.0), ('Bob', 100.0), ('Charlie', 95.0)]
+assert summarize_grades(students) == expected
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+#### 35. Ignore Middle Values with Starred Underscore
+
+Implement `get_first_and_last(seq)` for a sequence of at least two elements. Use exactly the pattern `first, *_, last = seq`, then return `(first, last)`.
+
+```python
+assert get_first_and_last(range(10)) == (0, 9)
+assert get_first_and_last(['a', 'b', 'c', 'd', 'e']) == ('a', 'e')
+assert get_first_and_last((10, 20)) == (10, 20)
+```
+
+<details>
+<summary>Possible Solution</summary>
+
+</details>
+
+
+
+[Back to the top](#top)
 
 <details> 
 <summary>Possible Solution</summary> 
