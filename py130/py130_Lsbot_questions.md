@@ -3610,6 +3610,12 @@ first, *middle, last = "Python"
 <details>
 <summary>Possible Solution</summary>
 
+```python
+print(first) # "P"
+print(middle) # ['y', 't', 'h', 'o']
+print(last) # "n"
+```
+
 </details>
 
 #### 2. Predict Nested Star Unpacking
@@ -3623,6 +3629,12 @@ name, *scores, comment = record
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+print(name)    # "Alice"
+print(scores)  # [95, 88, 92]
+print(comment) # "Excellent Work"
+```
 
 </details>
 
@@ -3643,6 +3655,7 @@ data = [('Alice', 30, 'New York'), ('Bob', 25), ('Charlie', 35, 'Los Angeles')]
 <details>
 <summary>Possible Solution</summary>
 
+Error happens on the second iteration. City is expected and there's no City, so it returns a `"Value Error, not enough values to unpack (expected 3, got 2)"`
 </details>
 
 #### 4. Format Person Data
@@ -3656,6 +3669,12 @@ assert format_person(('Grace', 'Hopper', 85)) == "Hopper, Grace (Age: 85)"
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def format_person(person_tuple):
+    first_name, last_name, age = person_tuple
+    return f"{last_name}, {first_name} (Age: {age})"
+```
 
 </details>
 
@@ -3676,6 +3695,17 @@ assert parse_record_with_unpacking((101, 'Alice', 95)) == "ID: 101, Name: Alice,
 <details>
 <summary>Possible Solution</summary>
 
+```python
+def parse_record_with_indexing(record):
+    return f"ID: {record[0]}, Name: {record[1]}, Score: {record[2]}"
+
+def parse_record_with_unpacking(record):
+    id, name, score = record
+    return f"ID: {id}, Name: {name}, Score: {score}"
+
+assert parse_record_with_unpacking((101, 'Alice', 95)) == "ID: 101, Name: Alice, Score: 95"
+```
+
 </details>
 
 #### 6. Unpack a Function's Return Value
@@ -3690,6 +3720,15 @@ assert get_division_details(7, 8) == {'quotient': 0, 'remainder': 7}
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def get_division_details(dividend, divisor):
+    result = {}
+    quotient, remainder = divmod(dividend, divisor)
+    result['quotient'] = quotient
+    result['remainder'] = remainder
+    return result
+```
 
 </details>
 
@@ -3709,6 +3748,15 @@ assert calculate_distance((0, 0)) == 0.0
 <details>
 <summary>Possible Solution</summary>
 
+```python
+import math
+def distance_from_origin(x, y):
+    return math.sqrt(x**2 + y**2)
+
+def calculate_distance(point):
+    return distance_from_origin(*point)
+```
+
 </details>
 
 #### 8. Unpack into a Single Starred Variable
@@ -3723,6 +3771,14 @@ assert collect_into_list(range(3)) == [0, 1, 2]
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def collect_into_list(iterable):
+    *var, = iterable 
+    return var
+```
+
+Python does not allow a starred target to stand alone in an assignment. In *var, = iterable, the comma establishes an unpacking assignment containing one starred target. Since there are no other targets to satisfy, *var collects every element produced by the iterable into a list.
 
 </details>
 
@@ -3740,6 +3796,13 @@ assert get_head_and_tail(('first',)) == ('first', [])
 <details>
 <summary>Possible Solution</summary>
 
+```python
+def get_head_and_tail(sequence):
+
+    head, *tail_list = sequence
+    return (head, tail_list)
+```
+
 </details>
 
 #### 10. Ignore First and Last
@@ -3756,6 +3819,13 @@ assert get_inner_elements((1, 2, 3)) == [2]
 <details>
 <summary>Possible Solution</summary>
 
+```python
+
+def get_inner_elements(sequence):
+    first, *middle, last = sequence
+    return middle
+```
+
 </details>
 
 #### 11. Extract Edges and Core
@@ -3771,6 +3841,12 @@ assert extract_edges_and_core((1, 2)) == (1, [], 2)
 <details>
 <summary>Possible Solution</summary>
 
+```python
+def extract_edges_and_core(sequence):
+    first, *middle, end = sequence
+    return (first, middle, end)
+```
+
 </details>
 
 #### 12. Swap First and Last Elements
@@ -3785,6 +3861,12 @@ assert swap_first_last([10, 20]) == [20, 10]
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def swap_first_last(sequence):
+    first, *middle, last = sequence
+    return [last, *middle, first]
+```
 
 </details>
 
@@ -3811,6 +3893,27 @@ assert format_inventory_unpacked([('Milk', 1)]) == ['Milk: 1']
 <details>
 <summary>Possible Solution</summary>
 
+```python
+
+def format_inventory_indexed(items):
+    formatted_strings = []
+    for i in range(len(items)):
+        item = items[i]
+        name = item[0]
+        quantity = item[1]
+        formatted_strings.append(f"{name}: {quantity}")
+    return formatted_strings
+
+def format_inventory_unpacked(items):
+    result = []
+    for item in items:
+        name, quantity = item
+        result.append(f"{name}: {quantity}")
+    return result
+
+inventory = [('Apples', 10), ('Bananas', 5), ('Oranges', 8)]
+```
+
 </details>
 
 #### 14. Unpack Dictionary Items
@@ -3828,6 +3931,17 @@ assert format_env_vars({'API_KEY': '12345'}) == ['API_KEY=12345']
 <details>
 <summary>Possible Solution</summary>
 
+```python
+def format_env_vars(env_dict):
+    result = []
+    for key, value in env_dict.items():
+        result.append(f"{key}={value}")
+    return result
+
+config = {'USER': 'admin', 'HOME': '/home/admin', 'DEBUG': 'False'}
+expected = ['USER=admin', 'HOME=/home/admin', 'DEBUG=False']
+```
+
 </details>
 
 #### 15. Summarize Configuration Dictionary
@@ -3843,6 +3957,17 @@ assert summarize_config({}) == []
 <details>
 <summary>Possible Solution</summary>
 
+```python
+
+def summarize_config(config_dict):
+    result = []
+    for key, value in config_dict.items():
+        result.append(f"{key} -> {value}")
+    return result
+
+config = {'host': 'localhost', 'port': 8080, 'user': 'admin'}
+```
+
 </details>
 
 #### 16. Create Indexed Log Entries
@@ -3856,6 +3981,15 @@ assert create_indexed_logs([]) == []
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def create_indexed_logs(events):
+
+    result = []
+    for i, item in enumerate(events):
+        result.append(f"[{i}] Event: {item}")
+    return result
+```
 
 </details>
 
@@ -3872,6 +4006,17 @@ assert total_manhattan_distance([]) == 0
 <details>
 <summary>Possible Solution</summary>
 
+```python
+def total_manhattan_distance(path):
+
+    summed = 0
+    for element in path:
+        x, y = element
+        temp_sum = abs(x) + abs(y)
+        summed += temp_sum
+    return summed
+```
+
 </details>
 
 #### 18. Extract Coordinates with a List Comprehension
@@ -3885,6 +4030,13 @@ assert extract_coordinates([]) == []
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def extract_coordinates(points):
+
+    return [(number_1, number_2) for letter, number_1, number_2 in points]
+
+```
 
 </details>
 
@@ -3900,6 +4052,13 @@ assert create_record([], []) == {}
 <details>
 <summary>Possible Solution</summary>
 
+```python
+def create_record(headers, values):
+
+    total_record = zip(headers, values)
+    return {header: value for header, value in list(total_record)}
+```
+
 </details>
 
 #### 20. Unpacking in Comprehensions
@@ -3914,6 +4073,18 @@ assert set_res == {'a', 'b', 'c'}
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def process_with_comprehensions(data):
+
+    last_value_per_key = {key: value for key, value in data}
+    unique_keys = {*last_value_per_key} # Remember that iterating over a dictionary produces its keys:
+    return (last_value_per_key, unique_keys)
+
+dict_res, set_res = process_with_comprehensions([('a', 1), ('b', 2), ('a', 3), ('c', 4)])
+assert dict_res == {'a': 3, 'b': 2, 'c': 4}
+assert set_res == {'a', 'b', 'c'}
+```
 
 </details>
 
@@ -3934,6 +4105,16 @@ assert sum_weighted_values(weighted_gen([])) == 0
 <details>
 <summary>Possible Solution</summary>
 
+```python
+def sum_weighted_values(generator):
+    summed = 0
+    for tuple_item in generator:
+        i, val = tuple_item
+        value = i * val
+        summed += value
+    return summed
+```
+
 </details>
 
 #### 22. Unpack Generator of Key-Value Pairs
@@ -3951,6 +4132,16 @@ assert generator_to_dict(kv_generator()) == {'key1': 'value1', 'key2': 'value2',
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def generator_to_dict(gen):
+    return {key: value for key, value in gen}
+
+def kv_generator():
+    yield 'key1', 'value1'
+    yield 'key2', 'value2'
+    yield 'key3', 'value3'
+```
 
 </details>
 
@@ -3972,6 +4163,13 @@ assert format_contact_unpacked(('Bob', ('bob@work.com', '987-654-3210'))) == "Bo
 <details>
 <summary>Possible Solution</summary>
 
+```python
+def format_contact_unpacked(person_data):
+    name, rest = person_data
+    email, phone = rest
+    return f"{name}'s contact info is {email} and {phone}."
+```
+
 </details>
 
 #### 24. Process Nested Student Data
@@ -3989,6 +4187,20 @@ assert find_high_achievers([]) == []
 <details>
 <summary>Possible Solution</summary>
 
+```python
+
+def find_high_achievers(students):
+
+    result = []
+    for student in students:
+        name, scores = student
+        score_1, score_2 = scores
+        if score_1 >= 90 and score_2 >= 90:
+            result.append(name)
+
+    return result
+```
+
 </details>
 
 #### 25. Process Nested Geographic Coordinates
@@ -4002,6 +4214,19 @@ assert get_city_latitudes(data) == [('Tokyo', 35.6895), ('New York', 40.7128), (
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def get_city_latitudes(data):
+
+    result = []
+    for data_element in data:
+        city, rest = data_element
+        country, coordinates = rest
+        latitude, longitude = coordinates
+        result.append((city, latitude))
+
+    return result
+```
 
 </details>
 
@@ -4017,6 +4242,17 @@ assert get_task_assignments(tasks) == [(101, 'Core-API', 'j.doe@example.com'), (
 <details>
 <summary>Possible Solution</summary>
 
+```python
+def get_task_assignments(tasks):
+    result = []
+    for element in tasks:
+        id, second, third = element
+        project, status = second
+        asignee, email = third
+        result.append((id, project, email))
+    return result
+```
+
 </details>
 
 #### 27. Parse a Structured Record
@@ -4030,6 +4266,17 @@ assert parse_user_record((2, 'Bob', 'bob@email.com')) == {'id': 2, 'name': 'Bob'
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def parse_user_record(record):
+    result = {}
+    id, name, email, *phone_numbers = record
+    result['id'] = id
+    result['name'] = name
+    result['email'] = email
+    result['phones'] = phone_numbers
+    return result
+```
 
 </details>
 
@@ -4049,6 +4296,12 @@ assert get_book_details_fixed(('Dune', 'Frank Herbert', 1965, '0441013597')) == 
 <details>
 <summary>Possible Solution</summary>
 
+```python
+def get_book_details_fixed(book_tuple):
+    title, author, year, *isbn = book_tuple
+    return f'"{title}" by {author} ({year})'
+```
+
 </details>
 
 #### 29. Debug Mismatched Unpacking
@@ -4064,6 +4317,22 @@ assert get_pass_list_fixed([]) == []
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def get_pass_list_fixed(grades):
+
+    result = []
+    for element in grades:
+        if type(element[0]) is str: 
+            name, score = element
+        else:
+            score, name = element
+
+        if score > 59:
+            result.append(name)
+
+    return result
+```
 
 </details>
 
@@ -4081,6 +4350,21 @@ assert process_config([]) == {}
 <details>
 <summary>Possible Solution</summary>
 
+```python
+def process_config(config_list):
+    result = {}
+   
+
+    for item in config_list:
+        sub_dict = {}
+        action, value, *typed  = item
+        sub_dict['value'] = value 
+        sub_dict['type'] = typed[0] if typed else 'string'
+        result[action] = sub_dict
+        
+    return result
+```
+
 </details>
 
 #### 31. Parse Log Entry
@@ -4094,6 +4378,20 @@ assert parse_log_entry("2023-10-26T10:01:30 ERROR root - Disk space is low") == 
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+def parse_log_entry(entry):
+
+    result = {}
+    timestamp, *rest = entry.split(" ", 1)
+    etc = rest[0].split(" ", 2)
+    result['timestamp'] = timestamp
+    result['level'] = etc[0]
+    result['user'] = etc[1]
+    result['message'] = etc[2].lstrip("- ")
+
+    return result
+```
 
 </details>
 
@@ -4110,6 +4408,20 @@ assert deconstruct_path("main.c") == {'dir': '', 'filename': 'main', 'ext': 'c'}
 <details>
 <summary>Possible Solution</summary>
 
+```python
+def deconstruct_path(path):
+    
+    result = {}
+   
+    *directories, file = path.split("/")
+    filename, extension = file.split(".")
+    result['dir'] = "/".join(directories)
+    result['filename'] = filename
+    result['ext'] = extension
+
+    return result
+```
+
 </details>
 
 #### 33. Aggregate Sales Data
@@ -4124,6 +4436,19 @@ assert aggregate_sales([]) == {}
 
 <details>
 <summary>Possible Solution</summary>
+
+```python
+
+def aggregate_sales(sales_records):
+
+    result = {}
+    for record in sales_records:
+        product_id, amount, *discounts = record
+        total_discount = sum(discounts)
+        net = amount - total_discount
+        result[product_id] = result.get(product_id, 0) + net
+    return result
+```
 
 </details>
 
@@ -4140,17 +4465,21 @@ assert summarize_grades(students) == expected
 <details>
 <summary>Possible Solution</summary>
 
-</details>
-
-#### 35. Ignore Middle Values with Starred Underscore
-
-Implement `get_first_and_last(seq)` for a sequence of at least two elements. Use exactly the pattern `first, *_, last = seq`, then return `(first, last)`.
-
 ```python
-assert get_first_and_last(range(10)) == (0, 9)
-assert get_first_and_last(['a', 'b', 'c', 'd', 'e']) == ('a', 'e')
-assert get_first_and_last((10, 20)) == (10, 20)
+def summarize_grades(student_data):
+
+    result = []
+    for student in student_data:
+        name, scores = student
+        sorted_scores = sorted(scores)
+        minimum, *aggregate_scores = sorted_scores
+        average = sum(aggregate_scores)/len(aggregate_scores)
+        result.append((name, float(average)))
+
+    return result
 ```
+
+</details>
 
 <details>
 <summary>Possible Solution</summary>
