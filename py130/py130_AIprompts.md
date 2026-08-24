@@ -547,3 +547,201 @@ Before presenting the exercises:
 - reject and regenerate any exercise that is internally inconsistent.
 
 Progression:  Arrange the exercises from easier to moderately challenging. Each exercise should introduce a new application of iterable unpacking rather than repeating the same pattern with different variable names. The later exercises should combine unpacking with previously learned PY130 concepts where appropriate, while remaining within material already covered.
+
+
+### Closures Deep Practice
+
+Generate a **20-exercise learning module** for students studying **Closures** in Launch School's PY130 course.
+
+#### Primary Goal
+
+Design these exercises as though you are writing the Closures chapter of a programming textbook.
+
+The goal is **not** to generate twenty independent problems.
+
+The goal is to gradually build the student's intuition for closures until they naturally recognize when a closure is the correct design.
+
+Every exercise should build directly upon previous exercises.
+
+The entire collection should read like one coherent lesson.
+
+#### Assumed Knowledge
+
+Students already know:
+
+- nested functions
+- lexical scope
+- first-class functions
+- higher-order functions
+- generators
+- iterable unpacking
+- arguments and parameters
+
+Do **not** assume knowledge of:
+
+- decorators
+- classes as an alternative to closures
+- descriptors
+- concurrency
+- advanced functional programming
+- later PY130 topics
+
+#### Learning Progression
+
+Design the module around the following progression.
+
+#### Part 1 — Capturing Configuration (Exercises 1–4)
+
+Students should learn that closures naturally capture configuration.
+
+Examples include:
+
+- configurable mathematical operations
+- configurable string processing
+- configurable predicates
+- configurable formatting
+
+No mutable state.
+
+No `nonlocal`.
+
+No debugging.
+
+
+#### Part 2 — Persistent State (Exercises 5–8)
+
+Introduce:
+
+- state surviving between calls
+- `nonlocal`
+- independent closure instances
+
+Only one new idea per exercise.
+
+
+#### Part 3 — Closures as Design Tools (Exercises 9–12)
+
+Students should begin using closures to build useful abstractions.
+
+Examples include:
+
+- configurable validation
+- configurable transformations
+- wrappers
+- pipelines
+- dispatchers
+- reusable utilities
+
+The emphasis is **why** a closure is useful.
+
+#### Part 4 — Closure Reasoning (Exercises 13–16)
+
+Practice reading and debugging closures.
+
+Include:
+
+- captured variables
+- mutable versus immutable captured objects
+- independent closure instances
+- missing `nonlocal`
+- late binding in loops
+
+Limit output prediction to **three** exercises maximum.
+
+#### Part 5 — Design Recognition (Exercises 17–20)
+
+Present ordinary programming problems.
+
+Do **not** mention:
+
+- closures
+- closure
+- captured variables
+- lexical scope
+- nested functions
+- inner functions
+- function factories
+- `nonlocal`
+
+The requirements should naturally lead students to conclude that returning a function is the cleanest design.
+
+These should feel like normal programming assignments.
+
+#### Design Principles
+
+Favor implementation.
+
+At least **85%** of the exercises should require writing code.
+
+Avoid interview puzzles.
+
+Avoid trick questions.
+
+Avoid repeating the same underlying idea with different names.
+
+Difficulty should increase because students combine closure ideas, not because unrelated Python features are introduced.
+
+Do not introduce:
+
+- pytest
+- stdout capture
+- io.StringIO
+- timing
+- randomness
+- unrelated imports
+
+unless absolutely necessary.
+
+#### Output Format
+
+Each exercise must include:
+
+- Exercise Title
+- Problem Statement
+- Function Signature (or state that the student must design it)
+- Complete contract beginning with "The function must..."
+- Complete ready-to-run assert statements
+
+Every exercise must be completely self-contained.
+
+Students should never need to invent:
+
+- helper functions
+- test cases
+- sample data
+- expected output
+- setup code
+
+Do not include:
+
+- solutions
+- hints
+- pseudocode
+
+#### Validation Pass 1 — Individual Exercises
+
+Before presenting an exercise:
+
+- mentally execute every closure;
+- verify captured state behaves correctly;
+- verify every expected output;
+- verify every assert passes;
+- verify the contract, tests, and function signature describe the same API.
+
+If any inconsistency exists, regenerate the exercise.
+
+#### Validation Pass 2 — Entire Learning Module
+
+Before presenting the final collection:
+
+Verify that:
+
+- every exercise appears in an appropriate place in the progression;
+- no concept is introduced before prerequisite concepts;
+- there are no duplicate exercises disguised with different names;
+- each exercise introduces one new closure idea;
+- the final four exercises genuinely require students to recognize that a closure is the natural design without being told.
+
+Reject and regenerate any exercise that violates the progression.
+
+The final result should read like a carefully designed chapter from a programming textbook rather than twenty independently generated programming exercises.

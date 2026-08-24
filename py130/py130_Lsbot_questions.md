@@ -4481,14 +4481,608 @@ def summarize_grades(student_data):
 
 </details>
 
-<details>
-<summary>Possible Solution</summary>
+[Back to the top](#top)
 
+### Closure Practice
+
+#### 1. Exercise: Basic Adder Factory
+
+Problem Statement: Create a function `make_adder` that takes a single number n. It should return a new function that takes a single number `x` and returns the sum of `n` and `x`.
+
+Function Signature: ```def make_adder(n):```
+
+The function must:
+
+* Accept a single numeric argument `n`.
+* Return a new function (a closure).
+* The returned function must accept a single numeric argument `x` and `return n + x`.
+
+Asserts:
+
+```python
+add_5 = make_adder(5)
+add_10 = make_adder(10)
+
+assert add_5(10) == 15
+assert add_5(20) == 25
+assert add_10(10) == 20
+assert add_10(0) == 10
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 2. Exercise: Configurable Multiplier
+
+Problem Statement: Write a function `make_multiplier` that takes a numeric factor. It should return a new function that accepts a number and returns the product of that number and the original factor.
+
+Function Signature: ```def make_multiplier(factor):```
+
+The function must:
+
+* Accept a single numeric argument factor.
+* Return a new function.
+* The returned function must accept a single numeric argument num and return factor * num.
+
+Asserts:
+
+```python
+double = make_multiplier(2)
+triple = make_multiplier(3)
+
+assert double(5) == 10
+assert double(100) == 200
+assert triple(5) == 15
+assert triple(10) == 30
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 3. Exercise: String Formatting Factory
+
+Problem Statement: Write a function `make_string_formatter` that accepts two strings: prefix and suffix. It should return a new function that takes a string text and returns a new string formatted as prefix + text + suffix.
+
+Function Signature: ```def make_string_formatter(prefix, suffix):```
+
+The function must:
+
+* Accept two string arguments, prefix and suffix.
+* Return a new function.
+* The returned function must accept a single string argument text and return the formatted string.
+
+Asserts:
+
+```python
+format_bracket = make_string_formatter("[", "]")
+format_wave = make_string_formatter("~~~ ", " ~~~")
+
+assert format_bracket("hello") == "[hello]"
+assert format_bracket("world") == "[world]"
+assert format_wave("Python") == "~~~ Python ~~~"
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 4. Exercise: Configurable Range Predicate
+
+Problem Statement: Create a function `make_predicate` that accepts a `min_val` and a `max_val`. It should return a predicate function—a function that returns a boolean. The returned predicate should take a single number and return True if the number is between `min_val` and m`ax_val` (inclusive), and False otherwise.
+
+Function Signature: ```def make_predicate(min_val, max_val):```
+
+The function must:
+
+* Accept two numeric arguments, `min_val` and `max_val`.
+* Return a new predicate function.
+* The returned function must accept a single numeric argument num and return True if min_val <= num <= max_val, otherwise False.
+
+Asserts:
+
+```python
+is_child = make_predicate(0, 12)
+is_teenager = make_predicate(13, 19)
+is_adult = make_predicate(20, 120)
+
+assert is_child(5) is True
+assert is_child(13) is False
+assert is_teenager(15) is True
+assert is_teenager(20) is False
+assert is_adult(19) is False
+assert is_adult(65) is True
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 5. Exercise: Simple Counter
+
+Problem Statement: Write a function `make_counter` that takes no arguments. It should return a new function that, when called, returns an integer that is one greater than the last time it was called. The first call should return 1.
+
+Function Signature: ```def make_counter():```
+
+The function must:
+
+* Return a new function.
+* The returned function, when called, should increment an internal counter and return the new value.
+* The first call to the returned function should yield 1, the second 2, and so on.
+* Each function created by make_counter must have its own independent count.
+
+Asserts:
+
+```python
+counter_a = make_counter()
+assert counter_a() == 1
+assert counter_a() == 2
+assert counter_a() == 3
+
+counter_b = make_counter()
+assert counter_b() == 1
+assert counter_b() == 2
+
+assert counter_a() == 4
+```
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 6. Exercise: Configurable Counter
+
+Problem Statement: Modify the previous exercise. Write a function `make_configurable_counter` that takes a start integer. It should return a counter function that begins counting from start + 1.
+
+Function Signature: ```def make_configurable_counter(start):```
+
+The function must:
+
+* Accept a single integer argument start.
+* Return a new counter function.
+* The first call to the returned function must return start + 1, the second start + 2, etc.
+* Each counter instance must be independent.
+
+Asserts:
+
+```python
+counter_10 = make_configurable_counter(10)
+assert counter_10() == 11
+assert counter_10() == 12
+
+counter_100 = make_configurable_counter(100)
+assert counter_100() == 101
+assert counter_100() == 102
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 7. Exercise: Accumulator
+
+Problem Statement: Write a function `make_accumulator` that takes no arguments. It should return a function that accepts a number n. This function should add n to an internal total and return the new total. The initial total is 0.
+
+Function Signature: ```def make_accumulator():```
+
+The function must:
+
+* Return a new accumulator function.
+* The returned function must accept a single numeric argument n.
+* It must update its internal total by adding n to it and return the new total.
+* Each accumulator must have its own independent total.
+
+Asserts:
+
+```python
+acc1 = make_accumulator()
+assert acc1(10) == 10
+assert acc1(5) == 15
+assert acc1(-3) == 12
+
+acc2 = make_accumulator()
+assert acc2(100) == 100
+assert acc2(50) == 150
+
+assert acc1(20) == 32
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 8. Exercise: Limited Use Password Checker
+
+Problem Statement: Write a function `make_password_checker` that takes a password string and an integer max_attempts. It should return a function that takes a string guess. The returned function should return True if the guess matches the password. It should return False otherwise. After `max_attempts` have been used, the function should always return False, effectively locking out the user.
+
+Function Signature: ```def make_password_checker(password, max_attempts):```
+
+The function must:
+
+* Accept a password string and an integer max_attempts.
+* Return a new password-checking function.
+* The returned function must accept a guess string.
+* If the number of attempts is less than max_attempts and the guess is correct, it returns True.
+* If the number of attempts is less than max_attempts and the guess is incorrect, it decrements the attempt counter and returns False.
+* If the attempt counter reaches zero, all subsequent calls must return False.
+
+Asserts:
+```python
+checker = make_password_checker("secret", 3)
+
+assert checker("wrong") is False  # Attempt 1
+assert checker("another wrong") is False # Attempt 2
+assert checker("secret") is True # Correct, doesn't use an attempt
+assert checker("wrong again") is False # Attempt 3, now locked
+assert checker("secret") is False # Locked
+assert checker("anything") is False # Locked
+```
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 9. Exercise: Value Validator
+
+Problem Statement: Create a function `make_validator` that accepts a predicate function `is_valid` and an error_message string. It should return a new function that takes a value. If `is_valid(value)` returns True, the function should do nothing. If it returns False, it should raise a `ValueError` with the provided ` `.
+
+Function Signature: ```def make_validator(is_valid, error_message):```
+
+The function must:
+
+* Accept a function `is_valid` and a string `error_message`.
+* Return a new validation function.
+* The returned function must accept a single argument value.
+* If `is_valid(value)` is falsey, the function must raise a `ValueError` with the text `error_message`.
+* If `is_valid(value)` is truthy, the function must return `None`.
+
+Asserts:
+```python
+validate_positive = make_validator(lambda x: x > 0, "Value must be positive.")
+validate_not_empty = make_validator(lambda s: len(s) > 0, "String cannot be empty.")
+
+validate_positive(10) # Should not raise
+validate_not_empty("hello") # Should not raise
+
+try:
+    validate_positive(-5)
+except ValueError as e:
+    assert str(e) == "Value must be positive."
+
+try:
+    validate_not_empty("")
+except ValueError as e:
+    assert str(e) == "String cannot be empty."
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 10. Exercise: Transformation Pipeline
+
+Problem Statement: Write a function `make_pipeline` that accepts a variable number of functions. It should return a new function that takes an initial value. The new function must apply each function from the pipeline in sequence to the value, with the output of one function becoming the input of the next.
+
+Function Signature: ```def make_pipeline(*funcs):```
+
+The function must:
+
+* Accept any number of functions as arguments.
+* Return a new pipeline function.
+* The returned function must accept a single argument value.
+* It must pass the value to the first function, its result to the second, and so on, returning the final result.
+
+Asserts:
+```python
+def add_one(x): return x + 1
+def double(x): return x * 2
+def to_string(x): return str(x)
+
+pipeline = make_pipeline(add_one, double, to_string)
+assert pipeline(5) == "12"
+
+pipeline2 = make_pipeline(to_string, len)
+assert pipeline2(12345) == 5
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 11. Exercise: Safe Division
+
+Problem Statement: Create a function `make_safe_division` that accepts a `default_value`. It should return a function that takes two numbers, numerator and denominator. The returned function should perform the division `numerator / denominator`. If a `ZeroDivisionError` occurs, it must catch the error and return the `default_value` instead.
+
+Function Signature: ```def make_safe_division(default_value):```
+
+The function must:
+
+* Accept one argument, `default_value`.
+* Return a new function for safe division.
+* The returned function must accept two numeric arguments, numerator and denominator.
+* It must return the result of `numerator / denominator`.
+* If denominator is zero, it must return `default_value`.
+
+Asserts:
+
+```python
+safe_div_inf = make_safe_division(float('inf'))
+assert safe_div_inf(10, 2) == 5.0
+assert safe_div_inf(10, 0) == float('inf')
+
+safe_div_none = make_safe_division(None)
+assert safe_div_none(20, 4) == 5.0
+assert safe_div_none(20, 0) is None
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 12. Exercise: Command Dispatcher
+
+Problem Statement: Write a function `make_dispatcher` that accepts a dictionary handlers. The keys of this dictionary are command strings, and the values are functions. It should return a function that accepts a command string and a variable number of arguments. The returned function should find the handler function associated with the command and call it with the provided arguments, returning its result. If the command is not found, it should raise a KeyError.
+
+Function Signature: ```def make_dispatcher(handlers):```
+
+The function must:
+
+* Accept a dictionary handlers mapping command strings to functions.
+* Return a new dispatch function.
+* The returned function must accept a command string as its first argument, followed by any number of positional arguments.
+* It must execute the corresponding function from handlers with the provided arguments.
+* If the command is not in handlers, it must raise a `KeyError`.
+
+Asserts:
+```python
+def add(a, b): return a + b
+def subtract(a, b): return a - b
+def greet(name): return f"Hello, {name}!"
+
+handlers = {"add": add, "subtract": subtract, "greet": greet}
+dispatcher = make_dispatcher(handlers)
+
+assert dispatcher("add", 5, 3) == 8
+assert dispatcher("subtract", 10, 4) == 6
+assert dispatcher("greet", "World") == "Hello, World!"
+
+try:
+    dispatcher("multiply", 2, 3)
+except KeyError:
+    assert True
+else:
+    assert False, "KeyError not raised for unknown command"
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+####  13. Exercise: Predict the Output
+
+Problem Statement: Without running the code, predict what the following program will print.
+
+```python
+def make_manager(name):
+    tasks = []
+    def add_task(task):
+        tasks.append(task)
+        print(f"{name}'s team is now working on: {tasks}")
+    return add_task
+
+manager1 = make_manager("Alice")
+manager2 = make_manager("Bob")
+
+manager1("Design the UI")
+manager2("Implement the API")
+manager1("Test the UI")
+```
+
+Write down the expected output line by line.
+
+The answer must:
+
+* Analyze how the tasks list is captured by each closure.
+* Determine if the closures for manager1 and manager2 share state.
+* Predict the exact output from the three print statements.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 14. Exercise: Debug the Broken Counter
+
+Problem Statement: The following code for a counter factory is broken. When `counter()` is called, it raises an` UnboundLocalError`. Identify the bug and write a corrected version of the `make_broken_counter` function named `make_fixed_counter`.
+
+```python
+# Broken version
+def make_broken_counter():
+    count = 0
+    def counter():
+        count = count + 1
+        return count
+    return counter
+```
+
+Function Signature: ```def make_fixed_counter():```
+
+The function must:
+
+* Return a counter function that correctly increments a captured variable count on each call.
+* The first call to the returned function must return 1.
+* The fix must involve a single keyword addition to the counter function.
+
+Asserts:
+```python
+fixed_counter = make_fixed_counter()
+assert fixed_counter() == 1
+assert fixed_counter() == 2
+assert fixed_counter() == 3
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 15. Exercise: Predict Late Binding Behavior
+
+Problem Statement: Without running the code, predict what the following program will print.
+
+```python
+def create_functions():
+    funcs = []
+    for i in [1, 2, 3]:
+        funcs.append(lambda: i * 10)
+    return funcs
+
+multipliers = create_functions()
+
+for f in multipliers:
+    print(f())
+```
+The answer must:
+
+* Analyze how the loop variable i is captured by the lambda functions.
+* Understand the concept of "late binding" in Python closures.
+* Predict the output of the final loop.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 16. Exercise: Configurable Event Logger
+
+Problem Statement: You are building a logging system. You need a way to create specialized logging functions. Write a function `create_event_logger` that takes a string log_level (e.g., "INFO", "WARNING"). This function should return a new function that accepts a message string and returns a formatted log entry: `"[LOG_LEVEL]: message".`
+
+Function Signature: `def create_event_logger():`
+
+The function must:
+
+* Be named `create_event_logger` and accept a log_level string.
+* Return a new function.
+* The returned function must accept a message string.
+* The returned function must produce a string in the format `f"[{log_level}]: {message}".`
+
+Asserts:
+```python
+info_logger = create_event_logger("INFO")
+warning_logger = create_event_logger("WARNING")
+error_logger = create_event_logger("ERROR")
+
+assert info_logger("User logged in.") == "[INFO]: User logged in."
+assert warning_logger("Disk space is low.") == "[WARNING]: Disk space is low."
+assert error_logger("Failed to connect to database.") == "[ERROR]: Failed to connect to database."
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 17. Exercise: Sequenced ID Generator*
+
+Problem Statement: You need to generate unique, sequential IDs for different types of documents (e.g., invoices, tickets, reports). Write a function `create_id_generator` that takes a prefix string. It should return a new function that, each time it's called, returns a new ID string. The first ID should be `f"{prefix}-001"`, the second `f"{prefix}-002"`, and so on. The numeric part should always be three digits, zero-padded.
+
+Function Signature: `def create_id_generator(prefix_string):`
+
+The function must:
+
+* Be named `create_id_generator` and accept a prefix string.
+* Return a new ID-generating function.
+* The returned function takes no arguments.
+* Each call to the returned function must produce a new ID with an incrementing number, formatted to three digits with leading zeros.
+* Generators for different prefixes must be independent.
+
+Asserts:
+```python
+invoice_generator = create_id_generator("INV")
+ticket_generator = create_id_generator("TKT")
+
+assert invoice_generator() == "INV-001"
+assert invoice_generator() == "INV-002"
+assert ticket_generator() == "TKT-001"
+assert invoice_generator() == "INV-003"
+assert ticket_generator() == "TKT-002"
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 18. Exercise: Data Processing Builder
+
+Problem Statement: In a data processing application, you often apply a series of transformations to an input. Write a function build_data_processor that accepts one or more functions as arguments. It should return a single function that, when given a piece of data, will apply all the transformation functions to it in the order they were provided.
+
+Function Signature: `def build_data_processor(*args)`:
+
+The function must:
+
+* Be named `build_data_processor` and accept a variable number of functions.
+* Return a new processor function.
+* The returned function must accept a single argument data.
+* It must apply the series of transformations to data and return the final result.
+
+Asserts:
+
+```python
+def clean_whitespace(s): return s.strip()
+def to_uppercase(s): return s.upper()
+def add_greeting(s): return f"HELLO, {s}!"
+
+name_processor = build_data_processor(clean_whitespace, to_uppercase, add_greeting)
+assert name_processor("  alice  ") == "HELLO, ALICE!"
+
+def parse_int(s): return int(s)
+def double(n): return n * 2
+number_processor = build_data_processor(clean_whitespace, parse_int, double)
+assert number_processor("  10  ") == 20
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 19. Exercise: Access Control Handler
+
+Problem Statement: You are implementing a security system. You need a way to check if a user has the required permissions. Write a function `create_access_handler `that accepts a set of `allowed_roles`. It must return a new function that takes a user dictionary. The user dictionary will have a 'role' key. The returned function should return True if the user's role is in the set of allowed roles, and False otherwise.
+
+Function Signature: `def create_access_handler(allowed_roles):`
+
+The function must:
+
+* Be named `create_access_handler` and accept a set of strings (`allowed_roles`).
+* Return a new handler function.
+* The returned function must accept a single dictionary user.
+* It must return True if `user['role']` is present in the `allowed_roles` set, and False otherwise.
+
+Asserts:
+
+```python
+admin_handler = create_access_handler({"admin"})
+editor_handler = create_access_handler({"admin", "editor"})
+viewer_handler = create_access_handler({"admin", "editor", "viewer"})
+
+user_admin = {"name": "Alice", "role": "admin"}
+user_editor = {"name": "Bob", "role": "editor"}
+user_viewer = {"name": "Charlie", "role": "viewer"}
+
+assert admin_handler(user_admin) is True
+assert admin_handler(user_editor) is False
+
+assert editor_handler(user_admin) is True
+assert editor_handler(user_editor) is True
+assert editor_handler(user_viewer) is False
+
+assert viewer_handler(user_viewer) is True
+```
+<details> 
+<summary>Possible Solution</summary> 
 </details>
 
 
-
 [Back to the top](#top)
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
 
 <details> 
 <summary>Possible Solution</summary> 
