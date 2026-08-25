@@ -13,6 +13,7 @@
 - [Generators and Files](#generators-and-files)
 - [Arguments and Parameters](#arguments-and-parameters)
 - [Iterable Unpacking](#iterable-unpacking)
+- [Closure Practice](#closure-practice)
 
 ## Lesson 1: Functions, Generators, and Files
 
@@ -4511,6 +4512,15 @@ assert add_10(0) == 10
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def make_adder(n):
+
+    def adder(x):
+        return n + x
+    return adder
+```
+
 </details>
 
 #### 2. Exercise: Configurable Multiplier
@@ -4539,6 +4549,15 @@ assert triple(10) == 30
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def make_multiplier(factor):
+
+    def multiplier(value):
+        return factor * value
+    return multiplier
+```
+
 </details>
 
 #### 3. Exercise: String Formatting Factory
@@ -4566,6 +4585,15 @@ assert format_wave("Python") == "~~~ Python ~~~"
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def make_string_formatter(prefix, suffix):
+
+    def make_text(text):
+        return prefix + text + suffix
+    return make_text
+```
+
 </details>
 
 #### 4. Exercise: Configurable Range Predicate
@@ -4597,6 +4625,16 @@ assert is_adult(65) is True
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def make_predicate(min_val, max_val):
+
+    def predicate(value):
+        return max_val > value > min_val
+    return predicate
+```
+
 </details>
 
 #### 5. Exercise: Simple Counter
@@ -4628,6 +4666,19 @@ assert counter_a() == 4
 ```
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def make_counter():
+
+    count = 0
+
+    def increment():
+        nonlocal count
+        count += 1
+        return count
+    return increment
+```
+
 </details>
 
 #### 6. Exercise: Configurable Counter
@@ -4657,6 +4708,19 @@ assert counter_100() == 102
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def make_configurable_counter(start):
+
+    count = start
+
+    def increment():
+        nonlocal count
+        count += 1
+        return count
+    return increment
+```
+
 </details>
 
 #### 7. Exercise: Accumulator
@@ -4689,6 +4753,20 @@ assert acc1(20) == 32
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def make_accumulator():
+
+    total = 0
+
+    def accumulate(n):
+        nonlocal total
+        total += n
+        return total
+    
+    return accumulate
+```
+
 </details>
 
 #### 8. Exercise: Limited Use Password Checker
@@ -4719,6 +4797,27 @@ assert checker("anything") is False # Locked
 ```
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def make_password_checker(password, max_attempts):
+
+    maxed_attempts = max_attempts
+
+    def password_checker(guess):
+
+        nonlocal maxed_attempts
+        if maxed_attempts <= 0:
+            return False
+        if password == guess:
+            return True
+
+        maxed_attempts -= 1
+        return False
+    
+    return password_checker
+```
+
 </details>
 
 #### 9. Exercise: Value Validator
@@ -4756,6 +4855,20 @@ except ValueError as e:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def make_validator(is_valid, error_message):
+
+    def validator(value):
+
+        if is_valid(value):
+            return None
+        else:
+            raise ValueError(error_message)
+        
+    return validator
+```
+
 </details>
 
 #### 10. Exercise: Transformation Pipeline
