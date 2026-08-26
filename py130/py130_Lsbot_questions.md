@@ -14,6 +14,7 @@
 - [Arguments and Parameters](#arguments-and-parameters)
 - [Iterable Unpacking](#iterable-unpacking)
 - [Closure Practice](#closure-practice)
+- [Closure Practice 2](#closure-practice-2)
 
 ## Lesson 1: Functions, Generators, and Files
 
@@ -4899,6 +4900,21 @@ assert pipeline2(12345) == 5
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def make_pipeline(*funcs):
+
+    def pipeline(value):
+        
+        current_value = value
+        for func in funcs:
+            current_value = func(current_value)
+        return current_value
+    
+    return pipeline
+
+```
+
 </details>
 
 #### 11. Exercise: Safe Division
@@ -4929,6 +4945,20 @@ assert safe_div_none(20, 0) is None
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def make_safe_division(default_value):
+
+    def safe_division(numerator, denominator):
+        try:
+            result = numerator / denominator
+        except ZeroDivisionError:
+            return default_value
+        return result     
+    
+    return safe_division
+```
+
 </details>
 
 #### 12. Exercise: Command Dispatcher
@@ -4968,6 +4998,21 @@ else:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def make_dispatcher(handlers):
+    
+    def dispatcher(command_string, *args):
+
+        if command_string in handlers:
+            return handlers[command_string](*args)
+
+        else:
+            raise KeyError
+        
+    return dispatcher
+```
+
 </details>
 
 ####  13. Exercise: Predict the Output
@@ -5000,6 +5045,21 @@ The answer must:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+Prints out: 
+```
+Alice's team is now working on: []
+Bob's team is now working on: []
+Alice's team is now working on: []
+```
+The code doesn't append anything to the list. If it did it would print out:
+
+```
+Alice's team is now working on: ['Design the UI']
+Bob's team is now working on: ['Implement the API']
+Alice's team is now working on: ['Design the UI', 'Test the UI']
+```
+
 </details>
 
 #### 14. Exercise: Debug the Broken Counter
@@ -5034,6 +5094,19 @@ assert fixed_counter() == 3
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def make_fixed_counter():
+
+    count = 0
+    
+    def counter():
+        nonlocal count
+        count = count + 1
+        return count
+    return counter
+```
+
 </details>
 
 #### 15. Exercise: Predict Late Binding Behavior
@@ -5060,6 +5133,16 @@ The answer must:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+Prints out:
+```
+30
+30
+30
+```
+
+To fix it, you would need: ```funcs.append(lambda i = i: i * 10)```
+
 </details>
 
 #### 16. Exercise: Configurable Event Logger
@@ -5088,6 +5171,16 @@ assert error_logger("Failed to connect to database.") == "[ERROR]: Failed to con
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def create_event_logger(log_level):
+    
+    def event_logger(message):
+        return (f"[{log_level}]: {message}")
+        
+    return event_logger
+```
+
 </details>
 
 #### 17. Exercise: Sequenced ID Generator*
@@ -5118,13 +5211,29 @@ assert ticket_generator() == "TKT-002"
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def create_id_generator(prefix_string):
+
+    count = 1
+
+    def id_generator():
+        
+        nonlocal count
+        output_str = f"{prefix_string}-{count:03}"
+        count += 1
+        return output_str
+    
+    return id_generator
+```
+
 </details>
 
 #### 18. Exercise: Data Processing Builder
 
 Problem Statement: In a data processing application, you often apply a series of transformations to an input. Write a function build_data_processor that accepts one or more functions as arguments. It should return a single function that, when given a piece of data, will apply all the transformation functions to it in the order they were provided.
 
-Function Signature: `def build_data_processor(*args)`:
+Function Signature: `def build_data_processor(*args):`
 
 The function must:
 
@@ -5151,6 +5260,18 @@ assert number_processor("  10  ") == 20
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def build_data_processor(*args):
+
+    def data_processor(value):
+        current_value = value
+        for func in args:
+            current_value = func(current_value)
+        return current_value
+    return data_processor
+```
+
 </details>
 
 #### 19. Exercise: Access Control Handler
@@ -5188,10 +5309,546 @@ assert viewer_handler(user_viewer) is True
 ```
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+def create_access_handler(allowed_roles):
+
+    def access_handler(user_dict):
+        if user_dict['role'] in allowed_roles:
+            return True
+        return False
+    return access_handler
+```
 </details>
 
-
 [Back to the top](#top)
+
+
+### Closure Practice 2
+
+#### Exercise 1, Configurable Prefixer
+
+Problem Statement​: Create a higher-order function make_prefixer that takes a string prefix and returns a new function. The returned function should take a single string argument and prepend the original prefix to it.
+
+Function Signature​: ```def make_prefixer(prefix):```
+
+Contract​:
+
+* The function must accept one argument, prefix, which is a string.
+* The function must return a new function (a closure).
+* The returned function must accept one argument, text, which is a string.
+* The returned function must return a new string that consists of prefix followed by text.
+
+Tests​:
+
+```python
+add_mr = make_prefixer("Mr. ")
+add_ms = make_prefixer("Ms. ")
+
+assert add_mr("Smith") == "Mr. Smith"
+assert add_mr("Jones") == "Mr. Jones"
+assert add_ms("Williams") == "Ms. Williams"
+assert make_prefixer("")("Test") == "Test"
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+def make_prefixer(prefix):
+
+    def prefixer(string):
+        return f"{prefix}{string}"
+    return prefixer
+```
+
+</details>
+
+#### Exercise 2, Simple Stateful Counter
+
+Problem Statement​: Write a function `make_counter` that takes no arguments and returns a counter function. Each time the returned function is called, it should return a number that is one greater than the value returned by the previous call. The first call should return 1.
+
+Function Signature​: ```def make_counter():```
+
+Contract​:
+
+* The function must accept no arguments.
+* The function must return a new function (a closure).
+* The returned function, when called, must return an integer.
+* The first call to the returned function must return 1.
+* Each subsequent call must return the previous result plus 1.
+
+Tests​:
+
+```python
+counter1 = make_counter()
+assert counter1() == 1
+assert counter1() == 2
+assert counter1() == 3
+
+# Verify that a new counter has independent state
+counter2 = make_counter()
+assert counter2() == 1
+assert counter1() == 4
+assert counter2() == 2
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+def make_counter():
+    count = 0
+
+    def counter():
+        nonlocal count
+        count += 1
+        return count
+    return counter
+```
+
+</details>
+
+#### Exercise 3, Tracing Closure State
+
+Problem Statement​: Without running the code, determine what the following script will print.
+
+Code​:
+
+```python
+def make_cumulative_adder(base):
+    total = base
+    def cumulative_adder(x):
+        nonlocal total
+        total += x
+        return total
+    return cumulative_adder
+
+adder_plus_5 = make_cumulative_adder(5)
+print(f"First call to adder_plus_5: {adder_plus_5(10)}")
+print(f"Second call to adder_plus_5: {adder_plus_5(2)}")
+
+adder_plus_10 = make_cumulative_adder(10)
+print(f"First call to adder_plus_10: {adder_plus_10(100)}")
+
+print(f"Third call to adder_plus_5: {adder_plus_5(3)}")
+print(f"Second call to adder_plus_10: {adder_plus_10(1)}")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```
+First call to adder_plus_5: 15
+Second call to adder_plus_5: 17
+First call to adder_plus_10: 110
+Third call to adder_plus_5: 20
+Second call to adder_plus_10: 111
+```
+
+</details>
+
+#### Exercise 4, Event Logger with Mutable State
+
+Problem Statement​: Implement a function `make_event_logger` that returns a logging function. The returned logger should behave in two ways:
+
+1. When called with a string argument, it should record that string as an event and return `None`.
+2. When called with the special sentinel value `'GET_EVENTS'`, it should return a ​copy​ of the list of all events logged so far, in the order they were recorded.
+
+Function Signature​: ```def make_event_logger():```
+
+Contract​:
+
+* The function must accept no arguments.
+* The function must return a new function (a closure).
+* The returned function, when called with a string, must store the string and return None.
+* The returned function, when called with the string `'GET_EVENTS'`, must return a new list containing all previously logged event strings.
+* Modifying the list returned by a `'GET_EVENTS'` call must not affect subsequent calls.
+
+Tests​:
+``` python
+logger1 = make_event_logger()
+assert logger1("User logged in") is None
+assert logger1("User viewed page") is None
+
+events = logger1("GET_EVENTS")
+assert events == ["User logged in", "User viewed page"]
+
+# Verify that the returned list is a copy
+events.append("Tampering with events")
+assert logger1("GET_EVENTS") == ["User logged in", "User viewed page"]
+
+assert logger1("User logged out") is None
+assert logger1("GET_EVENTS") == ["User logged in", "User viewed page", "User logged out"]
+
+# Verify independent state for a new logger
+logger2 = make_event_logger()
+assert logger2("Admin action") is None
+assert logger2("GET_EVENTS") == ["Admin action"]
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+def make_event_logger():
+    events = []
+
+    def event_logger(string):
+        nonlocal events
+        if string == "GET_EVENTS":
+            results = events.copy()
+            return results
+        else:
+            events.append(string)
+    
+    return event_logger
+```
+
+</details>
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 5, Shared State Wallet
+
+Problem Statement​: Create a function `make_wallet` that simulates a simple wallet, starting with an `initial_balance`. It must return a dictionary containing three functions: deposit, withdraw, and balance. These three functions should all share access to the same enclosed balance.
+
+Function Signature​: ```def make_wallet(initial_balance):```
+
+Contract​:
+
+* The function must accept one argument, initial_balance.
+* The function must return a dictionary with keys 'deposit', 'withdraw', and 'balance'.
+* The deposit function must accept an amount, add it to the balance, and return the new balance.
+* The withdraw function must accept an amount. If there are sufficient funds, it should subtract the amount and return the new balance. If not, it should return the string "Insufficient funds".
+* The balance function must accept no arguments and return the current balance.
+
+Tests​:
+
+```python
+my_wallet = make_wallet(100)
+deposit = my_wallet['deposit']
+withdraw = my_wallet['withdraw']
+get_balance = my_wallet['balance']
+
+assert get_balance() == 100
+assert deposit(50) == 150
+assert get_balance() == 150
+assert withdraw(30) == 120
+assert withdraw(150) == "Insufficient funds"
+assert get_balance() == 120
+
+# Verify independent wallets
+other_wallet = make_wallet(10)
+assert other_wallet['balance']() == 10
+assert get_balance() == 120
+```
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+def make_wallet(initial_balance):
+
+    current_balance = initial_balance
+
+    def deposit(amount):
+        nonlocal current_balance
+        current_balance += amount
+        return current_balance 
+    
+    def withdraw(amount):
+        nonlocal current_balance
+        if amount > current_balance:
+            return "Insufficient funds"
+        current_balance -= amount
+        return current_balance
+    
+    def balance():
+        nonlocal current_balance
+        return current_balance
+
+    return {'balance': balance, 'withdraw': withdraw, 'deposit': deposit}
+```
+
+</details>
+
+#### Exercise 6, Function Call Limiter
+
+Problem Statement​: Write a higher-order function `make_call_limiter` that takes a function `target_func` and an integer limit. It should return a new function that acts as a wrapper. The wrapper can be called up to limit times, and on each of these calls, it should invoke target_func with the given arguments and return its result. On any subsequent call, the wrapper should raise a ValueError with the message "Call limit reached".
+
+Function Signature​: ```def make_call_limiter(target_func, limit):```
+
+Contract​:
+
+* The function must accept a callable `target_func` and an integer limit.
+* The function must return a new function (a closure).
+* The returned function must accept any positional and keyword arguments (*args, **kwargs).
+* When called limit or fewer times, the returned function must call `target_func` with the provided arguments and return its value.
+* When called more than limit times, the returned function must raise a `ValueError`.
+
+Tests​:
+
+```python
+def add(a, b):
+    return a + b
+
+limited_add = make_call_limiter(add, 2)
+assert limited_add(3, 4) == 7
+assert limited_add(5, 6) == 11
+
+raised_error = False
+try:
+    limited_add(7, 8)
+except ValueError as e:
+    raised_error = True
+    assert str(e) == "Call limit reached"
+assert raised_error
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+
+def make_call_limiter(target_func, limit):
+
+    current = limit
+
+    def call_limiter(*args, **kwargs):
+        nonlocal current
+        if current > 0:
+            current -= 1
+            return target_func(*args, **kwargs)
+        raise ValueError("Call limit reached")
+    
+    return call_limiter
+```
+
+</details>
+
+#### Exercise 7, Stateful Toggle
+
+Problem Statement​: Write a function `make_toggle` that accepts two values, `val1` and `val2`. It should return a function that, when called, alternates between returning `val1` and `val2`. The first call should return `val1`.
+
+Function Signature​: ```def make_toggle(val1, val2):```
+
+Contract​:
+
+* The function must accept two arguments, `val1` and `val2`.
+* The function must return a new function (a closure).
+* The first call to the returned function must return `val1`.
+* The second call must return `val2`.
+* The third call must return `val1`, and so on, alternating.
+
+Tests​:
+
+```python
+toggler = make_toggle("On", "Off")
+assert toggler() == "On"
+assert toggler() == "Off"
+assert toggler() == "On"
+assert toggler() == "Off"
+
+# Verify independent toggler
+bool_toggler = make_toggle(True, False)
+assert bool_toggler() is True
+assert toggler() == "On"
+assert bool_toggler() is False
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+
+def make_toggle(val1, val2):
+
+    current_call = 0
+
+    def toggle():
+
+        nonlocal current_call
+
+        if current_call % 2 == 0:
+            current_call += 1
+            return val1
+        else:
+            current_call += 1
+            return val2
+
+    return toggle
+```
+
+</details>
+
+#### Exercise 8, Password-Protected Function Access
+
+Problem Statement​: Write a function `protect_function` that secures a given function with a password. It should take a `target_func` and a password string and return a new function. This new function requires the correct password as its ​first​ argument. If the password is correct, it will call the `target_func` with any ​remaining​ arguments and return its result. If the password is incorrect, it must return the string "Invalid password".
+
+Function Signature​: ```def protect_function(target_func, password):```
+
+Contract​:
+
+* The function must accept a callable `target_func` and a string password.
+* The function must return a new function (a closure).
+* The returned function must accept at least one argument (the trial password), plus any arguments intended for `target_func`.
+* If the first argument to the returned function matches the original password, it must call `target_func` with the rest of the arguments.
+* If the first argument does not match, it must return the specific string "Invalid password".
+
+Tests​:
+```python
+def get_secret_data(key):
+    return f"Secret data for key: {key}"
+
+protected_access = protect_function(get_secret_data, "s3cr3t")
+
+assert protected_access("wrong_pass", 123) == "Invalid password"
+assert protected_access("s3cr3t", 123) == "Secret data for key: 123"
+
+def multiply(a, b, c):
+    return a * b * c
+
+protected_multiply = protect_function(multiply, "math_wiz")
+assert protected_multiply("s3cr3t", 2, 3, 4) == "Invalid password"
+assert protected_multiply("math_wiz", 2, 3, 4) == 24
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+
+def protect_function(target_func, password):
+
+    def inner(attempt, *args):
+        if password == attempt:
+            return target_func(*args)
+        else:
+            return "Invalid password"
+    return inner
+```
+
+</details>
+
+#### Exercise 9, Debugging Late Binding
+
+Problem Statement​: The function `create_multipliers` is intended to create a list of functions. Each function in the list should multiply its argument by its corresponding index in the list (0, 1, 2, 3, 4). However, it has a bug. All the functions in the returned list behave identically. Analyze the code, identify the bug related to closures and variable scope, and describe why it happens. Do not provide the corrected code.
+
+
+Code​:
+```python
+def create_multipliers():
+    multipliers = []
+    for i in range(5):
+        def multiplier(x):
+            return i * x
+        multipliers.append(multiplier)
+    return multipliers
+
+multipliers = create_multipliers()
+
+# The functions are expected to behave as follows:
+# multipliers[0](10) should be 0
+# multipliers[1](10) should be 10
+# ...
+# multipliers[4](10) should be 40
+
+# However, the actual output is:
+print("Expected: 0, Actual:", multipliers[0](10))
+print("Expected: 10, Actual:", multipliers[1](10))
+print("Expected: 20, Actual:", multipliers[2](10))
+print("Expected: 30, Actual:", multipliers[3](10))
+print("Expected: 40, Actual:", multipliers[4](10))
+```
+
+<details> 
+<summary>Possible Solution</summary>
+
+Late binding problem. The closures retain access to the same i binding, not a separate snapshot of i from each loop iteration.
+
+Because you are curious, the fix is:
+
+```python
+
+def create_multipliers():
+    multipliers = []
+    for i in range(5):
+        def multiplier(x, i=i):
+            return i * x
+        multipliers.append(multiplier)
+    return multipliers
+```
+
+</details>
+
+#### Exercise 10, Stateful Pipeline Builder
+
+Problem Statement​: Create a function `make_pipeline_builder` that allows for the step-by-step construction of a data processing pipeline. The function should return a builder function. This builder can be called repeatedly with functions as arguments, adding each to the pipeline. If the builder is called with a non-callable argument (the "final value"), it should pass this value through the entire pipeline of stored functions in the order they were added and return the final result. After processing a final value, the pipeline should reset.
+
+Function Signature​: ```def make_pipeline_builder():```
+
+Contract​:
+
+* The function must accept no arguments.
+* The function must return a new function, builder.
+* When builder is called with a callable (a function), it must add that function to its internal pipeline and return None.
+* When builder is called with a non-callable value, it must process that value through the pipeline.
+* The processing must apply the first function in the pipeline to the value, then the second function to that result, and so on.
+* After processing and returning the final result, the internal pipeline must be cleared.
+
+Tests​:
+```python
+def add_one(n): return n + 1
+def double(n): return n * 2
+def to_string(n): return str(n)
+
+builder = make_pipeline_builder()
+
+assert builder(add_one) is None
+assert builder(double) is None
+assert builder(to_string) is None
+
+# The pipeline is add_one -> double -> to_string
+# For input 5: (5 + 1) -> 6 * 2 -> 12 -> "12"
+assert builder(5) == "12"
+
+# The pipeline should now be reset
+assert builder(double) is None
+assert builder(add_one) is None
+
+# New pipeline is double -> add_one
+# For input 10: 10 * 2 -> 20 + 1 -> 21
+assert builder(10) == 21
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+def make_pipeline_builder():
+
+    pipeline = []
+
+    def builder(item):
+        if callable(item):
+            pipeline.append(item)
+            return None
+
+        current_value = item
+
+        for func in pipeline:
+            current_value = func(current_value)
+
+        pipeline.clear()
+        return current_value
+    
+    return builder
+```
+
+</details>
 
 <details> 
 <summary>Possible Solution</summary> 
