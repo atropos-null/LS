@@ -15,6 +15,8 @@
 - [Iterable Unpacking](#iterable-unpacking)
 - [Closure Practice](#closure-practice)
 - [Closure Practice 2](#closure-practice-2)
+- [Decorator Practice 1](#decorator-practice-1)
+- [Decorator Practice 2](#decorator-practice-2)
 
 ## Lesson 1: Functions, Generators, and Files
 
@@ -5850,6 +5852,682 @@ def make_pipeline_builder():
 
 </details>
 
+
+[Back to the top](#top)
+
+### Decorator Practice 1
+
+#### Exercise 1: Manual Decoration​
+
+Difficulty:​ Basic
+
+Problem Statement: You are given a decorator simple_printer and a function add_numbers. Instead of using the @ syntax, write the single line of code required to manually apply the decorator to the function. Your code should rebind the name add_numbers to point to the new decorated function.
+
+Provided Code
+```python
+def simple_printer(func):
+    """A simple decorator that prints a message before calling the function."""
+    def wrapper(*args, **kwargs):
+        print("Calling the function...")
+        return func(*args, **kwargs)
+    return wrapper
+
+def add_numbers(a, b):
+    """This function adds two numbers."""
+    print(f"Executing add_numbers({a}, {b})")
+    return a + b
+
+# Your code here: Manually decorate add_numbers with simple_printer
+# add_numbers = ...
+
+# --- Tests ---
+# The following code should run without modification after you add your line above.
+result = add_numbers(5, 10)
+print(f"Result: {result}")
+
+# Expected output:
+# Calling the function...
+# Executing add_numbers(5, 10)
+# Result: 15
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+
+add_numbers = simple_printer(add_numbers)
+
+```
+</details>
+
+
+#### Exercise 2: Creating a Simple Wrapper​
+
+Difficulty:​ Basic
+
+Problem Statement: Write a decorator named `announce_call` that prints "About to run the function..." right before the decorated function is executed and "Done running the function." right after. The decorated function will not take any arguments or return any value.
+
+Function Signature: ```def announce_call(func):```
+
+Contract
+
+* When a function decorated with announce_call is called, it must first print "About to run the function...".
+* It must then execute the original function.
+* Finally, it must print "Done running the function.".
+
+Tests
+```python
+# Your decorator implementation here
+
+@announce_call
+def say_hello():
+    print("Hello, world!")
+
+# This call should produce the three lines of output in the correct order.
+say_hello()
+
+# Expected output:
+# About to run the function...
+# Hello, world!
+# Done running the function.
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+
+def announce_call(func):
+    def wrapper(*args, **kwargs):
+        print("About to run the function...")
+        result = func(*args, **kwargs)
+        print("Done running the function.")
+        return result
+    return wrapper
+
+```
+</details>
+
+#### ​Exercise 3: Forwarding Arguments and Return Values​
+
+Difficulty:​ Intermediate
+
+Problem Statement: Create a decorator called passthrough that does nothing but execute the decorated function. It must correctly handle any positional and keyword arguments passed to the decorated function, and it must return the decorated function's exact return value.
+
+Function Signature: ``` def passthrough(func):```
+
+Contract
+
+* The decorator must accept a function as its argument and return a new function.
+* The new function must accept any combination of positional and keyword arguments.
+* The new function must call the original function, passing along all arguments it received.
+* The new function must return the exact value that the original function returned.
+
+Tests
+```python
+# Your decorator implementation here
+
+@passthrough
+def multiply(a, b, verbose=False):
+    if verbose:
+        print(f"Multiplying {a} and {b}")
+    return a * b
+
+# Test 1: Positional arguments
+result1 = multiply(3, 5)
+print(f"Test 1 Result: {result1}")
+assert result1 == 15
+
+# Test 2: Keyword arguments
+result2 = multiply(a=4, b=10, verbose=True)
+print(f"Test 2 Result: {result2}")
+assert result2 == 40
+
+# Test 3: Mixed arguments
+result3 = multiply(6, verbose=True, b=7)
+print(f"Test 3 Result: {result3}")
+assert result3 == 42
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+def passthrough (func):
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    return wrapper
+```
+</details>
+
+#### Exercise 4: Decoration Time vs. Invocation Time​
+
+Difficulty:​ Intermediate
+
+Problem Statement: Consider the following code. Without running it, predict the exact output. Then, provide a brief explanation for why the "Decorator is setting up" message appears only once, while the "Wrapper is executing" message appears each time the function is called.
+
+Code to Analyze
+```python
+def execution_tracer(func):
+    print(f"Decorator is setting up for '{func.__name__}'")
+    def wrapper(*args, **kwargs):
+        print("Wrapper is executing...")
+        result = func(*args, **kwargs)
+        print("...wrapper has finished.")
+        return result
+    return wrapper
+
+@execution_tracer
+def calculate_sum(x, y):
+    return x + y
+
+print("--- Making the first call ---")
+calculate_sum(2, 3)
+
+print("\n--- Making the second call ---")
+calculate_sum(10, 20)
+```
+Question
+
+1.  What will be the exact, line-by-line output of this script?
+2.  Explain the difference between code that runs at decoration time and code that runs at invocation time, using the print statements in `execution_tracer` as your example.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+--- Making the first call ---
+Wrapper is executing...
+...wrapper has finished.
+
+--- Making the second call ---
+Wrapper is executing...
+...wrapper has finished.
+
+</details>
+
+#### Exercise 5: Debugging a Return Value​
+
+Difficulty:​ Intermediate
+
+Problem Statement: The `log_return` decorator is intended to print the return value of the function it decorates before returning it. However, it has a bug. When you run the test code, it fails with an `AssertionError` because the result is `None` instead of the expected integer 12.
+
+Identify the bug in the `log_return` decorator and fix it.
+
+Buggy Code
+```python
+def log_return(func):
+    def wrapper(*args, **kwargs):
+        # This wrapper has a bug
+        value = func(*args, **kwargs)
+        print(f"Function '{func.__name__}' returned: {value}")
+    return wrapper
+
+@log_return
+def get_product(x, y):
+    return x * y
+
+# --- Tests ---
+result = get_product(3, 4)
+
+print(f"Final result received: {result}")
+assert result == 12, f"Test failed: expected 12, but got {result}"
+print("Test passed!")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+
+def log_return(func):
+    def wrapper(*args, **kwargs):
+        value = func(*args, **kwargs)
+        print(f"Function '{func.__name__}' returned: {value}")
+        return value
+    return wrapper
+
+```
+</details>
+
+#### Exercise 6: Argument Validation Decorator​*
+
+Difficulty:​ Advanced
+
+Problem Statement:  Write a decorator named `validate_string_args` that ensures all positional arguments passed to the decorated function are strings. If any positional argument is not a string, the decorator should raise a `TypeError` with the message "All arguments must be strings.". If all arguments are valid, it should execute the function normally.
+
+Function Signature: ```def validate_string_args(func):```
+
+Contract
+
+* The decorator's wrapper must inspect all positional arguments (*args).
+* If any positional argument is not of type str, the wrapper must raise a `TypeError`.
+* The decorator should not validate keyword arguments.
+* If all positional arguments are strings, the wrapper must call the original function with all its arguments (*args, **kwargs) and return its result.
+
+Tests
+```python
+
+# Your decorator implementation here
+
+@validate_string_args
+def concatenate(*args, separator=" "):
+    return separator.join(args)
+
+# Test 1: Should pass
+result = concatenate("hello", "world", "from", "python")
+assert result == "hello world from python"
+print("Test 1 passed.")
+
+# Test 2: Should pass with keyword argument
+result_sep = concatenate("a", "b", "c", separator="-")
+assert result_sep == "a-b-c"
+print("Test 2 passed.")
+
+# Test 3: Should raise TypeError
+try:
+    concatenate("this", "is", "a", 10, "test")
+except TypeError as e:
+    assert str(e) == "All arguments must be strings."
+    print("Test 3 passed (caught expected error).")
+
+# Test 4: Should raise TypeError
+try:
+    concatenate(True)
+except TypeError as e:
+    assert str(e) == "All arguments must be strings."
+    print("Test 4 passed (caught expected error).")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+
+def validate_string_args(func):
+
+    def wrapper(*args, **kwargs):
+        for arg in args:
+            if not isinstance(arg, str):
+                raise TypeError("All arguments must be strings.")
+        return func(*args, **kwargs)
+    return wrapper
+
+```
+</details>
+
+#### Exercise 7: Synthesizing an Exception Handler​
+
+Difficulty:​ Advanced
+
+Problem Statement: Create a decorator named `handle_zero_division` that wraps a function. If the wrapped function raises a `ZeroDivisionError`, the decorator should catch the error and return the string "Cannot divide by zero.". For any other exception, the decorator should let it propagate. If no error occurs, it should return the function's normal result.
+
+Function Signature: ```def handle_zero_division(func):```
+
+Contract
+
+* If the decorated function executes successfully, the decorator must return its result.
+* If the decorated function raises a ZeroDivisionError, the decorator must return the specific string "Cannot divide by zero.".
+* If the decorated function raises any other type of exception (e.g., TypeError), the decorator must not catch it.
+
+Tests
+```python
+# Your decorator implementation here
+
+@handle_zero_division
+def divide(a, b):
+    print(f"Dividing {a} by {b}...")
+    return a / b
+
+# Test 1: No error
+result1 = divide(10, 2)
+print(f"Result 1: {result1}")
+assert result1 == 5.0
+
+# Test 2: ZeroDivisionError
+result2 = divide(8, 0)
+print(f"Result 2: {result2}")
+assert result2 == "Cannot divide by zero."
+
+# Test 3: Other error (should raise TypeError)
+try:
+    divide(10, "2")
+except TypeError:
+    print("Successfully caught expected TypeError.")
+except Exception as e:
+    print(f"Caught unexpected exception: {type(e).__name__}")
+ ```
+
+ <details> 
+<summary>Possible Solution</summary> 
+
+```python
+
+def handle_zero_division(func):
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except ZeroDivisionError:
+            return "Cannot divide by zero."
+    return wrapper
+
+```
+</details>
+
+[Back to the top](#top)
+
+### Decorator Practice 2
+
+#### 1.Factory Mechanics: prefix_with​
+
+Problem Statement: Create a decorator factory named `prefix_with`. The factory should accept a string `prefix_str`. The decorator it returns should prepend `"{prefix_str}: "` to the result of the decorated function. The decorated function will always return a string.
+
+Function Signature: ```def prefix_with(prefix_str):```
+
+Tests
+```python
+# Test Case 1: Simple prefixing
+@prefix_with("LOG")
+def get_message(message):
+    return message
+
+print(get_message("Hello, world!"))
+# Expected: LOG: Hello, world!
+
+# Test Case 2: Using a different prefix
+@prefix_with("INFO")
+def get_status(status):
+    return f"Current status is {status}"
+
+print(get_status("active"))
+# Expected: INFO: Current status is active
+
+# Test Case 3: Decorating a function with no arguments
+@prefix_with("ALERT")
+def system_warning():
+    return "System integrity compromised"
+
+print(system_warning())
+# Expected: ALERT: System integrity compromised
+```
+
+#### 2. Scalar State and Rebinding: alternate_calls​
+
+Problem Statement:  Implement a decorator `alternate_calls`. This decorator takes two functions, `func1` and `func2`, as arguments. When the decorated function is called, it should execute `func1` on the first call, `func2` on the second call, `func1` again on the third, and so on, alternating between the two. The decorated function will be called with arguments that are valid for both `func1` and `func2`.
+
+Function Signature:  ```def alternate_calls(func1, func2):```
+
+Tests
+```python
+def uppercase_string(s):
+    return s.upper()
+
+def lowercase_string(s):
+    return s.lower()
+
+@alternate_calls(uppercase_string, lowercase_string)
+def transform_string(s):
+    # This function's body is effectively replaced by the decorator
+    pass
+
+# Test the alternating behavior
+print(transform_string("First Call"))  # Executes uppercase_string
+# Expected: FIRST CALL
+
+print(transform_string("Second Call")) # Executes lowercase_string
+# Expected: second call
+
+print(transform_string("Third Call"))  # Executes uppercase_string
+# Expected: THIRD CALL
+
+print(transform_string("Fourth Call")) # Executes lowercase_string
+# Expected: fourth call
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+
+```
+</details>
+
+#### 3. Mutable State: record_invocations​
+
+Problem Statement: Write a decorator factory `record_invocations`. The factory accepts a dictionary, `record`. The returned decorator should, upon each call to the decorated function, add an entry to `record`. The key should be the decorated function's name (as a string), and the value should be a list of all positional arguments it has been called with so far.
+
+Function Signature:  ```def record_invocations(record):```
+    
+Tests
+```python
+call_log = {}
+
+@record_invocations(call_log)
+def greet(name):
+    print(f"Hello, {name}!")
+
+@record_invocations(call_log)
+def farewell(name):
+    print(f"Goodbye, {name}.")
+
+greet("Alice")
+# Expected print: Hello, Alice!
+print(call_log)
+# Expected: {'greet': [('Alice',)]}
+
+farewell("Bob")
+# Expected print: Goodbye, Bob.
+print(call_log)
+# Expected: {'greet': [('Alice',)], 'farewell': [('Bob',)]}
+
+greet("Charlie")
+# Expected print: Hello, Charlie!
+print(call_log)
+# Expected: {'greet': [('Alice',), ('Charlie',)], 'farewell': [('Bob',)]}
+```
+
+#### ​4. Independent State: create_saturating_counter​
+
+Problem Statement: Create a decorator factory `create_saturating_counter` that takes a limit integer. The returned decorator should wrap a function. Each time the decorated function is called, an internal counter is incremented. The decorator should allow the original function to execute only if the counter is less than limit. Once the limit is reached, subsequent calls to the decorated function should do nothing and return None.
+
+Each function decorated by a call to create_saturating_counter must have its own independent counter.
+
+Function Signature: ```def create_saturating_counter(limit):```
+
+Tests
+```python
+@create_saturating_counter(2)
+def process_data(data):
+    print(f"Processing: {data}")
+
+@create_saturating_counter(3)
+def log_event(event):
+    print(f"Logging: {event}")
+
+# Test first counter
+print("--- Testing process_data (limit 2) ---")
+process_data("A") # Processes
+# Expected: Processing: A
+process_data("B") # Processes
+# Expected: Processing: B
+process_data("C") # Does not process, returns None
+# Expected: (no output)
+process_data("D") # Does not process, returns None
+# Expected: (no output)
+
+# Test second counter, which should be independent
+print("\n--- Testing log_event (limit 3) ---")
+log_event("Start")     # Logs
+# Expected: Logging: Start
+log_event("Progress")  # Logs
+# Expected: Logging: Progress
+log_event("End")       # Logs
+# Expected: Logging: End
+log_event("Finished")  # Does not log, returns None
+# Expected: (no output)
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 5. Shared State: shared_flag​
+
+Problem Statement: Implement a decorator factory `shared_flag` that accepts a mutable object (like a list or dictionary) to act as a shared state container. The factory returns a decorator. When the first function decorated by this decorator is called, it should set a "flag" within the shared state container and then execute. Any other function that shares this same decorator (i.e., was decorated using the same factory call) should refuse to run if the flag has already been set, returning `None` instead.
+
+Function Signature: ```def shared_flag(state_container):```
+
+Tests
+```python
+# The shared state container
+flag_state = {}
+
+# Both functions are decorated using the decorator from the SAME factory call
+# so they will share the state.
+flagged_decorator = shared_flag(flag_state)
+
+@flagged_decorator
+def critical_task_one():
+    print("Executing critical task one.")
+    return "Task One Complete"
+
+@flagged_decorator
+def critical_task_two():
+    print("Executing critical task two.")
+    return "Task Two Complete"
+
+
+# Run the tasks
+print(critical_task_one())
+# Expected:
+# Executing critical task one.
+# Task One Complete
+
+print(critical_task_two()) # Should not run as the flag is now set
+# Expected:
+# None
+
+print(critical_task_one()) # Should also not run again
+# Expected:
+# None
+
+print(f"Final state: {flag_state}")
+# Expected: Final state: {'flag_set': True}
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 6. State Ownership and Lifetime: Tracing​
+
+Problem Statement:  Consider the following code. Trace the creation and sharing of state. Based on your trace, predict what the print statements at the end will output. Do not run the code before answering.
+
+Code
+```python
+def create_event_logger():
+    events = []
+    def log_event_decorator(func):
+        def wrapper(*args, **kwargs):
+            result = func(*args, **kwargs)
+            events.append(f"Function '{func.__name__}' returned '{result}'")
+            return result
+        return wrapper
+    return log_event_decorator, lambda: list(events)
+
+# Scenario 1: Two functions decorated by the same decorator instance
+security_logger, get_security_events = create_event_logger()
+
+@security_logger
+def login_user(user):
+    return f"{user} logged in"
+
+@security_logger
+def logout_user(user):
+    return f"{user} logged out"
+
+# Scenario 2: Two functions decorated by different decorator instances
+database_logger, get_database_events = create_event_logger()
+
+@database_logger
+def query_db(query):
+    return f"Queried: {query}"
+
+general_logger, get_general_events = create_event_logger()
+
+@general_logger
+def read_file(path):
+    return f"Read {path}"
+
+
+# Execute function calls
+login_user("admin")
+query_db("SELECT *")
+logout_user("admin")
+read_file("/etc/passwd")
+login_user("guest")
+
+# Prediction questions
+print("Security Events:", get_security_events())
+print("Database Events:", get_database_events())
+print("General Events:", get_general_events())
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### 7. Synthesis: with_feedback​
+
+Problem Statement:  Create a decorator factory `with_feedback` that accepts a list of `forbidden_results`. It returns a decorator that provides feedback on a function's return values. For each decorated function, the decorator must maintain its own independent state, consisting of:
+
+1. A list of all results the function has ever returned.
+2. A count of how many times its result was in the `forbidden_results` list.
+
+The decorated function's behavior should be modified as follows:
+
+* After the original function executes, the decorator checks if the return value is in `forbidden_results`.
+* If it is, the forbidden count is incremented. The decorator then prints a warning: `"Warning: Forbidden result '{result}' encountered. Total forbidden calls: {count}."`
+* Regardless of the result, it is added to the function's result history.
+* Finally, the decorator returns the original result.
+
+Function Signature: ```def with_feedback(forbidden_results):```
+
+Tests
+```python
+forbidden = ["error", "failure", "unknown"]
+feedback_decorator = with_feedback(forbidden)
+
+@feedback_decorator
+def process_job(job_id):
+    if job_id % 3 == 0:
+        return "error"
+    elif job_id % 2 == 0:
+        return "success"
+    return "pending"
+
+@feedback_decorator
+def check_status(status_code):
+    if status_code == 500:
+        return "failure"
+    return "ok"
+
+
+print("--- Processing Jobs ---")
+process_job(1) # pending
+process_job(2) # success
+process_job(3) # error
+# Expected print: Warning: Forbidden result 'error' encountered. Total forbidden calls: 1.
+process_job(4) # success
+process_job(6) # error
+# Expected print: Warning: Forbidden result 'error' encountered. Total forbidden calls: 2.
+
+print("\n--- Checking Statuses ---")
+check_status(200) # ok
+check_status(500) # failure
+# Expected print: Warning: Forbidden result 'failure' encountered. Total forbidden calls: 1.
+check_status(404) # ok
+```
 <details> 
 <summary>Possible Solution</summary> 
 </details>
@@ -5857,5 +6535,18 @@ def make_pipeline_builder():
 <details> 
 <summary>Possible Solution</summary> 
 </details>
+
+
+
+[Back to the top](#top)
+
+
+### Decorator Practice 3
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+
 
 [Back to the top](#top)

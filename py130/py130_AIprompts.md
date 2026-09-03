@@ -745,3 +745,384 @@ Verify that:
 Reject and regenerate any exercise that violates the progression.
 
 The final result should read like a carefully designed chapter from a programming textbook rather than twenty independently generated programming exercises.
+
+### Decorators Practice — Prompt 1: Mechanics and Execution Model
+
+Generate a focused learning-mode practice set for students studying **Python decorators** in Launch School's PY130 course.
+
+#### Primary Goal
+
+The exercises should build a precise operational model of what decorators do. The student should become comfortable reasoning about:
+
+- manual decoration
+- `@decorator` syntax
+- the equivalence between `@decorator` and function rebinding
+- wrapper functions
+- forwarding arguments
+- what object is passed into a decorator
+- what object is returned
+- decoration time versus function invocation time
+- what code runs once during decoration
+- what code runs each time the decorated function is called
+
+This is **Learning Mode**, not assessment preparation.
+
+The exercises should isolate these mechanics before introducing more complex decorator combinations.
+
+#### Assumed Knowledge
+
+Students already know:
+
+- first-class functions
+- higher-order functions
+- nested functions
+- closures
+- lexical scope
+- `*args`
+- `**kwargs`
+- basic exception behavior
+- normal function calls and return values
+
+Students are currently learning decorators.
+
+#### Do Not Use Yet
+
+Do not require knowledge of:
+
+- decorator factories
+- decorators with configurable arguments
+- stacked decorators
+- class-based decorators
+- callable objects as decorators
+- advanced `functools.wraps` behavior
+- caching
+- retries
+- logging frameworks
+- descriptors
+- async functions
+- generators as decorator machinery
+- metaclasses
+- third-party libraries
+
+Simple use of `functools.wraps` should also be excluded from this set. Metadata preservation will be practiced separately.
+
+#### Exercise Count
+
+First, internally identify the distinct reasoning and implementation patterns available within this narrow topic.
+
+Generate **between 6 and 10 exercises**.
+
+Do not add exercises merely to reach 10.
+
+If two proposed exercises have essentially the same reasoning structure and one does not add a meaningful new difficulty or concept, remove one.
+
+The final set may contain fewer than 10 exercises.
+
+#### Progression
+
+The progression must feel intentional:
+
+**isolate → combine → perturb → diagnose → synthesize**
+
+Do not jump unpredictably in difficulty.
+
+#### Early Exercises
+
+Begin with very direct mechanics such as:
+
+- manually applying a decorator
+- rewriting `@decorator` syntax as ordinary assignment
+- identifying what function object is passed to a decorator
+- identifying what function object is ultimately bound to the original function name
+- simple wrappers that forward arguments and return values
+
+These exercises should be easy enough that the student can focus entirely on the execution model.
+
+#### Middle Exercises
+
+Gradually introduce combinations such as:
+
+- wrappers using `*args` and `**kwargs`
+- code that executes during decoration
+- code that executes during invocation
+- multiple calls to the same decorated function
+- decorators applied to different functions
+- distinguishing outer-scope setup from per-call behavior
+
+Difficulty should increase through reasoning about execution order, not through unrelated Python features.
+
+#### Later Exercises
+
+Introduce perturbation and diagnosis:
+
+- code with a subtle incorrect wrapper
+- incorrect return forwarding
+- incorrect argument forwarding
+- confusion between calling a function and returning a function
+- confusion between decoration-time execution and invocation-time execution
+- manually decorated code whose final binding must be traced
+
+The final one or two exercises should require synthesis of several mechanics from earlier exercises, but should still remain entirely within the scope of basic decorators.
+
+Do not introduce stacked decorators yet.
+
+#### Exercise Types
+
+Use a deliberate mix of:
+
+- code-writing exercises
+- trace-the-execution exercises
+- rewrite-equivalence exercises
+- debugging exercises
+- short explanation exercises
+
+At least **60% of the exercises should require the student to write or repair code**.
+
+Do not let the set become mostly output-prediction questions.
+
+#### Structural Diversity
+
+Before presenting the set, internally classify each candidate exercise by its primary reasoning structure.
+
+Possible structures include:
+
+- manual decoration
+- `@` syntax equivalence
+- wrapper implementation
+- positional and keyword forwarding
+- return-value forwarding
+- decoration-time tracing
+- invocation-time tracing
+- function rebinding
+- debugging wrapper behavior
+- identifying which function object is currently bound to a name
+
+Do not use the same primary structure more than twice unless the second exercise clearly increases the reasoning demand.
+
+Changing names, domains, or sample values does not create a new exercise architecture.
+
+#### Implementation Exercise Format
+
+For implementation exercises, provide:
+
+- Exercise Title
+- Problem Statement
+- Complete Function Signature
+- Contract
+- Ready-to-run tests
+
+The contract should describe observable behavior.
+
+Do not tell the student exactly how to implement the decorator unless the syntax itself is the learning objective.
+
+#### Reasoning Exercise Format
+
+For tracing or explanation exercises, provide:
+
+- Exercise Title
+- Problem Statement
+- Complete runnable code
+- A precise question about what happens and why
+
+Do not provide the answer.
+
+#### Debugging Exercise Rules
+
+If you include a debugging exercise:
+
+- the provided code must genuinely violate the stated contract;
+- the bug must arise primarily from decorator mechanics;
+- validate the buggy behavior before presenting it;
+- do not introduce an unrelated Python bug;
+- do not include the corrected implementation anywhere;
+- do not reveal the exact fix in comments, tests, or contract wording.
+
+If a proposed debugging exercise is invalid, discard it completely and generate a replacement internally.
+
+Do not display correction commentary such as:
+
+- "Correction"
+- "Revised exercise"
+- "Actually, the previous code works"
+- generation or validation notes
+
+#### Solution Leakage Rule
+
+Never include the student's target implementation in:
+
+- setup code
+- tests
+- comments
+- examples
+- contracts
+- helper functions
+
+Before displaying each exercise, scan all supplied material for code that directly solves the requested task.
+
+If the solution appears anywhere, discard or rewrite the exercise before presenting it.
+
+Do not encode the solution in the contract through wording such as:
+
+- "use a nested function"
+- "return the wrapper"
+- "rebind the function"
+- "add `*args` and `**kwargs`"
+
+unless that exact syntax is itself what the exercise is explicitly testing.
+
+#### Curriculum Boundary Audit
+
+Before presenting the final set, internally inspect the intended solution to every exercise. Identify every Python mechanism required to solve it. Reject or redesign any exercise whose intended solution depends on material outside the stated assumed knowledge. Do not lower the reasoning difficulty merely because an exercise crosses the curriculum boundary. Instead, redesign the problem so that the same kind of reasoning can be done using only already-learned material.
+
+#### Validation Pass — Individual Exercises
+
+Before displaying an exercise:
+
+- mentally execute all supplied code;
+- verify every test;
+- verify all function calls bind correctly;
+- verify return values match the stated contract;
+- verify decoration-time and invocation-time claims;
+- verify the function signature, problem statement, contract, and tests all describe one consistent task;
+- verify no code accidentally solves the exercise for the student.
+
+Reject and regenerate any exercise that fails validation.
+
+#### Validation Pass — Whole Set
+
+After generating all candidate exercises, audit the entire set.
+
+Verify that:
+
+- difficulty generally rises from beginning to end;
+- later exercises are not simpler than substantially earlier ones without a pedagogical reason;
+- no exercise architecture is repeated excessively;
+- the set covers both implementation and reasoning;
+- decoration time versus invocation time is practiced explicitly;
+- manual decoration and `@` syntax equivalence are both practiced;
+- argument and return forwarding are both practiced;
+- at least one exercise requires debugging decorator mechanics;
+- no exercise uses stacked decorators;
+- no exercise requires later decorator material;
+- no exercise exists merely to increase the exercise count.
+
+If two exercises are structurally redundant, remove the weaker one.
+
+Do **not** replace a removed duplicate merely to preserve the original count.
+
+#### Final Output Rule
+
+The final set should feel like a carefully sequenced mini-unit on **how basic decorators actually execute**.
+
+It should move from direct mechanics toward controlled reasoning and diagnosis without sudden jumps in difficulty.
+
+Do not provide solutions, pseudocode, implementation hints, or answer keys.
+
+### Decorators Practice — Prompt 2: Factories and State
+
+Generate exactly **7 Learning Mode exercises** on decorator factories and stateful decorators.
+
+The student already understands basic decorators, wrappers, closures, lexical scope, `*args`, `**kwargs`, argument/return forwarding, and decoration time vs invocation time.
+
+The student is now practicing:
+
+- decorator factories
+- persistent state
+- `nonlocal` and rebinding
+- mutation without rebinding
+- independent vs shared state
+- state ownership and lifetime
+
+Central question:
+
+**Where does the state live, when is it created, who shares it, and what changes it?**
+
+#### Required Progression
+
+Each exercise has a distinct learning job:
+
+1. **Factory mechanics** — Implement a decorator factory with configuration. No changing state yet.
+
+2. **Scalar state + rebinding** — Persistent scalar state requiring rebinding and `nonlocal`. Do not use a call counter.
+
+3. **Mutable state** — Persistent list/dictionary state changed through mutation. Do not tell the student whether `nonlocal` is needed.
+
+4. **Independent state** — Separate applications of the same decorator/factory must maintain independent state. Do not use call counting.
+
+5. **Shared state** — Two decorated functions intentionally share state, **without stacked decorators**. The student must determine how to arrange the state so sharing occurs.
+
+6. **State ownership and lifetime** — Give working code containing multiple closures or decorator applications. Ask the student to trace which functions share state and which have independent state, and predict observable results. The supplied code must be correct; do not manufacture deliberately buggy code.
+
+7. **Synthesis** — The hardest exercise. Combine at least three mechanisms from Exercises 1–6. State requirements primarily as observable behavior and let the student design the closure/state structure.
+
+Difficulty should generally rise:
+
+**isolate → distinguish → compare → reason → synthesize**
+
+Later exercises should provide less implementation guidance than earlier ones.
+
+#### Diversity Rules
+
+Exercises 2–6 must differ primarily in **state ownership, lifetime, rebinding, or mutation**, not merely in what the state represents.
+
+No more than two exercises may use:
+
+**scalar/boolean state → inspect → change → conditionally behave**
+
+Counters, limiters, run-once gates, toggles, attempt trackers, etc. count as the same broad architecture.
+
+Do not create thematic reskins of the same solution.
+
+#### Scope
+
+Do not use:
+
+- stacked decorators
+- `functools.wraps`
+- class-based or callable-object decorators
+- caching or retries
+- complex exception-handling decorators
+- descriptors, async, metaclasses
+- third-party libraries
+
+Synthesis means combining mechanisms already practiced, not introducing a new decorator topic.
+
+#### Output
+
+For implementation exercises provide:
+
+- Title
+- Problem Statement
+- Complete Function Signature
+- Ready-to-run tests
+
+For reasoning exercises provide complete runnable code and a precise question.
+
+Do not include a Contract section. Add clarifications only when necessary.
+
+Do not provide solutions, hints, pseudocode, or answer keys.
+
+#### Quality Control
+
+Before displaying the exercises:
+
+- mentally solve each exercise and verify all tests and expected outputs;
+- use only deterministic tests — no randomness;
+- verify each exercise performs its assigned learning job;
+- verify state ownership, persistence, sharing, mutation, rebinding, and `nonlocal` behavior are correct;
+- verify no excluded mechanisms appear;
+- verify Exercises 2–6 are structurally different.
+
+For Exercise 6 specifically, trace each call to an enclosing function and determine which state object each resulting closure captures. Only present the exercise if the predicted sharing and independence follow from the supplied code.
+
+Finally ask:
+
+**What reasoning is the student supposed to perform?**
+
+Do not give away that reasoning in the problem statement, comments, tests, or supplied code.
+
+If an exercise fails its assigned learning job or validation, silently replace it.
+
+Do not provide generation commentary.
+
+### 
