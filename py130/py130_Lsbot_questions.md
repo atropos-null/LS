@@ -17,6 +17,8 @@
 - [Closure Practice 2](#closure-practice-2)
 - [Decorator Practice 1](#decorator-practice-1)
 - [Decorator Practice 2](#decorator-practice-2)
+- [Decorator Practice 3](#decorator-practice-3)
+- [Decorator Practice 4](#decorator-practice-4)
 
 ## Lesson 1: Functions, Generators, and Files
 
@@ -6251,6 +6253,23 @@ print(system_warning())
 # Expected: ALERT: System integrity compromised
 ```
 
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+
+def prefix_with(prefix_str):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+                result = func(*args, **kwargs)
+                final = f"{prefix_str} {result}"
+                return final
+        return wrapper
+    return decorator
+
+```
+</details>
+
 #### 2. Scalar State and Rebinding: alternate_calls​
 
 Problem Statement:  Implement a decorator `alternate_calls`. This decorator takes two functions, `func1` and `func2`, as arguments. When the decorated function is called, it should execute `func1` on the first call, `func2` on the second call, `func1` again on the third, and so on, alternating between the two. The decorated function will be called with arguments that are valid for both `func1` and `func2`.
@@ -6289,6 +6308,24 @@ print(transform_string("Fourth Call")) # Executes lowercase_string
 
 ```python
 
+def alternate_calls(func1, func2):
+
+    def decorator(func):
+
+        current_call = 0
+    
+        def wrapper(*args, **kwargs):
+            nonlocal current_call
+            if current_call % 2 == 0:
+                current_call += 1
+                return func1(*args, **kwargs)
+            else:
+                current_call += 1
+                return func2(*args, **kwargs)
+        return wrapper
+    return decorator
+
+
 ```
 </details>
 
@@ -6326,11 +6363,29 @@ print(call_log)
 # Expected: {'greet': [('Alice',), ('Charlie',)], 'farewell': [('Bob',)]}
 ```
 
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+def record_invocations(record):
+
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            if func.__name__ not in record:
+                record[func.__name__] = []
+            record[func.__name__].append(args)
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+```
+
+</details>
+
 #### ​4. Independent State: create_saturating_counter​
 
 Problem Statement: Create a decorator factory `create_saturating_counter` that takes a limit integer. The returned decorator should wrap a function. Each time the decorated function is called, an internal counter is incremented. The decorator should allow the original function to execute only if the counter is less than limit. Once the limit is reached, subsequent calls to the decorated function should do nothing and return None.
 
-Each function decorated by a call to create_saturating_counter must have its own independent counter.
+Each function decorated by a call to `create_saturating_counter` must have its own independent counter.
 
 Function Signature: ```def create_saturating_counter(limit):```
 
@@ -6369,6 +6424,22 @@ log_event("Finished")  # Does not log, returns None
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def create_saturating_counter(limit):
+
+    def decorator(func):
+        count = 0
+        def wrapper(*args, **kwargs):
+            nonlocal count 
+            if count < limit:
+                count += 1
+                return func(*args, **kwargs)
+            return None
+        return wrapper
+    return decorator
+```
+
 </details>
 
 #### 5. Shared State: shared_flag​
@@ -6417,6 +6488,20 @@ print(f"Final state: {flag_state}")
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def shared_flag(state_container):
+    shared_state_container = state_container
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            if not shared_state_container:
+                shared_state_container["flag_set"] = True
+                return func(*args, **kwargs)
+            return None
+        return wrapper
+    return decorator
+```
+
 </details>
 
 #### 6. State Ownership and Lifetime: Tracing​
@@ -6475,6 +6560,12 @@ print("General Events:", get_general_events())
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```
+Security Events: ["Function 'login_user' returned 'admin logged in'", "Function 'logout_user' returned 'admin logged out'", "Function 'login_user' returned 'guest logged in'"]
+Database Events: ["Function 'query_db' returned 'Queried: SELECT *'"]
+General Events: ["Function 'read_file' returned 'Read /etc/passwd'"]
+```
 </details>
 
 #### 7. Synthesis: with_feedback​
@@ -6530,23 +6621,1115 @@ check_status(404) # ok
 ```
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def with_feedback(forbidden_results):
+    def decorator(func):
+        all_results = []
+        forbidden_count = 0
+
+        def wrapper(*args, **kwargs):
+            nonlocal forbidden_count
+            result = func(*args, **kwargs)
+            all_results.append(result)
+            if result in forbidden_results:
+                forbidden_count += 1
+                print(f"Warning: Forbidden result '{result}' encountered. Total forbidden calls: {forbidden_count}")
+            return result
+        return wrapper
+    return decorator
+```
+
 </details>
-
-<details> 
-<summary>Possible Solution</summary> 
-</details>
-
-
 
 [Back to the top](#top)
 
 
 ### Decorator Practice 3
 
+#### Exercise 1
+
+Write a decorator `count_calls` that maintains a single dictionary, `call_counts`. For each decorated function, it should increment a counter in call_counts using the function's name as the key.
+
+```python
+# Your implementation of count_calls and call_counts here
+
+@count_calls
+def greet(name):
+    return f"Hello, {name}!"
+
+@count_calls
+def leave(name):
+    return f"Goodbye, {name}!"
+
+greet("Alice")
+greet("Bob")
+greet("Alice")
+leave("Charlie")
+
+assert call_counts == {'greet': 3, 'leave': 1}
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+call_counts = {}
+
+def count_calls(func):
+    def wrapper(*args, **kwargs):
+        name = func.__name__
+        if name not in call_counts:
+            call_counts[name] = 0
+        call_counts[name] += 1
+        return func(*args, **kwargs)
+    return wrapper
+```
+
+</details>
+
+
+#### Exercise 2
+
+Write a decorator factory `log_args_to` that accepts a dictionary object. The returned decorator, when applied to a function, should log the arguments of each call. Specifically, it should append the tuple of positional arguments (args) to a list associated with the function's name in the provided dictionary.
+
+```python
+# Your implementation of log_args_to here
+
+call_log = {}
+
+@log_args_to(call_log)
+def add(x, y):
+    return x + y
+
+@log_args_to(call_log)
+def concatenate(*words):
+    return "".join(words)
+
+add(3, 4)
+add(10, -2)
+concatenate("a", "b", "c")
+concatenate("hello")
+
+assert call_log['add'] == [(3, 4), (10, -2)]
+assert call_log['concatenate'] == [('a', 'b', 'c'), ('hello',)]
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+call_log = {}
+
+def log_args_to(dicty):
+    def decorator(func):
+        results = []
+        def wrapper(*args, **kwargs):
+            name = func.__name__
+            results.append(args)
+            if name not in dicty:
+                dicty[name] = results
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+```
+
+Or:
+
+```python
+def log_args_to(dicty):
+    def decorator(func):
+        results = []
+        dicty[func.__name__] = results
+        def wrapper(*args, **kwargs):
+            results.append(args)
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+```
+
+</details>
+
+#### Exercise 3
+
+The following decorator `sum_values` is intended to maintain a dictionary of running totals. The decorated function `add_to_tally` provides a key and an amount to add. The decorator is not working correctly; it overwrites the previous value instead of adding to it. Fix the `sum_values` decorator.
+
+```python
+def sum_values(func):
+    totals = {}
+
+    def wrapper(key, amount):
+        nonlocal totals
+        totals[key] = amount # This line is incorrect
+        return func(key, amount)
+
+    # Do not change the lines below
+    wrapper.get_totals = lambda: totals
+    return wrapper
+
+@sum_values
+def add_to_tally(category, value):
+    print(f"Added {value} to {category}")
+
+add_to_tally('food', 100)
+add_to_tally('transport', 50)
+add_to_tally('food', 35)
+
+totals = add_to_tally.get_totals()
+assert totals == {'food': 135, 'transport': 50}
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+def sum_values(func):
+    totals = {}
+
+    def wrapper(key, amount):
+        nonlocal totals
+        totals[key] = totals.get(key, 0) + amount
+        return func(key, amount)
+
+    # Do not change the lines below
+    wrapper.get_totals = lambda: totals
+    return wrapper
+```
+
+</details>
+
+#### Exercise 4
+
+Implement a decorator `collect_results`. Each function decorated by `collect_results` should get its own, independent list for storing its return values. This list must be accessible via an attribute named `.results` on the decorated function itself.
+
+```python
+# Your implementation of collect_results here
+
+@collect_results
+def get_evens(n):
+    return [i for i in range(n) if i % 2 == 0]
+
+@collect_results
+def get_odds(n):
+    return [i for i in range(n) if i % 2 != 0]
+
+get_evens(10)
+get_evens(4)
+get_odds(9)
+
+assert get_evens.results == [[0, 2, 4, 6, 8], [0, 2]]
+assert get_odds.results == [[1, 3, 5, 7]]
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+def collect_results(func):
+    values = []
+    def wrapper(*args, **kwargs):
+        return values.append(func(*args, **kwargs))
+    wrapper.results = values
+    return wrapper    
+```
+
+</details>
+
+#### Exercise 5
+
+The group_by decorator below is supposed to take an item and a group name, and append the item to a list for that group. However, it has a bug: all groups end up containing all items. Diagnose and fix the group_by decorator so that each group's list is independent.
+
+```python
+def group_by(func):
+    grouped_items = {}
+    shared_list = [] # This may be part of the problem
+
+    def wrapper(group, item):
+        nonlocal grouped_items
+        if group not in grouped_items:
+            grouped_items[group] = shared_list
+        grouped_items[group].append(item)
+        return func(group, item)
+
+    # Do not change the lines below
+    wrapper.get_groups = lambda: grouped_items
+    return wrapper
+
+
+@group_by
+def add_item(group, item):
+    print(f"Adding '{item}' to '{group}'")
+
+add_item('fruit', 'apple')
+add_item('dairy', 'milk')
+add_item('fruit', 'banana')
+
+groups = add_item.get_groups()
+assert groups['fruit'] == ['apple', 'banana']
+assert groups['dairy'] == ['milk']
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+def group_by(func):
+    grouped_items = {}
+
+    def wrapper(group, item):
+        shared_list = []
+        nonlocal grouped_items
+        if group not in grouped_items:
+            grouped_items[group] = shared_list
+        grouped_items[group].append(item)
+        return func(group, item)
+
+    # Do not change the lines below
+    wrapper.get_groups = lambda: grouped_items
+    return wrapper
+```
+
+</details>
+
+#### Exercise 6
+
+Write a decorator record_transaction that maintains a single, shared list of all transactions. A decorated function will be called with keyword arguments describing a transaction (e.g., product='pen', price=1.50, quantity=5). The decorator should create a dictionary from these keyword arguments and append it to the shared transaction log.
+
+
+```python
+# Your implementation of record_transaction and its state here
+@record_transaction
+def sell(**details):
+    # This function's body can be empty
+    pass
+
+sell(product='Laptop', price=1200, customer_id=101)
+sell(product='Mouse', price=25, quantity=2, customer_id=101)
+sell(product='Keyboard', price=75, customer_id=102)
+
+expected_log = [
+    {'product': 'Laptop', 'price': 1200, 'customer_id': 101},
+    {'product': 'Mouse', 'price': 25, 'quantity': 2, 'customer_id': 101},
+    {'product': 'Keyboard', 'price': 75, 'customer_id': 102}
+]
+assert transaction_log == expected_log
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+transaction_log = []
+
+def record_transaction(func):
+    def wrapper(**kwargs):
+        transaction_log.append(dict(kwargs))
+        return func(**kwargs)
+    return wrapper
+```
+
+</details>
+
+
+#### Exercise 7
+
+The `update_user_activity` decorator is meant to track user actions in a nested dictionary. For each user, it should maintain counts of different activities. The current implementation fails to save the activity for a user's first recorded action. Fix the bug in the wrapper function.
+
+```python
+def update_user_activity(func):
+    activity_log = {}
+
+    def wrapper(user, action):
+        user_actions = activity_log.get(user, {})
+        user_actions[action] = user_actions.get(action, 0) + 1
+        func(user, action)
+
+    # Do not change the lines below
+    wrapper.get_log = lambda: activity_log
+    return wrapper
+
+
+@update_user_activity
+def record_action(user, action):
+    pass
+
+record_action('user1', 'login')
+record_action('user2', 'login')
+record_action('user1', 'post_comment')
+record_action('user1', 'login')
+record_action('user2', 'logout')
+
+log = record_action.get_log()
+expected = {
+    'user1': {'login': 2, 'post_comment': 1},
+    'user2': {'login': 1, 'logout': 1}
+}
+assert log == expected
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+def update_user_activity(func):
+    activity_log = {}
+
+    def wrapper(user, action):
+        user_actions = activity_log.get(user, {})
+        user_actions[action] = user_actions.get(action, 0) + 1
+        activity_log[user] = user_actions
+        func(user, action)
+
+    # Do not change the lines below
+    wrapper.get_log = lambda: activity_log
+    return wrapper
+```
+</details>
+
+#### Exercise 8
+
+Write a decorator `log_calls` that maintains a persistent dictionary. This dictionary, `call_log`, should map decorated function names to a list of tuples, where each tuple contains the positional arguments for a single call.
+
+```python
+def log_calls(func):
+    # Your implementation here
+    pass
+
+@log_calls
+def add(a, b):
+    return a + b
+
+@log_calls
+def subtract(a, b):
+    return a - b
+
+add(1, 2)
+add(3, 4)
+subtract(10, 5)
+add(5, 6)
+subtract(8, 3)
+
+assert log_calls.call_log['add'] == [(1, 2), (3, 4), (5, 6)]
+assert log_calls.call_log['subtract'] == [(10, 5), (8, 3)]
+```
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+def log_calls(func):
+
+    def wrapper(*args):
+        name = func.__name__
+        if name not in log_calls.call_log:
+            log_calls.call_log[name] = []
+        log_calls.call_log[name].append(args)
+
+        return func(*args)
+    return wrapper
+
+log_calls.call_log = {}
+```
+
+</details>
+
+#### Exercise 9
+
+Write a decorator factory `tally_results(tally)`. The factory accepts a dictionary, `tally`, which the decorator will use to store a count of each result returned by the decorated function.
+
+```python
+def tally_results(tally):
+    # Your implementation here
+    pass
+
+current_tally = {}
+
+@tally_results(current_tally)
+def get_grade(score):
+    if score >= 90: return 'A'
+    if score >= 80: return 'B'
+    if score >= 70: return 'C'
+    if score >= 60: return 'D'
+    return 'F'
+
+get_grade(95)
+get_grade(82)
+get_grade(90)
+get_grade(75)
+get_grade(60)
+get_grade(83)
+get_grade(45)
+
+assert current_tally['A'] == 2
+assert current_tally['B'] == 2
+assert current_tally['C'] == 1
+assert current_tally['D'] == 1
+assert current_tally['F'] == 1
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 10
+
+Write a decorator factory `audit(log`). The factory accepts a dictionary `log`. The decorator it creates should record call details for the decorated function.
+The log's structure should be a nested dictionary: `{ function_name: [call_1, call_2, ...] }`, where each call is a dictionary `{'args': tuple_of_args, 'kwargs': dict_of_kwargs}`.
+
+```python
+def audit(log):
+    # Your implementation here
+    pass
+
+audit_log = {}
+
+@audit(audit_log)
+def purchase(item, price, quantity=1, **details):
+    pass
+
+purchase('book', 12.99, quantity=2, author='Jane Doe')
+purchase('pen', 1.50)
+purchase('book', 10.00, author='John Smith', condition='used')
+
+expected_log = {
+    'purchase': [
+        {
+            'args': ('book', 12.99),
+            'kwargs': {'quantity': 2, 'author': 'Jane Doe'},
+        },
+        {
+            'args': ('pen', 1.50),
+            'kwargs': {},
+        },
+        {
+            'args': ('book', 10.00),
+            'kwargs': {'author': 'John Smith', 'condition': 'used'},
+        },
+    ]
+}
+
+assert audit_log == expected_log
+```
+
 <details> 
 <summary>Possible Solution</summary> 
 </details>
 
 
+#### Exercise 11
+
+Write a decorator `with_history`. For each function it decorates, it should attach a history attribute to the function itself. This attribute should be a list containing the return values of all previous calls to that specific function. Each decorated function must have its own independent history.
+
+```python
+def with_history(func):
+    # Your implementation here
+    pass
+
+@with_history
+def add(x, y):
+    return x + y
+
+@with_history
+def multiply(x, y):
+    return x * y
+
+add(1, 2)
+add(3, 4)
+multiply(2, 3)
+add(5, 6)
+multiply(4, 5)
+
+assert add.history == [3, 7, 11]
+assert multiply.history == [6, 20]
+assert hasattr(add, 'history')
+assert hasattr(multiply, 'history')
+assert add.history is not multiply.history
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 12
+
+The collect_kwargs decorator is designed to accumulate all keyword arguments passed to a function across all its calls into a single dictionary. The current implementation incorrectly overwrites the collected arguments with the kwargs from the most recent call.[9:01 AM]Fix the bug.
+
+```python
+def collect_kwargs(func):
+    collected_kwargs = {}
+
+    def wrapper(*args, **kwargs):
+        nonlocal collected_kwargs
+        # There is a bug on the next line.
+        collected_kwargs = kwargs
+        # This attribute is for testing purposes
+        wrapper.all_kwargs = collected_kwargs
+        return func(*args, **kwargs)
+
+    wrapper.all_kwargs = collected_kwargs
+    return wrapper
+
+@collect_kwargs
+def get_config(user=None):
+    pass
+
+get_config(user='admin', theme='dark')
+get_config(user='guest', retries=3)
+
+# This assertion fails with the buggy implementation
+assert get_config.all_kwargs == {
+    'user': 'guest',
+    'theme': 'dark',
+    'retries': 3,
+}
+```
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 13
+
+Write a decorator factory, `track_events(registry)`, that takes a dictionary as an argument. The returned decorator should be applied to functions that process events. For each call, the decorator must log an "event record" dictionary into the shared registry.
+
+The registry's keys are event types, which correspond to the first argument of the decorated function. The registry's values are lists of event record dictionaries.
+
+Each event record should have the structure: `{'source': function_name, 'args': all_other_args, 'result': return_value}`.
+
+```python
+def track_events(registry):
+    # Your implementation here
+    pass
+
+event_registry = {}
+
+@track_events(event_registry)
+def process_login(event_type, username, success):
+    return f"User {username} login {'succeeded' if success else 'failed'}."
+
+@track_events(event_registry)
+def process_payment(event_type, amount, currency):
+    return f"Processed {amount} {currency}."
+
+process_login('auth', 'user1', True)
+process_payment('finance', 100, 'USD')
+process_login('auth', 'user2', False)
+process_payment('finance', 50, 'EUR')
+process_login('auth', 'user1', True)
+
+expected_registry = {
+    'auth': [
+        {'source': 'process_login', 'args': ('user1', True), 'result': 'User user1 login succeeded.'},
+        {'source': 'process_login', 'args': ('user2', False), 'result': 'User user2 login failed.'},
+        {'source': 'process_login', 'args': ('user1', True), 'result': 'User user1 login succeeded.'}
+    ],
+    'finance': [
+        {'source': 'process_payment', 'args': (100, 'USD'), 'result': 'Processed 100 USD.'},
+        {'source': 'process_payment', 'args': (50, 'EUR'), 'result': 'Processed 50 EUR.'}
+    ]
+}
+
+assert event_registry == expected_registry
+```
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+
+[Back to the top](#top)
+
+
+### Decorator Practice 4
+
+#### Exercise 1 — Decoration vs. Invocation Order
+
+Code:
+
+```python
+def first_decorator(func):
+    print("Applying 'first_decorator'")
+    def wrapper(*args, **kwargs):
+        print("'first_decorator' wrapper executing")
+        return func(*args, **kwargs)
+    return wrapper
+
+def second_decorator(func):
+    print("Applying 'second_decorator'")
+    def wrapper(*args, **kwargs):
+        print("'second_decorator' wrapper executing")
+        return func(*args, **kwargs)
+    return wrapper
+
+@first_decorator
+@second_decorator
+def say_hello():
+    print("Hello from the original function!")
+
+print("--- Decoration complete ---")
+
+say_hello()
+
+```
+
+Question: What will be printed to the console when this script is executed? List the output line by line in the correct order.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 2 — Argument Transformation Pipeline
+
+Code
+
+```python
+def to_uppercase(func):
+    def wrapper(text):
+        # Converts the argument to uppercase before passing it on
+        return func(text.upper())
+    return wrapper
+
+def add_exclamation(func):
+    def wrapper(text):
+        # Appends an exclamation mark to the argument before passing it on
+        return func(text + "!")
+    return wrapper
+
+@to_uppercase
+@add_exclamation
+def process_message(message):
+    return f"Processed: {message}"
+
+result = process_message("hello world")
+```
+
+Question:  What is the value of the result variable after this code runs?
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 3 — Return Value Transformation Pipeline
+
+Code
+```python 
+def wrap_in_html(tag):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            # Gets the result from the wrapped function
+            result = func(*args, **kwargs)
+            # Wraps the result in HTML tags
+            return f"<{tag}>{result}</{tag}>"
+        return wrapper
+    return decorator
+
+def to_string(func):
+    def wrapper(*args, **kwargs):
+        # Gets the result from the wrapped function
+        result = func(*args, **kwargs)
+        # Converts the result to a string
+        return str(result)
+    return wrapper
+
+@wrap_in_html("p")
+@to_string
+def get_sum(a, b):
+    return a + b
+
+output = get_sum(10, 20)
+```
+
+Question: What is the value of the output variable after this code executes?
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 4 — The Importance of Order
+
+Code
+```python
+def multiply_by(factor):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            result = func(*args, **kwargs)
+            return result * factor
+        return wrapper
+    return decorator
+
+def add(amount):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            result = func(*args, **kwargs)
+            return result + amount
+        return wrapper
+    return decorator
+
+@multiply_by(10)
+@add(5)
+def calculate_v1(n):
+    return n
+
+@add(5)
+@multiply_by(10)
+def calculate_v2(n):
+    return n
+
+result1 = calculate_v1(10)
+result2 = calculate_v2(10)
+
+```
+
+Question: What are the final values of `result1` and `result2`?
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 5 — Observing Transformed Arguments
+
+Code
+
+```python 
+log_v1 = []
+
+def record_args_v1(func):
+    def wrapper(*args, **kwargs):
+        log_v1.append(args)
+        return func(*args, **kwargs)
+    return wrapper
+
+log_v2 = []
+
+def record_args_v2(func):
+    def wrapper(*args, **kwargs):
+        log_v2.append(args)
+        return func(*args, **kwargs)
+    return wrapper
+
+def double_first_arg(func):
+    def wrapper(a, *args, **kwargs):
+        doubled_a = a * 2
+        return func(doubled_a, *args, **kwargs)
+    return wrapper
+
+
+@record_args_v1
+@double_first_arg
+def process_data_v1(x, y):
+    pass
+
+@double_first_arg
+@record_args_v2
+def process_data_v2(x, y):
+    pass
+
+
+process_data_v1(10, 'A')
+process_data_v1(20, 'B')
+
+process_data_v2(10, 'A')
+process_data_v2(20, 'B')
+```
+
+Question: After the script runs, what are the final values of the lists `log_v1` and `log_v2`?
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 6 — Debugging a Conditional Stack
+
+Code
+
+```python
+import collections
+
+call_log = collections.defaultdict(int)
+
+def log_call(func):
+    def wrapper(*args, **kwargs):
+        call_log[func.__name__] += 1
+        print(f"'{func.__name__}' was called.")
+        return func(*args, **kwargs)
+    return wrapper
+
+def requires_non_empty(func):
+    def wrapper(items):
+        if not items:
+            print("Execution skipped: input is empty.")
+            return None
+        return func(items)
+    return wrapper
+
+
+@log_call
+@requires_non_empty
+def process_list(data):
+    print("Processing list...")
+    return len(data)
+
+# --- Function Calls ---
+process_list([1, 2, 3])
+process_list([])
+```
+
+Question: A programmer expected the `log_call` decorator to only log calls that are actually executed. However, the output shows that `'process_list'` is logged even when the list is empty and processing is skipped. Why is the log message printed for the empty list?
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 7 — Synthesizing a Formatter Stack
+
+Problem Statement: You are building a command-line tool that formats messages. You need two decorators to apply specific formatting rules to a base message.
+
+1.  A decorator named `add_timestamp` that prepends a fixed timestamp string, "[2023-10-26] ", to the return value of a function.
+2.  A decorator named `sanitize_output` that replaces any occurrences of the word "secret" with "[REDACTED]" in the return value of a function.
+
+Implement these two decorators and apply them to the format_message function to satisfy the behavior shown in the tests. The sanitation must happen ​before​ the timestamp is added.
+
+Function Signature
+```python
+# Implement your 'add_timestamp' and 'sanitize_output' decorators here.
+
+# Apply your decorators in the correct order to this function.
+def format_message(text):
+    return text
+
+
+Tests
+
+assert format_message("hello world") == "[2023-10-26] hello world"
+assert format_message("this is a secret message") == "[2023-10-26] this is a [REDACTED] message"
+assert format_message("a secret is a secret") == "[2023-10-26] a [REDACTED] is a [REDACTED]"
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+
+#### Exercise 8 — Decoration Syntax
+
+Problem Statement:  In Python, applying multiple decorators to a function is syntactic sugar for nested function calls. Given the following function definition:
+
+```python
+@alpha
+@beta
+def my_function():
+    print("Executing my_function")
+```
+
+This is equivalent to manually applying the decorators to the base function my_function in a specific order.
+
+Question:  Which of the following manual applications is equivalent to the stacked decorator syntax shown above?
+
+1.  `my_function = alpha(my_function)`
+    `my_function = beta(my_function)`
+2.  `my_function = beta(my_function)`
+    `my_function = alpha(my_function)`
+3.  `my_function = alpha(beta(my_function))`
+4.  `my_function = beta(alpha(my_function))`
+
+Choose the single best answer from options 1-4.
+
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 9 - Return Value Transformation
+
+Problem Statement:  Two decorators are defined to modify a function's string return value. One converts the string to uppercase, and the other appends an exclamation mark. They are stacked on a function greet.
+
+Code
+```python
+def to_uppercase(func):
+    def wrapper(*args, **kwargs):
+        original_result = func(*args, **kwargs)
+        return original_result.upper()
+    return wrapper
+
+def add_excitement(func):
+    def wrapper(*args, **kwargs):
+        original_result = func(*args, **kwargs)
+        return original_result + '!'
+    return wrapper
+
+@to_uppercase
+@add_excitement
+def greet(name):
+    return f"Hello, {name}"
+
+result = greet("World")
+```
+
+Question: After the code runs, what is the value of the result variable?
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 10 - Argument Observation vs. Modification
+
+Problem Statement
+
+One decorator, `record_call`, appends the arguments it receives to a global list. Another decorator, `double_input`, modifies its argument before passing it to the wrapped function.
+
+Code
+```python
+CALL_LOG = []
+
+def record_call(func):
+    def wrapper(x):
+        CALL_LOG.append(x)
+        return func(x)
+    return wrapper
+
+def double_input(func):
+    def wrapper(x):
+        return func(x * 2)
+    return wrapper
+
+@record_call
+@double_input
+def process_number(n):
+    # This function's return value is not used.
+    pass
+
+process_number(5)
+process_number(10)
+```
+
+Question: After running the code, what is the final value of the CALL_LOG list?
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 11 - Conditional Execution
+
+Problem Statement
+
+The cache_result decorator stores a function's return value in a dictionary to avoid re-computation. The `only_if_positive`decorator acts as a gate: it calls the wrapped function only if the input is positive; otherwise, it returns `None` immediately.
+
+Code
+
+```python
+CACHE = {}
+
+def cache_result(func):
+    def wrapper(n):
+        if n not in CACHE:
+            CACHE[n] = func(n)
+        return CACHE[n]
+    return wrapper
+
+def only_if_positive(func):
+    def wrapper(n):
+        if n > 0:
+            return func(n)
+        return None
+    return wrapper
+
+@only_if_positive
+@cache_result
+def expensive_calculation(x):
+    # Simulate a costly calculation
+    print(f"Calculating for {x}...")
+    return x * 10
+
+expensive_calculation(5)
+expensive_calculation(-3)
+expensive_calculation(5)
+```
+
+Question
+After this code executes, what will be the contents of the CACHE dictionary?
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 12 - Implementing a Logging and Validation Stack
+
+Problem Statement: You are tasked with processing user submissions. Before saving a submission, it must be validated and the attempt must be logged.
+
+Implement two decorators:
+
+1.  `log_submission`: This decorator must record the user's ID and the original, unmodified submission data in a list named SUBMISSION_LOG. Each log entry should be a dictionary {'user_id': id, 'data': data}.
+2.  `validate_length`: This decorator checks if the 'content' key in the submission data dictionary has a string value longer than 10 characters. If it is, the decorator should replace the value with the string "[CONTENT TOO LONG]" before passing it to the decorated function.
+
+Stack these decorators on the save_submission function so that the log always contains the original data, even when the validation modifies it.
+
+```python
+
+SUBMISSION_LOG = []
+# Implement log_submission decorator here
+# Implement validate_length decorator here
+
+@log_submission
+@validate_length
+def save_submission(user_id, data):
+    print(f"Saving for {user_id}: {data}")
+    # In a real system, this would save to a database.
+ ```
+
+Tests
+```python
+
+save_submission('user1', {'content': 'short post'})
+save_submission('user2', {'content': 'This is a very long post that exceeds the limit.'})
+save_submission('user1', {'content': 'another'})
+
+assert SUBMISSION_LOG == [
+    {'user_id': 'user1', 'data': {'content': 'short post'}},
+    {'user_id': 'user2', 'data': {'content': 'This is a very long post that exceeds the limit.'}},
+    {'user_id': 'user1', 'data': {'content': 'another'}}
+]
+# The final print output should reflect the validated (and possibly modified) data.
+
+```
+
+#### Exercise 13 - Injecting and Transforming Keyword Arguments
+
+Problem Statement: Consider a system where operations are processed in batches. A `with_batch_id` decorator injects a `batch_id` into the keyword arguments of a function call. A `format_for_export` decorator takes the function's dictionary result and converts it into a formatted string.
+
+Code
+
+```python
+def with_batch_id(batch_id):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            kwargs['batch_id'] = batch_id
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+def format_for_export(func):
+    def wrapper(*args, **kwargs):
+        result_dict = func(*args, **kwargs)
+        # Format: "key1=value1;key2=value2;"
+        export_string = ""
+        for key, value in sorted(result_dict.items()):
+            export_string += f"{key}={value};"
+        return export_string
+    return wrapper
+
+@format_for_export
+@with_batch_id("B7-2024")
+def process_data(record_id, **details):
+    # Combine the record_id and all details into a single dictionary
+    final_data = {'record_id': record_id}
+    final_data.update(details)
+    return final_data
+
+export_result = process_data("REC456", status="completed", user="admin")
+```
+
+
+Question: After the code runs, what is the value of the `export_result` variable?
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
 
 [Back to the top](#top)
