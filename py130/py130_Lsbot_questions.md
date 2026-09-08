@@ -19,6 +19,9 @@
 - [Decorator Practice 2](#decorator-practice-2)
 - [Decorator Practice 3](#decorator-practice-3)
 - [Decorator Practice 4](#decorator-practice-4)
+- [Decorator Practice 5](#decorator-practice-5)
+- [Decorator Practice 6](#decorator-practice-6)
+- [Decorator Practice 7](#decorator-practice-7)
 
 ## Lesson 1: Functions, Generators, and Files
 
@@ -7068,6 +7071,20 @@ assert current_tally['F'] == 1
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+current_tally = {}
+
+def tally_results(tally):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            result = func(*args, **kwargs)
+            tally[result] = tally.get(result, 0) + 1
+            return result
+        return wrapper
+    return decorator
+```
+
 </details>
 
 #### Exercise 10
@@ -7112,6 +7129,21 @@ assert audit_log == expected_log
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def audit(log):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            name = func.__name__
+            call_record = {"args": args, "kwargs": kwargs}
+            if name not in log:
+                log[name] = []
+            log[name].append(call_record)
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+```
+
 </details>
 
 
@@ -7147,11 +7179,22 @@ assert add.history is not multiply.history
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def with_history(func):
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        wrapper.history.append(result)
+        return result
+    wrapper.history = []
+    return wrapper
+```
+
 </details>
 
 #### Exercise 12
 
-The collect_kwargs decorator is designed to accumulate all keyword arguments passed to a function across all its calls into a single dictionary. The current implementation incorrectly overwrites the collected arguments with the kwargs from the most recent call.[9:01 AM]Fix the bug.
+The collect_kwargs decorator is designed to accumulate all keyword arguments passed to a function across all its calls into a single dictionary. The current implementation incorrectly overwrites the collected arguments with the kwargs from the most recent call. Fix the bug.
 
 ```python
 def collect_kwargs(func):
@@ -7184,6 +7227,22 @@ assert get_config.all_kwargs == {
 ```
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+
+def collect_kwargs(func):
+    collected_kwargs = {}
+
+    def wrapper(*args, **kwargs):
+        collected_kwargs.update(kwargs)
+        wrapper.all_kwargs = collected_kwargs
+        return collected_kwargs
+
+    wrapper.all_kwargs = collected_kwargs
+    return wrapper
+```
+
 </details>
 
 #### Exercise 13
@@ -7231,6 +7290,26 @@ assert event_registry == expected_registry
 ```
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def track_events(registry):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+           event_type = args[0]
+           other_args = args[1:]
+           result = func(*args, **kwargs)
+           event_record = {
+               'source': func.__name__, 
+               'args': other_args, 
+               'result': result
+               }
+           if event_type not in registry:
+                registry[event_type] = []
+           registry[event_type].append(event_record)
+           return result
+        return wrapper
+    return decorator
+```
 </details>
 
 
@@ -7273,6 +7352,46 @@ Question: What will be printed to the console when this script is executed? List
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```
+Applying 'second_decorator'
+Applying 'first_decorator'
+--- Decoration complete ---
+'first_decorator' wrapper executing
+'second_decorator' wrapper executing
+Hello from the original function!
+```
+
+DEFINITION / DECORATION TIME
+
+original say_hello created
+↓
+second_decorator(original)
+    prints Applying second
+    returns second wrapper
+↓
+first_decorator(second wrapper)
+    prints Applying first
+    returns first wrapper
+↓
+say_hello now refers to first wrapper
+
+print Decoration complete
+
+CALL TIME
+
+say_hello()
+↓
+first wrapper
+    prints
+↓
+second wrapper
+    prints
+↓
+original
+    prints Hello
+
+
 </details>
 
 #### Exercise 2 — Argument Transformation Pipeline
@@ -7298,12 +7417,16 @@ def process_message(message):
     return f"Processed: {message}"
 
 result = process_message("hello world")
+print(result)
 ```
 
 Question:  What is the value of the result variable after this code runs?
 
 <details> 
 <summary>Possible Solution</summary> 
+
+Processed: HELLO WORLD!
+
 </details>
 
 #### Exercise 3 — Return Value Transformation Pipeline
@@ -7334,12 +7457,16 @@ def get_sum(a, b):
     return a + b
 
 output = get_sum(10, 20)
+print(output)
 ```
 
 Question: What is the value of the output variable after this code executes?
 
 <details> 
-<summary>Possible Solution</summary> 
+<summary>Solution</summary> 
+
+```<{p}>{30}</{p}>```
+
 </details>
 
 #### Exercise 4 — The Importance of Order
@@ -7374,13 +7501,18 @@ def calculate_v2(n):
 
 result1 = calculate_v1(10)
 result2 = calculate_v2(10)
-
+print(f"Result1: {result1}")
+print(f"Result2: {result2}")
 ```
 
 Question: What are the final values of `result1` and `result2`?
 
 <details> 
-<summary>Possible Solution</summary> 
+<summary>Solution</summary> 
+```
+Result1: 150
+Result2: 105
+```
 </details>
 
 #### Exercise 5 — Observing Transformed Arguments
@@ -7432,7 +7564,11 @@ process_data_v2(20, 'B')
 Question: After the script runs, what are the final values of the lists `log_v1` and `log_v2`?
 
 <details> 
-<summary>Possible Solution</summary> 
+<summary>Solution</summary> 
+```
+[(10, 'A'), (20, 'B')]
+[(20, 'A'), (40, 'B')]
+```
 </details>
 
 #### Exercise 6 — Debugging a Conditional Stack
@@ -7474,7 +7610,10 @@ process_list([])
 Question: A programmer expected the `log_call` decorator to only log calls that are actually executed. However, the output shows that `'process_list'` is logged even when the list is empty and processing is skipped. Why is the log message printed for the empty list?
 
 <details> 
-<summary>Possible Solution</summary> 
+<summary>Solution</summary> 
+
+The log message is printed because `log_call` is the outer decorator and therefore its wrapper executes first. It records the call before control reaches `requires_non_empty`, which is the layer that decides whether the original function should execute.
+
 </details>
 
 #### Exercise 7 — Synthesizing a Formatter Stack
@@ -7504,6 +7643,25 @@ assert format_message("a secret is a secret") == "[2023-10-26] a [REDACTED] is a
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def add_timestamp(func):
+    def wrapper(*args, **kwargs):
+        return f"[2023-10-26] {func(*args, **kwargs)}"
+    return wrapper
+
+def sanitize_output(func):
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        return result.replace("secret", "[REDACTED]")
+    return wrapper
+
+@add_timestamp
+@sanitize_output
+def format_message(text):
+    return text
+```
+
 </details>
 
 
@@ -7533,42 +7691,13 @@ Choose the single best answer from options 1-4.
 
 
 <details> 
-<summary>Possible Solution</summary> 
+<summary>Solution</summary> 
+
+Number 3. 
+
 </details>
 
-#### Exercise 9 - Return Value Transformation
-
-Problem Statement:  Two decorators are defined to modify a function's string return value. One converts the string to uppercase, and the other appends an exclamation mark. They are stacked on a function greet.
-
-Code
-```python
-def to_uppercase(func):
-    def wrapper(*args, **kwargs):
-        original_result = func(*args, **kwargs)
-        return original_result.upper()
-    return wrapper
-
-def add_excitement(func):
-    def wrapper(*args, **kwargs):
-        original_result = func(*args, **kwargs)
-        return original_result + '!'
-    return wrapper
-
-@to_uppercase
-@add_excitement
-def greet(name):
-    return f"Hello, {name}"
-
-result = greet("World")
-```
-
-Question: After the code runs, what is the value of the result variable?
-
-<details> 
-<summary>Possible Solution</summary> 
-</details>
-
-#### Exercise 10 - Argument Observation vs. Modification
+#### Exercise 9 - Argument Observation vs. Modification
 
 Problem Statement
 
@@ -7602,14 +7731,17 @@ process_number(10)
 Question: After running the code, what is the final value of the CALL_LOG list?
 
 <details> 
-<summary>Possible Solution</summary> 
+<summary>Solution</summary> 
+
+`[5, 10]`
+
 </details>
 
-#### Exercise 11 - Conditional Execution
+#### Exercise 10 - Conditional Execution
 
 Problem Statement
 
-The cache_result decorator stores a function's return value in a dictionary to avoid re-computation. The `only_if_positive`decorator acts as a gate: it calls the wrapped function only if the input is positive; otherwise, it returns `None` immediately.
+The `cache_result` decorator stores a function's return value in a dictionary to avoid re-computation. The `only_if_positive` decorator acts as a gate: it calls the wrapped function only if the input is positive; otherwise, it returns `None` immediately.
 
 Code
 
@@ -7647,9 +7779,12 @@ After this code executes, what will be the contents of the CACHE dictionary?
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```{5: 50}```
+
 </details>
 
-#### Exercise 12 - Implementing a Logging and Validation Stack
+#### Exercise 11 - Implementing a Logging and Validation Stack
 
 Problem Statement: You are tasked with processing user submissions. Before saving a submission, it must be validated and the attempt must be logged.
 
@@ -7689,7 +7824,41 @@ assert SUBMISSION_LOG == [
 
 ```
 
-#### Exercise 13 - Injecting and Transforming Keyword Arguments
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+SUBMISSION_LOG = []
+
+def log_submission(func):
+    def wrapper(*args, **kwargs):
+        id = args[0]
+        data = args[1]
+        event_record = {
+               'user_id': id,
+               'data': data.copy()
+               }
+        SUBMISSION_LOG.append(event_record)
+        return func(*args, **kwargs)
+    return wrapper
+
+
+def validate_length(func):
+    def wrapper(user_id, data):
+        validated_data = data.copy()
+
+        if (
+            isinstance(validated_data.get("content"), str)
+            and len(validated_data["content"]) > 10
+        ):
+            validated_data["content"] = "[CONTENT TOO LONG]"
+
+        return func(user_id, validated_data)
+    return wrapper
+```
+</details>
+
+#### Exercise 12 - Injecting and Transforming Keyword Arguments
 
 Problem Statement: Consider a system where operations are processed in batches. A `with_batch_id` decorator injects a `batch_id` into the keyword arguments of a function call. A `format_for_export` decorator takes the function's dictionary result and converts it into a formatted string.
 
@@ -7730,6 +7899,973 @@ Question: After the code runs, what is the value of the `export_result` variable
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```batch_id=B7-2024;record_id=REC456;status=completed;user=admin;```
+
+</details>
+
+[Back to the top](#top)
+
+### Decorator Practice 5
+
+#### Exercise 1 — Preserving Function Metadata
+
+Problem Statement: A colleague wrote a decorator to log function calls, but in the process, it discarded the original function's helpful metadata. The decorator and its usage are shown below. First, predict the output of the provided print statement. Then, modify the `log_call` decorator to ensure the original function's `__name__ `and `__doc__` are preserved.
+
+Code
+```python
+import functools
+
+def log_call(func):
+    def wrapper(*args, **kwargs):
+        """This is the wrapper's docstring."""
+        print(f"Calling function {func.__name__}...")
+        result = func(*args, **kwargs)
+        print("...call complete.")
+        return result
+    return wrapper
+
+@log_call
+def greet(name):
+    """Prints a friendly greeting."""
+    print(f"Hello, {name}!")
+
+# Prediction
+print(f"Name: {greet.__name__}")
+print(f"Docstring: {greet.__doc__}")
+```
+
+Question: Predict the output of the code. After running it to check your prediction, modify the log_call decorator using a tool from the functools module to fix the metadata issue, so that greet's original name and docstring are printed.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 2 — Counting Invocations
+
+Problem Statement: Write a decorator named `count_calls`. This decorator should count how many times the decorated function has been executed. The total count must be accessible via a `.calls` attribute on the decorated function itself.
+
+Function Signature: 
+```python
+def count_calls(func):
+    # Your implementation here
+    pass
+```
+
+Tests
+```python
+@count_calls
+def say_whee():
+    print("Whee!")
+
+assert say_whee.calls == 0
+
+say_whee()
+say_whee()
+assert say_whee.calls == 2
+
+for _ in range(5):
+    say_whee()
+
+assert say_whee.calls == 7
+print("All tests passed for count_calls.")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 3 — Argument Type Validation
+
+Problem Statement: Create a decorator factory named `require_types`. This factory should accept a variable number of type arguments (e.g., int, str). The returned decorator must check if each positional argument passed to the decorated function is an instance of the corresponding type specified in `require_types`. If all arguments match their required types, the function should execute normally. If there is a mismatch, the function must not be called, and the decorator should instead return the string "Type validation failed".
+
+Function Signature
+```python
+def require_types(*types):
+    # Your implementation here
+    pass
+```
+
+Tests
+```python
+@require_types(int, int)
+def multiply(a, b):
+    return a * b
+
+@require_types(str, int)
+def repeat_message(message, times):
+    return message * times
+
+assert multiply(5, 3) == 15
+assert multiply(5, "3") == "Type validation failed"
+assert repeat_message("hi", 3) == "hihihi"
+assert repeat_message(3, "hi") == "Type validation failed"
+print("All tests passed for require_types.")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 4 — Limiting Function Executions
+
+Problem Statement: Write a decorator factory `limit_calls(max_calls)` that restricts the number of times a function can be called. The decorated function should execute normally for the first max_calls invocations. On the `(max_calls + 1)-th` attempt, the decorator must raise a `RuntimeError` with the message "Function has been called too many times." without executing the function.
+
+Function Signature:
+```python
+def limit_calls(max_calls):
+    # Your implementation here
+    pass
+```
+
+Tests
+```python
+@limit_calls(3)
+def limited_function():
+    print("Executing limited function...")
+
+# First 3 calls should succeed
+limited_function()
+limited_function()
+limited_function()
+
+# The 4th call should raise an error
+raised = False
+try:
+    limited_function()
+except RuntimeError as e:
+    raised = True
+    assert str(e) == "Function has been called too many times."
+
+assert raised
+print("All tests passed for limit_calls.")
+```
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 5 — Predicting Exception Propagation
+
+Problem Statement: A simple audit decorator logs messages before and after a function call. The risky_operation function it decorates can raise a `ValueError`.
+
+Code
+```python
+def audit(func):
+    def wrapper(*args, **kwargs):
+        print("Audit: Preparing to execute function.")
+        result = func(*args, **kwargs)
+        print("Audit: Function execution complete.")
+        return result
+    return wrapper
+
+@audit
+def risky_operation(value):
+    if value < 0:
+        raise ValueError("Value cannot be negative.")
+    return value * 2
+
+try:
+    risky_operation(-5)
+except ValueError as e:
+    print(f"Caught expected error: {e}")
+
+```
+
+Question: What will be printed to the console when this script is executed? Explain the control flow that leads to this output, specifically noting which print statements are executed and why.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 6 — Graceful Error Handling
+
+Problem Statement: Create a decorator factory `handle_error(exc_type, default_value`). It should accept an exception type and a default value. The returned decorator will execute the decorated function. If the function raises an exception that is an instance of exc_type, the decorator should catch it and return default_value. Any other type of exception should be allowed to propagate.
+
+Function Signature
+```python
+def handle_error(exc_type, default_value):
+    # Your implementation here
+    pass
+```
+
+Tests
+```python
+@handle_error(ValueError, "Invalid value provided")
+def parse_user_age(age_str):
+    return int(age_str)
+
+@handle_error(KeyError, "default_config")
+def get_config(config, key):
+    return config[key]
+
+assert parse_user_age("25") == 25
+assert parse_user_age("abc") == "Invalid value provided"
+
+config_data = {"user": "admin"}
+assert get_config(config_data, "user") == "admin"
+assert get_config(config_data, "password") == "default_config"
+
+# Test that other errors still propagate
+raised_type_error = False
+try:
+    parse_user_age(None)
+except TypeError:
+    raised_type_error = True
+assert raised_type_error
+
+print("All tests passed for handle_error.")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 7 — Tracking Successful Executions
+
+Problem Statement: Write a decorator `track_success` that counts only the successful executions of a function. A successful execution is one that completes without raising an exception. The count should be stored in a `.successful_calls` attribute on the decorated function. If the function raises an exception, the count should not be incremented, and the exception must propagate to the caller.
+
+Function Signature:
+
+```python
+def track_success(func):
+    # Your implementation here
+    pass
+```
+
+Tests
+
+```python
+@track_success
+def process_data(data):
+    if not isinstance(data, dict):
+        raise TypeError("Input must be a dictionary.")
+    print(f"Processing {data['id']}...")
+    return True
+
+assert process_data.successful_calls == 0
+
+process_data({'id': 1})
+process_data({'id': 2})
+assert process_data.successful_calls == 2
+
+try:
+    process_data("not a dict")
+except TypeError:
+    pass
+
+assert process_data.successful_calls == 2
+
+process_data({'id': 3})
+assert process_data.successful_calls == 3
+print("All tests passed for track_success.")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 8  - Unhandled Exception Propagation
+
+Code
+```python
+def log_boundary(func):
+    """Logs entry and exit of a function call."""
+    def wrapper(*args, **kwargs):
+        print(f"Entering {func.__name__}...")
+        try:
+            result = func(*args, **kwargs)
+            print(f"Exiting {func.__name__}...")
+            return result
+        except Exception as e:
+            print(f"Exception caught in wrapper: {type(e).__name__}")
+            raise # Re-raise the exception
+
+@log_boundary
+def risky_operation(data, key):
+    """Attempts to access a dictionary key."""
+    return data[key]
+
+# --- Prediction Block ---
+try:
+    print("Attempting a valid operation:")
+    risky_operation({'a': 1}, 'a')
+    print("\nAttempting an invalid operation:")
+    risky_operation({'a': 1}, 'b')
+except KeyError:
+    print("Caught a KeyError in the main script.")
+```
+
+Question: Predict the full, ordered output of this script. Pay close attention to which print statements execute and when the `KeyError` is caught.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 9 - Debugging Conditional State
+
+Code
+```python
+import functools
+
+def log_successful_calls(func):
+    """
+    A decorator that is SUPPOSED to log the arguments and results
+    of only the successful calls to a list on the wrapper.
+    """
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        wrapper.history.append({'args': args, 'kwargs': kwargs})
+        result = func(*args, **kwargs)
+        # This part of the log should only happen on success
+        wrapper.history[-1]['result'] = result
+        return result
+    wrapper.history = []
+    return wrapper
+
+@log_successful_calls
+def process_data(value):
+    if not isinstance(value, int):
+        raise TypeError("Input must be an integer")
+    if value < 0:
+        raise ValueError("Input must be non-negative")
+    return value * 2
+
+# --- Test Block ---
+process_data(10)
+try:
+    process_data(-5)
+except ValueError:
+    pass # Expected failure
+
+try:
+    process_data("hello")
+except TypeError:
+    pass # Expected failure
+
+process_data(20)
+
+print(f"Call history length: {len(process_data.history)}")
+print(f"History contents: {process_data.history}")
+```
+
+Question: The provided decorator `log_successful_calls` is buggy. It is intended to record a history of ​only the calls that complete without raising an exception​. However, the current output shows a history length of 4, including entries for the failed calls.
+
+Identify the single logical error in the wrapper function and fix it so that the history only records successful invocations. After the fix, the final output should show a history length of 2.
+
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 10 - Synthesis: Type-Enforcing Decorator
+
+Problem Statement
+
+Create a decorator factory named `enforce_types` that accepts a variable number of type arguments (e.g., str, int, list). It should return a decorator that validates the types of the positional arguments passed to the wrapped function.
+
+The decorator must:
+
+1. Preserve the `__name__` and `__doc__` of the original function.
+2.  Check that each positional argument arg at index i has the type specified by types[i].
+3.  If any argument has an incorrect type, raise a TypeError.
+4.  If all types match, execute the function and return its result.
+
+This decorator only needs to check positional arguments.
+
+Function Signature
+```python
+def enforce_types(*types):
+    # Your implementation here
+    pass
+```
+
+Tests
+```python
+@enforce_types(str, int)
+def greet_user(name, age):
+    """Generates a greeting for a user."""
+    return f"Hello {name}, you are {age} years old."
+
+@enforce_types(list, str)
+def add_to_list(items, new_item):
+    """Appends an item to a list."""
+    items.append(new_item)
+    return items
+
+# Test successful calls
+assert greet_user("Alice", 30) == "Hello Alice, you are 30 years old."
+assert add_to_list([1, 2], "three") == [1, 2, "three"]
+
+# Test metadata preservation
+assert greet_user.__name__ == "greet_user"
+assert "Generates a greeting" in greet_user.__doc__
+
+# Test type enforcement
+try:
+    greet_user("Bob", "twenty")
+except TypeError:
+    print("Successfully caught expected TypeError for greet_user.")
+else:
+    print("Test failed: TypeError was not raised for greet_user.")
+
+try:
+    add_to_list({1, 2}, "three")
+except TypeError:
+    print("Successfully caught expected TypeError for add_to_list.")
+else:
+    print("Test failed: TypeError was not raised for add_to_list.")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+### Decorator Practice 6
+
+#### Exercise 1 — A Callable Greeter
+
+Problem Statement
+
+An object can be made "callable" like a function by implementing the `__call__` special method. Predict the output of the following program. Consider when `__init__` is executed versus when `__call__` is executed.
+
+Code
+```python
+class Greeter:
+    def __init__(self, greeting):
+        print("Greeter instance is being created...")
+        self.greeting = greeting
+
+    def __call__(self, name):
+        return f"{self.greeting}, {name}!"
+
+# Main script execution
+print("Script is starting.")
+
+greet_hello = Greeter("Hello")
+greet_goodbye = Greeter("Goodbye")
+
+message1 = greet_hello("Alice")
+message2 = greet_goodbye("Bob")
+
+print("Now printing final messages:")
+print(message1)
+print(message2)
+```
+
+Question: What will be printed to the console when this script is run? Write out the exact output line by line.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 2 — Accumulating State
+
+Problem Statement: Implement the `Accumulator` class. An `Accumulator` instance should be initialized with a starting number. When the instance is called with another number, it should add that number to its internal total and return the new total.
+
+Class Signature
+```python
+class Accumulator:
+    # Your implementation here
+    pass
+
+```
+
+
+Tests
+```python
+acc = Accumulator(10)
+assert acc(5) == 15
+assert acc(3) == 18
+assert acc.total == 18
+
+acc2 = Accumulator(0)
+assert acc2(-1) == -1
+assert acc2(1) == 0
+assert acc2.total == 0
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 3 — Construction vs. Invocation
+
+Problem Statement: The `Tracer` class below is used as a decorator. It prints messages when it is constructed and when it is called.
+
+Code
+```python
+class Tracer:
+    def __init__(self, func):
+        self.func = func
+        print(f"Tracer constructed for function: {self.func.__name__}")
+
+    def __call__(self, *args, **kwargs):
+        print(f"Tracer invoked before calling {self.func.__name__}")
+        return self.func(*args, **kwargs)
+
+@Tracer
+def do_work(x):
+    return x * 2
+
+print("About to call do_work...")
+do_work(10)
+do_work(20)
+print("Finished.")
+```
+
+Question: Predict the complete, ordered output that will be printed to the console when this script is run.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 4 - Convert to a Class Decorator
+
+Problem Statement: A function-based decorator that uses a closure to maintain state can often be rewritten as a class-based decorator that uses instance attributes for state. Convert the following function-based decorator, `log_calls`, into an equivalent class-based decorator named `LogCalls`. The new decorator should produce the same observable behavior.
+
+Original Function-Based Decorator
+```python
+def log_calls(func):
+    """
+    A function-based decorator that prints a message
+    before and after the decorated function is called.
+    """
+    def wrapper(*args, **kwargs):
+        print(f"Calling {func.__name__}...")
+        result = func(*args, **kwargs)
+        print(f"...{func.__name__} finished.")
+        return result
+    return wrapper
+```
+
+Function Signature
+```python
+class LogCalls:
+    # Your implementation here
+    pass
+```
+
+Tests
+```python
+@LogCalls
+def greet(name):
+    print(f"Hello, {name}")
+
+# This should print three lines: the "Calling...", "Hello, World", and "...finished" messages.
+greet("World")
+
+@LogCalls
+def calculate_sum(x, y):
+    return x + y
+
+# This should print the "Calling..." and "...finished" messages and return 7.
+result = calculate_sum(3, 4)
+assert result == 7
+print(f"calculate_sum returned: {result}")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 5 - Exercise 5 — Independent Decorator State
+
+Problem Statement: The `CallCounter` decorator tracks how many times a function has been called. Two different functions, `add_one` and `add_two`, are decorated with `CallCounter`.
+
+After the code runs, what will be the final values of `add_one.calls` and `add_two.calls`?
+
+Code
+```python
+class CallCounter:
+    def __init__(self, func):
+        self.func = func
+        self.calls = 0
+
+    def __call__(self, *args, **kwargs):
+        self.calls += 1
+        return self.func(*args, **kwargs)
+
+@CallCounter
+def add_one(n):
+    return n + 1
+
+@CallCounter
+def add_two(n):
+    return n + 2
+
+add_one(0)
+add_one(5)
+
+add_two(0)
+add_two(1)
+add_two(2)
+
+# Predict the output of these two print statements.
+print(f"add_one was called {add_one.calls} times.")
+print(f"add_two was called {add_two.calls} times.")
+```
+
+
+Question: What are the final values of the calls attribute on the add_one and add_two objects?
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 6: A Call-Once Decorator
+
+Problem Statement: Create a class-based decorator named `CallOnce` that allows a function to be executed only one time.
+
+On the first call to the decorated function, it should execute as normal. On all subsequent calls, it should not execute the original function again, but should instead return the result of the first call.
+
+Class Signature
+```python
+class CallOnce:
+    # Your implementation here
+    pass
+```
+
+Tests
+```python
+call_count = 0
+
+@CallOnce
+def expensive_calculation(a, b):
+    global call_count
+    call_count += 1
+    return a + b
+
+# First call
+result1 = expensive_calculation(10, 20)
+assert result1 == 30
+assert call_count == 1
+
+# Second call with same arguments
+result2 = expensive_calculation(10, 20)
+assert result2 == 30
+assert call_count == 1 # Should not have increased
+
+# Third call with different arguments
+result3 = expensive_calculation(100, 200)
+assert result3 == 30 # Should still return the original result
+assert call_count == 1 # Should not have increased
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+[Back to the top](#top)
+
+### Decorator Practice 7
+
+#### Exercise 1 — Stateful Keyword Logging
+
+Problem Statement: Predict the final state of the `call_log` list after the following code executes. The `enrich_kwargs` decorator adds a keyword argument before calling the next function in the stack. The `log_kwarg` decorator inspects the keyword arguments and logs the value of a specific key.
+
+Code
+```python
+import functools
+
+def enrich_kwargs(key, value):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            kwargs[key] = value
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+def log_kwarg(log_list, key_to_log):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            if key_to_log in kwargs:
+                log_list.append(kwargs[key_to_log])
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+call_log = []
+
+@enrich_kwargs(key="request_id", value="xyz-123")
+@log_kwarg(log_list=call_log, key_to_log="request_id")
+def process_data(data, **kwargs):
+    return f"Processed {data} with {kwargs}"
+
+process_data("report.csv")
+process_data("config.json", request_id="original-id")
+
+print(call_log)
+```
+
+Question: What will be printed to the console?
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 2 — Registry-Aware Auditing
+
+Problem Statement: Two decorator factories are used to register functions and then audit their calls. `@register` runs at decoration time, adding the function's name to a shared dictionary. `@audit_call` runs at invocation time, and it is designed to use the registry to log which registered function was called.
+
+Code
+```python
+import functools
+
+def register(registry, name):
+    def decorator(func):
+        print(f"Registering '{name}'")
+        registry[name] = func
+        return func
+    return decorator
+
+def audit_call(registry, log):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            func_name = None
+            for name, fn in registry.items():
+                if fn is func:
+                    func_name = name
+                    break
+            
+            log.append(f"Calling registered function: {func_name}")
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+# --- Setup ---
+SYSTEM_REGISTRY = {}
+AUDIT_LOG = []
+
+# --- Decoration ---
+@audit_call(SYSTEM_REGISTRY, AUDIT_LOG)
+@register(SYSTEM_REGISTRY, "user_update")
+def update_user(user_id, data):
+    print(f"Updating user {user_id}")
+
+# --- Invocation ---
+print("--- Invoking function ---")
+update_user(101, {"name": "Alice"})
+
+print("--- Final Log ---")
+print(AUDIT_LOG)
+```
+
+Question: What will be printed to the console in total, and in what order?
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 3 — Conditional History with a Callable Class
+
+Problem Statement: A class-based decorator `CallHistory` is used to record the positional arguments of each call to a decorated function. It stores this history in a list provided during its initialization. A second decorator,`@require_flag`, prevents the decorated function from executing unless a specific keyword argument is `True`.
+
+Code
+```python
+import functools
+
+class CallHistory:
+    def __init__(self, history_log):
+        self.history_log = history_log
+        self._func = None
+
+    def __call__(self, *args, **kwargs):
+        if self._func is None: # First call is the decoration
+            self._func = args[0]
+            functools.update_wrapper(self, self._func)
+            return self
+        
+        # Subsequent calls are invocations
+        self.history_log.append(args)
+        return self._func(*args, **kwargs)
+
+def require_flag(flag_name):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            if kwargs.get(flag_name) is True:
+                return func(*args, **kwargs)
+            return None
+        return wrapper
+    return decorator
+
+# --- Setup ---
+shared_history = []
+
+@CallHistory(shared_history)
+@require_flag("execute")
+def run_task(task_name, *args, **kwargs):
+    print(f"Running task: {task_name}")
+
+# --- Invocation ---
+run_task("cleanup", "daily", execute=True)
+run_task("report", "weekly", execute=False)
+run_task("archive", "monthly", "full", execute=True)
+run_task("backup", execute=True)
+
+print(shared_history)
+```
+
+Question: What is the final state of the shared_history list that is printed to the console?
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 4 — Attribute-Driven Status Tracking
+
+Problem Statement: Implement two decorator factories, `@tag(name)` and `@track_status(status_dict)`.
+
+The `@tag` decorator must attach its name as an attribute named `_func_tag` to the wrapper function it returns.
+
+The `@track_status` decorator must update a key in `status_dict`. The key it uses should be the `_func_tag` attribute of the function it is decorating.
+
+* If the decorated function executes successfully, the value for that key should be set to `'SUCCESS'`.
+* If the decorated function raises any exception, `@track_status` must catch it, set the status to `'FAILURE'`, and then re-raise the original exception.
+
+Arrange the decorators on the `process_job` function so that the tests pass.
+
+Function Signature
+```python
+def tag(name):
+    # Your implementation here
+    pass
+
+def track_status(status_dict):
+    # Your implementation here
+    pass
+```
+
+Tests
+```python
+job_statuses = {}
+
+# Decorate this function correctly
+def process_job(job_id):
+    if job_id < 0:
+        raise ValueError("Invalid job ID")
+    return f"Completed job {job_id}"
+
+# --- Test Success ---
+try:
+    process_job(100)
+except Exception:
+    pass
+assert job_statuses.get("data_pipeline") == "SUCCESS"
+
+# --- Test Failure ---
+try:
+    process_job(-5)
+except ValueError:
+    pass
+assert job_statuses.get("data_pipeline") == "FAILURE"
+
+# --- Test metadata ---
+assert process_job.__name__ == "process_job"
+
+print("All tests passed.")
+```
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 5 - mplementing a Context-Aware Runner
+
+Problem Statement: Implement a decorator factory named `with_context` that accepts a dictionary. This decorator should enforce the following rules for any function it decorates:
+
+1. The decorated function should ONLY execute if the context dictionary contains a key 'enabled' with a value of True. If not, the function should not run and the decorator should return None.
+2. If the function executes, the decorator must ensure a key named `'call_count'` exists in the context dictionary and increment its value by 1. If `'call_count'` does not exist, it should be initialized to 1.
+3. If the decorated function raises a `ValueError` during its execution, the decorator must catch the exception. It should then add a key 'error' to the context dictionary with the exception's message string as the value. After handling the exception, the decorator should return `None` instead of re-raising the exception.
+4. The decorator must preserve the original function's metadata (e.g., `__name__`).
+
+Function Signature
+```python
+import functools
+
+def with_context(context_dict):
+    # Your implementation here
+    pass
+```
+
+Tests
+```python
+# --- Test 1: Successful run ---
+context1 = {'enabled': True}
+@with_context(context1)
+def task_alpha(x, y):
+    return x + y
+
+result = task_alpha(10, 20)
+assert result == 30
+assert context1 == {'enabled': True, 'call_count': 1}
+
+task_alpha(1, 2)
+assert context1['call_count'] == 2
+
+# --- Test 2: Disabled run ---
+context2 = {'enabled': False, 'call_count': 5}
+@with_context(context2)
+def task_beta():
+    print("This should not run")
+
+result = task_beta()
+assert result is None
+assert context2['call_count'] == 5 # Should not be incremented
+
+# --- Test 3: Exception handling ---
+context3 = {'enabled': True}
+@with_context(context3)
+def task_gamma():
+    raise ValueError("Critical failure")
+
+result = task_gamma()
+assert result is None
+assert context3['call_count'] == 1
+assert context3['error'] == "Critical failure"
+
+# --- Test 4: Metadata ---
+assert task_alpha.__name__ == 'task_alpha'
+
+print("All tests passed.")
+```
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+[Back to the top](#top)
+
+<details> 
+<summary>Possible Solution</summary> 
+
 </details>
 
 [Back to the top](#top)
