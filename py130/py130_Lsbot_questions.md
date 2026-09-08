@@ -7780,7 +7780,7 @@ After this code executes, what will be the contents of the CACHE dictionary?
 <details> 
 <summary>Possible Solution</summary> 
 
-```{5: 50}```
+`{5: 50}`
 
 </details>
 
@@ -7894,13 +7894,12 @@ def process_data(record_id, **details):
 export_result = process_data("REC456", status="completed", user="admin")
 ```
 
-
 Question: After the code runs, what is the value of the `export_result` variable?
 
 <details> 
 <summary>Possible Solution</summary> 
 
-```batch_id=B7-2024;record_id=REC456;status=completed;user=admin;```
+`batch_id=B7-2024;record_id=REC456;status=completed;user=admin;`
 
 </details>
 
@@ -8171,7 +8170,7 @@ print("All tests passed for track_success.")
 
 </details>
 
-#### Exercise 8  - Unhandled Exception Propagation
+#### Exercise 8 - Unhandled Exception Propagation
 
 Code
 ```python
@@ -8268,9 +8267,7 @@ Identify the single logical error in the wrapper function and fix it so that the
 
 #### Exercise 10 - Synthesis: Type-Enforcing Decorator
 
-Problem Statement
-
-Create a decorator factory named `enforce_types` that accepts a variable number of type arguments (e.g., str, int, list). It should return a decorator that validates the types of the positional arguments passed to the wrapped function.
+Problem Statement: Create a decorator factory named `enforce_types` that accepts a variable number of type arguments (e.g., str, int, list). It should return a decorator that validates the types of the positional arguments passed to the wrapped function.
 
 The decorator must:
 
@@ -8330,13 +8327,13 @@ else:
 
 </details>
 
+[Back to the top](#top)
+
 ### Decorator Practice 6
 
 #### Exercise 1 — A Callable Greeter
 
-Problem Statement
-
-An object can be made "callable" like a function by implementing the `__call__` special method. Predict the output of the following program. Consider when `__init__` is executed versus when `__call__` is executed.
+Problem Statement: An object can be made "callable" like a function by implementing the `__call__` special method. Predict the output of the following program. Consider when `__init__` is executed versus when `__call__` is executed.
 
 Code
 ```python
