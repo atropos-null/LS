@@ -22,6 +22,7 @@
 - [Decorator Practice 5](#decorator-practice-5)
 - [Decorator Practice 6](#decorator-practice-6)
 - [Decorator Practice 7](#decorator-practice-7)
+- [unittest Foundations](#unittest-foundations)
 
 ## Lesson 1: Functions, Generators, and Files
 
@@ -7938,7 +7939,33 @@ Question: Predict the output of the code. After running it to check your predict
 
 <details> 
 <summary>Possible Solution</summary> 
+```
+Name: wrapper
+Docstring: This is the wrapper's docstring.
+```
 
+```python
+from functools import wraps
+
+def log_call(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        """This is the wrapper's docstring."""
+        print(f"Calling function {func.__name__}...")
+        result = func(*args, **kwargs)
+        print("...call complete.")
+        return result
+    return wrapper
+
+@log_call
+def greet(name):
+    """Prints a friendly greeting."""
+    print(f"Hello, {name}!")
+
+# Prediction
+print(f"Name: {greet.__name__}")     # Name: greet
+print(f"Docstring: {greet.__doc__}") # Docstring: Prints a friendly greeting.
+```
 </details>
 
 #### Exercise 2 — Counting Invocations
@@ -7974,6 +8001,21 @@ print("All tests passed for count_calls.")
 <details> 
 <summary>Possible Solution</summary> 
 
+```python
+def count_calls(func):
+
+    count = 0
+
+    def wrapper(*args, **kwargs):
+        nonlocal count
+        count += 1
+        wrapper.calls = count
+        return func(*args, **kwargs)
+
+    wrapper.calls = 0
+    return wrapper
+```
+
 </details>
 
 #### Exercise 3 — Argument Type Validation
@@ -8006,6 +8048,18 @@ print("All tests passed for require_types.")
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def require_types(*types):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            for arg, required_type in zip(args, types):
+                if not isinstance(arg, required_type):
+                    return "Type validation failed"
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+```
 
 </details>
 
@@ -8045,6 +8099,22 @@ print("All tests passed for limit_calls.")
 <details> 
 <summary>Possible Solution</summary> 
 
+```python
+def limit_calls(max_calls):
+    limit = max_calls
+    def decorator(func):
+        count = 0
+        def wrapper(*args, **kwargs):
+            nonlocal count
+            if count < limit:
+                count += 1
+                return func(*args, **kwargs)
+            else:
+                raise RuntimeError("Function has been called too many times.")
+        return wrapper
+    return decorator
+```
+
 </details>
 
 #### Exercise 5 — Predicting Exception Propagation
@@ -8078,6 +8148,13 @@ Question: What will be printed to the console when this script is executed? Expl
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```
+Audit: Preparing to execute function.
+Caught expected error: Value cannot be negative.
+```
+
+Once an exception is raised, the remaining statements in the current execution path are skipped unless control is redirected by a matching except or a finally.
 
 </details>
 
@@ -8122,6 +8199,19 @@ print("All tests passed for handle_error.")
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def handle_error(exc_type, default_value):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except exc_type:
+                return default_value
+        return wrapper
+    return decorator
+
+```
 
 </details>
 
@@ -8168,6 +8258,19 @@ print("All tests passed for track_success.")
 <details> 
 <summary>Possible Solution</summary> 
 
+```python
+def track_success(func):
+    success = 0
+    def wrapper(*args, **kwargs):
+        nonlocal success
+        result = func(*args, **kwargs)
+        success += 1
+        wrapper.successful_calls = success
+        return result
+    wrapper.successful_calls = 0
+    return wrapper
+```
+
 </details>
 
 #### Exercise 8 - Unhandled Exception Propagation
@@ -8175,7 +8278,9 @@ print("All tests passed for track_success.")
 Code
 ```python
 def log_boundary(func):
+def log_boundary(func):
     """Logs entry and exit of a function call."""
+
     def wrapper(*args, **kwargs):
         print(f"Entering {func.__name__}...")
         try:
@@ -8184,7 +8289,9 @@ def log_boundary(func):
             return result
         except Exception as e:
             print(f"Exception caught in wrapper: {type(e).__name__}")
-            raise # Re-raise the exception
+            raise
+
+    return wrapper
 
 @log_boundary
 def risky_operation(data, key):
@@ -8204,8 +8311,18 @@ except KeyError:
 Question: Predict the full, ordered output of this script. Pay close attention to which print statements execute and when the `KeyError` is caught.
 
 <details> 
-<summary>Possible Solution</summary> 
+<summary>Solution</summary> 
 
+```
+Attempting a valid operation:
+Entering risky_operation...
+Exiting risky_operation...
+
+Attempting an invalid operation:
+Entering risky_operation...
+Exception caught in wrapper: KeyError
+Caught a KeyError in the main script.
+```
 </details>
 
 #### Exercise 9 - Debugging Conditional State
@@ -8262,6 +8379,22 @@ Identify the single logical error in the wrapper function and fix it so that the
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def log_successful_calls(func):
+    """
+    A decorator that is SUPPOSED to log the arguments and results
+    of only the successful calls to a list on the wrapper.
+    """
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        wrapper.history.append({'args': args, 'kwargs': kwargs})
+        wrapper.history[-1]['result'] = result
+        return result
+    wrapper.history = []
+    return wrapper
+```
 
 </details>
 
@@ -8325,6 +8458,20 @@ else:
 <details> 
 <summary>Possible Solution</summary> 
 
+```python
+from functools import wraps
+
+def enforce_types(*types):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            for arg, required_type in zip(args, types):
+                if not isinstance(arg, required_type):
+                    raise TypeError("Type validation failed")
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+```
 </details>
 
 [Back to the top](#top)
@@ -8364,6 +8511,14 @@ Question: What will be printed to the console when this script is run? Write out
 <details> 
 <summary>Possible Solution</summary> 
 
+```
+Script is starting.
+Greeter instance is being created...
+Greeter instance is being created...
+Now printing final messages:
+Hello, Alice!
+Goodbye, Bob!
+```
 </details>
 
 #### Exercise 2 — Accumulating State
@@ -8375,7 +8530,6 @@ Class Signature
 class Accumulator:
     # Your implementation here
     pass
-
 ```
 
 
@@ -8394,6 +8548,17 @@ assert acc2.total == 0
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class Accumulator:
+
+    def __init__(self, starting_number):
+        self.total = starting_number
+
+    def __call__(self, new_number):
+        self.total = self.total + new_number
+        return self.total
+```
 
 </details>
 
@@ -8426,7 +8591,13 @@ Question: Predict the complete, ordered output that will be printed to the conso
 
 <details> 
 <summary>Possible Solution</summary> 
-
+```
+Tracer constructed for function: do_work
+About to call do_work...
+Tracer invoked before calling do_work
+Tracer invoked before calling do_work
+Finished.
+```
 </details>
 
 #### Exercise 4 - Convert to a Class Decorator
@@ -8477,6 +8648,19 @@ print(f"calculate_sum returned: {result}")
 <details> 
 <summary>Possible Solution</summary> 
 
+```python
+class LogCalls:
+
+    def __init__(self, func):
+        self.func = func
+
+    def __call__(self, *args, **kwargs):
+        print(f"Calling {self.func.__name__}...")
+        result = self.func(*args, **kwargs)
+        print(f"...{self.func.__name__} finished.")
+        return result
+```
+
 </details>
 
 #### Exercise 5 - Exercise 5 — Independent Decorator State
@@ -8516,11 +8700,15 @@ print(f"add_one was called {add_one.calls} times.")
 print(f"add_two was called {add_two.calls} times.")
 ```
 
-
-Question: What are the final values of the calls attribute on the add_one and add_two objects?
+Question: What are the final values of the calls attribute on the `add_one` and `add_two` objects?
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```
+add_one was called 2 times.
+add_two was called 3 times.
+```
 
 </details>
 
@@ -8565,6 +8753,21 @@ assert call_count == 1 # Should not have increased
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+class CallOnce:
+    def __init__(self, func):
+        self.func = func
+        self.has_been_called = False
+        self.result = None
+
+    def __call__(self, *args, **kwargs):
+        if not self.has_been_called:
+            self.result = self.func(*args, **kwargs)
+            self.has_been_called = True
+
+        return self.result
+```
 
 </details>
 
@@ -8616,6 +8819,8 @@ Question: What will be printed to the console?
 
 <details> 
 <summary>Possible Solution</summary> 
+
+`['xyz-123', 'xyz-123']`
 
 </details>
 
@@ -8671,6 +8876,14 @@ Question: What will be printed to the console in total, and in what order?
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```
+Registering 'user_update'
+--- Invoking function ---
+Updating user 101
+--- Final Log ---
+['Calling registered function: user_update']
+```
 
 </details>
 
@@ -8728,6 +8941,13 @@ Question: What is the final state of the shared_history list that is printed to 
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```
+Running task: cleanup
+Running task: archive
+Running task: backup
+[('cleanup', 'daily'), ('report', 'weekly'), ('archive', 'monthly', 'full'), ('backup',)]
+```
 
 </details>
 
@@ -8788,9 +9008,40 @@ print("All tests passed.")
 <details> 
 <summary>Possible Solution</summary> 
 
+```python
+from functools import wraps
+
+def tag(name):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            return func(*args, **kwargs)
+        wrapper._func_tag = name
+        return wrapper
+    return decorator
+
+
+def track_status(status_dict):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            key = func._func_tag
+            try:
+                result = func(*args, **kwargs)
+            except Exception:
+                status_dict[key] = "FAILURE"
+                raise
+            status_dict[key] = "SUCCESS"
+            return result
+
+        return wrapper
+
+    return decorator
+```
+
 </details>
 
-#### Exercise 5 - mplementing a Context-Aware Runner
+#### Exercise 5 - Implementing a Context-Aware Runner
 
 Problem Statement: Implement a decorator factory named `with_context` that accepts a dictionary. This decorator should enforce the following rules for any function it decorates:
 
@@ -8849,10 +9100,329 @@ assert task_alpha.__name__ == 'task_alpha'
 
 print("All tests passed.")
 ```
+
+Tag: HIGH-VALUE ASSESSMENT SYNTHESIS: decorator factory + shared mutable context + gating + state update + selective exception handling + metadata preservation + return-path correctness.
+
 <details> 
 <summary>Possible Solution</summary> 
 
 </details>
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+[Back to the top](#top)
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+[Back to the top](#top)
+
+
+## Lesson 3: Testing
+
+### unittest Foundations
+
+#### Exercise 1 — Basic Test Structure
+
+**Code Under Test:**
+```python
+# calculator.py
+def subtract(a, b):
+    """Returns the difference of two numbers."""
+    return a - b
+```
+
+**Task**
+
+Write a file named `test_calculator.py`. In it, create a `unittest.TestCase` subclass named `TestSubtract`.
+
+Add a single test method that `verifies subtract(5, 2)` returns `3`.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 2 — Testing an Object's Initial State
+
+**Code Under Test**
+```python
+# person.py
+class Person:
+    def __init__(self, first_name, last_name, age):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.age = age
+        self.is_adult = age >= 18
+
+```
+
+
+**Task**
+Write a test suite for the `Person` class. Create a test class named `TestPerson` with one test method, `test_creation`. In this method, create an instance of `Person` with a first name of `"John"`, a last name of `"Doe"`, and an age of `25`.
+
+Add assertions to verify:
+
+1.  The `first_name` attribute is `"John"`.
+2.  The `last_name` attribute is `"Doe"`.
+3.  The `age` attribute is `25`.
+4.  The `is_adult` attribute is `True`.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 3 — Testing Boolean Return Values
+
+**Code Under Test**
+```python
+# string_utils.py
+def contains_char(text, char):
+    """Returns True if `text` contains `char`, otherwise False."""
+    return char in text
+```
+
+**Task**
+Write a test class `TestContainsChar`. Add two test methods:
+
+1.  `test_finds_char_if_present`: Verifies that `contains_char("hello", "e")` returns `True`.
+2.  `test_does_not_find_char_if_absent`: Verifies that `contains_char("hello", "z")` returns `False`.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 4 — Testing State After Mutation
+
+**Code Under Test**
+```python
+# counter.py
+class Counter:
+    """A simple counter that can be incremented and reset."""
+    def __init__(self):
+        self.value = 0
+
+    def increment(self):
+        self.value += 1
+
+    def reset(self):
+        self.value = 0
+
+```
+
+**Task**
+Write a test class `TestCounter`. Add a test method named `test_increment`.
+
+Inside the test method:
+
+1.  Create a `Counter` instance.
+2.  Assert that its initial value is 0.
+3.  Call the increment method on the instance.
+4.  Assert that the value is now 1.
+
+This exercise requires you to distinguish between calling methods on the object under test (like` counter.increment()`) and assertion methods from the test case (`like self.assertEqual(...)`).
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 5 — Testing for Expected Exceptions
+
+**Code Under Test**
+```python
+# user_profile.py
+class UserProfile:
+    def __init__(self):
+        self.name = None
+
+    def set_name(self, name):
+        if not isinstance(name, str) or not name:
+            raise ValueError("Name must be a non-empty string.")
+        self.name = name
+```
+
+**Task**
+Write a test class `TestUserProfile`. Add a test method `test_set_name_with_invalid_type`.
+
+In this method, use the `assertRaises` context manager to verify that calling `set_name` with a non-string value (e.g., 123) correctly raises a `ValueError`.
+
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 6 — Using setUp for a Fresh Test State
+
+**Code Under Test**
+```python
+# playlist.py
+class Playlist:
+    """A playlist that holds a list of songs."""
+    def __init__(self, name):
+        self.name = name
+        self.songs = []
+
+    def add_song(self, song_title):
+        self.songs.append(song_title)
+
+    def remove_song(self, song_title):
+        self.songs.remove(song_title)
+
+    def song_count(self):
+        return len(self.songs)
+```
+
+**Task**
+
+Write a test class `TestPlaylist`.
+
+Use a `setUp` method to create a fresh `Playlist` instance before each test runs. The playlist should be named` "My Favorites"` and initialized with two songs: `"Bohemian Rhapsody"` and `"Stairway to Heaven"`. Store this instance as an attribute on `self` (e.g., `self.playlist`).
+
+Then, add two test methods that use self.playlist:
+
+1.  `test_add_song`: Adds a new song, `"Hotel California"`, and asserts that the total song count is 3 and that `"Hotel California"` is now in the playlist's songs list.
+2.  `test_remove_song`: Removes `"Stairway to Heaven"` and asserts that the total song count is 1.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 7 — Testing for None and Membership
+
+**Code Under Test**
+```python
+# data_store.py
+class DataStore:
+    def __init__(self):
+        self._data = {}
+
+    def set_value(self, key, value):
+        self._data[key] = value
+
+    def get_value(self, key):
+        """Returns the value for a key, or None if not found."""
+        return self._data.get(key)
+
+```
+**Task**
+Write a test class `TestDataStore`. Add two test methods:
+
+1.  `test_get_existing_value`: In this test, first use set_value to store a key-value pair (e.g., key "id", value 123). Then, use get_value to retrieve it and assert that the returned value is 123.
+2.  `test_get_non_existent_value`: In this test, use get_value with a key that has not been set (e.g., "name") and use `assertIsNone` to verify that the result is `None`.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 8 — Repairing a Broken Test Structure
+
+**Code Under Test**
+```python
+# text_formatter.py
+def make_title(text):
+    return text.title()
+```
+
+**Starter Test Code**
+```python
+# test_text_formatter.py
+import unittest
+from text_formatter import make_title
+
+class FormatterTest:
+    def test_title_case(self):
+        # This test should pass, but the test runner won't find it.
+        result = make_title("hello world")
+        self.assertEqual(result, "Hello World")
+
+```
+
+**Task**
+
+The provided test code has a structural error that prevents unittest from discovering and running it. Identify the problem and fix the code so the test can be executed successfully.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 9 — Identifying a Weak Assertion
+
+**Code Under Test**
+```python
+# settings.py
+class Settings:
+    def __init__(self):
+        self._is_active = True
+
+    def is_active(self):
+        return self._is_active
+```
+
+Starter Test Code
+```python
+# test_settings.py
+import unittest
+from settings import Settings
+
+class TestSettings(unittest.TestCase):
+    def test_initial_state_is_active(self):
+        settings = Settings()
+        self.assertTrue(True) # This assertion is weak
+```
+
+**Task**
+The assertion in `test_initial_state_is_active` is weak because it does not actually test the behavior of the Settings class; it will pass regardless of what the code does.
+
+Rewrite the assertion to be a meaningful test that verifies the `is_active` method returns the correct initial value.
+
+#### Exercise 10 — Repairing an Ownership Error
+
+**Code Under Test**
+```python
+# simple_lock.py
+class SimpleLock:
+    def __init__(self):
+        self.locked = True
+
+    def unlock(self):
+        self.locked = False
+```
+
+**Starter Test Code**
+```python
+# test_simple_lock.py
+import unittest
+from simple_lock import SimpleLock
+
+class TestSimpleLock(unittest.TestCase):
+    def test_unlock(self):
+        lock = SimpleLock()
+        self.assertTrue(lock.locked)
+        self.unlock() # This line has an ownership error
+        self.assertFalse(lock.locked)
+```
+
+**Task**
+The test test_unlock fails with an `AttributeError` because it attempts to call a method that belongs to the SimpleLock object as if it were a method of the `TestCase`.
+
+Identify and fix the ownership error on the indicated line so the test correctly calls the method on the object being tested.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
 <details> 
 <summary>Possible Solution</summary> 
 

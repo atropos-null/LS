@@ -1823,3 +1823,79 @@ Verify:
 
 Silently discard and replace any exercise that fails validation.
 
+## Lesson 3 Practice Prompts
+
+### unittest Foundations
+
+Generate a Learning Mode practice set for a student learning Python's built-in `unittest` framework.
+
+The student knows ordinary Python functions, classes, methods, objects, mutation, return values, and exceptions.
+
+Current scope:
+
+- `import unittest`
+- subclassing `unittest.TestCase`
+- discoverable `test_*` methods
+- `self.assertEqual`, `assertTrue`, `assertFalse`, `assertIs`, `assertIsNone`, `assertIn`
+- `self.assertRaises(...)` using the context-manager form
+- `setUp()` for fresh state before each test
+- distinguishing TestCase methods such as `self.assertEqual(...)` from methods on the object under test such as `self.counter.increment()`
+- testing return values
+- testing object state after mutation
+- testing correct exceptions
+- recognizing weak/useless assertions such as `self.assertEqual(1, 1)`
+- repairing broken unittest syntax, structure, or ownership
+
+Do not use pytest, mocks, patching, `tearDown`, `setUpClass`, `subTest`, parameterization, test doubles, external files, third-party libraries, or other advanced testing features.
+
+#### Exercise Count
+
+Identify the genuinely distinct practice opportunities in this scope.
+
+Generate approximately 8–10 exercises, but let meaningful coverage determine the count. Do not add redundant exercises to reach a number, and do not remove a useful distinct exercise merely to stay under 10.
+
+#### Progression
+
+Start very small, then move to short classes with 2–3 tests each.
+
+Progress from:
+- basic TestCase structure and test discovery;
+- writing appropriate assertions;
+- TestCase-method vs object-under-test ownership;
+- return-value and state-after-mutation testing;
+- `assertRaises`;
+- `setUp()` and fresh state;
+- weak-assertion diagnosis;
+- repairing broken unittest code.
+
+Most exercises should require the student to WRITE unittest code.
+
+Provide simple production code and have the student write the tests. Keep application logic easy; the testing structure is the learning target.
+
+When using `setUp()`, make fresh state matter across multiple tests.
+
+Include at least one exercise involving return values, mutation/state, exceptions, weak assertions, and broken unittest structure or ownership.
+
+#### Output
+
+Use:
+
+#### Exercise N — Title
+**Code Under Test**
+**Task**
+
+Include starter test code only when needed for a repair/diagnosis exercise.
+
+All Python must be fenced and directly copy-pasteable.
+
+Do not provide completed tests when writing the tests is the task.
+
+No solutions, hints, answer keys, difficulty/concept labels, bare `assert`, or pytest syntax.
+
+#### Validation
+
+Before output, verify that production code runs, expected behavior is correct, requested tests use only the stated scope, `test_*` discovery is correct, `setUp()` provides fresh state, and exception exercises genuinely raise the specified exception.
+
+For repair exercises, include exactly one real primary testing mistake. Do not identify or mark the faulty line.
+
+Silently replace invalid exercises.
