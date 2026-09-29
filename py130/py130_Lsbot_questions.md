@@ -23,6 +23,8 @@
 - [Decorator Practice 6](#decorator-practice-6)
 - [Decorator Practice 7](#decorator-practice-7)
 - [unittest Foundations](#unittest-foundations)
+- [unittest 1](#unittest-1)
+- [unittest 2](#unittest-2)
 
 ## Lesson 1: Functions, Generators, and Files
 
@@ -9423,10 +9425,767 @@ Identify and fix the ownership error on the indicated line so the test correctly
 
 </details>
 
+
+
+[Back to the top](#top)
+
+
+### unittest 1
+
+
+#### Exercise 1 — Initial State
+
+**Contract** A Server object is initialized in a "stopped" state. The `get_status()` method returns the current state as a string.
+
+**Code Under Test**
+```python
+class Server:
+    def __init__(self):
+        self._state = "stopped"
+
+    def get_status(self):
+        return self._state
+```
+
+**Task** Write a test that creates a new Server object and asserts that its initial state is "stopped".
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 2 — Boolean Partition
+
+**Contract** A Toggle object is initialized to an "off" state. The `is_active()` method returns True if the state is "on" and False otherwise. The `toggle()` method switches the state between "on" and "off".
+
+**Code Under Test**
+```python
+class Toggle:
+    def __init__(self):
+        self._active = False
+
+    def toggle(self):
+        self._active = not self._active
+
+    def is_active(self):
+        return self._active
+
+```
+
+**Task**
+Write a test that establishes the following:
+
+1. A new `Toggle` object is not active.
+2. After being toggled once, the Toggle object is active.
+3. After being toggled a second time, the Toggle object is no longer active.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 3 — Targeted Mutation and Invariant
+
+**Contract** An Account is initialized with a starting balance and a unique account ID. The `deposit()` method increases the balance by the specified amount. The account ID must never change.
+
+**Code Under Test**
+```python
+import uuid
+
+class Account:
+    def __init__(self, starting_balance=0):
+        self._id = uuid.uuid4()
+        self._balance = starting_balance
+
+    @property
+    def id(self):
+        return self._id
+
+    @property
+    def balance(self):
+        return self._balance
+
+    def deposit(self, amount):
+        if amount > 0:
+            self._balance += amount
+```
+
+**Task**
+Write a test that creates an account with a starting balance, deposits an amount, and then asserts both of the following conditions:
+
+1. The new balance is correct.
+2. The account ID has remained unchanged from its original value.
+
 <details> 
 <summary>Possible Solution</summary> 
 
 </details>
+
+#### Exercise 4 — Whole-Collection Mutation
+
+**Contract** A `Playlist` can be populated with song titles. The `clear()` method removes all songs from the playlist, making it empty. The `get_song_count()` method returns the number of songs.
+
+**Code Under Test**
+```python
+class Playlist:
+    def __init__(self):
+        self._songs = []
+
+    def add_song(self, title):
+        self._songs.append(title)
+
+    def clear(self):
+        self._songs = []
+
+    def get_song_count(self):
+        return len(self._songs)
+```
+
+**Task**
+Write a test that adds several songs to a playlist and then asserts that after calling clear(), the number of songs in the playlist is 0.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 5 — Exception and State Invariant
+
+**Contract** A `Locker` can store a limited number of items. The `add_item()` method adds an item if the locker is not full. If an attempt is made to add an item to a full locker, the method must raise a `RuntimeError`, and the contents of the locker must remain unchanged.
+
+**Code Under Test**
+```python
+class Locker:
+    def __init__(self, capacity):
+        self._capacity = capacity
+        self._items = []
+
+    @property
+    def items(self):
+        return self._items[:] # Return a copy
+
+    @property
+    def is_full(self):
+        return len(self._items) >= self._capacity
+
+    def add_item(self, item):
+        if self.is_full:
+            raise RuntimeError("Locker is full")
+        self._items.append(item)
+```
+
+**Task**
+Write a test for a locker with a capacity of 1. The test must:
+
+1. Add one item to the locker.
+2. Verify that an attempt to add a second item raises a RuntimeError.
+3. Verify that after the exception is raised, the locker still contains only the first item.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 6 — Historical State Transition
+
+**Contract** A `Document` is initialized with content. The `edit()` method replaces the content and marks the document as modified. The `is_modified()` method returns `True` if` edit()` has been called at least once, and `False` otherwise.
+
+**Code Under Test**
+```python
+class Document:
+    def __init__(self, initial_content=""):
+        self._content = initial_content
+        self._modified = False
+
+    def edit(self, new_content):
+        self._content = new_content
+        self._modified = True
+
+    def is_modified(self):
+        return self._modified
+```
+
+**Task**
+Write a test that confirms both of the following behaviors:
+
+1. A newly created document is not in a modified state.
+2. After `edit()` is called, the document is in a modified state.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 7 — Selection and Invariant
+
+**Contract** A `Catalog` stores `Product` objects. The `find_products_by_name()` method returns a ​new list​ containing all products whose names include the provided search string (case-insensitive). This search operation must not alter the catalog's internal list of products.
+
+**Code Under Test**
+```python
+class Product:
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
+
+    def __eq__(self, other):
+        return isinstance(other, Product) and \
+               self.name == other.name and \
+               self.price == other.price
+
+class Catalog:
+    def __init__(self):
+        self._products = []
+
+    def add_product(self, product):
+        self._products.append(product)
+
+    @property
+    def products(self):
+        return self._products[:]
+
+    def find_products_by_name(self, search_term):
+        search_lower = search_term.lower()
+        return [
+            p for p in self._products
+            if search_lower in p.name.lower()
+        ]
+
+```
+
+**Task**
+Write a test that performs the following steps:
+
+1. Create a `Catalog` and add several `Product` objects to it.
+2. Call `find_products_by_name()` with a search term that matches some, but not all, of the products.
+3. Assert that the returned list contains exactly the correct products.
+4. Assert that the original catalog's collection of products has not been changed.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+
+#### Exercise 8 — Identity vs. Equality
+
+**Contract** A `SessionManager` stores user objects. The `get_current_user()` method returns the ​exact same​ user object that was set for the current session. The `clone_current_user()` method returns a ​new user object​ that has the same name but is a distinct instance in memory.
+
+**Code Under Test**
+```python
+import copy
+
+class User:
+    def __init__(self, name):
+        self.name = name
+
+    def __eq__(self, other):
+        return isinstance(other, User) and self.name == other.name
+
+class SessionManager:
+    def __init__(self):
+        self._current_user = None
+
+    def sign_in(self, user):
+        self._current_user = user
+
+    def get_current_user(self):
+        return self._current_user
+
+    def clone_current_user(self):
+        if self._current_user is None:
+            return None
+        return copy.deepcopy(self._current_user)
+```
+
+**Task**
+Write two tests:
+
+1.  One test must sign a user in, retrieve them with `get_current_user()`, and assert that the retrieved object is the ​identical instance​ as the original user object.
+2.  A second test must sign a user in, retrieve them with `clone_current_user()`, and assert that the cloned object is ​equal in value​ to the original user, but is a ​different instance​.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+</details>
+
+#### Exercise 9 — Traversal with a Callback
+
+**Contract** A `MessageBus` can have messages published to it. The `process_messages()` method accepts a function (a "callback"). For every message in the bus, `process_messages()` must invoke the callback, passing the message as its single argument. After processing, all messages should be cleared from the bus.
+
+**Code Under Test**
+```python
+class MessageBus:
+    def __init__(self):
+        self._messages = []
+
+    @property
+    def message_count(self):
+        return len(self._messages)
+
+    def publish(self, message):
+        self._messages.append(message)
+
+    def process_messages(self, callback):
+        for msg in self._messages:
+            callback(msg)
+        self._messages = []
+```
+
+**Task**
+Write a test that performs the following steps:
+
+1.  Create a `MessageBus` and publish several distinct messages to it.
+2.  Create an empty list that will serve as a log.
+3.  Define a simple function that takes one argument and appends it to the log list.
+4.  Call `process_messages()`, passing your logging function as the callback.
+5.  Assert that the log list now contains all the messages that were published, in the original order.
+6.  Assert that the message bus is now empty.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+
+[Back to the top](#top)
+
+### unittest 2
+
+#### Exercise 1 — User Factory Singleton
+
+**Contract** `get_null_user()` must always return the same NullUser singleton object upon every call. This ensures that all parts of the system refer to the exact same "null" object.
+
+**Code Under Test**
+```python
+class NullUser:
+    def __init__(self):
+        self.name = "Guest"
+        self.email = None
+
+    def __eq__(self, other):
+        return isinstance(other, NullUser)
+
+_null_user_singleton = NullUser()
+
+def get_null_user():
+    return _null_user_singleton
+```
+
+**Proposed Test**
+```python
+import unittest
+# from user_factory import get_null_user, NullUser
+
+class TestUserFactory(unittest.TestCase):
+    def test_get_null_user_returns_a_null_user_object(self):
+        user1 = get_null_user()
+        user2 = get_null_user()
+        self.assertEqual(user1, user2)
+```
+
+**Task**
+
+Evaluate the proposed test:
+
+1. What does it actually prove?
+2. What does it fail to prove?
+3. Describe one plausible incorrect implementation that could still pass it.
+4. Classify the weakness.
+5. Strengthen the test.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 2 — Data Normalization
+
+**Contract** **normalize_data(records)** must return a new list where each record (a dictionary) has its 'value' field converted to an integer. The original list of records must not be modified.
+
+**Code Under Test**
+```python
+def normalize_data(records):
+    new_records = [rec.copy() for rec in records]
+    for rec in new_records:
+        rec['value'] = int(rec['value'])
+    return new_records
+```
+
+**Proposed Test**
+```python
+import unittest
+
+class TestDataNormalization(unittest.TestCase):
+    def test_normalize_data_converts_values_to_integers(self):
+        records = [
+            {'id': 1, 'value': '100'},
+            {'id': 2, 'value': '250'},
+        ]
+        normalized = normalize_data(records)
+        self.assertEqual(normalized[0]['value'], 100)
+        self.assertEqual(normalized[1]['value'], 250)
+
+```
+
+**Task**
+
+Evaluate the proposed test:
+
+1. What does it actually prove?
+2. What does it fail to prove?
+3. Describe one plausible incorrect implementation that could still pass it.
+4. Classify the weakness.
+5. Strengthen the test.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+
+#### Exercise 3 — Log File Filtering
+
+**Contract** `find_error_lines(log_lines)` must return a new list containing only the lines from the input list that start with the prefix "ERROR:". The relative order of the error lines must be preserved.
+
+**Code Under Test**
+```python
+def find_error_lines(log_lines):
+    return [line for line in log_lines if line.startswith("ERROR:")]
+```
+
+**Proposed Test**
+```python
+import unittest
+
+class TestLogFilter(unittest.TestCase):
+    def test_finds_correct_number_of_error_lines(self):
+        log_data = [
+            "INFO: Starting up",
+            "ERROR: Connection failed",
+            "DEBUG: User logged in",
+            "ERROR: Disk space low",
+            "INFO: Shutting down",
+        ]
+        error_lines = find_error_lines(log_data)
+        self.assertEqual(len(error_lines), 2)
+```
+
+**Task**
+
+Evaluate the proposed test:
+
+1. What does it actually prove?
+2. What does it fail to prove?
+3. Describe one plausible incorrect implementation that could still pass it.
+4. Classify the weakness.
+5. Strengthen the test.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+
+#### Exercise 4 — Bulk Order Discount
+
+**Contract** `get_order_total(quantity, price_per_item)` applies a 10% discount to the total price if quantity is 20 or more.
+
+**Code Under Test**
+```python
+def get_order_total(quantity, price_per_item):
+    total = quantity * price_per_item
+    if quantity >= 20:
+        total *= 0.9
+    return total
+```
+
+**Proposed Test**
+```python
+import unittest
+
+class TestOrderCalculator(unittest.TestCase):
+    def test_bulk_discount_is_applied_correctly(self):
+        # Test with 30 items
+        total1 = get_order_total(30, 10.0)
+        self.assertAlmostEqual(total1, 270.0)
+
+        # Test with 100 items
+        total2 = get_order_total(100, 10.0)
+        self.assertAlmostEqual(total2, 900.0)
+```
+
+**Task**
+
+Evaluate the proposed test:
+
+1. What does it actually prove?
+2. What does it fail to prove?
+3. Describe one plausible incorrect implementation that could still pass it.
+4. Classify the weakness.
+5. Strengthen the test.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 5 — Email Validator
+
+**Contract** `is_valid_email(address)` returns `True` if the email address contains exactly one "`@"` symbol, and `False` otherwise.
+
+**Code Under Test**
+```python
+def is_valid_email(address):
+    return address.count('@') == 1
+```
+
+**Proposed Test**
+```python
+import unittest
+
+class TestEmailValidator(unittest.TestCase):
+    def test_valid_email_is_accepted(self):
+        self.assertTrue(is_valid_email("test@example.com"))
+```
+
+**Task**
+
+Evaluate the proposed test:
+
+1. What does it actually prove?
+2. What does it fail to prove?
+3. Describe one plausible incorrect implementation that could still pass it.
+4. Classify the weakness.
+5. Strengthen the test.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 6 — Text Truncation
+
+**Contract** `truncate(text, max_length)` returns the text unmodified if its length is less than or equal to `max_length`. If it is longer, it returns the text truncated to `max_length - 3` characters followed by "`...`".
+
+**Code Under Test**
+```python
+def truncate(text, max_length):
+    if len(text) <= max_length:
+        return text
+    else:
+        return text[:max_length - 3] + "..."
+```
+
+**Proposed Test**
+```python
+import unittest
+
+class TestTruncate(unittest.TestCase):
+    def test_truncation_logic(self):
+        short_text = "hello"
+        self.assertEqual(truncate(short_text, 10), "hello")
+
+        long_text = "this is a very long sentence"
+        self.assertEqual(truncate(long_text, 15), "this is a ve...")
+```
+
+**Task**
+
+Evaluate the proposed test:
+
+1. What does it actually prove?
+2. What does it fail to prove?
+3. Describe one plausible incorrect implementation that could still pass it.
+4. Classify the weakness.
+5. Strengthen the test.
+
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 7 — Account Security Lock
+
+**Contract** An `Account` locks itself (`is_locked` becomes `True`) after three consecutive failed login attempts. A successful login resets the failed attempt counter.
+
+**Code Under Test**
+```python
+class Account:
+    def __init__(self, correct_password):
+        self._password = correct_password
+        self.failed_attempts = 0
+        self.is_locked = False
+
+    def login(self, password):
+        if self.is_locked:
+            return False
+
+        if password == self._password:
+            self.failed_attempts = 0
+            return True
+        else:
+            self.failed_attempts += 1
+            if self.failed_attempts >= 3:
+                self.is_locked = True
+            return False
+```
+
+**Proposed Test**
+```python
+import unittest
+
+class TestAccountSecurity(unittest.TestCase):
+    def test_login_fails_with_wrong_password(self):
+        account = Account("pa$$w0rd")
+        self.assertFalse(account.login("wrong"))
+        self.assertEqual(account.failed_attempts, 1)
+        self.assertFalse(account.is_locked)
+
+```
+
+
+**Task**
+
+Evaluate the proposed test:
+
+1. What does it actually prove?
+2. What does it fail to prove?
+3. Describe one plausible incorrect implementation that could still pass it.
+4. Classify the weakness.
+5. Strengthen the test.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 8 — Point Reflection
+
+**Contract** `reflect_point(point)` takes a point `(x, y)` and returns a new point `(y, x)` where the coordinates are swapped.
+
+**Code Under Test**
+```python
+def reflect_point(point):
+    x, y = point
+    return (y, x)
+```
+
+**Proposed Test**
+```python
+import unittest
+
+class TestGeometry(unittest.TestCase):
+    def test_point_reflection(self):
+        point = (5, 5)
+        reflected = reflect_point(point)
+        self.assertEqual(reflected, (5, 5))
+```
+
+**Task**
+
+Evaluate the proposed test:
+
+1. What does it actually prove?
+2. What does it fail to prove?
+3. Describe one plausible incorrect implementation that could still pass it.
+4. Classify the weakness.
+5. Strengthen the test.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 9 — Payroll Processing
+
+**Contract** `run_payroll(employee, company)` calculates the employee's net pay (gross_pay - tax) and updates `employee.last_net_pay`. It also deducts the total amount paid (the full gross pay) from the `company.cash_reserves`.
+
+**Code Under Test**
+```python
+class Employee:
+    def __init__(self, gross_pay):
+        self.gross_pay = gross_pay
+        self.last_net_pay = 0
+
+class Company:
+    def __init__(self, cash):
+        self.cash_reserves = cash
+
+TAX_RATE = 0.2
+
+def run_payroll(employee, company):
+    tax = employee.gross_pay * TAX_RATE
+    net_pay = employee.gross_pay - tax
+    employee.last_net_pay = net_pay
+    company.cash_reserves -= employee.gross_pay
+```
+
+**Proposed Test**
+```python
+import unittest
+
+class TestPayroll(unittest.TestCase):
+    def test_company_cash_is_reduced_correctly(self):
+        employee = Employee(gross_pay=1000)
+        company = Company(cash=50000)
+        run_payroll(employee, company)
+        self.assertAlmostEqual(company.cash_reserves, 49000)
+```
+
+**Task**
+
+Evaluate the proposed test:
+
+1.  What does it actually prove?
+2.  What does it fail to prove?
+3.  Describe one plausible incorrect implementation that could still pass it.
+4.  Classify the weakness.
+5.  Strengthen the test.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
+#### Exercise 10 — Configuration File Loading
+
+**Contract** `read_config(path)` raises `ConfigMissingError` if the file at path does not exist.
+
+**Code Under Test**
+```python
+import os
+
+class ConfigMissingError(IOError):
+    pass
+
+def read_config(path):
+    if not os.path.exists(path):
+        raise ConfigMissingError()
+    with open(path) as f:
+        return f.read()
+
+def setup_environment(path):
+    # In a real system, this helper might perform complex setup
+    # that could itself fail.
+    pass
+```
+
+**Proposed Test**
+```python
+import unittest
+
+class TestConfigLoader(unittest.TestCase):
+    def test_read_missing_config_raises_error(self):
+        missing_path = "/nonexistent/config.txt"
+        with self.assertRaises(ConfigMissingError):
+            # Setup code is inside the context manager
+            setup_environment(missing_path)
+            read_config(missing_path)
+```
+
+**Task**
+
+Evaluate the proposed test:
+
+1.  What does it actually prove?
+2.  What does it fail to prove?
+3.  Describe one plausible incorrect implementation that could still pass it.
+4.  Classify the weakness.
+5.  Strengthen the test.
+
+<details> 
+<summary>Possible Solution</summary> 
+</details>
+
 
 [Back to the top](#top)
 
