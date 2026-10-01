@@ -9147,6 +9147,19 @@ Add a single test method that `verifies subtract(5, 2)` returns `3`.
 <details> 
 <summary>Possible Solution</summary> 
 
+```python
+import unittest
+
+def subtract(a, b):
+    """Returns the difference of two numbers."""
+    return a - b
+
+class Test_Calculator(unittest.TestCase):
+
+    def test_subtract(self):
+        self.assertTrue(subtract(5, 2), 3)
+```
+
 </details>
 
 #### Exercise 2 — Testing an Object's Initial State
@@ -9177,6 +9190,29 @@ Add assertions to verify:
 <details> 
 <summary>Possible Solution</summary> 
 
+```python
+
+import unittest
+
+class Person:
+    def __init__(self, first_name, last_name, age):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.age = age
+        self.is_adult = age >= 18
+
+class TestPerson(unittest.TestCase):
+
+    def test_creation(self):
+        value = Person("John", "Doe", 25)
+        self.assertTrue(value.first_name, "John")
+        self.assertTrue(value.last_name, "Doe")
+        self.assertTrue(value.age, "25")
+        self.assertTrue(value.is_adult)
+
+unittest.main()
+```
+
 </details>
 
 #### Exercise 3 — Testing Boolean Return Values
@@ -9197,6 +9233,26 @@ Write a test class `TestContainsChar`. Add two test methods:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+import unittest
+
+def contains_char(text, char):
+    """Returns True if `text` contains `char`, otherwise False."""
+    return char in text
+
+class TestContainsChar(unittest.TestCase):
+
+    def test_finds_char_if_present(self):
+        #Verifies that `contains_char("hello", "e")` returns `True`.
+        self.assertTrue(contains_char("hello", "e"))
+
+    def test_does_not_find_char_if_absent(self): 
+        #Verifies that `contains_char("hello", "z")` returns `False`.
+        self.assertFalse(contains_char("hello", "z"))
+
+unittest.main()
+```
 
 </details>
 
@@ -9233,6 +9289,39 @@ This exercise requires you to distinguish between calling methods on the object 
 <details> 
 <summary>Possible Solution</summary> 
 
+```python
+import unittest
+
+class Counter:
+    """A simple counter that can be incremented and reset."""
+    def __init__(self):
+        self.value = 0
+
+    def increment(self):
+        self.value += 1
+
+    def reset(self):
+        self.value = 0
+
+class TestCounter(unittest.TestCase):
+
+    def test_increment(self):
+        # Create a `Counter` instance.
+        counter = Counter()
+
+        # Assert that its initial value is 0.
+        self.assertEqual(counter.value, 0)
+
+        #Call the increment method on the instance.
+        counter.increment()
+
+        #Assert that the value is now 1
+        self.assertEqual(counter.value, 1)
+
+
+unittest.main()
+```
+
 </details>
 
 #### Exercise 5 — Testing for Expected Exceptions
@@ -9258,6 +9347,30 @@ In this method, use the `assertRaises` context manager to verify that calling `s
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+import unittest
+
+
+class UserProfile:
+    def __init__(self):
+        self.name = None
+
+    def set_name(self, name):
+        if not isinstance(name, str) or not name:
+            raise ValueError("Name must be a non-empty string.")
+        self.name = name
+
+class TestUserProfile(unittest.TestCase):
+
+    user = UserProfile()
+
+    def test_set_name_with_invalid_type(self):
+        with self.assertRaises(ValueError):
+            self.user.set_name(123)
+
+unittest.main()
+```
 
 </details>
 
@@ -9295,6 +9408,47 @@ Then, add two test methods that use self.playlist:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+import unittest
+
+class Playlist:
+    """A playlist that holds a list of songs."""
+    def __init__(self, name):
+        self.name = name
+        self.songs = []
+
+    def add_song(self, song_title):
+        self.songs.append(song_title)
+
+    def remove_song(self, song_title):
+        self.songs.remove(song_title)
+
+    def song_count(self):
+        return len(self.songs)
+
+class TestPlaylist(unittest.TestCase):
+
+    def setUp(self):
+        self.name = "My Favorites"
+        self.songs = ["Bohemian Rhapsody", "Stairway to Heaven"]
+        self.playlist = self.songs
+
+    def test_add_song(self):
+        # `test_add_song`: Adds a new song, `"Hotel California"`
+        self.songs.append("Hotel California")
+        # asserts that the total song count is 3 and that `"Hotel California"` is now in the playlist's songs list.
+        self.assertIs(len(self.songs), 3)
+        self.assertIn("Hotel California", self.songs)
+
+    def test_remove_song(self):
+        # Removes `"Stairway to Heaven"` 
+        self.songs.remove("Stairway to Heaven")
+        # asserts that the total song count is 1.
+        self.assertIs(len(self.songs), 1)
+        
+unittest.main()
+```
 
 </details>
 
@@ -9356,6 +9510,21 @@ The provided test code has a structural error that prevents unittest from discov
 <details> 
 <summary>Possible Solution</summary> 
 
+```python
+import unittest
+
+def make_title(text):
+    return text.title()
+
+class FormatterTest(unittest.TestCase):
+    def test_title_case(self):
+        # This test should pass, but the test runner won't find it.
+        result = make_title("hello world")
+        self.assertEqual(result, "Hello World")
+
+unittest.main()
+```
+
 </details>
 
 #### Exercise 9 — Identifying a Weak Assertion
@@ -9387,6 +9556,29 @@ class TestSettings(unittest.TestCase):
 The assertion in `test_initial_state_is_active` is weak because it does not actually test the behavior of the Settings class; it will pass regardless of what the code does.
 
 Rewrite the assertion to be a meaningful test that verifies the `is_active` method returns the correct initial value.
+
+<details> 
+<summary>Possible Solution</summary> 
+
+```python
+import unittest
+
+class Settings:
+    def __init__(self):
+        self._is_active = True
+
+    def is_active(self):
+        return self._is_active
+
+class TestSettings(unittest.TestCase):
+    def test_initial_state_is_active(self):
+        settings = Settings()
+        self.assertTrue(settings.is_active())
+
+unittest.main()
+```
+</details>
+
 
 #### Exercise 10 — Repairing an Ownership Error
 
@@ -9423,9 +9615,28 @@ Identify and fix the ownership error on the indicated line so the test correctly
 <details> 
 <summary>Possible Solution</summary> 
 
+```python
+import unittest
+
+class SimpleLock:
+    def __init__(self):
+        self.locked = True
+
+    def unlock(self):
+        self.locked = False
+
+
+class TestSimpleLock(unittest.TestCase):
+    def test_unlock(self):
+        lock = SimpleLock()
+        self.assertTrue(lock.locked)
+        lock.unlock() 
+        self.assertFalse(lock.locked)
+
+unittest.main()
+```
+
 </details>
-
-
 
 [Back to the top](#top)
 
@@ -9451,6 +9662,29 @@ class Server:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+import unittest
+
+class Server:
+    def __init__(self):
+        self._state = "stopped"
+
+    def get_status(self):
+        return self._state
+
+
+class TestSomething(unittest.TestCase):
+    
+    def test_state(self):
+        # Write a test that creates a new Server object and asserts that its initial state is "stopped".
+        test_obj = Server()
+        self.assertTrue(test_obj.get_status(), "stopped")
+
+
+unittest.main()
+```
+
 </details>
 
 #### Exercise 2 — Boolean Partition
@@ -9480,6 +9714,45 @@ Write a test that establishes the following:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+import unittest
+
+class Toggle:
+    def __init__(self):
+        self._active = False
+
+    def toggle(self):
+        self._active = not self._active
+
+    def is_active(self):
+        return self._active
+
+
+class TestToggle(unittest.TestCase):
+    
+    test_obj = Toggle()
+    
+    def test_initial_state(self):
+        # A new `Toggle` object is not active.
+        self.assertFalse(self.test_obj.is_active())
+
+    def test_one_toggle(self):
+        #After being toggled once, the Toggle object is active.
+        self.test_obj.toggle()
+        self.assertTrue(self.test_obj.is_active())
+
+    def test_two_toggle(self):
+        # After being toggled a second time, the Toggle object is no longer active.
+        self.test_obj._active = False
+        self.test_obj.toggle()
+        self.test_obj.toggle()
+        self.assertFalse(self.test_obj.is_active())
+
+unittest.main()
+```
+
 </details>
 
 #### Exercise 3 — Targeted Mutation and Invariant
@@ -9517,6 +9790,46 @@ Write a test that creates an account with a starting balance, deposits an amount
 <details> 
 <summary>Possible Solution</summary> 
 
+```python
+import unittest
+import uuid
+
+class Account:
+    def __init__(self, starting_balance=0):
+        self._id = uuid.uuid4()
+        self._balance = starting_balance
+
+    @property
+    def id(self):
+        return self._id
+
+    @property
+    def balance(self):
+        return self._balance
+
+    def deposit(self, amount):
+        if amount > 0:
+            self._balance += amount
+
+class TestAccount(unittest.TestCase):
+
+    #Write a test that creates an account with a starting balance, deposits an amount
+    test_obj = Account()
+    test_obj.deposit(100)
+    original_id = test_obj._id
+
+    def test_balance(self):
+        #The new balance is correct.
+        self.assertEqual(100, self.test_obj.balance)
+
+    def test_id(self):
+        #The account ID has remained unchanged from its original value.
+        self.assertEqual(self.original_id, self.test_obj.id)
+
+
+unittest.main()
+```
+
 </details>
 
 #### Exercise 4 — Whole-Collection Mutation
@@ -9544,6 +9857,40 @@ Write a test that adds several songs to a playlist and then asserts that after c
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+import unittest
+
+
+class Playlist:
+    def __init__(self):
+        self._songs = []
+
+    def add_song(self, title):
+        self._songs.append(title)
+
+    def clear(self):
+        self._songs = []
+
+    def get_song_count(self):
+        return len(self._songs)
+
+class Test_(unittest.TestCase):
+
+    test_obj = Playlist()
+
+    def test_add_song_clear(self):
+        test_obj = Playlist()
+        test_obj.add_song("Gasolina")
+        test_obj.add_song("Titi Mi Pregunto")
+        test_obj.add_song("Yo Perreo Sola")
+        self.assertTrue(test_obj.get_song_count(), 3)
+        test_obj.clear()
+        self.assertEqual(test_obj.get_song_count(), 0)
+        
+
+unittest.main()
+```
 
 </details>
 
@@ -9582,6 +9929,43 @@ Write a test for a locker with a capacity of 1. The test must:
 <details> 
 <summary>Possible Solution</summary> 
 
+```python
+import unittest
+
+
+class Locker:
+    def __init__(self, capacity):
+        self._capacity = capacity
+        self._items = []
+
+    @property
+    def items(self):
+        return self._items[:] # Return a copy
+
+    @property
+    def is_full(self):
+        return len(self._items) >= self._capacity
+
+    def add_item(self, item):
+        if self.is_full:
+            raise RuntimeError("Locker is full")
+        self._items.append(item)
+
+
+def test_add_item_when_full(self):
+
+        locker = Locker(1)
+        locker.add_item("sports bag")
+
+        with self.assertRaises(RuntimeError):
+            locker.add_item("sneakers")
+
+        self.assertEqual(locker.items, ["sports bag"])
+    
+
+unittest.main()
+```
+
 </details>
 
 #### Exercise 6 — Historical State Transition
@@ -9611,6 +9995,37 @@ Write a test that confirms both of the following behaviors:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+import unittest
+
+class Document:
+    def __init__(self, initial_content=""):
+        self._content = initial_content
+        self._modified = False
+
+    def edit(self, new_content):
+        self._content = new_content
+        self._modified = True
+
+    def is_modified(self):
+        return self._modified
+
+class Test_Document(unittest.TestCase):
+
+
+    def test_state(self):
+        test_obj = Document()
+        #A newly created document is not in a modified state.
+        self.assertFalse(test_obj.is_modified())
+        # After `edit()` is called
+        test_obj.edit("Tell me about a complicated man")
+        # the document is in a modified state
+        self.assertTrue(test_obj.is_modified())
+
+    
+unittest.main()
+```
 
 </details>
 
@@ -9661,6 +10076,62 @@ Write a test that performs the following steps:
 <details> 
 <summary>Possible Solution</summary> 
 
+```python
+import unittest
+
+class Product:
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
+
+    def __eq__(self, other):
+        return isinstance(other, Product) and \
+               self.name == other.name and \
+               self.price == other.price
+
+class Catalog:
+    def __init__(self):
+        self._products = []
+
+    def add_product(self, product):
+        self._products.append(product)
+
+    @property
+    def products(self):
+        return self._products[:]
+
+    def find_products_by_name(self, search_term):
+        search_lower = search_term.lower()
+        return [
+            p for p in self._products
+            if search_lower in p.name.lower()
+        ]
+
+class TestCatalog(unittest.TestCase):
+
+    def test_find(self):
+
+        # Create a `Catalog` and add several `Product` objects to it.
+        test_obj = Catalog()
+        prod1 = Product("iPhone 18", 999)
+        prod2 = Product("iPhone Case", 49)
+        prod3 = Product("Macbook Neo", 799)
+        test_obj.add_product(prod1)
+        test_obj.add_product(prod2)
+        test_obj.add_product(prod3)
+
+        org_obj = test_obj.products
+
+        #Call `find_products_by_name()` with a search term that matches some, but not all, of the products.
+        result = test_obj.find_products_by_name("IPHONE")
+        #Assert that the returned list contains exactly the correct products.
+        self.assertEqual(result, [prod1, prod2])
+        #Assert that the original catalog's collection of products has not been changed.
+        self.assertEqual(test_obj.products, org_obj)
+
+unittest.main()
+```
+
 </details>
 
 
@@ -9704,6 +10175,65 @@ Write two tests:
 <details> 
 <summary>Possible Solution</summary> 
 
+```python
+import unittest
+
+import copy
+
+class User:
+    def __init__(self, name):
+        self.name = name
+
+    def __eq__(self, other):
+        return isinstance(other, User) and self.name == other.name
+
+class SessionManager:
+    def __init__(self):
+        self._current_user = None
+
+    def sign_in(self, user):
+        self._current_user = user
+
+    def get_current_user(self):
+        return self._current_user
+
+    def clone_current_user(self):
+        if self._current_user is None:
+            return None
+        return copy.deepcopy(self._current_user)
+
+class TestSessionManager(unittest.TestCase):
+
+    def test_user_sign_in(self):
+
+        test_user = User("Bob")
+        test_manager = SessionManager()
+
+        #One test must sign a user in
+        test_manager.sign_in(test_user)
+        #retrieve them with get_current_user()
+        result = test_manager.get_current_user()
+        #assert that the retrieved object is the identical instance as the original user object.
+        self.assertIs(test_user, result)
+
+    def test_clone(self):
+
+        test_user2 = User("Dave")
+        test_manager2 = SessionManager()
+       
+        #A second test must sign a user in, 
+        test_manager2.sign_in(test_user2)
+
+        #retrieve them with `clone_current_user()`, 
+        result2 = test_manager2.clone_current_user()
+
+        #assert that the cloned object is equal in value to the original user, but is a different instance
+        self.assertEqual(result2, test_user2)
+        self.assertIsNot(result2, test_user2)
+
+unittest.main()
+```
+
 </details>
 
 #### Exercise 9 — Traversal with a Callback
@@ -9741,6 +10271,55 @@ Write a test that performs the following steps:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+
+import unittest
+
+class MessageBus:
+    def __init__(self):
+        self._messages = []
+
+    @property
+    def message_count(self):
+        return len(self._messages)
+
+    def publish(self, message):
+        self._messages.append(message)
+
+    def process_messages(self, callback):
+        for msg in self._messages:
+            callback(msg)
+        self._messages = []
+
+class TestMessageBus(unittest.TestCase):
+
+    def test_bus(self):
+        #Create a `MessageBus` and publish several distinct messages to it.
+        test_obj = MessageBus()
+        test_obj.publish("I can't stand it")
+        test_obj.publish("I know you planned it")
+        test_obj.publish("I'mma set it straight this Watergate")
+
+        #Create an empty list that will serve as a log.
+        log = []
+
+        #Define a simple function that takes one argument and appends it to the log list.
+        simple_func = lambda x: log.append(x)
+    
+        #Call `process_messages()`, passing your logging function as the callback.
+        test_obj.process_messages(simple_func)
+
+        #Assert that the log list now contains all the messages that were published, in the original order.
+        self.assertEqual(["I can't stand it", "I know you planned it", "I'mma set it straight this Watergate"], log)
+
+        #Assert that the message bus is now empty.
+        log.clear()
+        self.assertEqual(test_obj.message_count, 0)
+
+unittest.main()
+```
+
 </details>
 
 
@@ -9792,11 +10371,18 @@ Evaluate the proposed test:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+1. Proves equal value.
+2. Fails to prove same object identity.
+3. `get_null_user()` could return `NullUser()` each call.
+4. Expectation: equality used where identity is required.
+5. Use assertIs(user1, user2).
+
 </details>
 
 #### Exercise 2 — Data Normalization
 
-**Contract** **normalize_data(records)** must return a new list where each record (a dictionary) has its 'value' field converted to an integer. The original list of records must not be modified.
+**Contract** `normalize_data(records)` must return a new list where each record (a dictionary) has its 'value' field converted to an integer. The original list of records must not be modified.
 
 **Code Under Test**
 ```python
@@ -9835,6 +10421,13 @@ Evaluate the proposed test:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+1. Returned values are correctly converted to integers.
+2. Does not prove the original records remain unchanged.
+3. Implementation could mutate records in place.
+4. Observation Error — original state is never checked after the action.
+5. Assert that records still equals its pre-call state.
+
 </details>
 
 
@@ -9877,6 +10470,36 @@ Evaluate the proposed test:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+1. Two items were collected into `error_lines`
+
+2. It fails to prove:
+- those two items are actually the "ERROR:" lines,
+- they came from the input,
+- their relative order was preserved,
+- the returned object is a new list.
+
+3. 
+```python
+def find_error_lines(log_lines):
+    return log_lines[:2]
+```
+
+4. Observation Error. The test observes only the result’s length instead of the contents/order required by the contract.
+
+5. 
+
+```python
+
+expected = [
+    "ERROR: Connection failed",
+    "ERROR: Disk space low",
+]
+
+self.assertEqual(error_lines, expected)
+self.assertIsNot(error_lines, log_data)
+```
+
 </details>
 
 
@@ -9920,6 +10543,13 @@ Evaluate the proposed test:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+1. Proves discount works for some quantities above 20.
+2. Does not prove below-threshold or exact-boundary behavior.
+3. Wrong impl: always apply 10% discount.
+4. Observation Error.
+5. Add tests for 19 and 20.
+
 </details>
 
 #### Exercise 5 — Email Validator
@@ -9953,6 +10583,13 @@ Evaluate the proposed test:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+1. Proves one exactly-one-@ case returns True.
+2. Does not test zero or multiple @ symbols.
+3. Wrong impl: always return True.
+4. Observation Error.
+5. Test one @, zero @, and two @.
+
 </details>
 
 #### Exercise 6 — Text Truncation
@@ -9994,6 +10631,13 @@ Evaluate the proposed test:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+1. Proves shorter and longer cases.
+2. Does not prove the len(text) == max_length boundary.
+3. Wrong impl: use < instead of <=.
+4. Observation Error.
+5. Add an exact-boundary test.
+
 </details>
 
 #### Exercise 7 — Account Security Lock
@@ -10048,6 +10692,51 @@ Evaluate the proposed test:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+1. It proves a wrong login was made, the failed attempts increase, and that it was not currently locked.
+2. It did not prove that 3 failed attempts results in a locked account or that a successful login resets the failed-attempt counter
+3. 
+```python
+def login(self, password):
+    if password == self._password:
+        self.failed_attempts = 0
+        return True
+
+    self.failed_attempts += 1
+    return False
+```
+4. Observation Error
+5. Add more failed attempts to see if its locked after 3 failed attempts
+
+```python
+def test_account_locks_after_three_failed_attempts(self):
+    account = Account("pa$$w0rd")
+
+    account.login("wrong")
+    account.login("wrong")
+    self.assertFalse(account.is_locked)
+
+    account.login("wrong")
+
+    self.assertEqual(account.failed_attempts, 3)
+    self.assertTrue(account.is_locked)
+```
+
+And because the contract separately says success resets the counter, that deserves evidence too:
+
+```python
+def test_successful_login_resets_failed_attempts(self):
+    account = Account("pa$$w0rd")
+
+    account.login("wrong")
+    account.login("wrong")
+
+    account.login("pa$$w0rd")
+
+    self.assertEqual(account.failed_attempts, 0)
+    self.assertFalse(account.is_locked)
+```
+
 </details>
 
 #### Exercise 8 — Point Reflection
@@ -10084,6 +10773,13 @@ Evaluate the proposed test:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+1. Proves (5, 5) returns (5, 5).
+2. Does not prove coordinates were swapped.
+3. Wrong impl: return point.
+4. Setup Error — identical coordinates make the fixture non-discriminating.
+5. Use distinct coordinates, e.g. (5, 8) → (8, 5).
+
 </details>
 
 #### Exercise 9 — Payroll Processing
@@ -10134,6 +10830,13 @@ Evaluate the proposed test:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+1. Proves gross pay was deducted from company cash.
+2. Does not prove net pay was calculated/stored.
+3. Wrong impl could ignore tax and set last_net_pay = gross_pay.
+4. Observation Error.
+5. Assert both `employee.last_net_pay == 800` and `company.cash_reserves == 49000`.
+
 </details>
 
 #### Exercise 10 — Configuration File Loading
@@ -10184,6 +10887,12 @@ Evaluate the proposed test:
 
 <details> 
 <summary>Possible Solution</summary> 
+
+1. Proves something in the block raises `ConfigMissingError`.
+2. Does not prove `read_config()` raises it.
+3. `setup_environment()` could raise while `read_config()` is broken.
+4. Action Error.
+5. Put setup outside assertRaises; put only `read_config()` inside.
 </details>
 
 
