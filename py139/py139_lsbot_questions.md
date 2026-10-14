@@ -11,6 +11,7 @@
 - [Purity, Copying, and Nested Mutability](#purity-copying-and-nested-mutability)
 - [Decorators](#decorators)
 - [Mixed Assessment Transfer](#mixed-assessment-transfer)
+- [General Pass](#general-pass)
 
 
 ### Purity, Side Effects and Nested Mutable Collections
@@ -971,8 +972,6 @@ final_result = get_number()
 print(f"Final result: {final_result}")
 ```
 
-
-
 Task
 
 1. In what order are the decorators (`add_one`, `multiply_by_two`) executed at decoration time?
@@ -1066,7 +1065,7 @@ Task
 
 ### Mixed Assessment Transfer
 
-### Problem 1 — Argument Binding Order
+#### Problem 1 — Argument Binding Order
 
 Before answering, check:
 
@@ -1351,6 +1350,254 @@ State the governing rule aloud in one or two sentences.
 
 [Back to the top](#top)
 
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+[Back to the top](#top)
+
+
+### General Pass
+
+#### Exercise 1
+
+Consider the following function definition:
+
+```python
+def process_data(a, b, /, c, d=4, *, e, f, **kwargs):
+    pass
+```
+
+Verbally describe the different kinds of parameters in this function and explain how you would provide arguments to satisfy them in a call. Address positional-only, positional-or-keyword, keyword-only, default, and variable-keyword parameters.
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+#### Exercise 2
+
+The following test suite is for a function `create_user_profile` that returns a dictionary for a valid username, or `None` for an invalid one. Complete the test methods by writing the necessary assertions.
+
+```
+import unittest
+
+def create_user_profile(username):
+    if not username or len(username) < 3:
+        return None
+    return {
+        'username': username,
+        'is_active': True,
+        'followers': [],
+    }
+
+class TestUserProfile(unittest.TestCase):
+    def test_creation_and_defaults(self):
+        # Your task: Write assertions here to verify that calling
+        # create_user_profile('test_user') returns a dictionary with the
+        # correct structure and default values. Use at least three
+        # different assertion methods.
+        pass
+
+    def test_invalid_username(self):
+        # Your task: Write an assertion here to verify that calling
+        # create_user_profile('') returns None.
+        pass
+```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+
+#### Exercise 3
+
+What is the output of the following code? Explain your reasoning.
+
+```python
+data = [1, 2, 3, 4]
+squares_gen = (n * n for n in data)
+
+print(f"First sum: {sum(squares_gen)}")
+print(f"Second sum: {sum(squares_gen)}")
+
+```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+
+#### Exercise 4
+
+For each of the five scenarios below, identify and briefly explain the primary side effect that occurs. Classify each using one of the five distinct categories of side effects discussed in the PY130 curriculum.
+
+
+1.  A function call `validate_age(-5)` is made to the following function, causing the program to halt.
+```python
+        def validate_age(age):
+        if not isinstance(age, int) or age <= 0:
+            raise TypeError("Age must be a positive integer.")
+```
+
+2.  The following code is executed.
+```python
+
+    count = 5
+
+    def reset_count():
+        global count
+        count = 0
+
+    reset_count()
+```
+3.  The following function is called, and it modifies a list that was defined outside of it.
+    
+```python
+    outer_list = [10, 20]
+    def modify_outer_list():
+        outer_list.pop()
+    modify_outer_list()
+```
+
+4.  A list `my_list` is passed as an argument to a function.
+
+```python        
+    my_list = [1, 2]
+    def append_to_list(a_list):
+        a_list.append(3)
+    append_to_list(my_list)
+```
+
+5. The following function is called.
+ 
+ ```python
+ def save_score(name, score):
+     with open('scores.txt', 'a') as f:
+        f.write(f'{name}:{score}\n')
+ 
+ save_score('Alice', 100)
+ ```
+ 
+<details> 
+<summary>Solution</summary> 
+</details>   
+
+#### Exercise 5
+
+Assume you have two files, `config.py` and `main.py`, in the same directory with the contents shown below.
+
+```python
+File: config.py
+
+API_KEY = "default-key"
+TIMEOUT = 10
+
+def get_setting(key):
+    return f"Setting: {key}"
+
+
+File: main.py
+
+from config import *
+
+TIMEOUT = 20
+
+print(f"API Key: {API_KEY}")
+print(f"Timeout: {TIMEOUT}")
+print(get_setting('TIMEOUT'))
+```
+
+If you run python `main.py` from your terminal, what will be the output? Explain how the `from ... import *` statement and variable assignments in `main.py` interact to produce this result.
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+#### Exercise 6
+
+Imagine a colleague is new to writing tests with Python's unittest framework. In a brief, conversational explanation (2-3 paragraphs), describe the following concepts to them:
+
+- The SEAT approach for structuring a test.
+- The purpose of the setUp and tearDown methods in a test class.
+- What "code coverage" measures and why a high percentage is desirable but doesn't guarantee bug-free code.
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+#### Exercise 7
+
+What does the following code print? Explain the behavior, specifically addressing why the output has the value it does.
+
+```python
+multipliers = []
+for i in range(4):
+    multipliers.append(lambda x: i * x)
+
+print(multipliers[2](10))
+```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+#### Exercise 8
+
+What does the following code output? Explain how the `process_items` function demonstrates the concept of a higher-order function.
+
+```python
+def process_items(items, operation):
+    return [operation(item) for item in items]
+
+def double(n):
+    return n * 2
+
+def to_string(n):
+    return str(n)
+
+numbers = [1, 2, 3]
+
+result1 = process_items(numbers, double)
+result2 = process_items(numbers, to_string)
+result3 = process_items(numbers, lambda x: x % 2 == 0)
+
+print(result1)
+print(result2)
+print(result3)
+```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+
+#### Exercise 9
+
+You have created a small Python utility named `text_analyzer` that you want to share with your team so they can install it in their virtual environments using a command like `pip install ..`
+
+Briefly outline the essential files and directory structure you would create for this project. Describe the purpose of each file or directory you mention. You do not need to write the contents of the files.
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+#### Exercise 10
+
+Assume an empty file named `data.txt` exists before this script runs. What will be printed to the console? Explain why, paying close attention to the file's contents and the cursor's position at each step.
+
+```python
+with open('data.txt', 'w+') as f:
+    f.write('first\n')
+    f.write('second')
+    content = f.read()
+    print(f"Read after write: '{content}'")
+
+    f.seek(0)
+    all_content = f.read()
+    print(f"Read after seek: '{all_content}'")
+
+```
 
 <details> 
 <summary>Solution</summary> 
