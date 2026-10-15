@@ -49,7 +49,21 @@ processed = process_recent_users(user_data)
 
 
 <details> 
-<summary>Possible Solution</summary> 
+<summary>Solution</summary> 
+
+1. After the code runs, has the `user_data` list or any of its contents been mutated? 
+
+No. A new list was created and returned.
+
+2. Explain your reasoning by identifying any aliases and tracing the path of any mutation that occurs. 
+
+In the second line a new, empty list is created, `user_profiles = []` and in line 6 that local list is appended. 
+`user_profiles.append(user_profile)` and returned.
+
+3. Is the `process_recent_users` function pure or impure? Justify your answer. 
+
+A new object is created and mutated, while the original argument is not mutated. Creating a new list, appending to it locally, reading the argument, and returning the new list are all compatible with purity.  Local mutation of a list you created inside the function is not a side effect, because nothing outside the function can observe it.
+
 </details>
 
 #### Exercise 2 - Update Project Dependencies
@@ -96,6 +110,16 @@ updated = add_dependency(project_configs, 'lib_common')
 
 <details> 
 <summary>Possible Solution</summary> 
+
+1. Is the `add_dependency` function pure? 
+
+Yes. A new object is created with `project_copy = project.copy()`
+
+2. Explain exactly why or why not by describing which objects are new, which are shared, and where any mutation occurs relative to the original
+ `project_configs` data structure.
+
+`updated_projects` is new. `project_copy` is new as well. No mutation relative to the original project_configs data structure is mutated.
+
 </details>
 
 #### Exercise 3 - Implement a Pure Update
@@ -147,6 +171,20 @@ assert new_inventory['office'] is original_inventory['office']
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def add_item_to_inventory(inventory, category, item):
+    new_inventory = inventory.copy()
+
+    new_category = inventory[category].copy()
+    new_tools = inventory[category]['tools'].copy()
+
+    new_tools.append(item)
+    new_category['tools'] = new_tools
+    new_inventory[category] = new_category
+
+    return new_inventory
+```
 </details>
 
 #### Exercise 4 - Restructure Categorized Data
@@ -184,6 +222,16 @@ report_result = generate_report(sensor_data)
 
 <details> 
 <summary>Possible Solution</summary> 
+
+1. After `generate_report(sensor_data)` is called, is the original `sensor_data` dictionary modified in any way? 
+Yes.
+
+2. If it is modified, describe the change. If not, explain why it remains unchanged. 
+`data_points.sort()`
+
+3. Is this function pure? Provide a brief justification. 
+
+No, because data_points is sorted which leaves a side effect.
 </details>
 
 #### Exercise 5 - Refactor User Deactivation
@@ -214,6 +262,37 @@ The current implementation of `deactivate_user` has a side effect: it mutates on
 
 <details> 
 <summary>Possible Solution</summary> 
+
+```python
+def deactivate_user(users, user_id):
+
+    result = []
+
+    for user in users:
+        if user['id'] == user_id:
+            updated_user = user.copy()
+            updated_user['is_active'] = False
+            result.append(updated_user)
+        else:
+            result.append(user)
+    return result
+
+# --- Test Data ---
+user_database = [
+    {'id': 1, 'name': 'Dana', 'is_active': True},
+    {'id': 2, 'name': 'Evan', 'is_active': True},
+    {'id': 3, 'name': 'Frank', 'is_active': True},
+]
+
+
+tested = deactivate_user(user_database, 1)
+
+print(tested is user_database)                    # False
+print(tested[0] is user_database[0])              # False
+print(tested[1] is user_database[1])              # True
+print(tested[2] is user_database[2])              # True
+```
+
 </details>
 
 #### Exercise 6 - Department Grouping Behavior
@@ -259,6 +338,16 @@ grouped_data = group_by_department(original_employees)
 
 <details> 
 <summary>Possible Solution</summary> 
+
+1. After this code executes, is the `original_employees` data structure—including all its nested elements—in the same state as it was before 
+the function call? 
+
+No. 'devops" is now "DevOps".
+
+2. Explain your answer by describing which objects, if any, are shared between `original_employees` and the returned grouped_data. Is the use of `.copy()` sufficient to prevent side effects in this case?
+
+Copy only creates a top level copy, the inner elements still refer back to the original_employee collection, and it is insufficient to preventing side effects.
+
 </details>
 
 #### Exercise 7 - User Settings Merge
@@ -305,6 +394,20 @@ final_settings = merge_user_settings(user, defaults)
 
 <details> 
 <summary>Possible Solution</summary> 
+
+1. Predict the final value of the user dictionary after the function call.
+
+{'username': 'testuser', 'preferences': {'theme': 'dark'}, 'notifications': {'push': True, 'email': True}}
+
+2. Is `merge_user_settings` a pure function as implemented?
+
+No. the user dictionary is modified.
+
+3. Justify your answer by identifying any shared mutable objects between the original user dictionary and the returned `final_setting`s dictionary 
+and explaining how a side effect occurs.
+
+The inner elements of the dictionary are still referencing the original with the use of copy and these are modified. Deepcopy would have been useful.
+
 </details>
 
 #### Exercise 8 - Project Assignment Implementation
@@ -368,13 +471,23 @@ print("All tests passed!")
 
 <details> 
 <summary>Possible Solution</summary> 
-</details>
 
-[Back to the top](#top)
+```python
+def add_project_to_employees(employees, employee_ids, project_name):
 
+    new_employees = employees.copy()
 
-<details> 
-<summary>Possible Solution</summary> 
+    for employee_id, employee in employees.items():
+        if employee_id in employee_ids:
+            new_employee = employee.copy()
+            new_projects = employee['projects'].copy()
+            new_projects.append(project_name)
+            new_employee['projects'] = new_projects
+            new_employees[employee_id] = new_employee
+    
+    return new_employees
+```
+
 </details>
 
 [Back to the top](#top)
@@ -390,6 +503,26 @@ Possible Follow-up:​ Is the value at that time copied, or is access to the bin
 
 <details> 
 <summary>My Answer</summary> 
+
+A closure "remembers" the variables from the scope where it was defined, even after that scope has finished executing. What makes a closure is 3 ingredients:
+
+1. An inner, nested function.
+
+```python
+
+def outer(x):
+    def inner(y):
+        return x + y
+    return inner
+```
+
+2. A variable from an enclosing scope that the inner function references (a "free" variable).
+3. The enclosing function returns the inner one, so the inner function outlives the outer function.
+
+If `inner` used no outside variables, it would just be a nested function and not an inner.  
+
+Follow up: The access is a retained binding and not a copy.
+
 </details>
 
 ####  Prompt 2 — Pre-configured Functions
@@ -400,6 +533,30 @@ Possible Follow-up:​ Where does the "pre-filled" argument's state live?
 
 <details> 
 <summary>My Answer</summary> 
+
+A partial function application is a function that binds some arguments now, supplies the rest later.
+
+```python
+from functools import partial
+
+def add(a, b, c):
+    return a + b + c
+
+add_1_2 = partial(add, 1, 2)   # a and b locked in
+print(add_1_2(10))             # 13
+print(add_1_2(100))            # 103
+```
+
+You can do it manually! You don't need functools.
+
+```python
+def add(a, b, c):
+    return a + b + c
+
+def add_1_2(c):
+    return add(1, 2, c)
+```
+
 </details>
 
 #### Prompt 3 — Function Roles
@@ -410,6 +567,19 @@ Possible Follow-up:​ Can you give an example of a common built-in Python funct
 
 <details> 
 <summary>My Answer</summary> 
+
+A first class function is an object that can be:
+1. **assigned** to a variable
+2. **stored** inside another object
+3. **passed** as an argument
+4. **returned** from a function
+
+It's an object that behaves normally as any other object in the Python ecosystem.
+
+A higher-order function is a function that accepts one or more functions as arguments, and/or returns a function. 
+
+Follow-up: Map and Filter! 
+
 </details>
 
 
@@ -421,6 +591,22 @@ Possible Follow-up:​ If a function has no side effects, is it guaranteed to be
 
 <details> 
 <summary>My Answer</summary> 
+
+A pure function has the same input --> same output, always. The return value depends only on the arguments. And there are no side effects, it doesn't change anything outside itself.
+
+```python
+
+def pure_add(a, b):
+    return a + b
+
+def impure_add(a,b):
+    print(f"I'm now returning {a} + {b}")
+    return a + b
+```
+
+Follow up: No. Both conditions need to be satisfied. A function can have zero side effects and still be impure if it violates not having contact with the outside scope.
+
+
 </details>
 
 #### Prompt 5 — I/O Side Effects
@@ -431,6 +617,11 @@ Possible Follow-up:​ What external state is the function's behavior dependent 
 
 <details> 
 <summary>My Answer</summary> 
+
+In strict functional programming (Haskell, etc.), reading mutable external state is considered an effect. From the type system's point of view, the clock, the filesystem, and global variables are all "effectful" sources — you can't get a value out of them without marking the function as effectful.
+
+In everyday Python vocabulary, "side effect" usually means "change," and "non-determinism" is called out separately. Under that looser definition, time.time() has no side effects but is still impure because it's non-deterministic.
+
 </details>
 
 #### Prompt 6 — Global State Side Effects
@@ -441,6 +632,11 @@ Possible Follow-up:​ How does this side effect impact the predictability of th
 
 <details> 
 <summary>My Answer</summary> 
+
+This action is categorized as a side effect because it has to reach outside of the scope of the function to work with this information. This violates the "no outside grabbing of anything" that is needed to satisfy the second rule of Function Purity.
+
+Follow up: If the global variable's value changes the function's output also changes and thus becomes unreliable.
+
 </details>
 
 #### Prompt 7 — Mutation Side Effects
@@ -451,6 +647,11 @@ Possible Follow-up:​ What is the term for having multiple variables that refer
 
 <details> 
 <summary>My Answer</summary> 
+
+Modifying mutable objects passed as an argument, in this case the inner list, is the third category of side effects after I/O operations and Global State modfication.
+
+Follow up: Aliasing.
+
 </details>
 
 #### Prompt 8 — System and Exception Side Effects
@@ -461,19 +662,15 @@ Possible Follow-up:​ How does raising an exception alter the program's normal 
 
 <details> 
 <summary>My Answer</summary> 
+
+The remaining two categories are system interaction and exception handling. System interaction requires reaching outside of the function's scope and gaining something. Exception handling is a border case, but is considered not so pure because it requires a "non local exit" -- a way for a function to communicate and transfer control beyond its return value.
+
+Follow up: Return values flow to the immediate caller. Exceptions flow sideways and upwards, to whoever wrote a matching except. That's a communication mechanism separate from the return path — another form of effect.
+
 </details>
 
-#### Prompt 9 — Copying and Aliasing
 
-Question:​ Explain the difference between a shallow copy and a deep copy of a nested data structure, like a list of dictionaries. What happens if you modify a value inside a nested dictionary after making a shallow copy?
-
-Possible Follow-up:​ In the shallow copy scenario, is the nested dictionary aliased or copied?
-
-<details> 
-<summary>My Answer</summary> 
-</details>
-
-#### Prompt 10 — The nonlocal Keyword
+#### Prompt 9 — The nonlocal Keyword
 
 Question:​ What is the fundamental difference between using the nonlocal keyword to reassign a variable in a parent scope, and simply mutating a list object that was defined in that same parent scope?
 
@@ -481,9 +678,14 @@ Possible Follow-up:​ What does nonlocal allow you to change: the object, or wh
 
 <details> 
 <summary>My Answer</summary> 
+
+The nonlocal keyword allows a nested function to modify variables in the nearest enclosing scope that is not global. It tells Python that the variable is not local to the current function. 
+
+`nonlocal` reassignment changes which object a name in the parent scope refers to. Mutating a list changes the internal state of the object the name already refers to. One is a change of reference, the other a change of state. That's
+
 </details>
 
-#### Prompt 11 — Decorator Mechanics
+#### Prompt 10 — Decorator Mechanics
 
 Question:​ When you apply a decorator to a function, what happens at decoration time? After the decoration, what object does the original function name actually refer to?
 
@@ -491,16 +693,39 @@ Possible Follow-up:​ Does the original, undecorated function still exist somew
 
 <details> 
 <summary>My Answer</summary> 
+
+At decoration time the decorator runs once with the original function and returns a replacement. The original name is then rebound to the replacement.
+
+Follow-up: the original still exists inside the wrapper's closure, but the name no longer points to it.
+
 </details>
 
-#### Prompt 12 — Decorator Application Order
+#### Prompt 11 — Decorator Application Order
 
-Question:​ If you stack two decorators on top of a function, in what order are they applied? For example, if you have `@decorator_A` on the first line and `@decorator_`B on the second line above `my_func`, which decorator runs first?
+Question:​ If you stack two decorators on top of a function, in what order are they applied? For example, if you have `@decorator_A` on the first line and `@decorator_B` on the second line above `my_func`, which decorator runs first?
 
 Possible Follow-up:​ Which decorator's returned function is called when you finally invoke `my_func`?
 
 <details> 
 <summary>My Answer</summary> 
+
+```python
+
+@a
+@b
+def my_func():
+    pass
+```
+
+is actually:
+```python
+def f():
+    ...
+f = a(b(f))
+```
+
+`b`, the decorator closest to the function is applied first, runs first and then `a` wraps whatever `b` returns. The final result is bound to `my_func`. When you *call* `my_func`, you enter `a` wrapper, then `b` wrapper, and then calling `my_func`. It then exits the reverse, going out to `b` and then to `a`.
+
 </details>
 
 
@@ -532,6 +757,9 @@ What will the code print to the console?
 
 <details> 
 <summary>Solution</summary> 
+
+Processing financial data in 'quarterly': Q4-report
+
 </details>
 
 
@@ -568,6 +796,24 @@ Task
 
 <details> 
 <summary>Solution</summary> 
+
+1. What is the output of this script?
+```
+0
+10
+1
+2
+11
+```
+
+2. After all the code has run, what value is retained by the closure referred to by the `counter_b` variable? Explain briefly why this value survives even after the initial call to `make_counter(10`) has completed.
+
+12 is retrained by the `counter_b` variable
+
+`make_counter(10)` creates a local variable count initialized to 10, and returns the inner function counter. That inner function references count, so Python stores count in a closure cell shared between make_counter and the returned counter.
+
+When `make_counter(10)` finishes, its stack frame goes away — but the closure cell does not, because `counter_b` still holds a reference to counter, and counter holds a reference to that cell. So count survives. So the last returned value was 11, but the retained value inside the closure is 12.
+
 </details>
 
 
@@ -606,6 +852,17 @@ assert log_entry_ts.startswith("[2023-10-27T10:00:00Z]")
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+import datetime
+from functools import partial
+
+def log_message(level, source, message, *, timestamp=None):
+    ts = timestamp or datetime.datetime.now()
+    return f"[{ts}] {level.upper()} ({source}): {message}"
+
+system_error_log = partial(log_message, "ERROR","SYSTEM_CORE")
+```
 </details>
 
 
@@ -642,10 +899,13 @@ What will be printed to the console when this script is executed?
 
 <details> 
 <summary>Solution</summary> 
+
+Running 'Database backup' with 'high' priority. [Notifying admin]
+Running 'Cleanup temp files' with 'low' priority. [Notifying admin]
+
 </details>
 
 ####  Problem 5 — Data Filtering
-
 
 The `create_threshold_filter` function returns a filtering function based on a given threshold. This filter is then used in a list comprehension.
 
@@ -682,6 +942,9 @@ What is the output of the final print statement?
 
 <details> 
 <summary>Solution</summary> 
+
+[105, 112]
+
 </details>
 
 
@@ -711,7 +974,7 @@ Task
 
 Implement the `apply_partially` function. It should accept a callable `func` and any number of initial positional (`*p_args`) and keyword (`**p_kwargs`) arguments. It must return a new function.
 
-When this new function is called with its own set of positional and keyword arguments, it should invoke the original func, passing the combination of the initially provided arguments and the newly provided arguments.Arguments provided at the final invocation should take precedence (specifically, later keyword arguments override earlier ones).
+When this new function is called with its own set of positional and keyword arguments, it should invoke the original func, passing the combination of the initially provided arguments and the newly provided arguments. Arguments provided at the final invocation should take precedence (specifically, later keyword arguments override earlier ones).
 
 Your implementation should pass the following assertions.
 ```python
@@ -735,6 +998,15 @@ assert final_log == "Record (ID: 202): [system_event=False] Status: complete"
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+def apply_partially(func, *p_args, **p_kwargs):
+    def partial(*new_args, **new_kwargs):
+        combined_kwargs = {**p_kwargs, **new_kwargs}
+        return func(*p_args, *new_args, **combined_kwargs)
+    return partial
+```
+
 </details>
 
 [Back to the top](#top)
@@ -743,8 +1015,7 @@ assert final_log == "Record (ID: 202): [system_event=False] Status: complete"
 
 #### Problem 1 — Data Processing Side Effects
 
-
-Consider the following function` select_and_tag`, which is intended to select a user record and add a 'processed' tag to it.
+Consider the following function `select_and_tag`, which is intended to select a user record and add a 'processed' tag to it.
 
 Code
 ```python
@@ -765,10 +1036,20 @@ Task
 
 1. Is the `select_and_tag` function a pure function?
 2. Explain your reasoning. In your explanation, describe what object or objects, if any, are mutated.
-3. If the function is not pure, identify the specific side effect it produces.
+
 
 <details> 
 <summary>Solution</summary> 
+
+1. Is the `select_and_tag` function a pure function?
+
+No, its not pure.
+
+2. Explain your reasoning. In your explanation, describe what object or objects, if any, are mutated.
+
+Purity is not about whether the mutation is the function’s intended purpose. It’s about whether the function has an observable effect beyond returning a value. The point of the object is to mutate the user_data object.
+
+
 </details>
 
 #### Problem 2 — Sufficiency of Shallow Copying
@@ -792,42 +1073,19 @@ def grant_admin_privileges(profiles, user_id):
 Task
 
 1. Is your teammate's assertion correct? Is the `grant_admin_privileges` function pure?
+
+Yes.
+
 2. Explain ​why​ the shallow copy strategy used here is or is not sufficient to prevent side effects on the original profiles data. Your explanation should focus on the types of values contained within the user dictionaries.
+
+It is sufficient since values are strings and booleans.
 
 <details> 
 <summary>Solution</summary> 
 </details>
 
-#### Problem 3 — Analyzing a Flawed Update Function
 
-The function `log_test_result` is intended to take a session_data dictionary, add a new test result to the history, and return a ​new​ dictionary with the updated data, leaving the original session_data unchanged.
-
-Before answering, check:
-
-- What is requested?
-- Which containers are new?
-- Which references are shared?
-- Which shared objects are mutable?
-- Which object actually changes?
-- Can that mutation reach the original input?
-
-Code
-```python
-def log_test_result(session_data, result):
-    new_session = session_data.copy()
-    new_session['log']['history'].append(result)
-    return new_session
-
-```
-
-Task
-
-1. Does the function successfully avoid mutating the original `session_data` object? Demonstrate what happens to an input dictionary after it is passed to this function.
-2. Identify the exact reference path from the `new_session` variable back to a mutable object that is still shared with the original session_data.
-3. In the context of this specific data structure, explain the key difference between the shallow copy performed by `session_data.copy()` and how `copy.deepcopy()` would have behaved.
-
-#### Problem 4 — Implementing a Pure Transformation
-
+#### Problem 3 — Implementing a Pure Transformation
 
 You are given a data structure that represents a list of software projects, where each project is a dictionary containing an 'id' and a list of 'modules'.
 
@@ -894,6 +1152,22 @@ assert new_projects[0]['modules'] is not original_projects[0]['modules']
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+def add_feature_module(all_projects, project_id, module_name):
+    new_projects = []
+
+    for project in all_projects:
+        if project['id'] == project_id:
+            new_project = project.copy()
+            new_project['modules'] = project['modules'] + [module_name]
+            new_projects.append(new_project)
+        else:
+            new_projects.append(project)
+
+    return new_projects
+```
+
 </details>
 
 [Back to the top](#top)
@@ -1309,10 +1583,11 @@ Problem Statement
 
 The generator function `yield_from_file` reads lines from a file. The main script consumes the generator it produces in multiple steps. Assume a file named sample.txt exists with the following content:
 
+```
 Line 1
 Line 2
 Line 3
-
+```
 
 Code
 ```python
@@ -1342,13 +1617,6 @@ Task
 Write out the complete, ordered output that will be printed to the console when this script is executed. Explain at what point the `file sample.txt` is opened and at what point it is closed.
 
 State the governing rule aloud in one or two sentences.
-
-
-<details> 
-<summary>Solution</summary> 
-</details>
-
-[Back to the top](#top)
 
 
 <details> 
