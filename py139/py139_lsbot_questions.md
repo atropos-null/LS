@@ -1205,6 +1205,36 @@ Task
 4. After the `@trace_decorator` line is processed, what object does the name greet refer to?
 5. What happens when `greet()` is called on line 12?
 
+<details> 
+<summary>Solution</summary> 
+
+
+1. Describe the sequence of events that occurs when this script is executed, from top to bottom.
+
+"Script is starting"
+"Decorating greet"
+"Script has defined greet"
+"Hello from greet"
+"Script has called greet"
+
+2. What object is passed as an argument to `trace_decorator`?
+
+The function object created by def greet, i.e. the original greet function, is passed as the single argument func.
+
+3. When does the print statement inside `trace_decorator` execute?
+
+At decoration time — i.e., right after the def greet statement runs, at module load, before any call to greet() ever happens.  the print runs once, when the module is being defined. It does not run each time greet() is called. If you called greet() 100 times, Decorating greet... would still only appear once.
+
+
+4. After the `@trace_decorator` line is processed, what object does the name greet refer to?
+
+greet is rebound to whatever trace_decorator returned. Since this decorator returns func unchanged, greet still refers to the same original function object.
+
+5. What happens when `greet()` is called on line 12?
+
+Because trace_decorator returned the original function unchanged, greet() calls the original function directly
+
+</details>
 
 #### Problem 2 — Wrapper Execution Order
 
@@ -1252,6 +1282,36 @@ Task
 2. When `get_number()` is called, in what order do the print statements from the wrapper functions appear?
 3. Trace the return value from the original `get_number` function as it passes back through the decorator wrappers. What is the final value assigned to `final_result`? Explain each step of the calculation.
 
+<details> 
+<summary>Solution</summary> 
+
+1. In what order are the decorators (`add_one`, `multiply_by_two`) executed at decoration time?
+
+multiply_by_two is applied first — it's closest to the def, so it receives the original get_number and returns its wrapper.
+
+add_one is applied second — it receives the wrapper that multiply_by_two returned, and returns its own wrapper.
+
+2. When `get_number()` is called, in what order do the print statements from the wrapper functions appear?
+
+```
+add_one wrapper before call
+multiply by two wrapper before call
+multiply by two wrapper after call
+add one wrapper after call
+```
+
+3. Trace the return value from the original `get_number` function as it passes back through the decorator wrappers. 
+What is the final value assigned to `final_result`? Explain each step of the calculation.
+
+```
+original:            return 10
+multiply_by_two:    10 * 2 = 20
+add_one:            20 + 1 = 21
+final_result = 21
+```
+
+</details>
+
 ### Problem 3 — Class-Based Decoration
 
 The following code uses a class as a decorator. Analyze its behavior at both decoration time and call time.
@@ -1290,6 +1350,36 @@ Task
 2.  After decoration, what kind of object does the name `display_info` refer to?
 3.  Where is the original `display_info` function object stored?
 4.  What causes the `__call__` method of `DecoratorClass` to be executed?
+
+<details> 
+<summary>Solution</summary> 
+
+1. What happens when the line `@DecoratorClass` is executed during script loading? Describe the process.
+
+The `def display_info` statement creates the original function object and binds the name `display_info` to it. Then Python applies the decorator:
+```display_info = DecoratorClass(display_info)``` That calls `DecoratorClass.__init__` with the original function as `original_function`
+
+Then, `print("DecoratorClass __init__ called.")` runs.
+
+`self.original_function = original_function` stores the original function on the new instance.
+
+`__init__` returns None, and Python's class-call machinery returns the newly created instance of `DecoratorClass`.
+
+Finally, the name `display_info` is rebound to that instance. This all happens once, at decoration time — before print("About to call display_info...") runs.
+
+2. After decoration, what kind of object does the name `display_info` refer to?
+
+It refers to an instance of DecoratorClass, not the original function.
+
+3. Where is the original `display_info` function object stored?
+
+Inside the DecoratorClass instance, as the attribute self.original_function.
+
+4. What causes the `__call__` method of `DecoratorClass` to be executed?
+
+The call expression ```display_info("Alice", 30)```
+
+</details>
 
 #### Problem 4 — Decorator with Persistent State
 
@@ -1333,6 +1423,23 @@ Task
 
 <details> 
 <summary>Solution</summary> 
+
+1. After the `@CallCounter` decoration is complete, what object does the name `say_hello` refer to?
+
+An instance of CallCounter — not the original function.
+
+2. Where is the call count (the value of `self.count`) stored?
+
+In the instance attribute self.count, i.e. in the instance's __dict__
+
+3. Why does the count persist across multiple calls to `say_hello`?
+
+Because there is one instance created at decoration time, and that instance lives for as long as the name say_hello is bound — typically the whole lifetime of the module.
+
+4. If you created another decorated function, such as `@CallCounter` `def say_goodbye()`, would it share the same call count as `say_hello?` Why or why not?
+
+No — each decoration creates a separate instance with its own count.
+
 </details>
 
 [Back to the top](#top)
