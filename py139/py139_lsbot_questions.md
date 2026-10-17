@@ -1492,6 +1492,26 @@ State the governing rule aloud in one or two sentences.
 
 <details> 
 <summary>Solution</summary> 
+
+1. What will the two print statements output?
+
+Config 1: {'version': 'v1.2', 'setting_a': 25, 'setting_b': 100, 'theme': 'dark', 'is_production': True}
+Config 2: {'version': 'v1.2', 'setting_a': 50, 'setting_b': 200, 'theme': 'dark', 'is_production': False}
+
+2. Explain precisely how the arguments for the `config2` call are bound to the parameters of the `build_config` function.
+
+version ← partial's positional 'v1.2' (fits the positional-only slot)
+
+setting_a ← caller's positional 50
+
+setting_b ← caller's keyword 200
+
+theme ← partial's keyword 'dark'
+
+is_production ← default False
+
+The partial's job is simply to prepend its stored positional arguments and merge its stored keywords (caller wins) before handing everything to build_config.
+
 </details>
 
 #### Problem 2 — State Encapsulation
@@ -1540,6 +1560,26 @@ State the governing rule aloud in one or two sentences.
 
 <details> 
 <summary>Solution</summary> 
+
+1. What is the final line of output printed to the console?
+
+Logged: INIT. History size: 1
+Logged: START. History size: 1
+Logged: PROCESS. History size: 2
+Logged: END. History size: 2
+
+
+2. What is the value of the `final_history` variable after all the code has run?
+
+['START', 'END']
+
+3. Explain why the history for `logger1` is separate from the history for `logger2`.
+
+logger1 and logger2 are separte function objects and each has their own events list. 
+
+4. If `final_history.append("EXTRA")` is executed afterward, would that affect the state retained by logger2? Explain.
+
+Yes, because it is the function object of logger2. The end would be "['START', 'END', 'EXTRA']"
 </details>
 
 #### Problem 3 — Shared State Modifier
@@ -1575,13 +1615,30 @@ modify_state(state)
 print(f"Final state: {state}")
 ```
 
-Task
 Trace the execution and predict the final line of output printed by this script.
 
 State the governing rule aloud in one or two sentences.
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+def modify_state(data_list): 
+    print("Function start: Modifying data...")
+    local_copy = data_list.copy() #only a shallow copy, references are original references. 
+
+    # Modify a nested list through the original reference
+    data_list[0].append('X') #[[1, 'X'], [2,3]]
+
+    # Modify the outer list through the local copy
+    local_copy.append([4, 5]) #Local copy only modified: [[1, 'X'], [2,3,4,5]]. Original stays: [[1, 'X'], [2,3]]
+    print("Function end.")  #Function End. 
+
+state = [[1], [2, 3]]
+modify_state(state) #Function start: Modifying data...
+print(f"Final state: {state}") #[[1, 'X'], [2,3]]
+```
+
 </details>
 
 #### Problem 4 — Tracing Side Effects
@@ -1630,6 +1687,23 @@ State the governing rule aloud in one or two sentences.
 
 <details> 
 <summary>Solution</summary> 
+
+1. List everything that will be printed to the console, in the order it is printed.
+Processed 1
+Processed 6
+Processed 3
+Processed 8
+Final results: [False, True, False, True]
+Log: [2, 12, 6, 16]
+
+2. What is the final value of `final_results`?
+
+[False, True, False, True]
+
+3. What is the final value of `side_effects_log`?
+
+[2, 12, 6, 16]
+
 </details>
 
 #### Problem 5 — Decorator with Return Value
@@ -1673,6 +1747,11 @@ State the governing rule aloud in one or two sentences.
 
 <details> 
 <summary>Solution</summary> 
+
+Calling 'calculate_sum' with args: (15, 25)
+'calculate_sum' returned: 40
+Final result received: 40
+
 </details>
 
 #### Problem 6 — Generator Lifetime
@@ -1728,6 +1807,18 @@ State the governing rule aloud in one or two sentences.
 
 <details> 
 <summary>Solution</summary> 
+
+Script: Generator created.
+Script: About to take first item.
+Generator: Starting to open file.
+Generator: Yielding 'Line 1'
+Script: Got 'Line 1'.
+Script: About to consume the rest.
+Generator: Yielding 'Line 2'
+Generator: Yielding 'Line 3'
+Generator: Execution finished or resource closed.
+Script: Got remaining lines: ['Line 2', 'Line 3']
+
 </details>
 
 [Back to the top](#top)
@@ -1754,7 +1845,7 @@ Verbally describe the different kinds of parameters in this function and explain
 
 The following test suite is for a function `create_user_profile` that returns a dictionary for a valid username, or `None` for an invalid one. Complete the test methods by writing the necessary assertions.
 
-```
+```python
 import unittest
 
 def create_user_profile(username):
