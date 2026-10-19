@@ -11,6 +11,7 @@
 - [Purity, Copying, and Nested Mutability](#purity-copying-and-nested-mutability)
 - [Decorators](#decorators)
 - [Mixed Assessment Transfer](#mixed-assessment-transfer)
+- [Post Written Exam Malaise](#post-written-exam-malaise)
 - [General Pass](#general-pass)
 
 
@@ -1823,6 +1824,256 @@ Script: Got remaining lines: ['Line 2', 'Line 3']
 
 [Back to the top](#top)
 
+### Post Written Exam Malaise
+
+#### Exercise 1
+
+Contract:
+
+Write a function that accepts a string as a required first argument, an integer as an optional second argument with a default value of 10, and a boolean as a required keyword-only third argument. The first two arguments must be positional-only. The function should return a formatted string indicating the values received.
+
+
+Assertions:
+```python
+# Function definition goes here
+
+# Test cases
+assert process_data("example", 15, verbose=True) == "Data: example, Level: 15, Verbose: True"
+assert process_data("default level", verbose=False) == "Data: default level, Level: 10, Verbose: False"
+assert process_data("another", 5, verbose=False) == "Data: another, Level: 5, Verbose: False"
+
+# The following calls should raise a TypeError due to argument rules:
+# process_data(data="example", 15, verbose=True)
+# process_data("example", width=15, verbose=True)
+# process_data("example", 15, True)
+
+```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+
+#### Exercise 2
+
+Contract:
+Write a function that requires at least two positional arguments, and can accept any number of additional positional arguments. The function must also accept an optional keyword-only argument named transform which should be a callable. If transform is provided, it should be applied to each argument before they are combined. The function should return a list containing all the processed arguments.
+
+Assertions:
+```python
+# Function definition goes here
+
+# Test cases
+assert combine_items(1, 2) == [1, 2]
+assert combine_items("a", "b", "c", "d") == ["a", "b", "c", "d"]
+assert combine_items(10, 20, 30, transform=str) == ["10", "20", "30"]
+assert combine_items("apple", "banana", transform=str.upper) == ["APPLE", "BANANA"]
+
+# The following call should raise a TypeError because it provides fewer than two positional arguments:
+# combine_items(1)
+```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+
+Exercise 3
+
+Contract:
+Write a function that accepts a single positional argument, base, and any number of keyword arguments. The function should return a dictionary that contains all the keyword arguments provided, plus a status key with a value of 'processed' if the base argument is greater than 100, or 'pending' otherwise.
+
+Assertions:
+```python
+# Function definition goes here
+
+# Test cases
+result1 = build_report(200, user="admin", level=5)
+assert result1 == {"user": "admin", "level": 5, "status": "processed"}
+
+result2 = build_report(50, user="guest", retries=3)
+assert result2 == {"user": "guest", "retries": 3, "status": "pending"}
+
+result3 = build_report(101)
+assert result3 == {"status": "processed"}
+```
+
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+#### Exercise 4
+
+Contract:
+Write a higher-order function that accepts a callable operation and a variable number of positional arguments (*args). It must also accept any number of keyword arguments (**kwargs). The function should invoke the operation callable, passing all *args and **kwargs to it, and return the result.
+
+
+Assertions:
+```python
+# Function definition goes here
+
+def add(a, b):
+    return a + b
+
+def describe(name, role="user"):
+    return f"{name} is a {role}."
+
+# Test cases
+assert dispatch(add, 5, 10) == 15
+assert dispatch(describe, "Alice", role="admin") == "Alice is a admin."
+assert dispatch(describe, "Bob") == "Bob is a user."
+assert dispatch(max, [10, 40, 20]) == 40
+```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+#### Exercise 5
+
+Contract:
+Write a function that takes a base number. It returns a new function. This returned function takes a single argument, a callable, which it applies to the base number, and returns the result.
+
+Assertions:
+```python
+# Function definition goes here
+
+import math
+
+# Test cases
+apply_to_10 = create_applicator(10)
+assert apply_to_10(lambda x: x * 2) == 20
+assert apply_to_10(lambda x: x + 5) == 15
+assert apply_to_10(math.sqrt) == 3.1622776601683795
+
+apply_to_25 = create_applicator(25)
+assert apply_to_25(math.sqrt) == 5.0
+```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+
+#### Exercise 6
+
+Contract:
+Write a function named create_specialized_multiplier. It must accept keyword arguments that will be stored for later use. It returns a new function. The returned function accepts a single required positional argument number and multiplies it by the value associated with the factor key from the originally provided keyword arguments. If factor was not provided at creation time, the returned function should raise a ValueError.
+
+Assertions:
+```python
+# Function definition goes here
+
+# Test cases
+double = create_specialized_multiplier(factor=2)
+assert double(5) == 10
+assert double(10) == 20
+
+triple = create_specialized_multiplier(factor=3, other_data="ignored")
+assert triple(5) == 15
+
+# Test for ValueError
+error_raised = False
+try:
+    bad_multiplier = create_specialized_multiplier(unrelated_key=5)
+    bad_multiplier(10)
+except ValueError:
+    error_raised = True
+assert error_raised
+```
+<details> 
+<summary>Solution</summary> 
+</details>
+
+
+
+#### Exercise 7
+
+Contract:
+Write a function that behaves differently based on the arguments provided. If it is called with two arguments (a string text and a dictionary subs), it should immediately perform substitutions on the string using the dictionary and return the result. If it is called with only the text string, it should return a new function.[12:33 PM]This new function accepts a dictionary subs and performs the substitutions on the original text.
+
+Assertions:
+```python
+# Function definition goes here
+
+# Test immediate computation
+template = "Hello, {name}! Welcome to {place}."
+substitutions = {"name": "Alex", "place": "Launch School"}
+assert format_template(template, substitutions) == "Hello, Alex! Welcome to Launch School."
+
+# Test deferred computation
+formatter = format_template("Your code is {status}.")
+assert formatter({"status": "ready"}) == "Your code is ready."
+assert formatter({"status": "pending"}) == "Your code is pending."
+```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+#### Exercise 8
+
+Contract:
+Write a function that creates a configurable counter. The function accepts an initial value and a step value. It returns a new function. Each time the new function is called, it should return the current value of its counter and then increment its internal counter by step. The counters must be independent.
+
+Assertions:
+```python
+# Function definition goes here
+
+# Test cases
+counter1 = make_counter(initial=0, step=2)
+assert counter1() == 0
+assert counter1() == 2
+assert counter1() == 4
+
+counter2 = make_counter(initial=100, step=-10)
+assert counter2() == 100
+assert counter2() == 90
+
+# Verify independence
+assert counter1() == 6
+```
+
+#### Exercise 9
+
+Contract:
+
+Write a function, create_pipeline, that accepts a variable number of functions as positional arguments. It returns a new function, the pipeline_runner. The pipeline_runner accepts a single initial value. It then passes this value to the first function in the pipeline, takes the result and passes it to the second function, and so on, finally returning the result from the last function.
+
+Assertions:
+```python
+# Function definition goes here
+
+def add_five(x):
+    return x + 5
+
+def multiply_by_two(x):
+    return x * 2
+
+def to_string(x):
+    return str(x)
+
+# Test cases
+pipeline1 = create_pipeline(add_five, multiply_by_two)
+assert pipeline1(10) == 30 # (10 + 5) * 2
+
+pipeline2 = create_pipeline(multiply_by_two, to_string, add_five)
+# This will fail with a TypeError because `add_five` will be called with a string.
+# The contract is to simply call them in order.
+# Let's create a pipeline that works.
+def string_add_five(s):
+    return s + "5"
+
+pipeline3 = create_pipeline(multiply_by_two, to_string, string_add_five)
+assert pipeline3(20) == "405" # (20 * 2) -> "40" -> "40" + "5"
+```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+[Back to the top](#top)
 
 ### General Pass
 
