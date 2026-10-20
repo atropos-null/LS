@@ -1851,6 +1851,11 @@ assert process_data("another", 5, verbose=False) == "Data: another, Level: 5, Ve
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+def process_data(text, level=10, *,  verbose):
+    return f"Data: {text}, Level: {level}, Verbose: {verbose}"
+```
 </details>
 
 
@@ -1875,10 +1880,30 @@ assert combine_items("apple", "banana", transform=str.upper) == ["APPLE", "BANAN
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+def combine_items(arg1, arg2, *args, transform=None):
+
+    collection = [arg1, arg2]
+    final = []
+
+    if args:
+        for arg in args:
+            collection.append(arg)
+    
+    for item in collection:
+        if transform:
+            result = transform(item)
+            final.append(result)
+        else:
+            final.append(item)
+    return final
+```
+
 </details>
 
 
-Exercise 3
+#### Exercise 3
 
 Contract:
 Write a function that accepts a single positional argument, base, and any number of keyword arguments. The function should return a dictionary that contains all the keyword arguments provided, plus a status key with a value of 'processed' if the base argument is greater than 100, or 'pending' otherwise.
@@ -1901,6 +1926,21 @@ assert result3 == {"status": "processed"}
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+def build_report(base, **kwargs):
+    result = {}
+    for key, value in kwargs.items():
+        result[key] = value
+    
+    if base > 100:
+        result['status'] = 'processed'
+    if base < 100:   
+        result['status'] = 'pending'
+        
+    return result
+```
+
 </details>
 
 #### Exercise 4
@@ -1928,6 +1968,14 @@ assert dispatch(max, [10, 40, 20]) == 40
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+def dispatch(callable, *args, **kwargs):
+
+    result = callable(*args, **kwargs)
+    return result
+```
+
 </details>
 
 #### Exercise 5
@@ -1953,6 +2001,17 @@ assert apply_to_25(math.sqrt) == 5.0
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+import math
+
+def create_applicator(number):
+    def wrapper(func):
+        result = func(number)
+        return result
+    return wrapper
+```
+
 </details>
 
 
@@ -1984,6 +2043,19 @@ assert error_raised
 ```
 <details> 
 <summary>Solution</summary> 
+
+```python
+def create_specialized_multiplier(**kwargs):
+
+    def multiplier(number):
+        if 'factor' not in kwargs:
+            raise ValueError
+
+        return number * kwargs['factor']
+
+    return multiplier
+```
+
 </details>
 
 
@@ -1991,7 +2063,7 @@ assert error_raised
 #### Exercise 7
 
 Contract:
-Write a function that behaves differently based on the arguments provided. If it is called with two arguments (a string text and a dictionary subs), it should immediately perform substitutions on the string using the dictionary and return the result. If it is called with only the text string, it should return a new function.[12:33 PM]This new function accepts a dictionary subs and performs the substitutions on the original text.
+Write a function that behaves differently based on the arguments provided. If it is called with two arguments (a string text and a dictionary subs), it should immediately perform substitutions on the string using the dictionary and return the result. If it is called with only the text string, it should return a new function. This new function accepts a dictionary subs and performs the substitutions on the original text.
 
 Assertions:
 ```python
@@ -2010,6 +2082,19 @@ assert formatter({"status": "pending"}) == "Your code is pending."
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+def format_template(text, subs=None):
+
+    def apply(substitutions):
+        return text.format(**substitutions)
+
+    if subs is not None:
+        return apply(subs)
+    
+    return apply
+```
+
 </details>
 
 #### Exercise 8
@@ -2034,6 +2119,27 @@ assert counter2() == 90
 # Verify independence
 assert counter1() == 6
 ```
+
+
+<details> 
+<summary>Solution</summary> 
+
+```python
+def make_counter(*, initial, step):
+
+    counter = initial
+    
+    def wrapper():
+        nonlocal counter 
+        current_value = counter
+        counter += step
+        return current_value
+    
+    return wrapper
+```
+
+</details>
+
 
 #### Exercise 9
 
@@ -2071,7 +2177,186 @@ assert pipeline3(20) == "405" # (20 * 2) -> "40" -> "40" + "5"
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+def create_pipeline(*args):
+    
+    def pipeline_runner(value):
+
+        result = value
+        for func in args:
+            next_value = func(result)
+            result = next_value
+        return result
+    return pipeline_runner
+```
+
 </details>
+
+
+#### Exercise 10
+
+Create a function `format_report` that accepts a title and a primary_author as required positional arguments. It must also accept any number of additional positional string arguments representing `co_authors`. The function accepts one optional parameter named style, which can only be provided as a keyword argument and defaults to "APA". The function returns a single formatted string containing the report details.
+
+```python
+# Assertions for Exercise 1
+assert format_report("The Python Language", "G. van Rossum") == \
+    "Title: The Python Language\nAuthors: G. van Rossum\nStyle: APA"
+
+assert format_report("Learning Python", "M. Lutz", "D. Ascher") == \
+    "Title: Learning Python\nAuthors: M. Lutz, D. Ascher\nStyle: APA"
+
+assert format_report("Automate the Boring Stuff", "Al Sweigart", style="Chicago") == \
+    "Title: Automate the Boring Stuff\nAuthors: Al Sweigart\nStyle: Chicago"
+
+assert format_report("Fluent Python", "L. Ramalho", "A. Jones", "B. Smith", style="MLA") == \
+    "Title: Fluent Python\nAuthors: L. Ramalho, A. Jones, B. Smith\nStyle: MLA"
+
+
+try:
+    format_report("A Title")
+except TypeError as e:
+    assert "missing 1 required positional argument: 'primary_author'" in str(e).lower()
+```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+#### Exercise 11
+
+Create a function `calculate_price` that computes a final price. It requires a `base_price` and a `tax_rate`, which must be supplied positionally and cannot be specified by name. It accepts an optional discount which can be supplied either positionally or by name, and defaults to 0. Finally, it requires a currency symbol string, which must be supplied by its name and cannot be passed positionally. The function returns a formatted price string.
+
+
+```python
+# Assertions for Exercise 2
+assert calculate_price(100, 0.07, currency="$") == "$107.00"
+assert calculate_price(100, 0.07, 0.1, currency="$") == "$96.30"
+assert calculate_price(100, 0.07, discount=0.2, currency="€") == "€85.60"
+
+try:
+    calculate_price(base_price=100, tax_rate=0.07, currency="$")
+except TypeError as e:
+    assert "got some positional-only arguments passed as keyword arguments" in str(e).lower()
+
+try:
+    calculate_price(100, 0.07, "$")
+except TypeError as e:
+    assert "currency" in str(e)
+else:
+    raise AssertionError("Expected TypeError")
+
+try:
+    calculate_price(100, 0.07)
+except TypeError as e:
+    assert "missing 1 required keyword-only argument: 'currency'" in str(e).lower()
+```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+
+#### Exercise 12
+
+Create a higher-order function `logged_execution `that accepts a callable `func` as its first argument, followed by any number of additional positional and keyword arguments. The function must print the string "Executing {func_name}..." (where {func_name} is the name of the function passed in), then invoke `func` with the additional arguments, capture its return value, print "Execution complete.", and finally return the captured value.
+
+```python
+# Assertions for Exercise 3
+def add(a, b):
+    return a + b
+
+def greet(name, greeting="Hello"):
+    return f"{greeting}, {name}!"
+
+# Note: Testing output requires capturing stdout, which is beyond the scope here.
+# The assertions will focus on the correct return value and argument passing.
+assert logged_execution(add, 5, 10) == 15
+assert logged_execution(greet, "World") == "Hello, World!"
+assert logged_execution(greet, "Alice", greeting="Hi") == "Hi, Alice!"
+
+def complex_func(a, b, *, c=1, d=2):
+    return a + b + c + d
+
+assert logged_execution(complex_func, 3, 4, c=5) == 14
+```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+
+#### Exercise 13
+
+Create a function `conditional_calculator`. If called with a callable operator as its first argument, followed by two numbers `a` and `b`, it must immediately apply the operator to `a` and `b` and return the result. If called with only the operator argument, it must return a new function. This new function, when later called with two numbers `x` and `y`, will apply the original operator to `x` and `y` and return that result.
+
+```python
+# Assertions for Exercise 5
+import operator
+
+# Immediate computation
+assert conditional_calculator(operator.add, 10, 5) == 15
+assert conditional_calculator(operator.mul, 4, 5) == 20
+
+# Deferred computation
+adder = conditional_calculator(operator.add)
+multiplier = conditional_calculator(operator.mul)
+
+assert adder(10, 20) == 30
+assert adder(7, 3) == 10
+assert multiplier(5, 6) == 30
+
+subtractor = conditional_calculator(operator.sub)
+assert subtractor(100, 42) == 58
+```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+#### Exercise 14
+
+Create a function `configure_api_request` using `functools.partial`. The function takes a required base_url string and any number of keyword arguments representing initial query params. It must return a new callable. When this new callable is invoked, it accepts additional keyword arguments. These new arguments are merged with the initial params, with the new arguments overwriting any initial params that share the same key. The new callable must return a dictionary with two keys: "url" (the original base_url) and "params" (the final, merged dictionary of parameters).
+
+```python
+# Assertions for Exercise 6
+from functools import partial
+
+user_search = configure_api_request(
+    "https://api.myapp.com/v1/users",
+    status="active",
+    sort="last_name"
+)
+
+# Call with no new params
+assert user_search() == {
+    "url": "https://api.myapp.com/v1/users",
+    "params": {"status": "active", "sort": "last_name"}
+}
+
+# Call with additional params
+assert user_search(page=2) == {
+    "url": "https://api.myapp.com/v1/users",
+    "params": {"status": "active", "sort": "last_name", "page": 2}
+}
+
+# Call while overwriting an initial param
+assert user_search(sort="first_name", per_page=25) == {
+    "url": "https://api.myapp.com/v1/users",
+    "params": {"status": "active", "sort": "first_name", "per_page": 25}
+}
+
+# Verify original callable is not mutated
+assert user_search() == {
+    "url": "https://api.myapp.com/v1/users",
+    "params": {"status": "active", "sort": "last_name"}
+}
+```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
 
 [Back to the top](#top)
 
