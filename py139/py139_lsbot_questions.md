@@ -12,6 +12,7 @@
 - [Decorators](#decorators)
 - [Mixed Assessment Transfer](#mixed-assessment-transfer)
 - [Post Written Exam Malaise](#post-written-exam-malaise)
+- [Partial Function Applications, again](#partial-function-applications-again)
 - [General Pass](#general-pass)
 
 
@@ -2199,7 +2200,7 @@ def create_pipeline(*args):
 Create a function `format_report` that accepts a title and a primary_author as required positional arguments. It must also accept any number of additional positional string arguments representing `co_authors`. The function accepts one optional parameter named style, which can only be provided as a keyword argument and defaults to "APA". The function returns a single formatted string containing the report details.
 
 ```python
-# Assertions for Exercise 1
+# Assertions
 assert format_report("The Python Language", "G. van Rossum") == \
     "Title: The Python Language\nAuthors: G. van Rossum\nStyle: APA"
 
@@ -2221,6 +2222,14 @@ except TypeError as e:
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+def format_report(title, primary_author, *co_authors, style='APA'):
+
+    authors = ", ".join([primary_author, *co_authors])
+    return f"Title: {title}\nAuthors: {authors}\nStyle: {style}"
+```
+
 </details>
 
 #### Exercise 11
@@ -2229,7 +2238,7 @@ Create a function `calculate_price` that computes a final price. It requires a `
 
 
 ```python
-# Assertions for Exercise 2
+# Assertions
 assert calculate_price(100, 0.07, currency="$") == "$107.00"
 assert calculate_price(100, 0.07, 0.1, currency="$") == "$96.30"
 assert calculate_price(100, 0.07, discount=0.2, currency="€") == "€85.60"
@@ -2254,6 +2263,13 @@ except TypeError as e:
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+
+def calculate_price(base_price, tax_rate, /, discount=0, *, currency):
+    final_price = base_price * (1 - discount) * (1 + tax_rate)
+    return f"{currency}{final_price:.2f}"
+```
 </details>
 
 
@@ -2262,7 +2278,7 @@ except TypeError as e:
 Create a higher-order function `logged_execution `that accepts a callable `func` as its first argument, followed by any number of additional positional and keyword arguments. The function must print the string "Executing {func_name}..." (where {func_name} is the name of the function passed in), then invoke `func` with the additional arguments, capture its return value, print "Execution complete.", and finally return the captured value.
 
 ```python
-# Assertions for Exercise 3
+# Assertions
 def add(a, b):
     return a + b
 
@@ -2283,6 +2299,14 @@ assert logged_execution(complex_func, 3, 4, c=5) == 14
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+def logged_execution(func, *args, **kwargs):
+    print(f"Executing {func.__name__}...")
+    result = func(*args, **kwargs)
+    print("Execution complete")
+    return result
+```
 </details>
 
 
@@ -2291,7 +2315,7 @@ assert logged_execution(complex_func, 3, 4, c=5) == 14
 Create a function `conditional_calculator`. If called with a callable operator as its first argument, followed by two numbers `a` and `b`, it must immediately apply the operator to `a` and `b` and return the result. If called with only the operator argument, it must return a new function. This new function, when later called with two numbers `x` and `y`, will apply the original operator to `x` and `y` and return that result.
 
 ```python
-# Assertions for Exercise 5
+# Assertions
 import operator
 
 # Immediate computation
@@ -2312,6 +2336,17 @@ assert subtractor(100, 42) == 58
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+import operator
+
+def conditional_calculator(func, *args):
+    if args:
+        result = func(*args)
+        return result
+    return func
+```
+
 </details>
 
 #### Exercise 14
@@ -2319,7 +2354,7 @@ assert subtractor(100, 42) == 58
 Create a function `configure_api_request` using `functools.partial`. The function takes a required base_url string and any number of keyword arguments representing initial query params. It must return a new callable. When this new callable is invoked, it accepts additional keyword arguments. These new arguments are merged with the initial params, with the new arguments overwriting any initial params that share the same key. The new callable must return a dictionary with two keys: "url" (the original base_url) and "params" (the final, merged dictionary of parameters).
 
 ```python
-# Assertions for Exercise 6
+# Assertions
 from functools import partial
 
 user_search = configure_api_request(
@@ -2359,6 +2394,371 @@ assert user_search() == {
 
 
 [Back to the top](#top)
+
+### Partial Function Applications, Again
+
+Before writing your implementation, state:
+
+1.  ​What is fixed NOW?
+2.  ​What is still missing?
+3.  ​What exact call happens LATER?
+
+
+#### Exercise 1: Base Configuration
+
+The function `calculate_power(base, exponent)` raises a base to a given exponent.
+
+```python
+def calculate_power(base, exponent):
+    """Calculates base raised to the exponent."""
+    return base ** exponent
+```
+
+Your task is to use functools.partial to create a new callable named square that always uses an exponent of 2.
+
+Assertions:
+```python
+import functools
+
+# Your implementation here
+
+assert square(3) == 9
+assert square(5) == 25
+```
+
+<details> 
+<summary>Solution</summary> 
+
+```python
+square = partial(calculate_power, exponent=2)
+```
+</details>
+
+#### Exercise 2: Report Formatting
+
+The function `generate_report(data, format_style, level)` creates a formatted report string.
+
+```python
+def generate_report(data, format_style="line", level="INFO"):
+    """Generates a formatted report string."""
+    return f"[{level}] FORMAT:{format_style} DATA:{data}"
+```
+
+Your task is to use functools.partial to create a new callable named `generate_error_report` that is pre-configured with a level of "ERROR" and a format_style of "json".
+
+Assertions:
+```python
+import functools
+
+# Your implementation here
+
+assert generate_error_report("user_login_failed") == "[ERROR] FORMAT:json DATA:user_login_failed"
+assert generate_error_report("db_connection_lost") == "[ERROR] FORMAT:json DATA:db_connection_lost"
+```
+
+<details> 
+<summary>Solution</summary> 
+
+```python
+generate_error_report = partial(generate_report, level="ERROR", format_style='json')
+```
+
+</details>
+
+#### Exercise 3: Mixed Argument Binding
+
+The function `send_message(recipient, message, sender, priority)` sends a message.
+
+```python
+def send_message(recipient, message, sender="system", priority=1):
+    """Returns a string representing a sent message."""
+    return f'To:{recipient}, From:{sender}, P:{priority}, Msg:"{message}"'
+```
+
+
+Your task is to use functools.partial to create a new callable named `send_admin_alert`. This new callable should be pre-configured to send messages from "admin-bot" with a priority of 100. The first argument, recipient, should be fixed to "sys_admin".
+
+
+Assertions:
+```python
+import functools
+
+# Your implementation here
+
+assert send_admin_alert("Disk space low") == 'To:sys_admin, From:admin-bot, P:100, Msg:"Disk space low"'
+assert send_admin_alert("High CPU usage") == 'To:sys_admin, From:admin-bot, P:100, Msg:"High CPU usage"'
+```
+
+<details> 
+<summary>Solution</summary> 
+
+```python
+send_admin_alert = partial(send_message, 'sys_admin',  sender='admin-bot', priority=100)
+```
+</details>
+
+
+#### Exercise 4: Configuration Override
+
+The function `create_api_request(endpoint, method="GET", timeout=5)` models an API request.
+
+```python
+def create_api_request(endpoint, method="GET", timeout=5):
+    """Returns a description of an API request."""
+    return f"{method} request to {endpoint} (timeout: {timeout}s)"
+```
+
+Your task is to use functools.partial to create a new callable, post_request, that is pre-configured to make "POST" requests.
+
+Then, demonstrate that calling post_request with a different timeout overrides the default timeout of the original function ​for that specific call only​. Also, show that a subsequent call without a timeout uses the default from the original function.
+
+
+Assertions:
+```python
+import functools
+
+# Your implementation here
+
+# This call should use a 10-second timeout
+urgent_post = post_request("/data", timeout=10)
+assert urgent_post == "POST request to /data (timeout: 10s)"
+
+# This subsequent call should use the original default 5-second timeout
+normal_post = post_request("/log")
+assert normal_post == "POST request to /log (timeout: 5s)"
+```
+
+<details> 
+<summary>Solution</summary> 
+
+```python
+post_request = partial(create_api_request, method="POST")
+```
+</details>
+
+
+#### Exercise 5: Manual Implementation
+
+Your task is to write a higher-order function named `manual_partial`. This function should accept a target callable (func), followed by any number of positional and keyword arguments (*args, **kwargs). It must return a new callable.
+
+When the new callable is invoked, it should accept its own set of positional and keyword arguments. It must then invoke the original func with the combined arguments. The combination rules are:
+
+* Positional arguments from the manual_partial call must come before positional arguments from the later invocation.
+* Keyword arguments from the later invocation must override any keyword arguments with the same name that were provided to manual_partial.
+
+Assertions:
+```python
+def process_items(item_a, item_b, *, category="general", urgent=False):
+    urgency = "URGENT" if urgent else "NORMAL"
+    return f"[{urgency}] Processing {item_a} and {item_b} in {category}"
+
+# Your implementation of manual_partial here
+
+urgent_widgets = manual_partial(process_items, category="widgets", urgent=True)
+assert urgent_widgets("sprocket", "gear") == "[URGENT] Processing sprocket and gear in widgets"
+
+# Test keyword override
+normal_gadgets = manual_partial(process_items, category="widgets", urgent=True)
+assert normal_gadgets("thingamajig", "doohickey", urgent=False) == "[NORMAL] Processing thingamajig and doohickey in widgets"
+
+# Test positional arguments
+process_first_item = manual_partial(process_items, "item-123")
+assert process_first_item("item-456", category="special") == "[NORMAL] Processing item-123 and item-456 in special"
+```
+
+<details> 
+<summary>Solution</summary> 
+
+```python
+def manual_partial(func, *args, **kwargs):
+    def wrapper(*more_args, **more_kwargs):
+        combined_kwargs = {**kwargs, **more_kwargs}
+        return func(*args, *more_args, **combined_kwargs)
+    return wrapper
+                
+```
+
+</details>
+
+#### Exercise 6: Parameter Kind Interactions
+
+The function connect has positional-only, positional-or-keyword, and keyword-only parameters.
+
+```python
+def connect(host, /, port=5432, *, database, user="guest"):
+    """Returns a connection string."""
+    return f"host={host} port={port} dbname={database} user={user}"
+```
+
+Your task is to use functools.partial to create a pre-configured callable `connect_to_prod_db` for the production database "prod_db". This database is located at "prod.db.server.com".
+
+
+Assertions:
+```python
+import functools
+
+# Your implementation here
+
+# Connect as the default 'guest' user
+assert connect_to_prod_db() == "host=prod.db.server.com port=5432 dbname=prod_db user=guest"
+
+# Connect as a specific 'admin' user
+assert connect_to_prod_db(user="admin") == "host=prod.db.server.com port=5432 dbname=prod_db user=admin"
+```
+
+<details> 
+<summary>Solution</summary> 
+
+```python
+connect_to_prod_db = partial(connect,'prod.db.server.com', database='prod_db')
+```
+</details>
+
+
+#### Exercise 7: Behavior Prediction
+
+Consider the following code snippet. Do not run it.
+
+```python
+import functools
+
+def format_data(value, *, prefix="", suffix=""):
+    return f"{prefix}{value}{suffix}"
+
+add_prompt = functools.partial(format_data, prefix="> ")
+add_end_marker = functools.partial(add_prompt, suffix=" <END>")
+
+result = add_end_marker(42)
+```
+
+Analyze the code. Before stating the final value of result, explain the process:
+
+1.  ​What is fixed NOW when add_prompt is created?
+2.  ​What is fixed NOW when add_end_marker is created? What does it store?
+3.  ​What exact call happens LATER when add_end_marker(42) is invoked?
+
+Predict the final value of result.
+
+<details> 
+<summary>Solution</summary> 
+
+
+1. What is fixed NOW when add_prompt is created? 
+
+```prefix = "> "```
+
+2. What is fixed NOW when add_end_marker is created? What does it store? 
+
+```" <END>"```
+
+3. What exact call happens LATER when add_end_marker(42) is invoked?  "partial runs format data and then add prompt" 
+
+```"> 42 <END>"```
+
+</details>
+
+
+#### Exercise 8: Task Scheduler
+
+A system uses a generic `schedule_task` function to add tasks to a queue.
+
+```python
+def schedule_task(task_func, priority, description):
+    """Simulates scheduling a task and returns a confirmation."""
+    return f'Scheduled: "{description}" with priority {priority}.'
+```
+
+Your task is to implement a higher-order function named `create_priority_scheduler`. This function accepts a priority level and returns a new function. The returned function should accept a task_func and a description, and it should use schedule_task to schedule the task with the pre-configured priority. Use functools.partial to achieve this.
+
+Assertions:
+```python
+import functools
+
+# Your implementation of create_priority_scheduler here
+
+def backup_data():
+    pass
+
+def run_analytics():
+    pass
+
+# Create schedulers for high and low priority tasks
+schedule_high_priority = create_priority_scheduler("high")
+schedule_low_priority = create_priority_scheduler("low")
+
+assert schedule_high_priority(backup_data, "Backup critical database") == 'Scheduled: "Backup critical database" with priority high.'
+assert schedule_low_priority(run_analytics, "Generate weekly report") == 'Scheduled: "Generate weekly report" with priority low.'
+```
+
+<details> 
+<summary>Solution</summary> 
+
+```python
+def schedule_task(task_func, description, priority):
+    return f'Scheduled: "{description}" with priority {priority}.'
+
+def create_priority_scheduler(priority):
+    return partial(schedule_task, priority=priority)
+```
+
+</details>
+
+
+#### Exercise 9: Configurable Processor
+
+Write a function `make_processor` that accepts a sequence of callables (processors) and a dictionary of configuration options (config). It must return a new single callable.
+
+When this new callable is invoked with a piece of data, it must:
+
+1. Create a combined context dictionary by merging the config dictionary with a new dictionary {'data': data}. The data value should take precedence if the key "data" exists in config.
+2. Iterate through the processors sequence. For each processor callable, invoke it by passing the combined context dictionary as keyword arguments.
+
+Assertions:
+
+# Your implementation of make_processor here
+```python
+def validate_data(**context):
+    if not context.get('data'):
+        raise ValueError("Data is missing")
+    print(f"Validated data: {context.get('data')}")
+
+def enrich_data(**context):
+    if context.get('enrichment_level') == 'high':
+        print("Enriching data highly...")
+    else:
+        print("Enriching data normally...")
+
+# Example usage (the prints will execute if correct)
+processor_chain = [validate_data, enrich_data]
+app_config = {'enrichment_level': 'high', 'user': 'test'}
+
+process_event = make_processor(processor_chain, app_config)
+
+# This call should print:
+# Validated data: event123
+# Enriching data highly...
+process_event("event123")
+```
+
+<details> 
+<summary>Solution</summary> 
+
+```python
+def make_processor(processors, config):
+    def process(data):
+        combined_context = {**config, "data": data}
+        for arg in processors:
+            result = arg(**combined_context)
+        return result
+    return process
+```
+
+</details>
+
+
+
+[Back to the top](#top)
+
 
 ### General Pass
 
