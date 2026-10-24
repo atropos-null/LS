@@ -14,6 +14,7 @@
 - [Post Written Exam Malaise](#post-written-exam-malaise)
 - [Partial Function Applications, again](#partial-function-applications-again)
 - [General Pass](#general-pass)
+- [Integration Pass](#integration-pass)
 
 
 ### Purity, Side Effects and Nested Mutable Collections
@@ -3000,6 +3001,313 @@ with open('data.txt', 'w+') as f:
     print(f"Read after seek: '{all_content}'")
 
 ```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+[Back to the top](#top)
+
+
+### Integration Pass
+
+#### Exercise 1
+
+Implement a generator function `yield_if`. This function accepts a predicate callable and an iterable. It must iterate over the provided iterable and yield only those elements for which the predicate returns a truthy value. The evaluation must be lazy.
+
+Assertions:
+```python
+def is_even(n):
+    return n % 2 == 0
+
+def is_long_string(s):
+    return len(s) > 10
+
+# Test Case 1: Filtering even numbers
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+even_numbers_generator = yield_if(is_even, numbers)
+
+assert hasattr(even_numbers_generator, '__next__') # Must be a generator
+assert list(even_numbers_generator) == [2, 4, 6, 8, 10]
+
+# Test Case 2: Filtering long strings
+words = ["hello", "world", "a_very_long_string_indeed", "short", "another_long_one"]
+long_words_generator = yield_if(is_long_string, words)
+assert list(long_words_generator) == ["a_very_long_string_indeed", "another_long_one"]
+
+# Test Case 3: Empty input
+assert list(yield_if(is_even, [])) == []
+
+# Test Case 4: No matching items
+assert list(yield_if(is_even, [1, 3, 5])) == []
+
+print("Exercise 1 assertions passed.")
+```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+#### Exercise 2
+
+
+Implement a function `apply_partial_transform`. It must accept three arguments: a two-argument callable `transformer`, a `base_value` to be used as the first argument to the transformer, and an iterable data.
+
+The function must use `functools.partial` to create a new, single-argument callable that is pre-configured with the `base_value`. It then must use the built-in `map` function to apply this new callable to every item in the data iterable. The function should return the `map` iterator directly, without converting it to a list.
+
+Assertions:
+```python
+from functools import partial
+from types import GeneratorType, MapType
+
+def multiply(a, b):
+    return a * b
+
+def power(base, exponent):
+    return base ** exponent
+
+# Test Case 1: Multiply each number by 5
+numbers = [1, 2, 3, 4, 5]
+times_five_iterator = apply_partial_transform(multiply, 5, numbers)
+
+assert isinstance(times_five_iterator, MapType)
+assert list(times_five_iterator) == [5, 10, 15, 20, 25]
+# Verify iterator exhaustion
+assert list(times_five_iterator) == []
+
+# Test Case 2: Raise numbers to the power of 3
+values = [2, 3, 4]
+cubed_iterator = apply_partial_transform(power, 3, values) # power(3, exponent)
+assert list(cubed_iterator) == [9, 27, 81]
+
+print("Exercise 2 assertions passed.")
+```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+#### Exercise 3
+
+Implement a higher-order function `make_batch_formatter`. This function must accept two keyword-only arguments: `prefix` and `suffix`, both strings.
+
+It must return a new function (a closure). This returned function will accept a single argument: an iterable of strings. When called, it must return a generator that yields each string from the input iterable, formatted with the prefix and suffix that were configured when the formatter was created.
+
+Assertions:
+
+```python
+messages = ["File not found", "Connection reset", "Permission denied"]
+
+# Test Case 1: Create a WARN formatter
+warn_formatter = make_batch_formatter(prefix="[WARN] ", suffix=".")
+warn_generator = warn_formatter(messages)
+
+assert hasattr(warn_generator, '__next__') # Must return a generator
+assert list(warn_generator) == [
+    "[WARN] File not found.",
+    "[WARN] Connection reset.",
+    "[WARN] Permission denied."
+]
+
+# Test Case 2: Create an ERROR formatter
+error_formatter = make_batch_formatter(prefix="ERROR: ", suffix=" !!!")
+error_generator = error_formatter(["Disk full", "Invalid input"])
+assert list(error_generator) == [
+    "ERROR: Disk full !!!",
+    "ERROR: Invalid input !!!"
+]
+
+# Test Case 3: A new formatter does not affect an old one
+reused_warn_generator = warn_formatter(messages) # Create a new generator
+assert next(reused_warn_generator) == "[WARN] File not found."
+
+
+print("Exercise 3 assertions passed.")
+```
+
+
+#### Exercise 4
+
+Write a generator function `read_and_filter_file` that accepts a filename and a predicate callable. The function must open and read the specified file, ensuring that the file handle is properly closed after processing, regardless of whether errors occur.
+
+For each line in the file, it should strip any leading or trailing whitespace. If the stripped line is not empty AND the predicate function returns a truthy value for the stripped line, the line should be yielded.
+
+Assertions:
+```python
+import os
+
+def contains_warning(line):
+    return 'WARNING' in line
+
+# Setup: Create a temporary file for testing
+file_content = """
+INFO: System startup
+WARNING: Low disk space
+INFO: User logged in
+  
+ERROR: Critical failure
+WARNING: Configuration deprecated
+"""
+test_filename = "test_log.txt"
+with open(test_filename, "w") as f:
+    f.write(file_content)
+
+# Test Case 1: Filter for lines containing 'WARNING'
+filtered_lines_gen = read_and_filter_file(test_filename, contains_warning)
+
+assert hasattr(filtered_lines_gen, '__next__') # Must be a generator
+assert list(filtered_lines_gen) == [
+    "WARNING: Low disk space",
+    "WARNING: Configuration deprecated"
+]
+
+# Test Case 2: Filter for lines longer than 20 characters
+long_lines_gen = read_and_filter_file(
+    test_filename,
+    lambda line: len(line) > 20
+)
+assert list(long_lines_gen) == [
+    "WARNING: Low disk space",
+    "ERROR: Critical failure",
+    "WARNING: Configuration deprecated"
+]
+
+# Cleanup
+os.remove(test_filename)
+print("Exercise 4 assertions passed.")
+```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+
+#### Exercise 5
+
+Implement a function `build_pipeline` that takes an initial data iterable as its first argument, followed by a variable number of positional arguments (*callables).
+
+The function must construct a lazy processing pipeline where the data is passed through each of the callables in sequence. The output of the first callable becomes the input for the second, the output of the second becomes the input for the third, and so on. The function must return a final iterator that, when consumed, executes this entire lazy pipeline.
+
+Assertions:
+```python
+def to_int(iterable):
+    return map(int, iterable)
+
+def is_positive(iterable):
+    return filter(lambda x: x > 0, iterable)
+
+def square(iterable):
+    return map(lambda x: x * x, iterable)
+
+# Test Case 1: Full pipeline
+raw_data = ["1", "5", "-3", "10", "0", "-8"]
+pipeline = build_pipeline(raw_data, to_int, is_positive, square)
+
+assert hasattr(pipeline, '__next__') # Should be an iterator
+assert list(pipeline) == [1, 25, 100]
+
+# Test Case 2: Different pipeline
+def add_one(iterable):
+    return map(lambda x: x + 1, iterable)
+
+numbers = [1, 2, 3]
+pipeline2 = build_pipeline(numbers, add_one, square)
+assert list(pipeline2) == [4, 9, 16]
+
+# Test Case 3: Pipeline with one processing step
+pipeline3 = build_pipeline([-1, 0, 1], is_positive)
+assert list(pipeline3) == [1]
+
+print("Exercise 5 assertions passed.")
+```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+#### Exercise 6
+
+
+Create a function `create_stateful_aggregator`. This function accepts an initial value. It must return a new callable. Each time this new callable is invoked with a number, it should add the number to an internal, accumulating state and return the new accumulated value. The state must be retained across multiple calls to the returned callable.
+
+Assertions:
+```python
+# Test Case 1: Aggregator starting from 100
+aggregator1 = create_stateful_aggregator(100)
+
+assert callable(aggregator1)
+assert aggregator1(10) == 110
+assert aggregator1(5) == 115
+assert aggregator1(-20) == 95
+
+# Test Case 2: A second, independent aggregator
+aggregator2 = create_stateful_aggregator(0)
+assert aggregator2(1) == 1
+assert aggregator2(1) == 2
+assert aggregator2(1) == 3
+
+# Verify that the first aggregator's state was not affected
+assert aggregator1(5) == 100
+
+print("Exercise 6 assertions passed.")
+
+```
+
+<details> 
+<summary>Solution</summary> 
+</details>
+
+#### Exercise 7
+
+
+Implement a generator function `process_device_data`. It receives an iterable of data tuples, where each tuple is `(device_id, measurement)`. It also receives a variable number of keyword arguments `(**processors)`, where each key is a device_id and each value is a callable designed to process a measurement.
+
+The generator should iterate through the data tuples. For each tuple, it must find the corresponding processor callable from **processors using the `device_id`. If a processor exists for that `device_id`, the generator should call it with the measurement and yield a tuple of `(device_id, processed_value)`.  If no processor is found for a given `device_id`, that data tuple should be ignored.
+
+Assertions:
+```python
+def to_celsius(fahrenheit):
+    return (fahrenheit - 32) * 5.0/9.0
+
+def hpa_to_psi(hpa):
+    return hpa * 0.0145038
+
+# Input data stream
+data_stream = [
+    ('temp_sensor_1', 68),
+    ('pressure_sensor_a', 1013.25),
+    ('temp_sensor_2', 75),
+    ('humidity_sensor_k', 45), # No processor for this device
+    ('pressure_sensor_a', 1015.5),
+]
+
+# Define processors for specific devices
+processors = {
+    'temp_sensor_1': to_celsius,
+    'temp_sensor_2': to_celsius,
+    'pressure_sensor_a': hpa_to_psi,
+}
+
+# Run the processor
+processed_stream = process_device_data(data_stream, **processors)
+result = list(processed_stream)
+
+# Verification
+expected = [
+    ('temp_sensor_1', 20.0),
+    ('pressure_sensor_a', 14.69597535),
+    ('temp_sensor_2', 23.88888888888889),
+    ('pressure_sensor_a', 14.72860890),
+]
+
+assert len(result) == len(expected)
+for res_item, exp_item in zip(result, expected):
+    assert res_item[0] == exp_item[0]
+    assert abs(res_item[1] - exp_item[1]) < 1e-9 # Floating point comparison
+
+print("Exercise 7 assertions passed.")
+```
+
 
 <details> 
 <summary>Solution</summary> 

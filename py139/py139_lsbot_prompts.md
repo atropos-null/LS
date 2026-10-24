@@ -921,3 +921,193 @@ Before displaying each problem, mentally execute the code and verify that:
 - every required mechanism remains within PY139 scope and ordinary earlier Python.
 
 Silently discard and replace any problem that fails validation.
+
+
+## # PY139 — Final Implementation-Focused Mixed Transfer
+
+I'm approaching my Launch School PY139 assessment and want one final bank of **8 implementation-focused mixed-transfer exercises**.
+
+This is not remediation, a general review, or an attempt to discover increasingly obscure weaknesses.
+
+I have already practiced the individual mechanisms extensively. The goal is to verify that I can **construct working Python from English behavioral contracts when several familiar mechanisms interact**.
+
+Generate all 8 exercises in one response.
+
+## Primary Requirement: I Write the Code
+
+**All 8 exercises must require me to design and implement working Python.**
+
+Do not generate output-prediction exercises, code-tracing questions, debugging exercises, or questions that only ask me to explain existing code.
+
+Each exercise must provide:
+
+1. A clear English behavioral contract.
+2. Any necessary input data or existing callable definitions.
+3. Runnable, self-contained assertions demonstrating the required behavior.
+
+I must construct the solution myself, including function signatures, control flow, and callable relationships.
+
+Do not provide implementation stubs, partial solutions, hints, suggested approaches, or pseudocode.
+
+## Concept Pool
+
+Draw selectively from these familiar PY130 mechanisms:
+
+- Generators and `yield`.
+- Lazy evaluation and iterator consumption.
+- Iterator state and exhaustion.
+- `map()` and `filter()`.
+- Higher-order functions.
+- Closures and retained enclosing-scope state.
+- Partial function application using `functools.partial`.
+- `*args` and `**kwargs`.
+- Positional-only, positional-or-keyword, and keyword-only parameters.
+- File objects as iterables.
+- File opening, reading, and resource lifetime.
+- Context managers and `with`.
+
+Each exercise should integrate **two or three mechanisms in a meaningful way**.
+
+Do not force all mechanisms into every exercise.
+
+## Required Reasoning Relationships
+
+Across the eight exercises, require me to construct solutions involving:
+
+- A generator that processes values supplied by another iterable.
+- A lazy transformation pipeline using `map()` or `filter()`.
+- A higher-order function that accepts another callable and processes a sequence.
+- A callable configured during one invocation and used during later iteration.
+- A closure retaining configuration or state across calls.
+- A partially applied callable used during iteration.
+- A function signature with a nontrivial positional/keyword binding contract.
+- A generator that reads and processes a file while managing the file's lifetime correctly.
+
+These are coverage requirements for the **whole set**, not instructions to make eight isolated, single-topic exercises.
+
+Combine the mechanisms differently across exercises.
+
+## Runtime Relationships
+
+The intended integration challenges concern:
+
+**Lazy traversal**
+
+A consumer requests a value → upstream iterators supply values → transformations occur → results are delivered.
+
+**Callable construction**
+
+NOW: a callable and configuration are established.
+
+LATER: additional arguments are supplied.
+
+THEN: the underlying computation runs using the retained configuration.
+
+**Argument binding**
+
+Bind arguments first → identify which callable executes → determine retained state and execution timing → compute last.
+
+Do not display these models as hints alongside individual exercises. They are guidance for constructing good problems.
+
+## Difficulty Progression
+
+- **Exercises 1–2:** Straightforward implementations combining two familiar mechanisms.
+- **Exercises 3–5:** Moderate implementations involving three interacting mechanisms.
+- **Exercises 6–7:** Unsignposted mixed-transfer contracts requiring me to determine which mechanisms are relevant.
+- **Exercise 8:** One final assessment-style integration challenge requiring a complete implementation from the contract.
+
+Do not increase difficulty simply by making later exercises longer.
+
+Rotate the actual reasoning architecture: binding relationships, traversal order, state ownership, closure lifetime, and resource management.
+
+Avoid repeated counters, logging wrappers, basic arithmetic transformers, and cosmetically different versions of the same algorithm.
+
+## Assessment Realism
+
+Keep each exercise solvable in approximately 5–10 minutes by a student familiar with PY130.
+
+The challenge should be coordinating ordinary Python rules, not discovering unfamiliar APIs.
+
+Do not introduce:
+
+- Advanced algorithms.
+- Obscure standard-library functionality.
+- Unnecessary classes.
+- Decorators.
+- Complex parsing.
+- Metaprogramming.
+- Deliberately broken code.
+- Artificial edge cases.
+
+Where a particular Python mechanism is contractually required, state that requirement in ordinary English without revealing the implementation.
+
+Otherwise, allow me to select the appropriate design.
+
+## File-Handling Constraints
+
+My assessment uses CoderPad, so exercises must not depend on manually creating additional source files.
+
+For file-based exercises:
+
+- Provide self-contained setup code that creates the required text file programmatically.
+- Make all initial file contents explicit.
+- Provide cleanup code where appropriate.
+- Do not require multiple project files or external resources.
+- Use ordinary text-file operations and context managers.
+- Ensure lazy execution and file lifetime are compatible with the requested behavior.
+
+File handling should be one ingredient in an integration exercise, not a separate file-processing seminar.
+
+## Tests and Contracts
+
+For every exercise:
+
+- All assertions must be runnable.
+- Every behavioral requirement must be reflected in the tests.
+- The tests must agree with the English contract.
+- Tests must not accidentally impose extra requirements absent from the contract.
+- Resource ownership and observable behavior must be clear.
+- Do not rely on exact exception-message wording.
+- Avoid print-output testing unless printed output is explicitly part of the contract.
+
+The exercise should genuinely require implementation decisions, not merely filling in one obvious expression.
+
+## Prevent Answer Leakage
+
+Use neutral headings: Exercise 1 through Exercise 8.
+
+Do not reveal the intended mechanisms in headings or introductory explanations.
+
+Do not tell me whether to use a closure, `partial`, a generator expression, `map()`, `filter()`, or a particular argument arrangement unless the contract explicitly requires it.
+
+Do not supply solutions, hints, pseudocode, partial implementations, or explanatory comments revealing the approach.
+
+## Internal Validation
+
+Before presenting the problems:
+
+- Verify the code and assertions against Python's actual argument-binding rules.
+- Confirm that all supplied supporting code is valid.
+- Check iterator consumption and exhaustion.
+- Check generator execution timing.
+- Verify closure retention and partial-application behavior.
+- Check file opening, consumption, and closure.
+- Compare contracts and tests clause by clause.
+- Ensure structural diversity.
+- Remove accidental answer leakage.
+
+If a candidate is invalid, replace it before output.
+
+Do not display your validation process.
+
+## Output
+
+**Provide exactly 8 complete exercises in one response.**
+
+Each exercise must contain only its numbered heading, English behavioral contract, necessary supporting code, and runnable assertions.
+
+This is a one-shot generation task. I will work independently in my editor and will not submit my answers back to you.
+
+Do not ask for submissions, offer evaluation, suggest additional practice, or provide solutions.
+
+**Eight implementation problems. Then stop.**
