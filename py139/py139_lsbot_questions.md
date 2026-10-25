@@ -2020,7 +2020,7 @@ def create_applicator(number):
 #### Exercise 6
 
 Contract:
-Write a function named create_specialized_multiplier. It must accept keyword arguments that will be stored for later use. It returns a new function. The returned function accepts a single required positional argument number and multiplies it by the value associated with the factor key from the originally provided keyword arguments. If factor was not provided at creation time, the returned function should raise a ValueError.
+Write a function named `create_specialized_multiplier`. It must accept keyword arguments that will be stored for later use. It returns a new function. The returned function accepts a single required positional argument number and multiplies it by the value associated with the factor key from the originally provided keyword arguments. If factor was not provided at creation time, the returned function should raise a ValueError.
 
 Assertions:
 ```python
@@ -2147,7 +2147,7 @@ def make_counter(*, initial, step):
 
 Contract:
 
-Write a function, create_pipeline, that accepts a variable number of functions as positional arguments. It returns a new function, the pipeline_runner. The pipeline_runner accepts a single initial value. It then passes this value to the first function in the pipeline, takes the result and passes it to the second function, and so on, finally returning the result from the last function.
+Write a function, `create_pipeline`, that accepts a variable number of functions as positional arguments. It returns a new function, the pipeline_runner. The pipeline_runner accepts a single initial value. It then passes this value to the first function in the pipeline, takes the result and passes it to the second function, and so on, finally returning the result from the last function.
 
 Assertions:
 ```python
@@ -2776,6 +2776,15 @@ Verbally describe the different kinds of parameters in this function and explain
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+def process_data(a, b, /, c, d=4, *, e, f, **kwargs):
+    pass
+```
+
+`a` and `b` are positional arguments. They must be supplied in the order it's written. Then `c` and `d` are available to be either positional or keyword arguments. `c` can be either positional or keyword, but `d` has a default attached to it. So supplying this one is optional. The default, however, ensures that it comes behind. Then the `*` states that everything else after must be keyword arguments, so in this case `e` could come after `f` in the call. Finally we have `**kwargs` which collects any remaining keyword arguments into a dictionary.
+
+
 </details>
 
 #### Exercise 2
@@ -2810,6 +2819,35 @@ class TestUserProfile(unittest.TestCase):
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+import unittest
+
+def create_user_profile(username):
+
+    if not username or len(username) < 3:
+        return None
+    result = {
+        'username': username,
+        'is_active': True,
+        'followers': [],
+    }
+    return result
+
+class TestUserProfile(unittest.TestCase):
+    def test_creation_and_defaults(self):
+        test_user = create_user_profile("testing")
+        self.assertIsInstance(test_user, dict)
+        self.assertDictEqual(test_user, {'username': 'testing', 'is_active': True, 'followers': []})
+        self.assertTrue(test_user, {'username': 'testing', 'is_active': True, 'followers': []})
+
+    def test_invalid_username(self):
+        none_test =  create_user_profile("")
+        self.assertIsNone(none_test)
+        
+unittest.main()
+```
+
 </details>
 
 
@@ -2828,6 +2866,13 @@ print(f"Second sum: {sum(squares_gen)}")
 
 <details> 
 <summary>Solution</summary> 
+
+```
+First sum: 30
+Second sum: 0
+```
+
+The first sum completes the calculation while the second sum shows that the calculation had previously been exhausted and the generator frame destroyed.
 </details>
 
 
@@ -2884,6 +2929,13 @@ For each of the five scenarios below, identify and briefly explain the primary s
  
 <details> 
 <summary>Solution</summary> 
+
+1. Exception
+2. Global State Modification
+3. Object Mutation and Global State Modification
+4. Object Mutation
+5. I/O Operations
+
 </details>   
 
 #### Exercise 5
@@ -2891,7 +2943,7 @@ For each of the five scenarios below, identify and briefly explain the primary s
 Assume you have two files, `config.py` and `main.py`, in the same directory with the contents shown below.
 
 ```python
-File: config.py
+#File: config.py
 
 API_KEY = "default-key"
 TIMEOUT = 10
@@ -2900,7 +2952,7 @@ def get_setting(key):
     return f"Setting: {key}"
 
 
-File: main.py
+#File: main.py
 
 from config import *
 
@@ -2917,9 +2969,17 @@ If you run python `main.py` from your terminal, what will be the output? Explain
 <summary>Solution</summary> 
 </details>
 
+```
+API Key: default-key
+Timeout: 20
+Setting: TIMEOUT
+```
+
+`from config import *` copies the exported names into `main.py`’s namespace. After that, `TIMEOUT = 20` rebinds the name `TIMEOUT` in `main.py`. It does not change `config.TIMEOUT`. Importing a function brings over the function object; calling it still executes the code defined in that function, but here that code only uses its parameter key, not the module variable TIMEOUT.
+
 #### Exercise 6
 
-Imagine a colleague is new to writing tests with Python's unittest framework. In a brief, conversational explanation (2-3 paragraphs), describe the following concepts to them:
+Imagine a colleague is new to writing tests with Python's unittest framework. In a brief, conversational explanation, describe the following concepts to them:
 
 - The SEAT approach for structuring a test.
 - The purpose of the setUp and tearDown methods in a test class.
@@ -2927,6 +2987,18 @@ Imagine a colleague is new to writing tests with Python's unittest framework. In
 
 <details> 
 <summary>Solution</summary> 
+
+Ok so SEAT stands for Set Up - Execute - Assert - Tear Down. Testing is like running a mini labratory on a piece of code. In every experiment you need the starting parameters, the set up, and then you need some transformation to occur on the subject, which is the Execute. Then you need to Assert, that is take the measurement, and Tear Down is the resetting up for the next test subject. Set Up gives a new object for your experiment and Tear Down releases any connections to outside of the test that may have been incurred during the testing. You always need clean lab equipment and this is the coding equivalent. Lastly code coverage means that all lines of the program have been tested, but doesn't mean that any meaning can be derived from said coverage.
+
+It does not tell you:
+“The behavior was correct.”
+“The assertions were meaningful.”
+“Important edge cases were covered.”
+“Every logical path was exercised.”
+“The tests would catch a regression.”
+
+So 100% line coverage can still coexist with terrible tests.
+
 </details>
 
 #### Exercise 7
@@ -2943,6 +3015,15 @@ print(multipliers[2](10))
 
 <details> 
 <summary>Solution</summary> 
+
+The classic late binding closure trap. Prints 30.
+
+If you want the current loop frozen at creation time, it is:
+
+```python
+multipliers.append(lambda x, i=i: i * x)
+```
+
 </details>
 
 #### Exercise 8
@@ -2972,6 +3053,21 @@ print(result3)
 
 <details> 
 <summary>Solution</summary> 
+
+```result1 = process_items(numbers, double)```
+
+`[2, 4, 6]` new object was returned 
+
+```result2 = process_items(numbers, to_string)``` 
+
+`["1", "2", "3"]` old object was left alone so it gives strings to the original digits
+
+`result3 = process_items(numbers, lambda x: x % 2 == 0)` 
+
+`[False, True, False]`
+
+A higher order function is a function that accepts a function as an argument and/or returns a function. It does not have to do both, but it can if it wants to.
+
 </details>
 
 
@@ -2983,6 +3079,38 @@ Briefly outline the essential files and directory structure you would create for
 
 <details> 
 <summary>Solution</summary> 
+
+```
+text_analyzer/
+├── pyproject.toml
+└── text_analyzer/
+    ├── __init__.py
+    ├── files.py
+    └── contains.py
+```
+
+pyproject.toml lives at the project root and contains the project metadata and build-system configuration needed for packaging/installing the project. The inner text_analyzer/ directory is the actual Python package. __init__.py marks/initializes the package and can control what the package exposes. files.py and contains.py are modules containing the utility’s code.
+
+The outer directory is the project. The inner directory is the importable package. __init__.py belongs with the package modules.
+
+`pip` installs and manages Python distribution packages and their dependencies.
+
+And the pipeline is:
+
+```
+SOURCE PROJECT
+      ↓
+pyproject.toml
+      ↓
+build system
+      ↓
+distribution artifacts
+   ↙           ↘
+wheel         sdist
+      ↓
+pip can install them
+```
+
 </details>
 
 #### Exercise 10
@@ -3004,6 +3132,27 @@ with open('data.txt', 'w+') as f:
 
 <details> 
 <summary>Solution</summary> 
+
+open with w+
+→ file truncated
+→ position = 0
+
+write "first\n"
+→ position moves forward
+
+write "second"
+→ position now at EOF
+
+read()
+→ starts at EOF
+→ returns ''
+
+seek(0)
+→ move position back to beginning
+
+read()
+→ returns entire file
+
 </details>
 
 [Back to the top](#top)
@@ -3046,6 +3195,14 @@ print("Exercise 1 assertions passed.")
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+def yield_if(predicate, collection):
+    for item in collection:
+        if predicate(item):
+            yield item
+```
+
 </details>
 
 #### Exercise 2
@@ -3085,6 +3242,15 @@ print("Exercise 2 assertions passed.")
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+
+def apply_partial_transform(transformer, base_value, data):
+
+    transformed = partial(transformer, base_value)
+    return map(transformed, data)
+```
+
 </details>
 
 #### Exercise 3
@@ -3124,6 +3290,19 @@ assert next(reused_warn_generator) == "[WARN] File not found."
 
 print("Exercise 3 assertions passed.")
 ```
+
+<details> 
+<summary>Solution</summary> 
+
+```python
+def make_batch_formatter(*, prefix, suffix):
+    def wrapper(collection):
+        for item in collection:
+            yield f"{prefix}{item}{suffix}"
+    return wrapper
+```
+
+</details>
 
 
 #### Exercise 4
@@ -3179,6 +3358,17 @@ print("Exercise 4 assertions passed.")
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+
+def read_and_filter_file(filename, predicate):
+    with open(filename, "r") as file:
+        for line in file:
+            result = line.strip()
+            if predicate(result):
+                yield result
+```
+
 </details>
 
 
@@ -3223,42 +3413,19 @@ print("Exercise 5 assertions passed.")
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+def build_pipeline(collection, *callables):
+
+    current = collection
+    for func in callables:
+        current = func(current)
+    return current
+```
+
 </details>
 
 #### Exercise 6
-
-
-Create a function `create_stateful_aggregator`. This function accepts an initial value. It must return a new callable. Each time this new callable is invoked with a number, it should add the number to an internal, accumulating state and return the new accumulated value. The state must be retained across multiple calls to the returned callable.
-
-Assertions:
-```python
-# Test Case 1: Aggregator starting from 100
-aggregator1 = create_stateful_aggregator(100)
-
-assert callable(aggregator1)
-assert aggregator1(10) == 110
-assert aggregator1(5) == 115
-assert aggregator1(-20) == 95
-
-# Test Case 2: A second, independent aggregator
-aggregator2 = create_stateful_aggregator(0)
-assert aggregator2(1) == 1
-assert aggregator2(1) == 2
-assert aggregator2(1) == 3
-
-# Verify that the first aggregator's state was not affected
-assert aggregator1(5) == 100
-
-print("Exercise 6 assertions passed.")
-
-```
-
-<details> 
-<summary>Solution</summary> 
-</details>
-
-#### Exercise 7
-
 
 Implement a generator function `process_device_data`. It receives an iterable of data tuples, where each tuple is `(device_id, measurement)`. It also receives a variable number of keyword arguments `(**processors)`, where each key is a device_id and each value is a callable designed to process a measurement.
 
@@ -3305,12 +3472,23 @@ for res_item, exp_item in zip(result, expected):
     assert res_item[0] == exp_item[0]
     assert abs(res_item[1] - exp_item[1]) < 1e-9 # Floating point comparison
 
-print("Exercise 7 assertions passed.")
+print("Exercise 6 assertions passed.")
 ```
 
 
 <details> 
 <summary>Solution</summary> 
+
+```python
+def process_device_data(data, **processors):
+
+    for element in data:
+        device_id, measurement = element
+        if device_id in processors:
+            processed_value = processors[device_id](measurement)
+            yield (device_id, processed_value)
+```
+
 </details>
 
 [Back to the top](#top)
