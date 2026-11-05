@@ -579,3 +579,336 @@ The entire process depends on agreed rules, distributed forwarding information, 
 7. **When does the process stop?** What condition constitutes successful delivery, termination, or failure?
 
 **Central principle of Lesson 1:** The Internet works because independent systems coordinate through standardized protocols, hierarchical addressing, layered responsibilities, and distributed forwarding decisions—without requiring shared memory or a single controller for the entire network.
+
+# LS170 — Lesson 2: The Transport Layer
+## Notes 1: Process Communication, Ports, and Sockets
+
+### 1. The Purpose of the Transport Layer
+
+The Internet Protocol (IP) provides host-to-host communication, allowing data to travel from one computer to another. However, multiple applications or processes may be communicating over the network simultaneously on the same host. Delivering data to the correct computer is therefore insufficient: the operating system must also determine which application should receive it. The transport layer provides **process-to-process communication**, using port numbers to identify communication endpoints. It can also provide additional services, such as reliable delivery, depending on the transport protocol.
+
+**Central distinction:** IP addresses identify network interfaces associated with hosts; port numbers identify communication endpoints within those hosts.
+
+### 2. Ports, Multiplexing, and Demultiplexing
+
+A **port number** is a 16-bit identifier used by transport protocols to distinguish communication endpoints. A host can support numerous simultaneous network communications because different applications and connections can be associated with different ports.
+
+**Multiplexing** occurs on the sending side, where data from multiple application communications is passed through the transport layer for transmission. **Demultiplexing** occurs on the receiving side, where the operating system uses transport-layer information to deliver incoming data to the appropriate socket.
+
+For example, a browser might use local port `53001` to communicate with a web server on remote port `443`. For incoming data returning to the browser, the source port is `443` and the destination port is `53001`.
+
+### 3. TCP Connections and the Four-Tuple
+
+A TCP connection is identified by a combination of four values, commonly called a **four-tuple**:
+
+- Source IP address
+- Source port number
+- Destination IP address
+- Destination port number
+
+This is important because multiple clients can connect to the same server IP address and port simultaneously. The server does not require a different listening port for each client. Instead, the unique combination of endpoint addresses and ports distinguishes the established TCP connections.
+
+For example, two clients may connect to server `203.0.113.50:443`, while using different source addresses or source ports. Both connections share the same server endpoint but have distinct four-tuples.
+
+### 4. Listening Sockets and Connected Sockets
+
+A **socket** is an operating-system-managed communication endpoint exposed to applications through a socket API.
+
+A server begins by requesting a socket, binding it to a local address and port, and putting it into a listening state. The listening socket makes the server available for incoming TCP connection requests but does not itself represent an individual established client conversation.
+
+When a client initiates a connection, the client and server operating systems perform TCP's three-way handshake:
+
+**SYN → SYN-ACK → ACK**
+
+During this exchange, the operating systems establish and maintain connection-specific state. Once the connection is established, it can wait in the server's queue of completed connections until the application accepts it.
+
+The server application calls `accept()` on the listening socket. This operation returns a **new connected socket**, which the application uses to communicate with that particular client. The original listening socket remains available for additional connections.
+
+Consequently, one server can simultaneously maintain a listening socket and multiple connected sockets, all sharing the same local port but representing different TCP connections.
+
+### 5. State Ownership and Runtime Boundaries
+
+The **application** maintains references to socket objects and uses socket API operations to request communication.
+
+The **operating system** manages the underlying sockets, TCP connection states, send and receive buffers, and connection queues.
+
+The **TCP segments** carry addressing information, control information, and potentially application data. They do not themselves store the entire ongoing connection state.
+
+Ordinary IP routers forward packets toward their destinations; they do not maintain the endpoints' TCP connection state.
+
+An established TCP connection is not a reserved physical route through the network. It is a logical relationship supported by state maintained at the two endpoints. Individual packets may still follow different network paths.
+
+### 6. Runtime Sequence: Establishing a Server Connection
+
+1. **Socket creation:** The server application asks its OS to create a socket.
+2. **Binding:** The application associates the socket with a local address and port.
+3. **Listening:** The socket becomes available to accept incoming TCP connection requests.
+4. **Client initiation:** A remote client requests a connection.
+5. **TCP handshake:** The endpoint operating systems establish the connection and its state.
+6. **Acceptance:** The server application calls `accept()` and obtains a connected socket for that client.
+7. **Communication:** The application reads and writes data through the connected socket, while the OS manages the TCP protocol.
+
+The operating system can complete the TCP handshake and buffer incoming data before the server application calls `accept()`.
+
+### Governing Principles
+
+**Host delivery is not process delivery.** The transport layer provides the additional mechanism needed to direct data to the correct communication endpoint.
+
+**A listening socket is not an established connection.** It provides the entry point through which new connections can be accepted.
+
+**A shared local port does not imply shared connection state.** TCP distinguishes simultaneous connections by their complete four-tuples.
+
+**Protocol execution is distinct from application execution.** The operating system can establish and maintain TCP connections independently of when the application chooses to interact with them.
+
+# LS170 — Lesson 2: The Transport Layer
+## Notes 2: Network Reliability
+
+### 1. Reliability Is Engineered
+
+The underlying network is inherently unreliable. IP packets can be lost, corrupted, or delivered out of order. IP itself does not guarantee recovery from these failures.
+
+A reliable transport protocol must therefore establish additional rules to detect missing or duplicate data, recover from losses, and provide ordered delivery.
+
+**Governing principle:** Reliability is not an inherent property of transmission. It emerges from coordinated behavior between sender and receiver.
+
+### 2. Building a Reliable Protocol
+
+Launch School develops a simplified protocol incrementally, introducing mechanisms as problems arise.
+
+**Version 1 — Acknowledgments (ACKs)**
+
+The sender transmits one message and waits for acknowledgment before proceeding. The receiver sends an ACK when it successfully receives the message.
+
+Problem: If either the message or its acknowledgment disappears, the sender can wait indefinitely.
+
+**Version 2 — Timeouts and Retransmission**
+
+The sender starts a timer when transmitting. If no acknowledgment arrives before the timeout expires, it retransmits the message.
+
+Problem: An acknowledgment might be lost even though the receiver successfully received the original message. Retransmission can therefore create duplicates.
+
+**Version 3 — Sequence Numbers**
+
+Messages receive identifiers called sequence numbers. The receiver can recognize retransmitted messages and discard duplicates while acknowledging their receipt.
+
+Together, acknowledgment, timeout, retransmission, and sequence-number mechanisms address the fundamental problems of reliable data delivery.
+
+### 3. Sender and Receiver State
+
+Reliability requires state at both endpoints.
+
+**Sender state:** Tracks transmitted but unacknowledged data, retains copies for possible retransmission, maintains sequence-number information, and manages retransmission timers.
+
+**Receiver state:** Tracks received data and sequence numbers, detects duplicates or missing data, and generates acknowledgments.
+
+The protocol's next action depends on events such as receiving data, receiving an acknowledgment, or a timeout expiring.
+
+A timeout does not prove that data was lost. It establishes that confirmation has not arrived within the expected interval.
+
+**Timeout trade-off:** A timeout that is too short causes unnecessary retransmissions and network traffic; one that is too long delays recovery from genuine loss. TCP uses network timing measurements to adapt its retransmission timeout.
+
+### 4. Stop-and-Wait Versus Pipelining
+
+**Stop-and-wait** allows only one outstanding message at a time. Although straightforward, it wastes transmission capacity while the sender waits for acknowledgments, particularly when round-trip time is large.
+
+**Pipelining** permits multiple transmissions before their acknowledgments arrive. This improves throughput but requires tracking several outstanding messages simultaneously.
+
+A **sliding window** limits how much unacknowledged data may be in flight. As acknowledgments arrive, the window advances, permitting further transmission.
+
+Launch School introduces Go-Back-N and Selective Repeat as two approaches to pipelined reliable delivery.
+
+### 5. TCP Byte Sequencing and Cumulative Acknowledgments
+
+Our discussion extended the simplified message-based protocol to TCP's actual byte-stream model.
+
+TCP sequence numbers identify positions in a stream of bytes, rather than numbering whole application messages.
+
+A **cumulative ACK** identifies the next byte expected in sequence.
+
+Example:
+
+- Bytes 0–99 received.
+- Bytes 100–199 missing.
+- Bytes 200–299 received out of order.
+
+The cumulative ACK remains **100**, because that is the earliest missing byte.
+
+If bytes 100–199 subsequently arrive, the ACK can advance directly to **300**, because bytes through 299 are now present in a continuous sequence.
+
+Receiving later bytes does not mean the receiver can expose them to the application before the missing earlier bytes have arrived. TCP may buffer out-of-order bytes until the gap is resolved.
+
+### 6. Transport Reliability Versus Application Success
+
+A TCP acknowledgment establishes receipt at the transport layer, not completion of the receiving application's work.
+
+For example, an order may reach a restaurant server's TCP receive buffer and be acknowledged, but the server could crash before the kitchen processes it.
+
+TCP retransmission and application-level retries are therefore different problems. TCP recognizes duplicate bytes within a connection; the application must recognize duplicate logical operations, such as submitting the same order twice.
+
+**Governing distinction:** Successful delivery of bytes does not guarantee successful processing of their meaning.
+
+### 7. The Central Trade-Off
+
+Reliable delivery introduces additional state, buffering, acknowledgments, timers, retransmissions, and potential latency. Pipelining improves efficiency, but makes state management more complex.
+
+The engineering challenge is to deliver data reliably while making efficient use of network capacity.
+
+**Core model:**
+
+SEND → RETAIN → WAIT FOR ACK
+
+- ACK received → mark data acknowledged and advance.
+- Timeout → retransmit unacknowledged data.
+- Duplicate received → recognize and discard duplicate data.
+- Window capacity available → permit additional transmission.
+
+# LS170 — Lesson 2: The Transport Layer
+## Notes 3: TCP — Connection Establishment, Flow Control & Congestion Control
+
+### 1. Transmission Control Protocol (TCP)
+
+TCP is a **connection-oriented, reliable, full-duplex transport protocol**. It provides applications with an ordered stream of bytes, despite operating over an IP network that does not guarantee delivery or ordering.
+
+TCP implements many of the reliability mechanisms introduced in 02_03, including sequence numbers, acknowledgments, retransmission, timeouts, and sliding windows.
+
+**Connection-oriented** means that the endpoints establish a logical connection and maintain connection-specific state before ordinary data exchange.
+
+**Full-duplex** means both endpoints can transmit and receive data simultaneously. Each direction has independent sequence numbers and acknowledgment tracking.
+
+### 2. TCP Segments
+
+TCP transmits data in units called **segments**, consisting of a TCP header and a payload.
+
+Important TCP header fields include:
+
+| Field | Purpose |
+|---|---|
+| Source / destination ports | Identify communication endpoints |
+| Sequence number | Identifies the position of data in the byte stream |
+| Acknowledgment number | Identifies the next expected byte from the other endpoint |
+| Control flags | Indicate protocol actions such as SYN, ACK, and FIN |
+| Window size | Advertises receiving capacity |
+| Checksum | Detects corruption of the TCP segment |
+
+These fields provide the information needed to identify connections, track transmitted data, manage reliability, and coordinate communication between endpoints.
+
+### 3. TCP Connection Establishment: Three-Way Handshake
+
+Before ordinary data communication, TCP establishes a connection through a **three-way handshake**:
+
+**SYN → SYN-ACK → ACK**
+
+1. **Client sends SYN:** The client initiates connection establishment and communicates its initial sequence number. Its state becomes `SYN-SENT`.
+2. **Server sends SYN-ACK:** The server acknowledges the client's SYN and communicates its own initial sequence number. Its state becomes `SYN-RECEIVED`.
+3. **Client sends ACK:** The client acknowledges the server's SYN. The client enters `ESTABLISHED`; the server enters `ESTABLISHED` upon receiving the final ACK.
+
+The server's SYN-ACK performs two functions: acknowledging the client's initiation and establishing the server's own sequence-number space. It does not initiate a second TCP connection.
+
+**Governing principle:** One TCP connection contains two independently numbered directions of communication.
+
+### 4. Connection State Is Distributed
+
+Each endpoint's operating system independently maintains its own TCP connection state.
+
+The two endpoints therefore do not necessarily transition between states simultaneously.
+
+For example, suppose the client's final ACK is lost:
+
+- The client has sent its ACK and entered `ESTABLISHED`.
+- The server has not received the ACK and remains in `SYN-RECEIVED`.
+- The server can retransmit its SYN-ACK after a timeout.
+- The client can acknowledge the retransmitted SYN-ACK, allowing the server to enter `ESTABLISHED`.
+
+The server can also complete establishment when it receives a suitable acknowledgment accompanying subsequent client data.
+
+**Important distinction:** A TCP connection is not a dedicated physical route. It is a logical communication relationship maintained through state at the endpoints. Routers forward IP packets without maintaining the endpoints' TCP connection states.
+
+The next state transition is determined by incoming TCP segments, application operations, and timer events.
+
+### 5. Flow Control: Protecting the Receiver
+
+**Flow control prevents a fast sender from overwhelming a slower receiver.**
+
+Incoming data is temporarily held in the receiving operating system's **receive buffer** until the application consumes it through operations such as `recv()`.
+
+Because buffer capacity is finite, the receiver must communicate how much additional data it can accommodate.
+
+TCP uses an advertised **receive window (`rwnd`)** for this purpose.
+
+The fundamental sequence is:
+
+1. The sender transmits data.
+2. The receiver's OS places incoming bytes in its receive buffer.
+3. Available buffer capacity decreases.
+4. The receiver advertises its available capacity to the sender.
+5. The receiving application calls `recv()`, consuming buffered bytes.
+6. Buffer space becomes available again, allowing the receiver to advertise a larger window.
+
+The sending TCP implementation uses the advertised window to limit outstanding data.
+
+If the receiver advertises a **zero window**, the sender stops transmitting additional ordinary data until capacity becomes available.
+
+#### Zero-Window Recovery
+
+A problem can arise if the receiver frees buffer space but its updated window advertisement is lost.
+
+The sender still believes that the receive window is zero, although the receiver now has capacity.
+
+TCP addresses this situation through a **persist timer** and zero-window probes, allowing the sender to solicit updated information rather than waiting indefinitely.
+
+**Governing principle:** Flow control depends on the receiver communicating its available capacity, not merely possessing that capacity.
+
+### 6. Congestion Control: Protecting the Network
+
+Flow control addresses the receiving host's limitations, but the network itself also has finite capacity.
+
+Routers and network links can become congested when traffic arrives faster than it can be forwarded. Congestion can produce queueing delays and packet loss.
+
+**Congestion control regulates the sender's transmission behavior in response to network conditions.**
+
+TCP maintains a **congestion window (`cwnd`)**, which constrains the amount of outstanding data permitted by its congestion-control algorithm.
+
+Unlike the receive window, which reflects the receiver's available capacity, the congestion window reflects the sender's assessment of network conditions.
+
+| Flow Control | Congestion Control |
+|---|---|
+| Protects the receiver | Protects the network |
+| Concerned with receive-buffer capacity | Concerned with network capacity and congestion |
+| Uses advertised receive window (`rwnd`) | Uses congestion window (`cwnd`) |
+| Receiver communicates available capacity | Sender adjusts its behavior based on congestion signals |
+
+TCP must respect both limitations. In simplified terms, its permitted outstanding data is constrained by:
+
+**Effective window = min(rwnd, cwnd)**
+
+A large receive window does not solve network congestion. Likewise, an uncongested network cannot compensate for a receiver whose buffer is full.
+
+### 7. Runtime and State Ownership
+
+**Application layer:** Produces and consumes meaningful data. The receiving application initiates reads through the socket API.
+
+**Sender OS:** Maintains transmitted and unacknowledged data, TCP sequence numbers, retransmission timers, connection state, and congestion-control state.
+
+**Receiver OS:** Maintains connection state, received data, receive-buffer capacity, acknowledgment information, and the advertised receive window.
+
+**Network:** Carries packets between endpoints. It may introduce loss, delays, reordering, or congestion.
+
+No single participant possesses complete information about the entire system. TCP coordinates endpoint behavior by exchanging control information and reacting to events.
+
+### 8. Consolidated Principles
+
+**Connection establishment:** TCP uses a handshake to establish endpoint state and synchronize sequence-number information.
+
+**Reliability:** Sequence numbers, acknowledgments, buffering, timers, and retransmission allow TCP to recover from unreliable delivery.
+
+**Flow control:** The sender must not exceed the receiving endpoint's advertised capacity.
+
+**Congestion control:** The sender must also account for limitations in the intervening network.
+
+**State ownership:** TCP connection state exists at the endpoints, and each endpoint updates its own state independently.
+
+**Overall model:**
+
+APPLICATION WRITES → TCP MANAGES TRANSMISSION → NETWORK CARRIES PACKETS → RECEIVING TCP BUFFERS DATA → APPLICATION READS
+
+TCP manages the mechanics of reliable, ordered byte delivery. The applications remain responsible for interpreting and processing the data.
