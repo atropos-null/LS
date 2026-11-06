@@ -912,3 +912,354 @@ No single participant possesses complete information about the entire system. TC
 APPLICATION WRITES → TCP MANAGES TRANSMISSION → NETWORK CARRIES PACKETS → RECEIVING TCP BUFFERS DATA → APPLICATION READS
 
 TCP manages the mechanics of reliable, ordered byte delivery. The applications remain responsible for interpreting and processing the data.
+
+# LS170 — Lesson 2: Transport Layer
+## Expanded Study Notes — November 6, 2026
+
+### 1. The governing transport-layer model
+
+The network layer, through IP, provides communication between hosts. The transport layer extends that service to communication between processes.
+
+**Application → Transport → IP → Network → IP → Transport → Application**
+
+The application produces or consumes meaningful data. The transport protocol defines how data is represented and delivered between application endpoints.
+
+Transport-layer port numbers support process-to-process communication. The operating system uses sockets to expose transport services to applications.
+
+The two principal transport protocols studied in this lesson are:
+
+- **TCP:** Connection-oriented, reliable, ordered byte-stream service.
+- **UDP:** Connectionless, best-effort datagram service.
+
+The fundamental design difference is which responsibilities the transport protocol assumes and which remain with the application.
+
+---
+
+### 2. TCP connection termination
+
+TCP is full-duplex: the two endpoints can send data independently in both directions.
+
+Therefore, closing one direction does not automatically mean the other direction must close at the same instant.
+
+A typical graceful termination involves:
+
+1. Endpoint A sends `FIN`, indicating that it has finished sending application data.
+2. Endpoint B acknowledges with `ACK`.
+3. B may continue sending its remaining data.
+4. B eventually sends its own `FIN`.
+5. A acknowledges B's `FIN`.
+
+**Half-close:** One endpoint has finished sending but can still receive data from the other endpoint.
+
+**TIME-WAIT:** After the active closer acknowledges the other endpoint's FIN, it ordinarily remains in TIME-WAIT for a period rather than immediately discarding all connection-related state.
+
+This helps the endpoint acknowledge a retransmitted FIN if the final ACK was lost and allows delayed packets from the old connection to expire.
+
+**State transition principle:** A connection does not become fully finished merely because one application has stopped sending. TCP must manage both directions and complete the termination protocol.
+
+---
+
+### 3. Where TCP lives and who owns the state
+
+TCP is ordinarily implemented within the operating system's networking stack.
+
+The application interacts with TCP through the socket API. The kernel maintains the transport state required to manage communication.
+
+**Application responsibilities:**
+- Produce the data to send.
+- Read received data.
+- Decide what the data means.
+- Determine whether an application operation succeeded.
+
+**TCP implementation responsibilities:**
+- Maintain connection state.
+- Track sequence and acknowledgment numbers.
+- Manage send and receive buffers.
+- Retransmit unacknowledged data when appropriate.
+- Maintain timers.
+- Implement flow control and congestion control.
+
+A TCP connection can be established but idle. TCP does not invent application data or transmit additional data merely because window capacity is available.
+
+**Governing rule:** The application decides what to communicate. TCP manages the transport behavior.
+
+---
+
+### 4. Outstanding data
+
+**Outstanding data** consists of bytes transmitted by TCP but not yet acknowledged.
+
+It includes data that may already have arrived at the receiver but whose acknowledgment has not yet reached the sender.
+
+Outstanding data is different from unsent application data waiting in the sender's buffer.
+
+Example:
+
+- Application supplies 10,000 bytes.
+- TCP transmits 3,000 bytes.
+- No acknowledgments have arrived yet.
+- 3,000 bytes are outstanding.
+- 7,000 bytes remain unsent.
+
+When acknowledgments arrive, the sender can advance its understanding of which bytes have been received and free the corresponding outstanding-data allowance.
+
+---
+
+### 5. Flow control versus congestion control
+
+These mechanisms regulate transmission for different reasons.
+
+| | Flow control | Congestion control |
+|---|---|---|
+| Main concern | Receiving host capacity | Network congestion |
+| Window | `rwnd` | `cwnd` |
+| Information source | Receiver | Sender's network observations |
+| Immediate purpose | Avoid overflowing the receiving TCP buffer | Avoid excessive outstanding traffic in the network |
+
+**Receive window (`rwnd`)**
+
+The receiving TCP implementation advertises how much additional data it can accept.
+
+If the receiving application is slow to consume data, its operating system's receive buffer can fill, shrinking the advertised receive window.
+
+When the application reads buffered data, capacity may become available again.
+
+**Congestion window (`cwnd`)**
+
+The sender's TCP implementation maintains a congestion window based on congestion-control feedback.
+
+It reflects the sender's current transmission allowance, not a direct measurement of the path's total capacity.
+
+**Effective outstanding-data limit ≈ `min(rwnd, cwnd)`.**
+
+This is a limit on permission, not an instruction to transmit. TCP must also have data available to send.
+
+---
+
+### 6. Slow start and congestion avoidance
+
+TCP cannot assume that the network can safely accommodate unlimited outstanding data.
+
+It therefore needs a method for probing usable capacity and responding to feedback.
+
+**Slow start** begins with a limited congestion window and increases the permitted outstanding data rapidly as acknowledgments arrive.
+
+In a simplified example, the window may approximately double over successive round-trip times:
+
+`1 → 2 → 4 → 8 → 16`
+
+The numbers are illustrative; actual implementations and initial window sizes vary.
+
+As TCP moves into **congestion avoidance**, growth becomes more cautious.
+
+When a congestion-control algorithm detects congestion, it may reduce the sender's congestion window.
+
+#### Temporal ordering
+
+1. Application data is available.
+2. TCP checks its current sending allowance.
+3. TCP transmits permitted data.
+4. Feedback arrives, or congestion is inferred.
+5. TCP updates its congestion-control state.
+6. The updated allowance constrains subsequent transmission.
+
+**A window reduction cannot recall bytes already transmitted.** It restricts new transmissions until sufficient capacity becomes available.
+
+The application data still awaiting transmission generally remains buffered.
+
+The essential feedback loop is:
+
+**Transmit → Observe feedback → Update state → Adjust future transmission.**
+
+---
+
+### 7. TCP's costs and limitations
+
+TCP's services require additional machinery.
+
+**Connection-establishment latency:** A three-way handshake establishes the connection before the ordinary TCP data exchange.
+
+**State and processing overhead:** TCP must track acknowledgments, sequence numbers, windows, buffers, and retransmission timers.
+
+**Head-of-line blocking:** TCP provides an ordered byte stream. If an earlier range of bytes is missing, TCP cannot deliver later bytes ahead of that missing range to the application, even when those later bytes have already arrived.
+
+This is not an accidental weakness. It follows from the ordered-delivery guarantee TCP promises.
+
+**Design principle:** Reliability and ordering provide important benefits, but they introduce constraints and costs.
+
+---
+
+### 8. UDP — User Datagram Protocol
+
+UDP provides connectionless, best-effort, process-to-process communication.
+
+Unlike TCP, it does not establish a transport connection through a handshake before sending application data.
+
+UDP provides:
+
+- Source and destination port numbers.
+- Datagram length information.
+- A checksum for error detection.
+- Preservation of individual datagram boundaries.
+
+UDP does **not** provide:
+
+- Guaranteed delivery.
+- Guaranteed ordering.
+- Automatic retransmission of lost datagrams.
+- TCP-style acknowledgment and sliding-window mechanisms.
+- Built-in TCP-like congestion control.
+
+A datagram can be lost, duplicated, or delivered out of order. UDP does not automatically repair these conditions.
+
+The receiving operating system still maintains sockets and buffers. *Connectionless* does not mean that no local operating-system state exists.
+
+#### UDP runtime
+
+1. An application supplies a message and destination.
+2. UDP adds its header to form a datagram.
+3. IP attempts delivery to the destination host.
+4. If the datagram arrives and is accepted, UDP identifies the appropriate receiving socket.
+5. The application reads and interprets the message.
+
+No TCP-style acknowledgment or connection-state transition is required between datagram transmissions.
+
+---
+
+### 9. Byte streams versus datagrams
+
+**TCP is byte-stream-oriented.**
+
+If an application makes two writes:
+
+`HELLO`
+
+`WORLD`
+
+The receiver observes an ordered stream of bytes containing `HELLOWORLD`, but its read operations need not correspond to the two original writes.
+
+The application must define its own message boundaries when necessary.
+
+**UDP is datagram-oriented.**
+
+Each datagram is a separate message. If both datagrams arrive and are read with adequate buffers, the application can receive `HELLO` and `WORLD` as distinct messages.
+
+However, UDP does not guarantee that both arrive or that `HELLO` arrives first.
+
+This is a difference in the representation presented to the application, not just a difference in reliability.
+
+---
+
+### 10. Selective reliability and application design
+
+UDP permits applications to determine which messages deserve additional protection.
+
+Consider a multiplayer game:
+
+**Position updates**
+
+A newer position may make an older position obsolete. If an intermediate update is lost, the receiving application might continue using the latest valid position.
+
+Sequence numbers or timestamps can help identify stale data. Interpolation can estimate missing intermediate movement.
+
+**Inventory changes**
+
+A rare item, currency transfer, or earned reward cannot necessarily be discarded simply because a later message arrives.
+
+The application may require confirmation, retries, unique transaction identifiers, and durable storage.
+
+**Dependent events**
+
+An attack may depend on the player's position or another aspect of game state.
+
+UDP does not know the semantic relationship between these messages. The application must decide whether to accept the attack, reject it, or evaluate it against previously maintained state.
+
+Thus:
+
+**Transport-layer knowledge:** Ports, datagrams, length, integrity information.
+
+**Application-layer knowledge:** Players, inventory, movement, attacks, rules, and dependencies.
+
+UDP does not eliminate the need for reliability mechanisms when an application requires them. It allows the application to implement those mechanisms selectively.
+
+Applications using UDP must also consider congestion and responsible sending behavior.
+
+---
+
+### 11. Transport reliability versus successful application operations
+
+A major boundary distinction emerged from the game-progress example.
+
+There are at least three different events:
+
+**1. Network delivery**
+
+Did the necessary bytes or datagram reach the destination transport implementation?
+
+TCP provides reliable, ordered byte delivery while the connection operates successfully.
+
+**2. Application processing**
+
+Did the server application receive, validate, and successfully apply the requested change?
+
+A TCP acknowledgment alone cannot establish this.
+
+**3. Durable persistence**
+
+Did the server save the resulting change so it would survive a crash, restart, or recovery?
+
+Neither TCP nor UDP guarantees this.
+
+A server might receive a reward event and modify an in-memory inventory, then crash before saving it.
+
+If the client does not receive application-level confirmation, the outcome may be uncertain. A retry could be appropriate, but repeating an operation carelessly could duplicate its effects.
+
+An application can use unique operation identifiers and idempotent handling to manage retries safely.
+
+**TCP retransmission timeout:** Concerns missing transport acknowledgments.
+
+**Application timeout:** Concerns missing confirmation of an application operation.
+
+These timeouts operate at different boundaries and address different uncertainties.
+
+**Governing rule:** Reliable transmission is not equivalent to reliable processing or durable storage.
+
+---
+
+### 12. Final TCP/UDP comparison
+
+| Property | TCP | UDP |
+|---|---|---|
+| Connection model | Connection-oriented | Connectionless |
+| Data abstraction | Ordered byte stream | Individual datagrams |
+| Delivery guarantee | Reliable while successfully operating | Best effort |
+| Ordering | Guaranteed | Not guaranteed |
+| Retransmission | Built in | Not built in |
+| Flow control | Built in | Not built in |
+| Congestion control | Built in | Not built in |
+| Handshake | Yes | No |
+| Typical design motivation | Completeness and ordered delivery | Simplicity, timeliness, application control |
+
+Neither protocol is universally better.
+
+The choice depends on what the application needs, what failures it can tolerate, and which guarantees are appropriate at the transport boundary.
+
+## Final systems model
+
+**Sender → Protocol → Representation → Transmission → Receiver**
+
+For every networking interaction, identify:
+
+- **State:** What must be remembered, and where does it live?
+- **Ownership:** Which layer or participant is responsible?
+- **Initiation:** Who starts the action?
+- **Boundary:** What information crosses from one layer to another?
+- **Transition:** What event determines the next action?
+- **Guarantee:** What does this layer actually promise?
+- **Failure:** What happens when that promise is insufficient?
+
+The enduring lesson is not simply that TCP is reliable and UDP is unreliable.
+
+It is that **networking systems divide responsibilities across layers**, and each layer's guarantees have a defined scope.
+
+Understanding those boundaries makes it possible to reason about performance, protocol design, failures, and eventually security.
