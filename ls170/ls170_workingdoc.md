@@ -1263,3 +1263,255 @@ The enduring lesson is not simply that TCP is reliable and UDP is unreliable.
 It is that **networking systems divide responsibilities across layers**, and each layer's guarantees have a defined scope.
 
 Understanding those boundaries makes it possible to reason about performance, protocol design, failures, and eventually security.
+
+
+# LS170 Lesson 3 · Introduction to HTTP
+
+**Study status:** First-pass teaching, hands-on investigations, Launch School quiz and debrief, and a guided end-to-end walkthrough completed. Formal lesson closure is pending. Independent recall and transfer still need verification.
+
+## Sources and scope
+
+- **Launch School primary material.** The course reading anchors the application-layer model, clients and servers, resources, URLs, requests and responses, stateful applications, and Web security. The book's Preparations chapter introduces GUI and command-line tools. Its request, response, state, and security chapters cover GET and POST, headers and status codes, sessions, cookies, AJAX, HTTPS, same-origin policy, introductory CORS, session hijacking, and XSS. The seven lesson screenshots are referenced in the recovered transcript, whose attachment entries omit the image contents. Exact assignment numbering and complete question-box coverage remain unverified. [Launch School course outline](https://d24f1whwu8r3u4.cloudfront.net/curriculum/courses/8cb220e7) · [Launch School's Introduction to HTTP](https://launchschool.com/books/http/read/introduction)
+- **Supplementary explanations.** HTTP/1.1 framing, safe and idempotent semantics, cache validation, the TLS 1.3 handshake, CORS preflight and credentials, CSRF, and the runtime graphs below expand the lesson model. References appear with the relevant sections.
+- **Observed experiments.** The evidence section records what the learner reported in the lesson chat. It contains selected fields and outcomes from that run. The bookstore, email-server mismatch, and attack scenarios are hypothetical. [Lesson 3 study conversation](chatgpt-conversation://6aedec17-363c-83ed-bff0-43e4777f5167)
+
+## 1. Application layer, Internet, and Web
+
+The **Internet** is a network of interconnected networks. IP addresses and routes packets across it. TCP provides a reliable, ordered byte stream between endpoints. The **Web** is a system of linked resources and applications commonly accessed with HTTP or HTTPS. Email using SMTP and file transfer using FTP are examples of other services that can use the Internet. A webmail interface can use HTTPS between browser and provider while the provider uses email protocols elsewhere.
+
+An **application** is software such as a browser or mail server. An **application-layer protocol** defines how communicating peers represent messages and interpret them. HTTP specifies what a request asks for and how a response reports the result. In the lesson's hypothetical protocol mismatch, TCP could successfully deliver HTTP bytes to an SMTP listener, and the listener could still reject them because it expects SMTP commands. Delivery and interpretation are separate outcomes.
+
+A **client** initiates an HTTP exchange and a **server** handles it. These are roles for an exchange. A reverse proxy can receive a request as a server and act as a client to an upstream service. “Server” can refer to a host, a process listening for connections, or the logical service. A reverse proxy or web server can terminate TLS, serve static resources, or forward requests. An application can route requests and apply business rules. A data store can persist records. One program can perform several of these roles.
+
+A **resource** is the thing identified by a URI, such as a book, an order collection, or an image. A **representation** is the data and metadata that describe a resource in a given exchange. A resource can have HTML and JSON representations. The application can generate a representation dynamically from a route and database query, so a path can identify a resource without corresponding to a file. [Launch School HTTP book](https://launchschool.com/books/http/read/introduction) · [RFC 9110, HTTP semantics](https://www.rfc-editor.org/rfc/rfc9110)
+
+## 2. URL anatomy and encoding
+
+A URI identifies a resource. A URL is an identifier that also describes how to locate or access it. For the illustrative URL `https://bookstore.example:8443/books/42?format=hardback&sort=recent#reviews`:
+
+| Component | Example | Role |
+| --- | --- | --- |
+| Scheme | `https` | Selects the access scheme |
+| Hostname | `bookstore.example` | Identifies the host in the authority |
+| Port | `8443` | Explicit connection port. Defaults are 443 for HTTPS and 80 for HTTP |
+| Path | `/books/42` | Identifies a resource within the origin. A router might extract `42` as a path parameter |
+| Query | `format=hardback&sort=recent` | The component after `?` and before `#`. Here it contains two query parameters |
+| Fragment | `reviews` | Client-side reference, commonly to a document section. The browser omits it from the HTTP request target |
+
+The **query string** is the whole query component. **Query parameters** are the entries an application parses from it. `name=value&name=value` is a common convention, and repeated names are possible. “Parameters” can also refer to values extracted from a route or body. For the quiz question about passing application input in the URL, the intended pair was **path and query parameters**. Scheme, host, and port govern access and can also influence routing.
+
+A browser gets a URL from an address, link, form action, script, redirect, or resource reference. It resolves relative references against the document's base URL. For example, a root-relative `/books/42` on `https://bookstore.example/shop/` resolves to `https://bookstore.example/books/42`.
+
+**Percent-encoding** represents a byte as `%HH`. Under UTF-8, `é` can be encoded as `%C3%A9`. Encode data within the component it belongs to so a literal delimiter stays data. `Cats & Dogs` can appear as `?q=Cats%20%26%20Dogs`. Under `application/x-www-form-urlencoded` parsing, `?q=Cats+%26+Dogs` decodes to the same value. That convention serializes spaces as `+`, also accepts `%20` on decoding, and uses `%2B` for a literal plus. A plus in a URL path stays a plus under ordinary percent-decoding. For example, `new URLSearchParams({q: 'C++ & Rust'}).toString()` produces `q=C%2B%2B+%26+Rust`.
+
+Percent-encoding preserves structure. HTTPS encrypts the path, query, headers, and body between TLS endpoints. URLs can still surface in history, logs, and sometimes referrer data. Request bodies can also appear in application or diagnostic logs. [WHATWG URL Standard](https://url.spec.whatwg.org/) · [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110)
+
+## 3. HTTP/1.1 messages
+
+A request starts with `METHOD request-target HTTP-version`. A response starts with the version, a three-digit status code, and an optional reason phrase. Field lines follow as `Name: value`. Field names are case-insensitive. HTTP/1.1 uses CRLF line endings, and an empty line ends the header section. Message framing determines whether a body follows and how long it is. The following display is illustrative.
+
+```http
+POST /orders HTTP/1.1
+Host: bookstore.example
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 10
+
+book_id=42
+```
+
+```http
+HTTP/1.1 201 Created
+Location: /orders/105
+Content-Type: application/json
+Content-Length: 16
+
+{"order_id":105}
+```
+
+- In a typical direct request, the **request target** carries the path and optional query, while `Host` carries the target authority. A non-default port appears in `Host` when present in that authority. Other target forms exist, such as an absolute URL sent to an HTTP proxy.
+- `Accept` describes response media types the client can accept. `Content-Type` describes the content carried by that message. `Content-Length` normally gives its length in bytes. A GET usually has no request body. Responses to HEAD and responses with status 204 or 304 carry no message body. HEAD can still report metadata, including the length a corresponding GET would have sent.
+- HTTP/1.1 can use a length, chunked transfer coding, or, for certain responses, connection close to delimit content. HTTP/2 and HTTP/3 preserve the HTTP semantics and use framed wire formats with pseudo-headers for fields such as the method or status. Readable tool output can reconstruct the exchange without showing the wire format. HTTP/1.1 field lines are text in the HTTP message, and TLS encrypts them in transit.
+
+[RFC 9112, HTTP/1.1](https://www.rfc-editor.org/rfc/rfc9112) · [RFC 9110, HTTP semantics](https://www.rfc-editor.org/rfc/rfc9110)
+
+## 4. Methods, forms, safety, and idempotency
+
+The **method** specifies the requested operation. The **request target** identifies the resource to which it applies. The client chooses the method through its initiating action or configuration. Link navigation normally issues GET, a form uses its configured method, and a script or HTTP client can choose a method explicitly. A server can respond `405 Method Not Allowed` with an `Allow` field when a recognized method is unavailable for the target.
+
+| Method | Typical semantics | Safe | Idempotent |
+| --- | --- | --- | --- |
+| GET | Retrieve a representation, such as a page or search results | Yes | Yes |
+| HEAD | Retrieve GET-style response metadata without the body | Yes | Yes |
+| OPTIONS | Ask what communication options are available | Yes | Yes |
+| POST | Submit content for resource-specific processing, such as a login or order creation | No | No guarantee |
+| PUT | Create or replace the state of a specified resource | No | Yes |
+| PATCH | Apply a set of changes to a resource | No | No guarantee |
+| DELETE | Remove the association between the target URI and its current functionality, such as removing a cart item | No | Yes |
+
+**Safe** means the requested semantics are read-only. Logging or analytics may still occur as incidental effects. **Idempotent** means repeating the same request has the same intended server-side effect as making it once. A repeated DELETE may return a different status after the first removal. An order POST can create duplicates on retry unless the application provides a deduplication contract, such as an idempotency key. A timeout can occur after the server has already applied the request. DELETE never grants permissions by itself. The application decides whether the caller can act on the target.
+
+**Illustrative form.** With `action="/orders"`, a successful named control `book_id=42`, and `method="get"`, the browser produces `GET /orders?book_id=42 HTTP/1.1`. With `method="post"` and the default form encoding, it produces `POST /orders HTTP/1.1` with `book_id=42` in the body. Forms use GET by default. A POST URL can also have a query. GET query inputs and POST body inputs describe common placement choices and are independent of the method's definition. [RFC 9110, methods](https://www.rfc-editor.org/rfc/rfc9110#section-9) · [WHATWG HTML, forms](https://html.spec.whatwg.org/multipage/forms.html)
+
+## 5. Integrated runtime sequence and graph of references
+
+**Hypothetical bookstore walkthrough.** The customer clicks `<a href="/account/orders?sort=recent">My Orders</a>` on `https://bookstore.example`. Assume a fresh connection, a valid session, and a permitted request. `K7` is an illustrative session ID.
+
+```text
+link href + document base URL
+  → https://bookstore.example/account/orders?sort=recent
+  → DNS lookup as needed → TCP connection → TLS handshake
+  → GET /account/orders?sort=recent + Host + eligible Cookie: sid=K7
+  → server parses the request and dispatches to application code
+       method + path → orders route
+       query sort=recent → sort order
+       cookie value K7 → server session record → account 42
+       account 42 + permission check → authorized order lookup
+  → data store returns order records → application builds HTTP response
+  → navigation interprets HTML → creates DOM → discovers resource URLs
+  → browser retrieves CSS, scripts, and images as needed
+```
+
+1. The browser resolves the link and identifies the authority. For a new TCP-based HTTPS connection, it obtains an IP address as needed, connects, then negotiates TLS and verifies the server identity. A usable connection or cached result can bypass some steps. HTTP/3 runs over QUIC over UDP and incorporates TLS 1.3 into the QUIC handshake.
+2. The browser builds a request and selects cookies eligible for this URL and request context. The HTTP/1.1 view would show `GET /account/orders?sort=recent HTTP/1.1`, `Host: bookstore.example`, and `Cookie: sid=K7`.
+3. A server component receives and parses the message. An application routes it, validates inputs, looks up the session, and checks authorization. Authentication can run in middleware before the handler. The precise order and process boundaries depend on deployment.
+4. The orders handler retrieves the authorized account's data, applies the requested sorting, and builds a response such as `200 OK` with `Content-Type: text/html`. A failure can instead lead to an error response or login redirect, depending on the application.
+5. For navigation, the browser can parse returned HTML into a new DOM. URLs in HTML and CSS can lead to further requests, often in parallel or satisfied from cache. If script initiates the exchange using `fetch()`, it can parse a returned representation and modify the current DOM. The initiating context and response handling govern the result.
+
+The graph crosses state boundaries at two especially useful references. The cookie value points to a session record and the resulting account identity governs the data lookup. The document contains resource URLs that the browser resolves into later fetches. `sort=recent` controls the ordering of results. [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110) · [RFC 9114, HTTP/3](https://www.rfc-editor.org/rfc/rfc9114)
+
+## 6. Responses, redirects, and caching
+
+| Class | Meaning and examples |
+| --- | --- |
+| 1xx | Informational, such as `100 Continue` |
+| 2xx | Success, such as `200 OK`, `201 Created`, or `204 No Content` |
+| 3xx | Redirection or reuse of a stored representation, such as `302 Found` or `304 Not Modified` |
+| 4xx | Request could not be fulfilled as sent, such as malformed input (`400`), missing or invalid authentication (`401`), refusal (`403`), or unavailable or undisclosed resource (`404`) |
+| 5xx | Server or upstream failure, such as `500`, `502`, or `503` |
+
+A redirect usually supplies a `Location` that the client resolves into a new URL. A client that follows it makes a new request. `301` and `308` are permanent. `302` and `307` are temporary. Clients may change POST to GET for `301` and `302`. `303 See Other` directs a retrieval, typically GET after a form POST. `307` and `308` preserve method and body when followed. Follow a redirect chain one request at a time to see changes to origin, method, and cookie eligibility.
+
+A cache can reuse a fresh stored response. `Cache-Control: max-age=60` provides a freshness lifetime of 60 seconds. `no-cache` requires validation before reuse. `no-store` directs caches to avoid storing the response. `private` restricts storage to private caches. `Vary` identifies request fields that affect representation selection. For conditional GET, a client may send `If-None-Match` with an earlier `ETag`, or `If-Modified-Since` with a `Last-Modified` date. `304` lets the client use the stored body and update metadata. If the condition permits a fresh transfer, the server can return `200` and the representation. An HTTP cache and a cookie store preserve different types of state. [RFC 9111, HTTP caching](https://www.rfc-editor.org/rfc/rfc9111) · [RFC 9110, status codes](https://www.rfc-editor.org/rfc/rfc9110#section-15)
+
+## 7. Stateless HTTP, cookies, and sessions
+
+Each HTTP request needs enough context for the server to handle it independently, including any credentials or references needed to recover application state. HTTP does not automatically associate a new request with an earlier login. A connection can carry multiple requests, and a server can maintain durable state such as account records, inventory, carts, and orders. Checkout still has to validate current inventory, even when a previous page displayed availability.
+
+In a typical server-side session design, successful login creates a record such as `K7 → account 42`. The server sends `Set-Cookie: sid=K7; Secure; HttpOnly; SameSite=Lax; Path=/`. The browser stores the name, value, and attributes in its profile's cookie store. On a later eligible request, it sends `Cookie: sid=K7`. The application uses the opaque identifier to look up the session and then checks permission for the specific operation. Some applications use signed or encrypted tokens that carry session information. The bookstore models a server-side record.
+
+| Cookie attribute | Effect |
+| --- | --- |
+| Domain | Selects eligible domain and subdomains within browser rules. Omit it for a host-only cookie |
+| Path | Limits eligible request paths. This is a delivery rule, not a security boundary |
+| Secure | Restricts delivery to secure transport such as HTTPS, with browser-specific localhost handling |
+| HttpOnly | Prevents ordinary JavaScript cookie APIs from reading the value. Eligible requests initiated by JavaScript can still carry it |
+| SameSite | `Strict` limits cross-site use most strongly. `Lax` allows certain cross-site top-level safe navigations. `None` allows broader cross-site use, requires `Secure`, and is subject to browser policy |
+| Expires / Max-Age | Absolute expiration / lifetime in seconds. When both are present, Max-Age takes precedence |
+
+The outgoing `Cookie` header carries eligible name/value pairs. Attributes stay with browser storage. A blank SameSite field can mean no explicit attribute was set, with the browser applying its default. “Same-site” for cookies generally concerns the scheme and registrable domain. It differs from the origin comparison in §10.
+
+Cookie lifetime and server session lifetime are independent. Removing the browser cookie breaks the reference even if the server record survives. Revoking the server-side record makes an old identifier unusable even if a copy remains. Without an explicit expiration, browser session restore may retain a session cookie. [OWASP Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html) · [Chrome DevTools cookie documentation](https://developer.chrome.com/docs/devtools/application/cookies)
+
+## 8. AJAX and the browser DOM
+
+**AJAX** is the historical name for asynchronous browser requests made by JavaScript to process results without requiring a full navigation. It uses HTTP, commonly through `fetch()` or `XMLHttpRequest`. JSON, XML, HTML, and text are possible response formats. The **DOM** is the browser's in-memory representation of the document, exposed through JavaScript APIs.
+
+In the actual exercise, the learner used the Chrome Console on `https://httpbingo.org/get` to issue a same-origin GET. The working lesson example was:
+
+```javascript
+fetch('/get?book_id=42')
+  .then(response => response.json())
+  .then(data => {
+    const message = document.createElement('p');
+    message.textContent = `Server returned book_id: ${data.args.book_id[0]}`;
+    document.body.prepend(message);
+  });
+```
+
+The browser performs the request and fulfills the first promise when a response is available. `response.json()` reads and parses the body asynchronously. JavaScript creates the element and the browser renders it in the current document. An HTTP `404` ordinarily resolves to a response, so application code should check `response.ok` or `response.status` before using the body. Network or CORS failures can reject the fetch, and invalid JSON can reject parsing. The added paragraph lives in the current DOM. A normal reload would be expected to discard it. That prediction was untested in the session. [WHATWG Fetch Standard](https://fetch.spec.whatwg.org/)
+
+## 9. HTTPS, TLS 1.3, and certificates
+
+HTTPS protects HTTP with encryption and integrity between TLS endpoints and ordinarily authenticates the server. For the fresh, certificate-authenticated TLS 1.3 connection over TCP observed in the lesson:
+
+1. **ClientHello** proposes versions and cryptographic parameters, offers a key share and ALPN protocols, and normally includes the requested hostname via SNI.
+2. **ServerHello** selects the parameters and supplies a key share. The peers derive handshake traffic keys from the key exchange and transcript. The following server handshake messages are encrypted.
+3. **EncryptedExtensions** carries negotiated extensions such as the ALPN selection. **Certificate** provides the server's certificate chain material. The client validates trust and time validity and matches the requested hostname against the certificate's identity, normally a DNS subject alternative name for a DNS hostname.
+4. **CertificateVerify** signs the handshake transcript and proves possession of the certificate's private key. **Finished** authenticates the handshake transcript using derived keys. The client verifies the server's messages and sends its own Finished. The normal HTTP exchange uses application traffic keys.
+
+ALPN selects the application protocol, such as HTTP/1.1 or HTTP/2. Certificate verification and hostname matching concern the endpoint's identity. Application login and authorization happen separately. TLS termination at a proxy is an endpoint for that leg, with any upstream protection determined independently. Network observers can still see metadata such as endpoint IP addresses and timing. DNS or SNI can expose names depending on the setup. Connection reuse, resumption, and early data can change the sequence. [RFC 8446, TLS 1.3](https://www.rfc-editor.org/rfc/rfc8446) · [RFC 9525, service identity](https://www.rfc-editor.org/rfc/rfc9525)
+
+## 10. Browser security boundaries
+
+### Same-origin policy and CORS
+
+For ordinary HTTP(S) URLs, origin is **scheme + hostname + effective port**. `https://bookstore.example/books` and `https://bookstore.example:443/cart` share an origin. `http://bookstore.example`, `https://api.bookstore.example`, and `https://bookstore.example:8443` each differ from `https://bookstore.example`. Paths, queries, and fragments are outside the comparison. Same-origin policy restricts what a document or script from one origin can read or manipulate across origins. Browsers still allow various cross-origin navigations, embeddings, and form submissions under their applicable rules.
+
+**CORS** lets a server opt into exposing a cross-origin HTTP response to browser JavaScript. The browser evaluates response headers such as `Access-Control-Allow-Origin`. Some requests first trigger an `OPTIONS` preflight asking whether the method and headers are allowed. A failed preflight prevents the intended request. For a request that can proceed without preflight, the server may receive it and act before the browser blocks script access to the response. Credentialed cross-origin fetch requires appropriate client credentials settings, cookie eligibility and browser policy, a specific allowed origin, and `Access-Control-Allow-Credentials: true` for response exposure. A wildcard origin is insufficient for credentialed exposure. For example, a browser request from the hypothetical bookstore page to its separate API can carry `Origin: https://bookstore.example`. An API response can opt in with `Access-Control-Allow-Origin: https://bookstore.example`. CORS leaves the origin tuple unchanged. Command-line clients such as curl do not enforce browser CORS. [Launch School, Security](https://launchschool.com/books/http/read/security) · [WHATWG Fetch, CORS protocol](https://fetch.spec.whatwg.org/#http-cors-protocol)
+
+### XSS, CSRF, and session hijacking
+
+| Threat | Hypothetical mechanism | Main protections |
+| --- | --- | --- |
+| Cross-site scripting (XSS) | A bookstore stores a malicious review, inserts it as executable markup, and a later visitor's browser runs it in the bookstore origin. Reflected XSS returns malicious input in a response. DOM-based XSS can arise from unsafe client-side handling | Context-specific output encoding, safe DOM APIs such as `textContent` for text, sanitization for deliberately allowed HTML, and Content Security Policy as defense in depth |
+| Cross-site request forgery (CSRF) | An attacker induces a signed-in browser to send a state-changing request. If the browser attaches an eligible cookie and the server accepts the action, the attacker can succeed without reading the response | Server-validated CSRF tokens, appropriate Origin or Referer checks, SameSite as defense in depth, and safe semantics for GET |
+| Session hijacking | An attacker obtains a valid bearer session credential and replays it. If the server still accepts it, the attacker may act with that session's permissions | HTTPS, secure cookie attributes, unpredictable IDs, rotation on login or privilege change, expiration and server-side revocation. After revocation, the user can reauthenticate to establish a new session |
+
+An XSS payload can act within the victim's origin and make authenticated requests even when HttpOnly hides the cookie value. CSRF uses the victim browser to submit a request. Session hijacking can let another client present the credential directly. Authorization still applies to each action. These mechanisms were discussed conceptually in the lesson. [OWASP XSS Prevention](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html) · [OWASP CSRF Prevention](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html) · [OWASP Session Management](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
+
+## 11. Hands-on evidence from the lesson
+
+These observations are from the learner's reported output. Public endpoints, certificate details, and browser state can change between runs. The selected curl fields below omit client addresses and cookie values.
+
+| Investigation | Reported observation | What the evidence establishes |
+| --- | --- | --- |
+| Chrome Network, example.com document | GET `https://example.com/?utm_source=chatgpt.com` returned `304`. No `Content-Type` was visible. After disabling cache and reloading, the learner reported `200 OK` and `text/html; charset=utf-8` | The first response was consistent with cache revalidation and the follow-up delivered an HTML representation. The exact validator and whether the follow-up kept the same query were unrecorded |
+| `curl -i https://example.com/` | `HTTP/2 200`, HTML content type, and HTML after the header section in curl's output | curl displayed the response status, fields, and content in a readable format |
+| `curl --http1.1 -v -o /dev/null https://example.com/` | `GET / HTTP/1.1`, `Host: example.com`, `User-Agent: curl/8.7.1`, `Accept: */*` | The URL supplied the authority and path. curl supplied other fields. Verbose output described the exchange at the client |
+| HTTPBingo POST | `POST /post HTTP/1.1`, `Content-Length: 10`, `Content-Type: application/x-www-form-urlencoded`. Response JSON reported `"method": "POST"`, `"data": "book_id=42"`, and a `form.book_id` entry containing `"42"` | The field traveled in the request body. HTTPBingo parsed it and reported it in the response body |
+| HTTPBingo GET | Response JSON included `args.book_id` with string `"42"`. The comparison request placed `book_id=42` in the query | Both responses can contain the same value in JSON. Its placement in the incoming request is the distinction. JSON field ordering provides no evidence of that placement |
+| Chrome Application → Storage → Cookies and Network → Cookies column, Amazon Kindle Daily Deals | 15 stored cookies in the view, including names `session-id` and `session-token`. Some displayed explicit `SameSite=Lax`. One network row showed zero sent cookies, and several others showed nonzero counts | Cookie storage and request delivery are independently observable. The zero row's cause, the cookie identities sent on nonzero rows, and Amazon's session implementation remain undetermined. The displayed timestamp associated with `session-id-time` was not tied to a verified column |
+| Chrome Fetch/XHR, HTTPBingo | `/get?book_id=42` appeared in Network. The current page then displayed “Server returned book_id: 42” at the top | JavaScript initiated HTTP, processed the JSON response, and updated the current DOM without navigating |
+| curl TLS diagnostic, example.com | ClientHello → ServerHello → `Unknown (8)` → Certificate → `CERT verify (15)` → server Finished → client Finished. curl reported TLS 1.3, ChaCha20-Poly1305/SHA-256, ALPN `http/1.1`, a matching `example.com` SAN, issuer Cloudflare TLS Issuing ECC CA 3, and successful certificate verification | The trace matches the full handshake discussed in §9. Type 8 is EncryptedExtensions. `CERT verify (15)` names a handshake message, while `SSL certificate verify ok` reports the client's validation result. The diagnostic prefix `(304)` belongs to the TLS output. The separate Chrome `304` was an HTTP status |
+
+### Reproduction commands used in the lesson
+
+```bash
+curl -i https://example.com/
+curl --http1.1 -v -o /dev/null https://example.com/
+curl --http1.1 -v --data 'book_id=42' https://httpbingo.org/post
+curl --http1.1 -v --get --data 'book_id=42' https://httpbingo.org/get
+```
+
+With curl, `-i` includes response headers, `-I` issues HEAD, and `-v` shows client diagnostics. In verbose HTTP/1.1 output, `>` marks outgoing fields, `<` incoming fields, and `*` connection or TLS messages. `-o /dev/null` discards the response body from standard output. `--data` normally selects POST and places data in its body. `--get` moves the supplied data to the query and uses GET in this example. [curl manual](https://curl.se/docs/manpage.html)
+
+## 12. Troubleshooting by boundary
+
+| Symptom | What to inspect |
+| --- | --- |
+| No expected request in Chrome | Open Network before reproducing. Check filters, initiator, navigation, and cache or service worker involvement. Preserve the log for redirects |
+| DNS, connection, or certificate error | Check the hostname, resolved address, destination port, TCP or QUIC connection, then TLS diagnostics. A failure here can occur before any HTTP response |
+| Wrong endpoint or unexpected status | Compare the resolved URL, request method, path, query, body, and content type. Inspect the redirect chain and the final target. Match the server route and application logs if available |
+| HTML appears but the row says `304` | Inspect cache validators and compare with a fresh request to the exact same URL |
+| Signed-in request acts anonymous | Compare the stored cookie's scope and lifetime with the request URL and context. Check the outgoing cookie's presence and the server session's validity. Omit credential values from shared logs |
+| curl succeeds but browser fetch fails | Compare URL, credentials, request headers and method, and cookies. Inspect Console for CORS errors and Network for preflight and response headers |
+| Fetch succeeded but the page did not change | Check HTTP status, body format, JSON parsing, promise errors, expected data shape, and the DOM operation |
+
+**Tool choice.** Chrome DevTools shows real browser behavior, including Network, cache, storage, and DOM. curl constructs controlled exchanges. Insomnia is a GUI HTTP client for constructing requests and examining responses. Wireshark is a packet analyzer that can show transport and TLS traffic. Inspecting encrypted HTTP content in a capture requires suitable decryption material. The lesson record confirms Chrome and curl use. Insomnia and Wireshark were discussed without a confirmed hands-on capture or run. The HTML form and cross-origin examples were reasoned through. No security attack was run. [Chrome Network reference](https://developer.chrome.com/docs/devtools/network/reference) · [curl manual](https://curl.se/docs/manpage.html)
+
+## 13. Quiz debrief and remaining questions
+
+| Topic | What to retrieve independently |
+| --- | --- |
+| URL inputs and encoding | Path and query parameters can both carry application input. Distinguish query component from individual parameters and recall both `+` and `%20` under form decoding |
+| Method versus target | The learner identified the method as the kind of operation. The quiz reportedly also accepted wording about the resource being fetched. In protocol terms, the target identifies the resource and the method supplies the semantics |
+| GET and POST | The learner selected the general purposes and omitted a second accepted answer with examples. Recall both the definitions and the common page-view and login examples |
+| Header syntax | Recall `Name: value`, where the colon separates the field name and value in HTTP/1.1. TLS protects those bytes in HTTPS |
+| Statelessness | The missed option asked for each request to provide enough information for fulfillment. That information can include an identifier used to retrieve server-side state |
+| Same-origin policy | Two of three conditions were selected. Retrieve and check all three independently: scheme, hostname, effective port |
+
+Several misses were incomplete multi-select answers. Evaluate each choice on its own, including examples if the prompt asks what applies. The walkthrough showed independent recall of receive → route → handler and recognition of navigation versus script-driven processing. Connecting the starting link, transport, session reference, authorization, and response into one traversal needed prompting. That evidence supports first-pass coverage and points to where independent retrieval and transfer remain to be demonstrated.
+
+The exact browser cache validator, the reason for the zero-cookie row, and the reload prediction for the temporary DOM change remain open. The transcript also leaves full question-box coverage unverified. A later reconstruction can start at an unfamiliar entry point and account for the state owner, reference, and next action at each step.
+
