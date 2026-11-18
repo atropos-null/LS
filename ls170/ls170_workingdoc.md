@@ -1515,3 +1515,1355 @@ Several misses were incomplete multi-select answers. Evaluate each choice on its
 
 The exact browser cache validator, the reason for the zero-cookie row, and the reload prediction for the temporary DOM change remain open. The transcript also leaves full question-box coverage unverified. A later reconstruction can start at an unfamiliar entry point and account for the state owner, reference, and next action at each step.
 
+
+# LS170 — Lesson 4: Working with HTTP
+
+**Course:** Launch School LS170 — Networking Foundations  
+**Lesson:** 4 — Working with HTTP  
+**Study dates:** November 17–18, 2026  
+**Status:** Practical assignments completed through Assignment 12; lesson concepts consolidated. Assignment 13's published summary was not separately examined in detail.
+
+---
+
+## 1. Purpose and Learning Objectives
+
+Lesson 4 explores HTTP through direct communication with web servers and the construction of a minimal HTTP server using Bash and netcat.
+
+The objective is to understand how applications use HTTP to exchange requests and responses, not to master Bash or build a production web server.
+
+The experiments progressed through four stages:
+
+1. Construct HTTP requests and inspect actual responses.
+2. Establish TCP communication between processes using netcat.
+3. Implement HTTP request parsing and resource lookup in Bash.
+4. Connect a browser to the server and navigate between HTML resources.
+
+The central systems model is:
+
+**Sender → protocol representation → transmission → receiver → interpretation → action**
+
+The critical distinction throughout the lesson:
+
+> TCP transports an ordered stream of bytes. HTTP establishes the rules for interpreting those bytes as requests and responses.
+
+A successful TCP connection does not guarantee a correctly implemented HTTP conversation.
+
+---
+
+## 2. Environment and Tools
+
+### Tested environment
+
+- GitHub Codespaces
+- Debian GNU/Linux 13 (Trixie), version 13.3
+- GNU Bash 5.2.37
+- OpenBSD netcat, installed as `netcat-openbsd`
+- Two terminal sessions in the same Codespace
+- A browser with Developer Tools and a Network panel
+- TCP port `2345` for the local server exercises
+
+### Installing netcat
+
+Initially, the shell could not locate `nc` or `netcat`.
+
+Check for available executables:
+
+```bash
+command -v nc || command -v netcat
+```
+
+Identify the operating system:
+
+```bash
+uname -s
+cat /etc/os-release
+```
+
+Install netcat on Debian:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y netcat-openbsd
+```
+
+Verify installation:
+
+```bash
+command -v nc
+```
+
+**Observed output:**
+
+```text
+/usr/bin/nc
+```
+
+Check Bash:
+
+```bash
+bash --version | head -n 1
+```
+
+**Observed output:**
+
+```text
+GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)
+```
+
+Bash 5.2 supports `coproc`, which the server architecture requires.
+
+### Codespaces network boundary
+
+The Bash server runs inside the remote Codespace, not directly on the local Mac.
+
+To connect from a browser on the Mac:
+
+1. Run the server inside Codespaces.
+2. Forward TCP port `2345` through the Codespaces Ports interface.
+3. Open the supplied forwarded URL in the browser.
+4. Append the requested HTML resource path, such as `/lion.html`.
+
+The browser connects through GitHub's forwarding infrastructure. Consequently, responses observed through that URL may involve an intermediary rather than originating directly from the Bash server.
+
+---
+
+## 3. HTTP Request and Response Structure
+
+**Launch School sources:** Assignments 1–3, 9–11.
+
+HTTP/1.1 is an application-layer request-response protocol. A client constructs a request; a server interprets it and returns a response.
+
+HTTP/1.x messages have textual start lines and headers with explicitly defined line endings and message boundaries.
+
+### 3.1 HTTP request
+
+Example:
+
+```http
+GET /lion.html HTTP/1.1
+Host: example.com
+Connection: close
+
+```
+
+The request line contains:
+
+| Component | Example | Meaning |
+|---|---|---|
+| Method | `GET` | Requested operation |
+| Request target | `/lion.html` | Target resource |
+| Version | `HTTP/1.1` | Protocol version |
+
+Headers supply additional request information.
+
+In HTTP/1.1, a `Host` header is required in a normal request. Our early manual tests sent only a request line, which our deliberately simplified server accepted even though that was not a fully compliant HTTP/1.1 request.
+
+### 3.2 Header termination
+
+The header section ends with an empty line.
+
+On the wire, lines are terminated with carriage return and line feed:
+
+```text
+\r\n
+```
+
+The end of a nonempty header section followed by an empty line therefore appears as:
+
+```text
+\r\n\r\n
+```
+
+This delimiter changes the HTTP parser's state from reading headers to processing the message body, if a body is present.
+
+**Important:** The empty line does not guarantee that a body exists or specify its length.
+
+### 3.3 HTTP response
+
+Example from our working server:
+
+```http
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+Content-Length: 30
+Connection: close
+
+<h1>Hello from the lion!</h1>
+```
+
+The numeric length above is illustrative; the actual server computes the length from the file rather than hardcoding it.
+
+A response contains:
+
+- A status line specifying the HTTP version and result.
+- Headers describing the response and message handling.
+- An empty line terminating the header section.
+- An optional response body.
+
+Important status codes encountered:
+
+| Status | Meaning | Experiment |
+|---|---|---|
+| `200 OK` | Request succeeded | Existing lion page |
+| `400 Bad Request` | Server reports a problem with the request | Original browser compatibility failure |
+| `404 Not Found` | Requested resource not found | Nonexistent unicorn page |
+| `405 Method Not Allowed` | Method is not supported for the target resource | Implemented in the corrected server |
+| `401 Unauthorized` | Authentication-related response | Transient forwarded-browser result; source not established |
+
+Our original implementation returned `400` for every non-GET line, which was not a correct general-purpose interpretation of HTTP status codes.
+
+The corrected server uses `405 Method Not Allowed` for unsupported methods, with an `Allow: GET` header.
+
+---
+
+## 4. Manually Communicating with an HTTP Server
+
+**Launch School sources:** Assignments 2–3.
+
+A browser normally constructs requests automatically. Netcat lets us transmit an HTTP/1.1 request and inspect the response without rendering HTML.
+
+### Command
+
+```bash
+printf 'GET / HTTP/1.1\r\nHost: example.com\r\nConnection: close\r\n\r\n' | nc -w 10 example.com 80
+```
+
+Component responsibilities:
+
+| Component | Responsibility |
+|---|---|
+| `printf` | Constructs the exact request bytes |
+| `GET / HTTP/1.1` | Requests the root resource |
+| `Host: example.com` | Specifies the intended host |
+| `Connection: close` | Requests connection closure after the response |
+| `\r\n\r\n` | Terminates the header section |
+| `nc` | Establishes TCP communication |
+| Port `80` | Conventional plaintext HTTP service port |
+
+Port 80 was chosen to observe the HTTP exchange directly. HTTPS normally involves TLS encryption and cannot be inspected by sending plaintext HTTP directly to port 443.
+
+### Actual response observation
+
+The server returned:
+
+```http
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+Transfer-Encoding: chunked
+Connection: close
+Server: cloudflare
+```
+
+Other observed response headers included:
+
+```text
+Date: Tue, 17 Nov 2026 07:53:39 GMT
+Last-Modified: Mon, 16 Nov 2026 00:26:08 GMT
+Allow: GET, HEAD
+Accept-Ranges: bytes
+Age: 1
+cf-cache-status: HIT
+CF-RAY: a5bd29b58e48c23f-AMS
+alt-svc: h3=":443"; ma=86400
+```
+
+The `Server` and `cf-cache-status` headers indicate that the response was served through Cloudflare infrastructure and reported a cache hit.
+
+This illustrates that the responding HTTP endpoint can be an intermediary rather than the original application server.
+
+### 4.1 Chunked transfer encoding
+
+The body appeared in netcat approximately as:
+
+```text
+241
+<!doctype html><html lang=en> ... </html>
+
+0
+```
+
+The response used:
+
+```http
+Transfer-Encoding: chunked
+```
+
+Under chunked transfer encoding, the body is represented as a sequence of chunks:
+
+1. A hexadecimal chunk size.
+2. Exactly that many data bytes.
+3. A line ending.
+4. Additional chunks, if present.
+5. A zero-sized chunk indicating the end of the data chunks.
+6. Optional trailer fields and the final empty line.
+
+The observed hexadecimal value:
+
+```text
+0x241 = 577 decimal
+```
+
+Therefore, the chunk size identifies **577 bytes**, not necessarily 577 characters.
+
+The final zero-sized chunk signals that no further data chunks follow.
+
+This demonstrates two separate framing mechanisms:
+
+- The empty line identifies where HTTP headers end.
+- Chunked encoding identifies the structure and ending of the response body.
+
+TCP itself does not identify either boundary.
+
+### 4.2 Why netcat displays HTML source
+
+Netcat displays the bytes received through the TCP connection.
+
+A browser additionally processes the HTTP response, decodes its body framing, interprets the HTML, constructs the document structure, applies CSS, and renders the resulting page.
+
+The server sends an HTML representation, not a pre-rendered image of a webpage.
+
+---
+
+## 5. TCP Communication Between Two Netcat Processes
+
+**Launch School source:** Assignment 6.
+
+### Terminal A — Listener
+
+```bash
+nc -l 2345
+```
+
+### Terminal B — Client
+
+```bash
+nc 127.0.0.1 2345
+```
+
+`127.0.0.1` is the IPv4 loopback address.
+
+Both netcat processes ran on the same Codespace, but they were separate processes communicating through TCP.
+
+### Observed exchange
+
+Terminal B sent:
+
+```text
+Hello from the client!
+```
+
+Terminal A sent:
+
+```text
+Hello from the server!
+```
+
+Both terminals displayed both messages.
+
+The local terminal echoed each user's typing, while the opposite netcat process displayed the data received over the connection.
+
+This was not a TCP broadcast back to the original sender.
+
+### 5.1 Full-duplex communication
+
+After the client established a connection, both endpoints could independently send and receive data.
+
+TCP supports full-duplex communication.
+
+TCP does not impose HTTP's request-response pattern, nor does it require an application to reply immediately after receiving data.
+
+**Observed:** Both processes remained idle with the TCP connection established for approximately five minutes.
+
+This demonstrates that an established TCP connection can remain usable without an application-level response after every message.
+
+It does not imply that connections survive indefinitely. Applications, the network, and intermediate devices can close or disrupt idle connections.
+
+### 5.2 Terminal buffering versus TCP
+
+In Terminal B, text typed without pressing Enter did not appear in Terminal A.
+
+After pressing Enter, the text became visible remotely.
+
+The initial hypothesis was that TCP required a newline before transmitting data.
+
+The corrected explanation:
+
+- The terminal was operating in canonical input mode.
+- The terminal driver held the incomplete line.
+- Pressing Enter completed the line and allowed netcat to read it.
+- Netcat then transmitted the available bytes through TCP.
+
+**Boundary model:**
+
+```text
+Keyboard
+   ↓
+Terminal driver — canonical input buffering
+   ↓
+Netcat process
+   ↓
+TCP socket
+   ↓
+Receiving netcat process
+   ↓
+Terminal output
+```
+
+The newline requirement arose at the terminal input boundary, not the TCP protocol boundary.
+
+---
+
+## 6. Bash Coprocess Architecture
+
+**Launch School sources:** Assignments 5 and 7.
+
+A web server must generate responses automatically rather than requiring a person to type replies.
+
+The project separates networking from application behavior:
+
+- Netcat establishes the TCP connection and transfers bytes.
+- Bash reads incoming data, implements request logic, and generates responses.
+
+### Basic skeleton
+
+```bash
+#!/bin/bash
+
+function server () {
+}
+
+coproc SERVER_PROCESS { server; }
+
+nc -l 2345 <&${SERVER_PROCESS[0]} >&${SERVER_PROCESS[1]}
+```
+
+### 6.1 What `coproc` provides
+
+Bash `coproc` launches the specified command asynchronously and creates pipes for bidirectional communication.
+
+The shell exposes two descriptors:
+
+| Array element | Parent shell's capability |
+|---|---|
+| `SERVER_PROCESS[0]` | Read output from the server function |
+| `SERVER_PROCESS[1]` | Write input to the server function |
+
+These descriptors are named from the **parent shell's perspective**.
+
+They are not names for Terminal A and Terminal B.
+
+### 6.2 Incoming data path
+
+```text
+Terminal B — Client
+        ↓
+Client netcat
+        ↓
+TCP connection
+        ↓
+Server netcat stdout
+        ↓
+SERVER_PROCESS[1] — write endpoint
+        ↓
+Bash server stdin
+```
+
+### 6.3 Outgoing data path
+
+```text
+Bash server stdout
+        ↓
+SERVER_PROCESS[0] — read endpoint
+        ↓
+Server netcat stdin
+        ↓
+TCP connection
+        ↓
+Client netcat
+        ↓
+Terminal B
+```
+
+The apparent reversal is caused by changing perspectives.
+
+The server writes its output, while the parent reads that same output through `[0]`.
+
+The server reads its input, while the parent writes into that input through `[1]`.
+
+**Governing rule:** Every pipe connects a writer to a reader. The meaning of read/write depends on which endpoint is being described.
+
+### 6.4 Redirection
+
+```bash
+nc -l 2345 <&${SERVER_PROCESS[0]} >&${SERVER_PROCESS[1]}
+```
+
+- `<&` redirects netcat's standard input to the pipe containing server output.
+- `>&` redirects netcat's standard output into the pipe carrying input to the Bash server.
+
+This connects the network-facing process to the application logic without requiring Bash itself to implement socket handling.
+
+---
+
+## 7. Building the Echo Server
+
+**Launch School source:** Assignment 8.
+
+Initial implementation:
+
+```bash
+#!/bin/bash
+
+function server () {
+  while IFS= read -r message; do
+    echo "You said: $message"
+  done
+}
+
+coproc SERVER_PROCESS { server; }
+
+nc -l 2345 <&${SERVER_PROCESS[0]} >&${SERVER_PROCESS[1]}
+```
+
+Start in Terminal A:
+
+```bash
+bash server.sh
+```
+
+Connect in Terminal B:
+
+```bash
+nc 127.0.0.1 2345
+```
+
+### Observed
+
+```text
+Hello!
+You said: Hello!
+```
+
+The first line was locally echoed terminal input.
+
+The second line was generated by Bash and returned through netcat over TCP.
+
+The application-level rule was:
+
+**Read a line → prepend `You said:` → transmit the resulting line.**
+
+This was not HTTP. It was a custom application behavior carried over TCP.
+
+---
+
+## 8. Processing HTTP Request Lines
+
+**Launch School source:** Assignment 9.
+
+The echo server was modified to parse three values:
+
+```bash
+read -r method path version
+```
+
+Initial decision logic:
+
+```bash
+function server () {
+  while read -r method path version; do
+    if [[ "$method" == "GET" ]]; then
+      printf 'HTTP/1.1 200 OK\r\n\r\n'
+    else
+      printf 'HTTP/1.1 400 Bad Request\r\n\r\n'
+    fi
+  done
+}
+```
+
+### Observed
+
+Sending:
+
+```http
+GET /lion.html HTTP/1.1
+```
+
+produced:
+
+```http
+HTTP/1.1 200 OK
+```
+
+However, the nonexistent target:
+
+```http
+GET /unicorns-on-mars.html HTTP/1.1
+```
+
+also produced:
+
+```http
+HTTP/1.1 200 OK
+```
+
+### Explanation
+
+The code inspected only `method`.
+
+Although `path` was assigned, the program never used it.
+
+Recognizing a valid operation does not establish that the requested resource exists.
+
+The server was reporting success without performing resource lookup.
+
+---
+
+## 9. Serving HTML from the Filesystem
+
+**Launch School source:** Assignment 10.
+
+Create the document directory:
+
+```bash
+mkdir -p www
+```
+
+Create a basic HTML file:
+
+```bash
+printf '<h1>Hello from the lion!</h1>\n' > www/lion.html
+```
+
+The server used:
+
+```bash
+"./www${path}"
+```
+
+to construct the candidate filesystem path.
+
+For a request target of:
+
+```text
+/lion.html
+```
+
+the program checks:
+
+```text
+./www/lion.html
+```
+
+### File existence test
+
+```bash
+[[ -f "./www${path}" ]]
+```
+
+`-f` tests whether the candidate path identifies an existing regular file.
+
+For an existing file, the server returned a success status and read the file using `cat`.
+
+For a missing file, it returned `404 Not Found`.
+
+### Observed — Existing resource
+
+```http
+GET /lion.html HTTP/1.1
+HTTP/1.1 200 OK
+Content-Type: text/html
+
+<h1>Hello from the lion!</h1>
+```
+
+### Observed — Missing resource
+
+```http
+GET /unicorns-on-mars.html HTTP/1.1
+HTTP/1.1 404 Not Found
+```
+
+### Critical distinction
+
+An HTTP request path is not inherently a filesystem path.
+
+Our Bash server deliberately maps URL paths to local files.
+
+Other applications could map the same URL path to:
+
+- A database operation.
+- A function or application route.
+- A dynamically generated representation.
+- A static file.
+
+The mapping belongs to the server implementation.
+
+---
+
+## 10. Testing with a Browser
+
+**Launch School source:** Assignment 11.
+
+The initial implementation worked for manually typed netcat requests but failed when accessed by a real browser.
+
+### Observed failure
+
+The browser displayed repeated responses:
+
+```http
+HTTP/1.1 400 Bad Request
+HTTP/1.1 400 Bad Request
+HTTP/1.1 400 Bad Request
+...
+```
+
+### Root cause
+
+Our original Bash loop was:
+
+```bash
+while read -r method path version; do
+```
+
+It treated every incoming line as the beginning of a new HTTP request.
+
+A browser sends a request containing a request line and additional headers:
+
+```http
+GET /lion.html HTTP/1.1
+Host: example.com
+Accept: text/html
+User-Agent: ...
+Connection: keep-alive
+
+```
+
+The exact browser-generated headers vary.
+
+The program incorrectly processed input along these lines:
+
+| Input | Parsed `method` | Program response |
+|---|---|---|
+| `GET /lion.html HTTP/1.1` | `GET` | `200 OK` |
+| `Host: ...` | `Host:` | `400 Bad Request` |
+| `Accept: ...` | `Accept:` | `400 Bad Request` |
+| `User-Agent: ...` | `User-Agent:` | `400 Bad Request` |
+| Empty line | Empty | `400 Bad Request` |
+
+The implementation confused **a line boundary with a complete HTTP message boundary**.
+
+This was an HTTP parser problem, not a TCP transport failure.
+
+### Required correction
+
+The server must:
+
+1. Read the request line.
+2. Read subsequent header fields.
+3. Recognize the empty line terminating the header section.
+4. Process the request.
+5. Produce exactly one response for that request.
+
+The corrected version also supplies response framing and connection-lifetime information.
+
+---
+
+## 11. Final Working Teaching Server
+
+The following is the one-request-per-connection version used for the successful browser experiment.
+
+**File:** `server.sh`
+
+```bash
+#!/bin/bash
+
+function server () {
+  local method path version header file length
+
+  # Read the HTTP request line.
+  read -r method path version || return
+
+  # Consume request headers until the blank line.
+  while IFS= read -r header; do
+    [[ -z "${header%$'\r'}" ]] && break
+  done
+
+  # Only GET is supported by this teaching server.
+  if [[ "$method" != "GET" ]]; then
+    printf 'HTTP/1.1 405 Method Not Allowed\r\n'
+    printf 'Allow: GET\r\n'
+    printf 'Content-Length: 0\r\n'
+    printf 'Connection: close\r\n\r\n'
+    return
+  fi
+
+  # Map the request target to a local file.
+  file="./www${path}"
+
+  if [[ -f "$file" ]]; then
+    length=$(wc -c < "$file")
+
+    printf 'HTTP/1.1 200 OK\r\n'
+    printf 'Content-Type: text/html; charset=utf-8\r\n'
+    printf 'Content-Length: %s\r\n' "$length"
+    printf 'Connection: close\r\n\r\n'
+
+    cat "$file"
+  else
+    printf 'HTTP/1.1 404 Not Found\r\n'
+    printf 'Content-Length: 0\r\n'
+    printf 'Connection: close\r\n\r\n'
+  fi
+}
+
+coproc SERVER_PROCESS { server; }
+
+nc -N -l 2345 <&${SERVER_PROCESS[0]} >&${SERVER_PROCESS[1]}
+```
+
+### Important implementation details
+
+**Request line parsing**
+
+```bash
+read -r method path version
+```
+
+Separates the incoming request line into variables.
+
+**Header processing**
+
+```bash
+while IFS= read -r header; do
+  [[ -z "${header%$'\r'}" ]] && break
+done
+```
+
+Consumes the remaining header lines.
+
+`${header%$'\r'}` removes one trailing carriage return when present, allowing an empty HTTP header-termination line to be recognized even with CRLF line endings.
+
+**Response body size**
+
+```bash
+length=$(wc -c < "$file")
+```
+
+Computes the file's byte count for the `Content-Length` response header.
+
+**Response content**
+
+```bash
+cat "$file"
+```
+
+Writes the file contents to standard output, which reaches the client through the coprocess pipe and netcat.
+
+**Connection behavior**
+
+```bash
+printf 'Connection: close\r\n\r\n'
+```
+
+Announces that the connection will be closed after the response.
+
+The OpenBSD netcat invocation uses `-N` to arrange for a socket shutdown after standard input reaches EOF.
+
+### Observed success
+
+After applying these changes, the browser rendered:
+
+# Hello from the lion!
+
+The browser interpreted the returned HTML rather than displaying the literal `<h1>` markup.
+
+This established that the server successfully handled the browser request and supplied a usable HTTP response.
+
+---
+
+## 12. Hyperlinks and Resource Navigation
+
+**Launch School source:** Assignment 12.
+
+Two HTML documents were created with links between them.
+
+### `www/lion.html`
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Lion</title>
+</head>
+<body>
+  <h1>Hello from the lion!</h1>
+  <a href="/tiger.html">Visit the tiger</a>
+</body>
+</html>
+```
+
+### `www/tiger.html`
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Tiger</title>
+</head>
+<body>
+  <h1>Hello from the tiger!</h1>
+  <a href="/lion.html">Return to the lion</a>
+</body>
+</html>
+```
+
+### Resource graph
+
+```text
+lion.html
+    │
+    │ href="/tiger.html"
+    ▼
+tiger.html
+    │
+    │ href="/lion.html"
+    ▼
+lion.html
+```
+
+A hyperlink establishes a reference to another resource.
+
+The reference does not itself cause an HTTP request.
+
+When the user activates the link, the browser resolves the destination URL and initiates navigation.
+
+### Runtime sequence
+
+```text
+Browser displays lion.html
+          ↓
+User clicks "Visit the tiger"
+          ↓
+Browser resolves /tiger.html
+          ↓
+Browser initiates HTTP request
+          ↓
+Server parses the request
+          ↓
+Server maps URL path to ./www/tiger.html
+          ↓
+Server reads the file
+          ↓
+Server transmits the HTTP response
+          ↓
+Browser renders tiger.html
+```
+
+### Observed
+
+The lion page rendered and displayed a clickable link.
+
+Following the link successfully loaded the tiger page once the server had been restarted.
+
+The implementation required manually restarting the server to handle another connection.
+
+This limitation did not arise from the hyperlink or HTTP itself.
+
+### 12.1 Server lifetime versus connection lifetime
+
+Our implementation serves one connection before the netcat listener exits.
+
+Three lifetimes must be distinguished:
+
+1. **HTTP transaction:** A request and its corresponding response.
+2. **TCP connection:** A transport connection that may potentially carry multiple transactions when the application protocol and implementation support that behavior.
+3. **Server process:** An application process that may live much longer than any individual connection.
+
+Our implementation deliberately does not implement a persistent server loop for accepting successive connections.
+
+A normal web server remains available to accept new connections without requiring manual restarts.
+
+### 12.2 An unexplained `401` response
+
+During hyperlink testing, a `401 Unauthorized` response appeared.
+
+After restarting the server, navigation succeeded.
+
+Our Bash program does not generate `401` responses.
+
+**Known:** A `401` was observed during browser testing.
+
+**Unknown:** Whether the response was generated by GitHub Codespaces' forwarding or authentication infrastructure or another intermediary.
+
+No definitive root cause was established.
+
+---
+
+## 13. Browser Resource Discovery: The `/s.js` Experiment
+
+**Related to Launch School Assignments 3, 11, and 12; supplemental investigation.**
+
+An earlier experiment inspected the browser's loading of:
+
+```text
+https://example.com/
+```
+
+The HTML contained:
+
+```html
+<script src="/s.js"></script>
+```
+
+Chrome Developer Tools showed a separate request for:
+
+```text
+https://example.com/s.js
+```
+
+The displayed request initiator chain associated the script request with the original document.
+
+### Mechanism
+
+```text
+Browser requests HTML
+        ↓
+Server returns HTML
+        ↓
+Browser processes document
+        ↓
+Browser discovers script reference
+        ↓
+Browser resolves /s.js
+        ↓
+Browser requests script resource
+```
+
+The server does not automatically transmit every referenced resource.
+
+The browser owns resource discovery and initiates additional requests.
+
+### Resource discovery versus navigation
+
+These mechanisms are related but distinct:
+
+| Mechanism | Trigger | Result |
+|---|---|---|
+| Script resource discovery | Browser processes `<script src>` | Browser can request the script |
+| Hyperlink navigation | User activates `<a href>` | Browser navigates to the target |
+| HTTP redirection | Server returns an appropriate redirect response | Client may issue a request to the indicated URL |
+
+A further HTTP request does not necessarily require a new TCP connection. Connection reuse and multiplexed protocols can change the underlying transport behavior.
+
+The browser's internal parser and preload scheduling details were not investigated.
+
+---
+
+## 14. Complete Systems Model
+
+The experiments can be combined into one end-to-end execution sequence.
+
+```text
+USER
+  │
+  │ Enters URL / activates hyperlink
+  ▼
+BROWSER
+  │
+  │ Constructs HTTP request
+  ▼
+HTTP REQUEST REPRESENTATION
+  │
+  │ Request line + headers + boundary
+  ▼
+TRANSPORT
+  │
+  │ TCP connection (or forwarding infrastructure)
+  ▼
+NETCAT
+  │
+  │ Receives socket bytes
+  │ Passes them through process pipes
+  ▼
+BASH SERVER
+  │
+  ├── Parse request line
+  │
+  ├── Consume headers
+  │
+  ├── Examine method
+  │
+  ├── Map URL path to local file
+  │
+  └── Choose status and representation
+           │
+           ▼
+FILESYSTEM
+           │
+           │ File contents, if found
+           ▼
+HTTP RESPONSE
+  │
+  │ Status + headers + body
+  ▼
+NETCAT / TRANSPORT
+  │
+  ▼
+BROWSER
+  │
+  ├── Interpret response status and headers
+  ├── Determine body boundaries
+  ├── Parse HTML
+  ├── Discover references
+  ├── Apply styling and render
+  └── Potentially initiate additional requests
+```
+
+### State ownership
+
+| Component | State or responsibility |
+|---|---|
+| Terminal driver | Interactive input buffering and local echo |
+| Netcat | Socket I/O and its process-level streams |
+| Operating system | TCP state, kernel socket buffers, pipe endpoints |
+| Bash server | Parsed request variables, routing decision, response generation |
+| Filesystem | Stored HTML documents |
+| HTTP | Message syntax, status semantics, metadata, and framing rules |
+| Browser | Navigation state, HTML parsing, rendering, resource discovery |
+
+### Governing questions
+
+For an unfamiliar network interaction:
+
+- Who initiates the action?
+- What does each participant know?
+- Which process or protocol owns the current state?
+- What representation crosses the boundary?
+- Which rule determines the next state transition?
+- Where does the current message end?
+- Where does the connection end?
+- What state survives after the current operation?
+
+---
+
+## 15. Troubleshooting Record
+
+### Problem: `nc` command unavailable
+
+**Observation:** Neither `nc` nor `netcat` was found through `PATH`.
+
+**Action:** Identified Debian and installed `netcat-openbsd`.
+
+**Result:** `/usr/bin/nc` became available.
+
+### Problem: Echo response continued after editing code
+
+**Observation:**
+
+```text
+You said: GET /lion.html HTTP/1.1
+```
+
+appeared when an HTTP status response was expected.
+
+**Explanation:** The earlier echo-server implementation was still being executed or had not been replaced in the running process.
+
+**Action:** Stop the old server, inspect `server.sh`, save the changes, and restart.
+
+**Result:** The updated implementation produced:
+
+```http
+HTTP/1.1 200 OK
+```
+
+**Lesson:** Editing source code does not retroactively change the code already running in an existing process.
+
+### Problem: Every GET returned `200 OK`
+
+**Observation:** Existing and nonexistent paths both returned success.
+
+**Cause:** The server inspected the method but ignored the requested path.
+
+**Correction:** Map the path to a filesystem candidate and test whether the file exists.
+
+**Result:** The lion page returned `200 OK`; the nonexistent unicorn page returned `404 Not Found`.
+
+### Problem: Browser produced repeated `400 Bad Request`
+
+**Observation:** The browser displayed many error responses.
+
+**Cause:** The server interpreted every incoming header line as a new request line.
+
+**Correction:** Consume the full header section until the empty line before processing the request.
+
+**Result:** The browser successfully rendered the HTML page.
+
+### Problem: Second page did not reliably load
+
+**Observation:** A subsequent navigation required restarting the server.
+
+**Cause:** The listener handled a single connection and then exited.
+
+**Workaround:** Restart `bash server.sh` before another connection.
+
+**Result:** The tiger page loaded.
+
+**Longer-term design option:** Add a persistent listening loop or use a more capable HTTP server. This was not implemented in the lesson.
+
+---
+
+## 16. Limitations and Security Considerations
+
+The final implementation is a learning tool, not a production HTTP server.
+
+### Incomplete HTTP handling
+
+The server:
+
+- Handles only GET requests.
+- Processes one request on one connection.
+- Does not implement persistent connections.
+- Does not fully validate request syntax or required headers.
+- Does not support request bodies.
+- Does not implement chunked request decoding.
+- Does not support complete HTTP/1.1 error handling.
+- Does not implement concurrency.
+
+### Filesystem safety
+
+The server constructs paths through string concatenation:
+
+```bash
+file="./www${path}"
+```
+
+It does not securely validate whether the resolved file remains inside the intended document directory.
+
+In particular, path traversal sequences could attempt to access files outside `www`.
+
+A production server must apply appropriate URI processing, pathname validation, resource authorization, and filesystem access controls.
+
+These were recognized as design limitations but not implemented or experimentally tested.
+
+### Response framing and process lifetime
+
+The server uses `Content-Length` to communicate the expected body size and `Connection: close` to signal its intended connection behavior.
+
+The surrounding netcat/coprocess implementation has limited lifecycle management and error handling.
+
+It was sufficient for the observed browser experiments but should not be treated as a general-purpose HTTP server.
+
+### HTTP version distinction
+
+The lesson demonstrates HTTP/1.x-style textual message syntax.
+
+Modern HTTP/2 and HTTP/3 use binary framing and differ in their transport and message representation. The textual start-line/header model should not be generalized to all HTTP versions.
+
+---
+
+## 17. Design Lessons and Tradeoffs
+
+### Separation of responsibilities
+
+**Design:** Use netcat for socket communication and Bash for request handling.
+
+**Benefit:** The HTTP application logic can be studied without implementing TCP or using a low-level socket API.
+
+**Cost:** The design has limited control over connection management and introduces process pipes and descriptor redirection.
+
+### Line-oriented parsing
+
+**Initial design:** Interpret each input line as a request.
+
+**Benefit:** Extremely simple and sufficient for an early demonstration.
+
+**Failure:** A real HTTP/1.1 message can contain multiple header lines, so the design fails to recognize complete message boundaries.
+
+**Correction:** Explicitly model the transition from request line to headers to message processing.
+
+### Static file mapping
+
+**Design:** Translate URL paths into files under `www`.
+
+**Benefit:** Simple resource lookup; direct demonstration of how a request affects server behavior.
+
+**Cost:** The approach requires security validation and cannot represent all possible kinds of HTTP resources.
+
+### One-connection server
+
+**Design:** Launch netcat once, process one request, return a response, and exit.
+
+**Benefit:** Minimal lifecycle complexity for learning.
+
+**Cost:** New connections require restarting the server.
+
+The tradeoff is deliberate: isolate the HTTP mechanism before adding the complexity of managing a continuously running, concurrent service.
+
+---
+
+## 18. Final Conclusions
+
+Lesson 4 made several networking concepts experimentally observable.
+
+**1. Transport is not interpretation.**
+
+TCP moves bytes reliably and in order. HTTP defines what those bytes mean to the communicating applications.
+
+**2. Message boundaries must be explicit.**
+
+An HTTP parser must distinguish the start line, headers, optional body, and end of the message. Confusing individual lines with complete requests caused a real browser compatibility failure.
+
+**3. Successful parsing is not successful resource retrieval.**
+
+A server can recognize `GET` without checking whether the requested resource exists. Resource lookup is a separate application decision.
+
+**4. The server does not render the webpage.**
+
+The server returns an HTML representation. The browser interprets and renders it.
+
+**5. The web is a graph of references.**
+
+HTML can connect resources through hyperlinks and dependencies. The browser follows these references by initiating additional requests when appropriate.
+
+**6. Connections, requests, and processes have different lifetimes.**
+
+Our server's need to restart was a process-lifecycle limitation, not an HTTP requirement.
+
+**7. Protocol bugs become visible at boundaries.**
+
+The most informative failure occurred when a client with fuller HTTP behavior—the browser—communicated with a server that understood only a simplified request format.
+
+The lesson's overarching model:
+
+**RUNTIME → PROTOCOL → DESIGN → TRADEOFFS**
+
+A networking system becomes easier to reason about when each participant's state, responsibilities, communication boundaries, and transition rules are explicit.
+
+---
+
+## 19. References and Further Study
+
+### Primary curriculum
+
+Launch School LS170 — Networking Foundations, Lesson 4: Working with HTTP, Assignments 1–13.
+
+Hands-on work covered Assignments 1–12. The final summary was consolidated from the experiments rather than independently analyzed from the full published Assignment 13 text.
+
+### Supplemental reference material
+
+- *Computer Networks*, Tanenbaum et al. — protocol layering and network architecture.
+- *Beej's Guide to Network Programming* — sockets, process-level networking, and client/server behavior.
+- *Practical Packet Analysis*, Chris Sanders — future packet-level observations with Wireshark.
+
+These are companion references, not additional required reading for completing Lesson 4.
+
+### Suggested next connection
+
+Lesson 5 can build on the distinction between protocol-defined application behavior and the transport mechanisms supporting it.
+
+The Bash HTTP server remains a useful reference example for investigating request parsing, protocol framing, TCP connections, and browser behavior.
+
+**Repository status:** Documentation prepared for saving under `ls170/`. No file creation, Git staging, commit, or push is implied.
+
