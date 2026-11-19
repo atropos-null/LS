@@ -2867,3 +2867,904 @@ The Bash HTTP server remains a useful reference example for investigating reques
 
 **Repository status:** Documentation prepared for saving under `ls170/`. No file creation, Git staging, commit, or push is implied.
 
+# LS170 — Lesson 5: Transport Layer Security (TLS)
+
+**Completed:** November 19, 2026  
+**Course:** Launch School — LS170 Networking Foundations  
+**Status:** Lesson complete; embedded questions and end-of-lesson quiz reviewed  
+**Primary source:** Launch School Lesson 5, sections 05_01–05_07
+
+---
+
+## 1. Purpose and Security Model
+
+Transport Layer Security (TLS) is a cryptographic protocol designed to provide secure communication over an untrusted network.
+
+Ordinary HTTP defines the structure and rules for exchanging requests and responses but does not inherently provide confidentiality, authentication, or cryptographic integrity protection.
+
+TLS adds these protections without replacing HTTP's application-level responsibilities.
+
+### Three TLS Security Services
+
+| Service | Purpose | Security question |
+|---|---|---|
+| Encryption / Confidentiality | Protects message contents from unauthorized reading | Can an unauthorized party read this? |
+| Authentication | Verifies the identity of a communication participant | Am I communicating with the intended party? |
+| Integrity | Detects unauthorized changes to protected data | Has this message been tampered with? |
+
+These address distinct security problems.
+
+A connection can be correctly encrypted while communicating with an attacker impersonating the intended server. Likewise, encryption alone does not necessarily protect against undetected message modification.
+
+### Threat Model
+
+Assume that an attacker may observe, intercept, modify, inject, or discard traffic crossing the network.
+
+TLS aims to protect the confidentiality, authenticity, and integrity of communication between its endpoints.
+
+TLS does not:
+
+- Prevent packets from being dropped or delayed.
+- Guarantee availability.
+- Make the underlying network trustworthy.
+- Hide all traffic metadata, such as destination IP addresses.
+- Guarantee that the authenticated website or its operator is harmless.
+
+The security boundary is established at the TLS endpoints, not at every intermediate router.
+
+---
+
+## 2. Where TLS Fits in the Protocol Stack
+
+For conventional HTTPS using HTTP/1.1 or HTTP/2 over TCP:
+
+```text
+APPLICATION       HTTP
+                     |
+SECURITY          TLS
+                     |
+TRANSPORT         TCP
+                     |
+NETWORK           IP
+                     |
+NETWORK ACCESS    Ethernet / Wi-Fi / etc.
+```
+
+Each protocol has a separate responsibility.
+
+**HTTP:** Constructs application requests and responses and defines their meaning.
+
+**TLS:** Establishes cryptographic protection and processes protected records.
+
+**TCP:** Provides a reliable, ordered, bidirectional byte stream.
+
+**IP:** Provides addressing and packet delivery across interconnected networks.
+
+### Encapsulation
+
+On the sending endpoint:
+
+1. HTTP produces application data.
+2. TLS encrypts and integrity-protects the data, producing TLS records.
+3. TCP transports the record bytes as part of its byte stream.
+4. IP carries the corresponding TCP segments toward the destination.
+
+On the receiving endpoint, processing occurs in the opposite direction.
+
+TLS must successfully authenticate protected records before releasing their plaintext to HTTP.
+
+**Important:** TCP segments and TLS records do not necessarily share the same boundaries. TCP transports a byte stream, not discrete TLS messages.
+
+### HTTPS
+
+HTTPS is HTTP protected by TLS.
+
+TLS is not a replacement for HTTP or a secure version of TCP.
+
+**Scope:** This model describes HTTPS over TCP. HTTP/3 uses QUIC over UDP, incorporating TLS 1.3's handshake and cryptographic mechanisms rather than the conventional TLS-over-TCP record stack.
+
+---
+
+## 3. Symmetric and Asymmetric Cryptography
+
+### Symmetric-Key Encryption
+
+Symmetric encryption uses a shared secret key to encrypt and decrypt data.
+
+Both communicating endpoints must possess the appropriate secret key material.
+
+**Advantage:** Symmetric encryption is computationally efficient and suitable for protecting large amounts of application data.
+
+**Design problem:** The endpoints must establish shared secret material without exposing it to an attacker.
+
+Sending a symmetric key in plaintext across an untrusted network would compromise its secrecy.
+
+TLS addresses this key-establishment problem during the handshake.
+
+### Asymmetric Cryptography
+
+Asymmetric cryptography uses mathematically related public and private keys.
+
+| Public key | Private key |
+|---|---|
+| Can be distributed publicly | Must remain secret |
+| Used for public verification or other public-key operations | Used for signing or other private-key operations |
+| Mathematically related to the private key | Cannot feasibly be derived from the public key under the relevant security assumptions |
+
+The relationship is deliberately constructed through mathematical operations.
+
+It is not necessary for the recipient to possess another party's private key to verify a digital signature created with that key.
+
+### Mathematical Relationship — Conceptual Example
+
+During the lesson, a miniature RSA example was used to establish why the two keys are called *mathematically related*.
+
+The illustrative public key was `(55, 3)`, and the private exponent was `27`.
+
+A private-key operation on the message value 7 produced:
+
+`7^27 mod 55 = 28`
+
+The corresponding public-key operation verified:
+
+`28^3 mod 55 = 7`
+
+The public and private exponents were constructed to satisfy a modular mathematical relationship.
+
+**Conclusion:** A private-key operation can produce a result that the corresponding public-key operation can verify.
+
+These toy values are insecure and illustrate the mathematical mechanism only. Actual digital-signature implementations use secure encodings, hashing, and appropriate cryptographic parameters.
+
+Euler's theorem and manual RSA calculations are not LS170 retrieval requirements.
+
+### TLS and the Two Forms of Cryptography
+
+Launch School describes TLS as combining asymmetric encryption for initial key exchange with symmetric encryption for subsequent communication.
+
+This is a useful introductory model, but it describes older TLS key-transport mechanisms more closely than modern TLS.
+
+**TLS 1.3:** Typically uses ephemeral Diffie–Hellman key agreement to establish shared secret material, then derives symmetric traffic keys for application data protection.
+
+Asymmetric key agreement is not necessarily asymmetric encryption.
+
+---
+
+## 4. TLS Handshake
+
+The TLS handshake establishes the parameters and cryptographic state necessary for secure communication.
+
+In conventional HTTPS over TCP, the TCP connection is established **before** the TLS handshake begins.
+
+### TCP vs. TLS Handshake
+
+| TCP handshake | TLS handshake |
+|---|---|
+| Establishes a TCP connection | Establishes cryptographic protection |
+| Uses SYN, SYN-ACK, ACK | Uses TLS handshake messages |
+| Establishes transport state | Establishes cryptographic state |
+| Manages sequence numbers and transport parameters | Negotiates TLS version and cryptographic parameters |
+| Does not cryptographically authenticate the server | Supports server authentication |
+| Does not encrypt application data | Enables encrypted, authenticated application communication |
+
+### Temporal Ordering
+
+```text
+CLIENT                               SERVER
+
+       SYN ------------------------>
+           <---------------- SYN-ACK
+       ACK ------------------------>
+
+             TCP ESTABLISHED
+                    |
+                    v
+              TLS HANDSHAKE
+                    |
+                    v
+           TLS HANDSHAKE COMPLETE
+                    |
+                    v
+           PROTECTED HTTP EXCHANGE
+```
+
+TCP connection establishment and TLS connection establishment are distinct transitions.
+
+A successful TCP handshake does not imply that TLS negotiation will succeed.
+
+### TLS Handshake Responsibilities
+
+The TLS handshake:
+
+1. Negotiates a mutually supported TLS version.
+2. Negotiates compatible cryptographic algorithms.
+3. Establishes shared cryptographic secret material.
+4. Authenticates the server in ordinary certificate-based HTTPS.
+5. Confirms successful handshake completion.
+
+### Simplified Launch School Handshake
+
+The course depicts an older TLS handshake involving:
+
+- `ClientHello`
+- `ServerHello`
+- Server certificate
+- `ClientKeyExchange`
+- Handshake completion and `Finished` messages
+
+This illustrates negotiation, authentication, key establishment, and confirmation.
+
+The `ClientKeyExchange` message and RSA key-transport explanation are associated with older TLS versions.
+
+### Modern TLS 1.3
+
+A typical full TLS 1.3 handshake follows this conceptual sequence:
+
+```text
+CLIENT                            SERVER
+
+ClientHello --------------------->
+  Supported TLS versions
+  Supported cipher suites
+  Key share
+
+                       <--------- ServerHello
+                                  Selected parameters
+                                  Server key share
+
+                       <--------- EncryptedExtensions
+                       <--------- Certificate
+                       <--------- CertificateVerify
+                       <--------- Finished
+
+Verify server identity
+and handshake evidence
+
+Finished ----------------------->
+
+       HANDSHAKE COMPLETE
+
+<=========== Protected application data ===========>
+```
+
+The diagram omits internal key-derivation details and optional handshake variations.
+
+### Resulting Runtime State
+
+After successful completion, both endpoints possess:
+
+- Agreed TLS protocol parameters.
+- Negotiated cryptographic algorithms.
+- Cryptographic secrets and derived traffic keys.
+- State required to encrypt and authenticate records.
+- Relevant peer-authentication information.
+
+Modern TLS maintains separate traffic secrets and keys for the two communication directions.
+
+The application can now exchange protected data.
+
+### Handshake Failure
+
+If the endpoints cannot agree on acceptable cryptographic parameters, or a required authentication check fails, the handshake fails.
+
+Possible behavior includes:
+
+1. A TLS alert indicating failure.
+2. Termination of TLS negotiation.
+3. Closure of the underlying TCP connection.
+4. No successfully established protected HTTP exchange.
+
+For example, incompatible cipher suites may cause a `handshake_failure` alert.
+
+**Security principle:** TLS should fail closed rather than silently abandon required security protections.
+
+---
+
+## 5. Cipher Suites
+
+A **cipher suite** specifies an agreed collection of cryptographic algorithms.
+
+It is an algorithm specification, not the actual cryptographic key.
+
+### Negotiation
+
+1. Client sends `ClientHello` advertising supported cipher suites.
+2. Server examines the offered suites.
+3. Server selects a mutually supported suite allowed by its security configuration.
+4. Server communicates the selection in `ServerHello`.
+5. Both endpoints use the negotiated parameters in subsequent TLS operations.
+
+If no acceptable suite exists, the handshake cannot complete successfully.
+
+### TLS 1.2 Example
+
+`TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256`
+
+| Component | Responsibility |
+|---|---|
+| ECDHE | Ephemeral elliptic-curve Diffie–Hellman key agreement |
+| RSA | RSA-based server authentication |
+| AES-128-GCM | Authenticated symmetric encryption |
+| SHA-256 | Hash used in TLS 1.2 key derivation for this suite |
+
+### TLS 1.3 Example
+
+`TLS_AES_128_GCM_SHA256`
+
+In TLS 1.3, cipher suites identify the authenticated-encryption algorithm and the hash used for key derivation.
+
+Key agreement and authentication mechanisms are negotiated separately.
+
+**Governing distinction:** The cipher suite defines the cryptographic recipe; derived secret keys are the connection-specific cryptographic material.
+
+---
+
+## 6. TLS Authentication
+
+Authentication establishes whether the communication partner is the intended party.
+
+Ordinary HTTPS generally authenticates the server to the client.
+
+Client-certificate authentication is possible but not required for typical browser connections.
+
+### Two Different Verification Problems
+
+The client needs evidence that:
+
+1. A particular public key is legitimately associated with the requested server identity.
+2. The server possesses the corresponding private key.
+
+These problems require different checks.
+
+### Digital Signatures
+
+A digital signature is produced using a private key and specific data.
+
+The corresponding public key verifies that signature against the data.
+
+Conceptually:
+
+```text
+signature = Sign(private_key, message)
+
+valid = Verify(public_key, message, signature)
+```
+
+A successful verification provides cryptographic evidence that the signature was generated using the corresponding private key and that the signed data has not been altered.
+
+The private key is never transmitted to the verifier.
+
+In TLS 1.3, the server's `CertificateVerify` message contains a signature over handshake-related data.
+
+The client verifies that signature using the server's certified public key.
+
+### Proof of Possession Is Not Proof of Identity
+
+An attacker may possess a legitimate public/private key pair and generate valid signatures.
+
+That proves possession of the corresponding private key.
+
+It does **not** establish that the attacker's key belongs to the bank, website, or other identity being impersonated.
+
+Therefore, TLS also requires an authenticated binding between the public key and the intended identity.
+
+Digital certificates and Certificate Authorities provide this mechanism.
+
+---
+
+## 7. Digital Certificates and Certificate Authorities
+
+A **digital certificate** is a digitally signed data structure associating an identity with a public key.
+
+TLS commonly uses X.509 certificates.
+
+### Certificate Contents
+
+A typical server certificate contains:
+
+- A subject public key.
+- Domain names for which the certificate is valid, typically in the Subject Alternative Name extension.
+- Issuer information.
+- Validity dates.
+- Key-usage and other constraint information.
+- A digital signature from its issuing CA.
+
+### Certificate Authorities
+
+A **Certificate Authority (CA)** issues digitally signed certificates binding identities to public keys.
+
+A CA signs a certificate using **its own private key**.
+
+A verifier checks the signature using the issuing CA's public key.
+
+A CA must carry out the validation required for the type of certificate being issued.
+
+For ordinary Domain Validation (DV) certificates, this primarily involves verifying control over the relevant domain, not necessarily establishing the applicant's legal identity.
+
+### The Certificate Chain
+
+Certificates commonly form a hierarchy:
+
+```text
+ROOT CA
+Public key: K3
+Locally trusted
+       |
+       | Root private key signs
+       v
+INTERMEDIATE CA CERTIFICATE
+Public key: K2
+       |
+       | Intermediate private key signs
+       v
+WEBSITE CERTIFICATE
+Hostname: bank.example
+Public key: K1
+```
+
+The signing arrows point from issuer to issued certificate.
+
+The browser's logical verification path travels in the opposite direction:
+
+```text
+Website certificate
+        |
+        | Verify with K2
+        v
+Intermediate CA certificate
+        |
+        | Verify with K3
+        v
+Trusted root CA
+        |
+        v
+Local trust anchor reached
+```
+
+### Exact Certificate Validation Operations
+
+Suppose a client visits `bank.example`.
+
+The server presents its certificate, and the client obtains the necessary intermediate certificate information.
+
+The client:
+
+1. Determines whether the certificate is valid for `bank.example`.
+2. Uses the intermediate CA's public key to verify the server certificate's signature.
+3. Uses the root CA's public key to verify the intermediate certificate's signature.
+4. Checks that the certification path terminates at a locally trusted anchor.
+5. Checks validity periods, CA authority, permitted usages, and other required certificate constraints.
+6. Applies relevant certificate-status and browser security policies.
+7. Verifies the server's handshake proof of private-key possession.
+
+**A certificate is normally signed by its immediate issuer.**
+
+The website certificate does not ordinarily require separate signatures from both an intermediate CA and the root CA.
+
+Multiple certificates, each with its own issuer relationship, form the certification path.
+
+### Where Root Trust Originates
+
+Browsers and operating systems maintain or use stores containing trusted root certificates or public keys.
+
+Organizations responsible for these trust stores decide which CAs qualify for inclusion.
+
+This decision exists before the TLS connection begins.
+
+The browser does not need to establish the root's trust by following an infinite sequence of certificate signatures.
+
+**Verification terminates at a locally trusted trust anchor.**
+
+A self-signed certificate is not inherently trusted merely because it is self-signed.
+
+### Authentication Without Root CAs
+
+Server authentication is possible without a CA hierarchy.
+
+For example, two participants could securely exchange and verify public keys through a previously trusted channel.
+
+They could then authenticate signatures directly.
+
+The problem is scalability: individually distributing and maintaining trusted identity-to-key associations for millions of websites would be impractical.
+
+Certificate Authorities and trust stores provide a scalable solution.
+
+### Limitations
+
+A valid certificate does not guarantee that a website is honest or harmless.
+
+Certificate-based authentication also depends on correct validation, secure private-key management, trustworthy CA operation, and appropriate client security policy.
+
+---
+
+## 8. TLS Integrity
+
+Integrity protection allows a receiver to detect unauthorized modification of protected data.
+
+Encryption alone does not necessarily prevent ciphertext manipulation.
+
+TLS therefore provides cryptographic protection against message tampering.
+
+### Message Authentication Code (MAC)
+
+A **Message Authentication Code (MAC)** is a cryptographic authentication tag generated from a message and a secret key.
+
+Conceptually:
+
+```text
+tag = MAC(secret_key, message)
+```
+
+The receiver uses the appropriate secret key to check the tag against the received message.
+
+If the tag is valid, the receiver has evidence that the message has not been altered and that the tag was generated by a party possessing the appropriate secret.
+
+If verification fails, the protected data must be rejected.
+
+### MAC vs. Checksum
+
+| Property | IPv4 header checksum | Cryptographic MAC |
+|---|---|---|
+| Primary role | Detect accidental header corruption | Detect unauthorized tampering |
+| Secret key required | No | Yes |
+| Protects against deliberate forgery | No | Yes, under cryptographic security assumptions |
+| Can attacker recalculate after modification? | Yes | Not feasibly without the key |
+| Scope | IPv4 header | Data authenticated by the MAC construction |
+
+An attacker who changes an IPv4 header can calculate a replacement checksum.
+
+An attacker without the appropriate MAC key cannot feasibly generate a valid authentication tag for a modified protected message.
+
+**A cryptographic hash is not automatically a MAC.**
+
+An ordinary hash function lacks a secret key.
+
+An HMAC is a specific keyed MAC construction based on a cryptographic hash function.
+
+### Older TLS Record Format
+
+Launch School illustrates TLS records using fields including:
+
+```text
++-----------------------------+
+| Content Type                |
+| TLS Version                 |
+| Length                      |
++-----------------------------+
+| Data Payload                |
++-----------------------------+
+| MAC                         |
++-----------------------------+
+| Padding                     |
++-----------------------------+
+```
+
+This is a simplified representation of older TLS record protection mechanisms, not a universal TLS record format.
+
+In particular, TLS 1.2 could also use AEAD cipher suites, which did not have the same separate MAC construction.
+
+### Modern TLS 1.3 and AEAD
+
+TLS 1.3 uses **Authenticated Encryption with Associated Data (AEAD)** for protected records.
+
+Common AEAD algorithms include:
+
+- AES-GCM
+- ChaCha20-Poly1305
+
+AEAD combines confidentiality and integrity protection.
+
+The sender provides:
+
+- Plaintext.
+- Appropriate traffic key.
+- Nonce.
+- Associated data to be authenticated.
+
+The operation produces ciphertext and an authentication tag.
+
+The receiver supplies the required record data and cryptographic state to authenticated decryption.
+
+### Record Processing and Verification
+
+```text
+SENDER
+  |
+  | Application plaintext
+  v
+TLS AEAD ENCRYPTION
+  |
+  | Ciphertext + authentication tag
+  v
+TCP / IP
+  |
+  | Untrusted network
+  v
+TCP / IP
+  |
+  | Received TLS record bytes
+  v
+TLS AUTHENTICATED DECRYPTION
+  |
+  +---- Valid authentication ----> Plaintext to HTTP
+  |
+  +---- Invalid authentication --> Reject record
+                                   Terminate TLS connection
+```
+
+The protected plaintext must not be delivered to the application as authenticated data if cryptographic verification fails.
+
+### Important Boundary
+
+**Successful authentication of the record permits plaintext to cross from TLS into HTTP processing.**
+
+A failed check prevents that transition.
+
+---
+
+## 9. TLS vs. DTLS and UDP
+
+Ordinary TLS is designed for a reliable, ordered byte-stream transport, typically TCP.
+
+UDP provides datagram transport without TCP's stream-reliability guarantees.
+
+**Datagram Transport Layer Security (DTLS)** adapts TLS security mechanisms for datagram transports such as UDP.
+
+Therefore:
+
+- Ordinary TLS is not directly interchangeable with UDP transport.
+- DTLS is specifically designed for datagram communication.
+- QUIC incorporates TLS 1.3 security mechanisms over UDP but uses a different transport and record architecture.
+
+**Launch School quiz answer:** The statement "TLS can be used with UDP" is marked false. Its explanation specifically identifies DTLS as the appropriate related protocol.
+
+For the course, distinguish TLS from DTLS rather than treating them as the same protocol.
+
+---
+
+## 10. Complete Connection State Model
+
+The following represents conventional HTTPS over TCP.
+
+| Stage | Initiator / owner | State and transition |
+|---|---|---|
+| 1. TCP connection initiation | Client initiates; both TCP endpoints participate | SYN, SYN-ACK, ACK establish TCP connection state |
+| 2. TLS ClientHello | TLS client | Offers supported versions, cipher suites, and other parameters |
+| 3. Server negotiation | TLS server | Selects compatible security parameters |
+| 4. Key establishment | Both TLS endpoints | Establish cryptographic secrets and derive required keys |
+| 5. Server authentication | Server supplies evidence; client verifies | Validates certificate identity, trusted path, and proof of private-key possession |
+| 6. Handshake completion | Both TLS endpoints | Confirms successful cryptographic establishment |
+| 7. HTTP request | HTTP client | Creates application data for TLS protection |
+| 8. TLS record protection | Sending TLS endpoint | Encrypts and authenticates data |
+| 9. Network transmission | TCP/IP stack and network | Transports protected record bytes |
+| 10. TLS record verification | Receiving TLS endpoint | Authenticates and decrypts records |
+| 11. HTTP processing | Receiving application | Processes successfully authenticated plaintext |
+
+This is a conceptual dependency sequence. Modern TLS key establishment and authentication operations are interleaved within actual handshake-message processing.
+
+### Governing Runtime Model
+
+**Where does state live?**
+
+TCP connection state lives at the transport endpoints.
+
+TLS security state lives at the TLS endpoints.
+
+The browser or operating system maintains the trusted root information used for certificate validation.
+
+**Who initiates the action?**
+
+The client ordinarily initiates the TCP connection, TLS handshake, and HTTP request.
+
+**What crosses a boundary?**
+
+Application data passes into TLS, protected TLS record bytes pass into TCP, and transport data passes through IP toward the remote endpoint.
+
+**What determines the next transition?**
+
+Protocol messages, negotiation results, certificate-validation results, cryptographic verification, and connection state.
+
+**When does the process stop?**
+
+Connection establishment fails when required negotiation or validation cannot succeed.
+
+Protected communication ends when the connection is closed or a fatal security failure occurs.
+
+**What survives successful establishment?**
+
+Both endpoints retain the required TCP and TLS connection state while the connection remains active.
+
+---
+
+## 11. Launch School Embedded Questions
+
+All five lesson question boxes were discussed.
+
+### Q1. What is the insecure channel protected by TLS?
+
+The underlying network communication path, over which traffic may be observed or manipulated.
+
+Ordinary HTTP does not itself provide the cryptographic protections necessary to secure messages crossing that path.
+
+### Q2. How is the TLS handshake similar to and different from the TCP handshake?
+
+Both involve protocol-defined exchanges between client and server to establish shared operational state.
+
+TCP establishes reliable transport state.
+
+TLS establishes negotiated cryptographic state and enables authenticated, protected communication.
+
+For HTTPS over TCP, the TLS handshake occurs after TCP connection establishment.
+
+### Q3. Why isn't sharing a public key sufficient to prove possession of the private key?
+
+Anyone may possess a copy of a public key.
+
+Possession of the corresponding private key can be demonstrated by creating a digital signature that verifies using the public key.
+
+The private key need not be disclosed.
+
+### Q4. Could servers be authenticated without Root CAs?
+
+Yes.
+
+Previously verified public keys could be used for direct authentication.
+
+Root CAs are part of a scalable trust infrastructure, not a mathematical requirement for authentication itself.
+
+### Q5. Why does TLS use a cryptographic MAC rather than an ordinary checksum?
+
+Checksums are unkeyed calculations intended primarily for detecting accidental errors.
+
+A MAC uses secret key material, preventing an attacker without that key from feasibly forging a valid replacement authentication tag for altered data.
+
+---
+
+## 12. End-of-Lesson Quiz — Observed Results
+
+Seven actual Launch School quiz questions were reviewed.
+
+The following records the learner's **original choices**, not answers reconstructed or revised afterward.
+
+| Question topic | Original selection | Correct answer | Observation |
+|---|---|---|---|
+| General TLS properties | A, D, E, F | A, E, F | Incorrectly treated ordinary TLS as compatible with UDP |
+| TLS/TCP handshake order | A: TLS before TCP | C: TLS after TCP | Temporal ordering reversal |
+| Handshake purposes | C, D | A, C, D | Omitted TLS version negotiation |
+| Symmetric/asymmetric cryptography | C | C | Correct |
+| TLS Authentication | A, C, D | A, C | Confused message integrity with authentication |
+| Certificate Authorities | B, D | A, D | Confused direct certificate issuer signatures with the entire certification chain |
+| Message Authentication Code | C | C | Correct |
+
+### Corrections Established
+
+**Handshake sequencing:** TCP establishment precedes TLS negotiation in the course's conventional HTTPS model.
+
+**TLS version negotiation:** The handshake negotiates protocol version as well as cryptographic parameters.
+
+**Authentication vs. integrity:** Peer identity verification and record-tampering detection are distinct TLS security functions.
+
+**Certificate signatures:** A certificate is ordinarily signed by its immediate issuing CA; the trust chain consists of linked certificates and signatures.
+
+**CA private keys:** CAs use their own private keys to sign certificates.
+
+**UDP:** DTLS, rather than ordinary TLS, is the datagram-oriented protocol.
+
+### Independently Demonstrated Strengths
+
+The learner correctly:
+
+- Explained the security limitations of ordinary HTTP.
+- Identified key distribution as the fundamental problem with symmetric encryption.
+- Explained public-key substitution as an interception threat.
+- Understood the public/private-key relationship after seeing its mathematical construction.
+- Distinguished key possession from authenticated identity.
+- Understood the origin of root trust once the trust-store boundary was made explicit.
+- Reasoned that direct authentication without CAs is possible but less scalable.
+- Explained why an attacker can recalculate a checksum but cannot feasibly forge a keyed MAC.
+- Identified the role of symmetric cryptography in application-data protection.
+
+The original quiz answers were deliberately not changed following review.
+
+No numerical final score was provided.
+
+---
+
+## 13. Technical Caveats and Corrections to the Course Model
+
+The primary lesson provides a useful introductory model but contains simplifications associated with older TLS versions.
+
+| Course presentation | Technical clarification |
+|---|---|
+| TLS uses asymmetric encryption for initial key exchange | TLS 1.3 typically uses ephemeral Diffie–Hellman key agreement |
+| Server sends a certificate during the handshake | Correct; actual message order and protection depend on the TLS version |
+| Cipher suite specifies the agreed algorithms | Correct; TLS 1.3 negotiates some mechanisms separately from the cipher suite |
+| TLS records contain a separate MAC field | Applies to certain older record-protection modes, not TLS 1.3 AEAD |
+| A hashing algorithm creates the MAC | A secure MAC requires secret key material; hashing alone is insufficient |
+| TLS requires several round trips | TLS 1.3 normally supports a full handshake in one round trip |
+| Certificate chain establishes identity | Path validation must also include hostname and certificate constraints |
+| Root CA is trusted because the chain reaches it | Root trust originates in locally configured trust anchors, established independently of the handshake |
+| TLS can be used with UDP | Ordinary TLS is distinct from DTLS; QUIC separately incorporates TLS 1.3 mechanisms over UDP |
+
+These clarifications preserve the course's intended concepts while distinguishing them from modern implementations.
+
+---
+
+## 14. Troubleshooting and Security Failure Reference
+
+| Symptom or failure | Responsible mechanism | Interpretation |
+|---|---|---|
+| TCP connection succeeds, TLS fails | TLS negotiation or validation | Transport establishment does not guarantee a secure session |
+| No mutually supported cipher suite | TLS handshake | Cryptographic parameters cannot be agreed |
+| Certificate hostname mismatch | Certificate identity validation | Certificate does not authorize the requested hostname |
+| Unknown or untrusted root | Certificate-path validation | No acceptable trusted certification path |
+| Invalid certificate signature | Certificate-path validation | Issuer signature cannot be verified |
+| Invalid server handshake signature | TLS authentication | Proof of corresponding private-key possession fails |
+| Invalid protected-record authentication tag | TLS record protection | Record may have been modified, corrupted, or processed with incorrect cryptographic state |
+| Valid IPv4 checksum on modified traffic | IP error detection | Does not establish cryptographic integrity |
+
+The appropriate response to a failed required security check is to reject the unsafe connection or record, rather than silently ignore the failure.
+
+No live packet captures, TLS experiments, shell commands, or certificate inspections were executed during this lesson. The examples above are conceptual and instructional.
+
+---
+
+## 15. Final Synthesis
+
+TLS protects application communication over an untrusted network by combining cryptographic negotiation, key establishment, authentication, encryption, and integrity verification.
+
+The complete conventional HTTPS model is:
+
+```text
+CLIENT
+  |
+  | Initiate TCP connection
+  v
+TCP HANDSHAKE
+  |
+  | Reliable byte stream established
+  v
+TLS HANDSHAKE
+  |
+  | Negotiate protocol version and algorithms
+  | Establish shared cryptographic secrets
+  | Authenticate server identity
+  | Derive traffic keys
+  | Confirm handshake completion
+  v
+PROTECTED APPLICATION COMMUNICATION
+  |
+  | HTTP data enters TLS
+  | TLS encrypts and authenticates records
+  | TCP/IP transports protected bytes
+  v
+RECEIVER
+  |
+  | TCP delivers bytes
+  | TLS authenticates and decrypts records
+  | Verified plaintext enters HTTP
+  v
+APPLICATION PROCESSING
+```
+
+The central design principle is that **network transport, cryptographic protection, and application processing are separate responsibilities with explicit boundaries and transition conditions**.
+
+A successful connection depends on each required protocol establishing the appropriate state before the next protected operation can proceed.
+
+---
+
+## 16. Retention and Next Steps
+
+The centralized **LS170 Practice & Retention** handoff was prepared separately.
+
+Priority retrieval targets:
+
+1. TCP versus TLS handshake ordering.
+2. TLS version and cipher-suite negotiation.
+3. Authentication versus integrity.
+4. Immediate certificate issuer versus certification chain.
+5. CA private-key signing and public-key verification.
+6. TLS versus DTLS.
+7. Trust-store origins and certificate-path termination.
+
+These distinctions should be revisited through short recall, four-option multiple-choice discrimination, and occasional independent state-transition reconstruction.
+
