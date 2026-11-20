@@ -2869,12 +2869,6 @@ The Bash HTTP server remains a useful reference example for investigating reques
 
 # LS170 — Lesson 5: Transport Layer Security (TLS)
 
-**Completed:** November 19, 2026  
-**Course:** Launch School — LS170 Networking Foundations  
-**Status:** Lesson complete; embedded questions and end-of-lesson quiz reviewed  
-**Primary source:** Launch School Lesson 5, sections 05_01–05_07
-
----
 
 ## 1. Purpose and Security Model
 
@@ -3768,3 +3762,363 @@ Priority retrieval targets:
 
 These distinctions should be revisited through short recall, four-option multiple-choice discrimination, and occasional independent state-transition reconstruction.
 
+# LS170 — Lesson 6: The Evolution of Network Technologies
+
+
+## 1. Overview
+
+Network technologies evolve in response to limitations in existing systems. Improvements often reduce latency, increase concurrency, distribute responsibilities, or support new application behavior.
+
+A useful architectural analysis considers:
+
+1. What problem does the existing system solve?
+2. What limitation motivates a change?
+3. Where does relevant state live?
+4. Which participant initiates an operation?
+5. What crosses the network or protocol boundary?
+6. What determines the next transition?
+7. What capabilities and tradeoffs result?
+
+The central principle is that an optimization often relocates complexity rather than eliminating it.
+
+## 2. Evolution of HTTP
+
+HTTP is an application-layer request-response protocol. Its core semantics have remained recognizable while message representation, connection management, framing, and transport mechanisms have evolved.
+
+| Version | Significant development | Remaining limitation |
+|---|---|---|
+| HTTP/0.9 | Minimal document retrieval using GET | No standardized status codes or response headers |
+| HTTP/1.0 | Versioned messages, status codes, and headers | Connections commonly established for individual requests |
+| HTTP/1.1 | Persistent connections by default; pipelining specified | Ordered pipelined responses can cause head-of-line blocking |
+| HTTP/2 | Binary framing and multiplexed streams over TCP | TCP loss can block delivery across HTTP streams |
+| HTTP/3 | HTTP carried over QUIC streams | More sophisticated transport and connection management |
+
+### HTTP/0.9 and HTTP/1.0
+
+An HTTP/0.9 exchange consisted of a simple request, a document response, and connection termination. The client relied on the underlying TCP byte stream reaching its end to determine that the response had finished.
+
+A temporary absence of incoming data is not equivalent to connection closure.
+
+HTTP/1.0 introduced structured response metadata. For example, `HTTP/1.0 404 Not Found` communicates a standardized outcome independently of any human-readable error page.
+
+### HTTP/1.1: Connection reuse
+
+A persistent connection permits multiple HTTP exchanges without repeatedly establishing a new TCP connection.
+
+HTTP/1.1 pipelining permits requests to be sent before earlier responses have completed, but responses must retain request order. Therefore, an earlier slow response can delay later responses on the same connection.
+
+In practice, browsers commonly avoided pipelining and used multiple connections to improve concurrency.
+
+### HTTP/2: Multiplexing
+
+HTTP/2 divides messages into frames associated with identifiable streams. Frames belonging to different streams can be interleaved over one TCP connection.
+
+This removes the need to transmit complete HTTP responses sequentially at the application protocol level.
+
+However, TCP supplies an ordered byte stream. Missing TCP data can prevent later bytes from being delivered to HTTP/2, even when those bytes belong to another HTTP stream.
+
+### HTTP/3: QUIC
+
+HTTP/3 uses QUIC rather than TCP.
+
+QUIC operates over UDP and provides transport features including:
+
+- Reliable, independently ordered streams
+- Connection establishment and management
+- Loss detection and recovery
+- Congestion control
+- Integrated cryptographic protection using TLS 1.3
+
+Loss on one QUIC stream does not inherently block delivery of available data on unrelated streams.
+
+QUIC originally expanded to *Quick UDP Internet Connections*, but the standardized protocol treats QUIC as a name rather than an acronym.
+
+**Design conclusion:** HTTP/2 improves application-layer multiplexing; HTTP/3 additionally addresses TCP's cross-stream head-of-line blocking.
+
+## 3. Web Performance and Optimizations
+
+### Distinguishing performance constraints
+
+**Latency:** Delay associated with communication or completing an operation.
+
+**Round-trip time (RTT):** Time required for a signal to travel from one endpoint to another and back.
+
+**Bandwidth:** The capacity of a communication channel, generally measured in bits per second.
+
+**Throughput:** The actual data transferred per unit of time.
+
+**Critical path:** The longest chain of dependent operations that determines the minimum possible completion time under a given dependency model.
+
+Increasing bandwidth does not necessarily reduce DNS lookup delays, connection establishment costs, server processing time, or resource-discovery dependencies.
+
+### A cold HTTPS request
+
+A simplified new HTTP/1.1-over-TCP connection may require:
+
+1. Resolve the hostname through DNS.
+2. Establish a TCP connection.
+3. Negotiate TLS and authenticate the server.
+4. Send an HTTP request.
+5. Receive and process the response.
+6. Discover and retrieve dependent resources.
+
+Some operations may overlap or be avoided through caching and connection reuse. HTTP/3 uses QUIC instead of the separate TCP and TLS sequence.
+
+### Principal optimization mechanisms
+
+| Optimization | Mechanism | Main tradeoff |
+|---|---|---|
+| Compression | Reduce transferred bytes | CPU cost for encoding/decoding |
+| Connection reuse | Avoid repeated transport setup | Maintaining connection resources |
+| DNS caching | Reuse valid name-resolution results | Potentially stale information |
+| HTTP resource caching | Reuse previously received responses | Cache freshness and validation |
+| Early resource discovery | Start necessary requests sooner | Requires browser scheduling |
+| Speculative loading | Anticipate future resource requirements | Potential wasted bandwidth and work |
+
+### Cache behavior
+
+**Cold request:** No reusable cached representation is available. The browser contacts the server and retrieves a response.
+
+**Fresh cached response:** The browser may reuse the cached representation without contacting the server.
+
+**Cached response requiring validation:** The browser can send a conditional request, potentially using `If-None-Match` with a previously stored ETag.
+
+If the representation has not changed, the server may respond with `304 Not Modified`. The client reuses its stored body instead of downloading the full representation again.
+
+A `304` response still requires network communication; it does not eliminate the request.
+
+**State ownership:**
+
+- Browser HTTP cache: stored response representations and metadata
+- DNS caches: reusable name-resolution information
+- Network endpoints: connection state
+- Origin server: current resource state and validation information
+
+**Conclusion:** Optimize the actual bottleneck. Eliminating an operation and merely reducing its data-transfer size are different performance improvements.
+
+## 4. Browser Networking APIs
+
+### The synchronization problem
+
+A server may possess newer application information than the browser currently displays.
+
+Ordinary HTTP responses are associated with client-initiated requests. Browser applications therefore need mechanisms to obtain updates without repeatedly reloading an entire page.
+
+### APIs and communication patterns
+
+| Mechanism | Behavior | Principal use |
+|---|---|---|
+| XMLHttpRequest | JavaScript-initiated HTTP requests | Asynchronous web interactions |
+| Fetch API | Promise-based HTTP request interface | General modern HTTP access |
+| Polling | Repeated client requests | Simple periodic updates |
+| Long-polling | Server holds a request until an event or timeout | Updates with fewer empty responses |
+| Server-Sent Events | Ongoing server-to-client event stream | Notifications and live feeds |
+| WebSocket | Persistent bidirectional messaging | Chat and interactive applications |
+
+AJAX describes an approach to asynchronous web interaction, historically associated with XMLHttpRequest, rather than a distinct network transport protocol.
+
+### Polling
+
+The browser repeatedly requests information.
+
+Advantages include simplicity and compatibility with ordinary HTTP request handling.
+
+Disadvantages include unnecessary requests when nothing has changed and delays between an event occurring and the next polling interval.
+
+### Long-polling
+
+The browser makes a request that the server keeps pending until new information is available or a timeout occurs.
+
+The client typically initiates another request after the current response completes.
+
+The server must track outstanding requests and their associated event or timeout conditions. Large numbers of pending requests consume resources even when no data is being sent.
+
+### Server-Sent Events (SSE)
+
+SSE uses an ongoing HTTP response with the `text/event-stream` media type.
+
+The browser's `EventSource` API receives event messages as the server emits them.
+
+The client initiates the subscription; server-to-client application events then travel through the stream.
+
+EventSource supports automatic reconnection. Event identifiers may help resume delivery when the server implements suitable replay behavior.
+
+SSE does not provide a bidirectional application-message stream. Clients can make separate HTTP requests when necessary.
+
+### WebSocket
+
+WebSocket establishes a long-lived bidirectional messaging channel.
+
+After the opening handshake, either participant can initiate application messages.
+
+Both endpoints must manage connection lifetime and application messaging state. Applications may additionally need reconnection, missed-message recovery, authentication, and authorization mechanisms.
+
+WebSocket does not automatically replay messages lost while a client was disconnected.
+
+### Applied example: SOC monitoring dashboard
+
+- Historical incident retrieval: ordinary HTTP via Fetch
+- Continuous intrusion alerts: SSE
+- Interactive analyst chat: WebSocket
+
+These are design choices rather than mandatory rules. The simplest appropriate mechanism depends on message direction, delivery needs, connection lifetime, scalability, and operational complexity.
+
+### Contemporary extension: WebTransport
+
+WebTransport is a browser networking API that can provide streams and datagrams over HTTP/3. It exposes transport capabilities with differing reliability and ordering properties. It is an additional design option, not a direct replacement for every WebSocket or SSE application.
+
+## 5. Peer-to-Peer Networking
+
+### Architecture
+
+In client-server systems, designated servers provide services to clients.
+
+In peer-to-peer (P2P) systems, participating nodes may act as both consumers and providers.
+
+P2P describes how application responsibilities are distributed; it is not itself a transport-layer protocol.
+
+### Overlay graphs
+
+A P2P overlay consists of participants connected through application-level relationships.
+
+An overlay edge represents a known relationship or communication channel between peers, not necessarily a direct physical network link.
+
+A peer can belong to a connected overlay without maintaining a complete list of all other participants.
+
+### Bootstrapping
+
+A new peer typically requires one or more initial contact points to join an existing network.
+
+It may connect to known bootstrap peers, receive additional peer information, and establish its own overlay relationships.
+
+### Peer discovery mechanisms
+
+**Flooding:** Forward a search request to neighboring peers, subject to limits. This can locate unknown resources, but creates duplicate traffic and scalability problems.
+
+**Distributed Hash Table (DHT):** Distribute key-based lookup responsibilities among peers so a resource or location can be discovered without each node storing the complete directory.
+
+**Hybrid P2P:** Use centralized services for some activities, such as peer discovery, while performing resource transfers between peers.
+
+**Gossip:** Periodic exchange of information among selected peers to disseminate updates or membership knowledge.
+
+### Churn
+
+Churn refers to peers joining, leaving, disconnecting, or becoming unreachable.
+
+Consequences include stale membership information, changing network paths, and the need to repair or refresh lookup structures.
+
+### Discovery path versus data path
+
+A discovery request may traverse overlay peers A → B → D → E.
+
+After discovering E, A may establish a separate data connection with E.
+
+The subsequent data-transfer path need not follow the discovery route. A direct overlay connection still uses the underlying network infrastructure and routers.
+
+### WebRTC and NAT traversal
+
+WebRTC supports real-time audio, video, and data communication between compatible peers.
+
+**Signaling:** The exchange of information required to negotiate a connection, typically performed through an application-provided mechanism.
+
+**ICE — Interactive Connectivity Establishment:** A framework that gathers possible connection candidates, checks connectivity, and selects a workable path.
+
+**STUN — Session Traversal Utilities for NAT:** Helps an endpoint discover externally observed address/port information and supports connectivity checks.
+
+**TURN — Traversal Using Relays around NAT:** Allows traffic to pass through a relay server when direct peer communication cannot be established or is unsuitable.
+
+ICE can evaluate both direct and relayed candidate paths. STUN, TURN, and ICE are cooperating mechanisms rather than necessarily sequential stages.
+
+### State ownership
+
+| Participant | Relevant state |
+|---|---|
+| Peer | Known neighbors, available resources, connections |
+| DHT participants | Distributed lookup and routing information |
+| NAT device | Address and port translation mappings |
+| ICE agent | Candidates and connectivity-check results |
+| TURN server | Relay allocations and associated forwarding state |
+
+### Tradeoffs
+
+Potential benefits:
+
+- Distributed resource provision
+- Reduced dependence on a single content server
+- Improved resilience where resources are replicated
+- Possibility of more direct communication paths
+
+Costs and limitations:
+
+- Peer discovery and membership maintenance
+- Churn and resource availability
+- NAT and firewall traversal
+- Inconsistent or stale distributed state
+- Security, identity, authenticity, and trust
+- Additional operational complexity
+
+P2P does not guarantee decentralization of every supporting function or freedom from server dependencies.
+
+## 6. Integrating the Concepts
+
+Consider a security-monitoring application.
+
+1. A browser loads its application resources over HTTP.
+2. DNS, transport setup, and TLS may be required for a new connection.
+3. HTTP caching and connection reuse reduce repeated network work.
+4. The application retrieves historical incidents through Fetch.
+5. An SSE stream carries ongoing security alerts.
+6. A WebSocket connection supports interactive messaging between analysts through a server.
+7. WebRTC may establish a separate peer connection for an analyst video call.
+8. ICE tests candidate connectivity paths, potentially using STUN or TURN.
+
+Each mechanism addresses a different requirement.
+
+The same application may simultaneously use client-server services, persistent event streams, and peer-to-peer communication.
+
+## 7. Observations and Verification Status
+
+**Conceptual observations during the November 20 study session:**
+
+- TCP connection closure was distinguished from temporary network silence.
+- HTTP/1.1 pipelining head-of-line blocking was distinguished from TCP-level blocking affecting HTTP/2.
+- Bandwidth was distinguished from latency, connection setup, and dependency scheduling.
+- The difference between fresh cache reuse and conditional revalidation was explicitly reconstructed.
+- SSE was selected for server-generated monitoring alerts and WebSocket for interactive chat.
+- Peer discovery was distinguished from the subsequent data-transfer route.
+- ICE, STUN, and TURN were examined in terms of their separate responsibilities.
+
+**Not performed during this session:**
+
+- Live browser Network-panel measurements
+- Wireshark packet captures
+- QUIC trace inspection
+- Live WebRTC connection experiments
+- Performance benchmarking
+
+Illustrations and examples are conceptual, not empirical measurements of a deployed application.
+
+## 8. References and Further Study
+
+**Primary:** Launch School LS170, Lesson 6 — The Evolution of Network Technologies.
+
+**Supplementary:**
+
+- Tanenbaum, Feamster, and Wetherall, *Computer Networks*, 6th ed., §7.3.4 and §7.5.4
+- RFC 9110 — HTTP Semantics
+- RFC 9111 — HTTP Caching
+- RFC 9113 — HTTP/2
+- RFC 9114 — HTTP/3
+- RFC 9000 — QUIC
+- RFC 6455 — The WebSocket Protocol
+- RFC 8445 — ICE
+- RFC 8489 — STUN
+- RFC 8656 — TURN
+
+## Conclusion
+
+The evolution of network technologies can be understood as a series of responses to engineering constraints.
+
+HTTP evolved to improve message representation, connection reuse, multiplexing, and transport behavior. Web optimizations reduce redundant transfers and critical-path delays. Browser APIs provide different communication patterns. P2P architectures distribute responsibilities while introducing discovery and coordination problems.
+
+The transferable skill is to identify the participants, their state, the protocols governing interaction, the boundaries crossed, and the constraints driving the next architectural decision.
