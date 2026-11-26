@@ -4122,3 +4122,1026 @@ The evolution of network technologies can be understood as a series of responses
 HTTP evolved to improve message representation, connection reuse, multiplexing, and transport behavior. Web optimizations reduce redundant transfers and critical-path delays. Browser APIs provide different communication patterns. P2P architectures distribute responsibilities while introducing discovery and coordination problems.
 
 The transferable skill is to identify the participants, their state, the protocols governing interaction, the boundaries crossed, and the constraints driving the next architectural decision.
+
+# End-to-End Network Traversal: From Application Bytes to Physical Signals
+
+## Purpose
+
+Understand how application data becomes network traffic, travels through routers, and reaches a receiving application.
+
+**Central model:**
+
+Application data → transport processing → IP processing → link-layer framing → physical transmission → intermediate forwarding → receiving host → receiving application.
+
+The network can be understood along two axes:
+
+- **Vertical:** Protocol responsibilities within a device.
+- **Horizontal:** Transmission and forwarding between devices.
+
+These are different perspectives on the same runtime process.
+
+## 1. Starting state
+
+A sender application contains the UTF-8 bytes representing `Hi`:
+
+```text
+48 69
+```
+
+Example addresses:
+
+| Participant | IP address |
+|---|---|
+| Computer A | 192.168.1.10 |
+| Default gateway | 192.168.1.1 |
+| Computer B | 203.0.113.20 |
+| Receiving UDP service | Port 5000 |
+
+These are illustrative addresses, not addresses discovered from a live network.
+
+Initially, the application has data in memory. No Ethernet frame or physical signal has yet been produced.
+
+## 2. Sender runtime
+
+The application invokes a socket operation, such as `sendto()`, using a UDP socket.
+
+The operating system handles the request:
+
+1. **UDP processing:** Creates a datagram containing source and destination ports, length, checksum information, and the application payload.
+2. **IP processing:** Prepares an IP packet containing source and destination addresses, TTL, and a protocol identifier for UDP.
+3. **Routing decision:** Determines the outgoing interface and next hop using routing information.
+4. **Link-layer preparation:** Prepares an Ethernet frame addressed to the next-hop device.
+5. **Physical transmission:** The network interface encodes the frame information into physical signals and transmits them.
+
+A simplified Ethernet frame representation:
+
+```text
+[Ethernet header][IPv4 header][UDP header][48 69][FCS]
+```
+
+This describes the ordered fields of the frame, not physical objects nested inside one another.
+
+Ethernet framing may also require padding for a very small IP packet. Hardware can perform some operations, including checksum or FCS generation, depending on the implementation.
+
+## 3. Next-hop addressing and ARP
+
+The IP destination identifies the final destination of the packet.
+
+The Ethernet destination MAC address identifies the intended recipient of the current local transmission.
+
+If Computer B is beyond Computer A's local network, Computer A ordinarily sends the first Ethernet frame to its selected gateway.
+
+If the gateway's MAC address is not already known, Computer A can use ARP on an IPv4 Ethernet network.
+
+The ARP request is broadcast using:
+
+```text
+FF:FF:FF:FF:FF:FF
+```
+
+The request asks which local device owns the gateway's IP address. The gateway responds with its MAC address, allowing Computer A to construct the outgoing Ethernet frame.
+
+The resulting mapping can be stored in an ARP cache.
+
+ARP is a separate exchange that may precede transmission of the original UDP datagram.
+
+## 4. Router forwarding
+
+An ordinary IPv4 router:
+
+1. Receives and processes an incoming link-layer frame.
+2. Obtains the IP packet.
+3. Examines the destination IP address.
+4. Consults its forwarding table.
+5. Selects an outgoing interface and next hop.
+6. Decrements the IPv4 TTL and updates the IPv4 header checksum.
+7. Constructs outgoing link-layer framing appropriate to the next link.
+8. Transmits the information toward the next device.
+
+Example:
+
+```text
+Incoming frame:
+[MAC A→Gateway][IP A→B, TTL 64][UDP][Hi][FCS]
+
+Outgoing frame:
+[MAC Gateway→Next hop][IP A→B, TTL 63][UDP][Hi][FCS]
+```
+
+In ordinary forwarding without NAT:
+
+- Source and destination IP addresses remain unchanged.
+- TTL decreases at each forwarding router.
+- The Ethernet source and destination MAC addresses change for the next hop.
+- Outgoing link-layer integrity information is generated for the new frame.
+- The UDP datagram and application payload normally remain unchanged.
+
+The router does not need to interpret `Hi` or identify the intended receiving UDP socket.
+
+Its forwarding decision primarily concerns the IP destination, forwarding information, and applicable forwarding rules.
+
+Routers may also perform filtering, NAT, or other functions. Those are additional behaviors beyond the simplified forwarding model.
+
+## 5. Receiver runtime
+
+When the final frame reaches Computer B:
+
+1. The network interface decodes the physical signal and recovers digital information.
+2. Ethernet processing checks and interprets the frame.
+3. The EtherType identifies IPv4.
+4. IP processing examines the destination IP address and the Protocol field.
+5. Protocol value 17 identifies UDP.
+6. UDP processing examines the destination port and relevant socket information.
+7. The receiving application obtains the payload through its socket.
+8. The application interprets `48 69` according to its own data format.
+
+The transport and network protocols do not need to understand the application-level meaning of those bytes.
+
+## 6. Buffers, queues, and knowledge
+
+Transmission is not necessarily instantaneous.
+
+A successful `sendto()` operation generally means that the operating system accepted the datagram for sending. It does not establish that the NIC transmitted the frame or that the receiving application processed it.
+
+Data may wait in operating-system buffers, NIC queues, or intermediate router queues.
+
+**Queue contents are stored as digital information in device memory. Physical signals propagate through the transmission medium; packets do not wait inside the cable.**
+
+When arrivals exceed an outgoing interface's capacity, queues may grow. Because buffers are finite, congestion can produce delay and packet loss.
+
+State ownership matters:
+
+- The sender knows its own socket and transmission state.
+- A router knows its own forwarding and queue state.
+- The receiver knows what it has received.
+- No participant automatically knows all internal states across the network.
+
+## 7. TCP versus UDP
+
+TCP and UDP are alternative transport protocols.
+
+**UDP:**
+- Connectionless datagrams.
+- Preserves datagram boundaries.
+- No built-in delivery acknowledgments or retransmissions.
+- Useful when application requirements favor timely independent messages or application-managed transport behavior.
+
+**TCP:**
+- Connection-oriented, ordered byte stream.
+- Uses sequence numbers, acknowledgments, retransmissions, flow control, and congestion control.
+- Does not preserve boundaries between individual application writes.
+- Useful when reliable, ordered byte delivery is required.
+
+Protocol selection is an application design choice.
+
+Even TCP does not guarantee that data is generated, interpreted, or durably stored correctly by the application. Application-level integrity and persistence are separate responsibilities.
+
+## 8. Vertical architecture
+
+| Responsibility | TCP/IP | OSI |
+|---|---|---|
+| Application behavior and representation | Application | Application / Presentation / Session |
+| Transport services | Transport | Transport |
+| IP addressing and routing | Internet | Network |
+| Local framing and transmission | Link / Network Access | Data Link / Physical |
+
+Layers describe responsibilities and interfaces, not physically stacked containers.
+
+A host may use application, transport, internet, link, and physical functions to send or receive data.
+
+A router's ordinary forwarding path primarily uses link, physical, and IP functions; it does not need to terminate the application's transport conversation.
+
+## 9. Horizontal architecture
+
+```text
+Computer A                Router                  Computer B
+    |                        |                         |
+Application                 |                    Application
+    |                        |                         ^
+   UDP                       |                        UDP
+    |                        |                         ^
+    IP --------------------> IP ---------------------> IP
+    |                        |                         ^
+ Ethernet                  Ethernet                Ethernet
+    |                        |                         ^
+ Physical ---- signal ----> Physical                 |
+                             |                       |
+                          Physical --- signal ---> Physical
+```
+
+Each physical link transmits an encoded signal.
+
+At a router, incoming link-layer framing is processed and outgoing link-layer framing is constructed for the selected next hop.
+
+The packet's journey is a series of local forwarding decisions.
+
+## 10. Protocol boundaries and design consequences
+
+Different participants interpret different information:
+
+| Component | Primary concern |
+|---|---|
+| NIC / Ethernet processing | Local frame reception and transmission |
+| IP implementation | IP addressing, local delivery, and forwarding |
+| UDP implementation | Datagram delivery to a socket |
+| TCP implementation | Reliable, ordered byte-stream communication |
+| Application | Meaning and processing of data |
+
+This separation creates modularity.
+
+It also limits each participant's knowledge of the system. A router can forward a UDP packet even when no application is listening on the destination port.
+
+Firewalls and other security mechanisms may deliberately inspect additional protocol fields and enforce policies beyond ordinary forwarding.
+
+## Observations and limitations
+
+This investigation used constructed examples and interactive conceptual simulations, not packet captures or measurements from an actual operating system.
+
+We demonstrated protocol relationships, forwarding decisions, queue behavior, and address changes conceptually.
+
+Specific buffering layouts, NIC offloading behavior, packet timings, actual checksums, and live operating-system state were not experimentally verified.
+
+## Governing conclusion
+
+**Networking is a distributed sequence of state transitions.**
+
+Each participant owns some state, interprets the protocol information relevant to its responsibility, makes a local decision, and transfers information across a boundary.
+
+The layered architecture explains the division of responsibilities.
+
+The horizontal journey explains the sequence of transmissions between devices.
+
+The physical model explains how digital information is represented as signals and reconstructed at the other end.
+
+# Encapsulation, Hex Dumps, and Network Traversal
+
+## 1. Purpose and governing model
+
+This investigation examines how application data is prepared for network transmission, represented as protocol fields, forwarded through routers, and reconstructed by the receiving computer.
+
+It connects three views of the same communication:
+
+1. **Runtime:** What software and hardware actually do, in chronological order.
+2. **Vertical architecture:** How TCP/IP and OSI divide networking responsibilities within devices.
+3. **Horizontal traversal:** How information travels between devices, one physical link at a time.
+
+The central principle is:
+
+**Networking consists of distributed state transitions. Each participant processes the information relevant to its responsibilities, makes a local decision, and initiates the next transition.**
+
+Layers describe responsibilities and interfaces. They are not physical compartments through which miniature packets travel.
+
+---
+
+## 2. Starting state: application data
+
+Computer A wants to send the text `Hi` to Computer B using UDP.
+
+Our example uses:
+
+| Property | Value |
+|---|---|
+| Source IP | `192.168.1.10` |
+| Destination IP | `203.0.113.20` |
+| Source UDP port | `49152` |
+| Destination UDP port | `5000` |
+| Initial TTL | `64` |
+| Application payload | `Hi` |
+| Character encoding | UTF-8 |
+
+The application encodes `Hi` into two bytes.
+
+```text
+Text:         Hi
+Decimal:      72 105
+Hexadecimal:  48 69
+Binary:       01001000 01101001
+```
+
+These are different representations of the same byte values.
+
+Hexadecimal is a notation used to display digital values; it is not an additional conversion required before network transmission.
+
+Initially, these bytes exist in computer memory.
+
+The application invokes an operating-system networking service, such as `sendto()` on a UDP socket, to request transmission.
+
+## 3. Logical construction order
+
+Encapsulation is the preparation of application data for transmission by supplying the protocol information required at successive layers.
+
+Our conceptual construction sequence is:
+
+```text
+Application:                         [48 69]
+
+Transport:                     [UDP][48 69]
+
+Internet:                [IPv4][UDP][48 69]
+
+Link:              [ETH][IPv4][UDP][48 69]
+
+Complete frame:    [ETH][IPv4][UDP][48 69][PAD][FCS]
+```
+
+**Construction proceeds from the application outward.**
+
+The transmitted field order begins with the Ethernet header.
+
+These two orders are not contradictory. Each protocol contributes its information to the beginning of the structure it carries, while Ethernet also supplies trailing padding and an FCS when needed.
+
+Actual implementations need not create a fresh contiguous memory allocation at every stage. Operating systems and NICs may use buffer references, scatter-gather operations, and hardware offloading.
+
+The final protocol representation still follows its specified field layout.
+
+---
+
+## 4. UDP: constructing the datagram
+
+UDP adds an 8-byte header.
+
+| UDP field | Size |
+|---|---:|
+| Source port | 2 bytes |
+| Destination port | 2 bytes |
+| Length | 2 bytes |
+| Checksum | 2 bytes |
+| **Total** | **8 bytes** |
+
+For our example:
+
+```text
+UDP header:             8 bytes
+Application payload:    2 bytes
+--------------------------------
+UDP datagram:          10 bytes
+```
+
+UDP Length is hexadecimal `00 0A`, equivalent to decimal 10.
+
+The complete UDP datagram is:
+
+```text
+C0 00  13 88  00 0A  E6 20  48 69
+|       |      |      |      |
+Source  Dest.  Length Check  Payload
+port    port          sum
+```
+
+The fields mean:
+
+- `C0 00`: Source port 49152.
+- `13 88`: Destination port 5000.
+- `00 0A`: UDP datagram length 10.
+- `E6 20`: Calculated UDP checksum.
+- `48 69`: Application payload.
+
+UDP's checksum is calculated using the UDP header and data plus a pseudo-header containing relevant IP information.
+
+For IPv4, that pseudo-header includes the source and destination IP addresses, protocol identifier, and UDP length.
+
+The pseudo-header contributes to the checksum calculation but is not transmitted as an additional header.
+
+## 5. IPv4: constructing the packet
+
+IPv4 adds information required for addressing and forwarding between networks.
+
+Our example uses a standard 20-byte IPv4 header without options.
+
+Important fields include:
+
+- Version and Internet Header Length (IHL).
+- Total Length.
+- Identification, flags, and fragment offset.
+- Time to Live (TTL).
+- Protocol identifier.
+- Header checksum.
+- Source and destination IP addresses.
+
+The IPv4 Total Length includes the IPv4 header and the entire carried UDP datagram.
+
+```text
+IPv4 header:       20 bytes
+UDP datagram:      10 bytes
+---------------------------
+IPv4 packet:       30 bytes
+```
+
+Therefore:
+
+```text
+IPv4 Total Length = 00 1E
+```
+
+Hexadecimal `001E` equals decimal 30.
+
+The first IPv4 header byte is `45`.
+
+This byte contains two four-bit fields:
+
+```text
+45 (hex)
+││
+│└── IHL = 5
+└─── IP Version = 4
+```
+
+IHL counts 4-byte units:
+
+```text
+5 × 4 = 20-byte IPv4 header
+```
+
+The IPv4 Protocol field is `11` hexadecimal, or decimal 17, identifying UDP.
+
+Our constructed packet initially uses TTL `40` hexadecimal, equivalent to decimal 64.
+
+---
+
+## 6. Ethernet: constructing the frame
+
+Ethernet framing addresses the next link-layer recipient.
+
+A basic Ethernet II header contains:
+
+| Field | Size |
+|---|---:|
+| Destination MAC | 6 bytes |
+| Source MAC | 6 bytes |
+| EtherType | 2 bytes |
+| **Total** | **14 bytes** |
+
+Our constructed frame uses these illustrative MAC addresses:
+
+```text
+Destination: 02:00:00:00:00:01
+Source:      02:00:00:00:00:0A
+EtherType:   08 00
+```
+
+EtherType `08 00` identifies IPv4.
+
+Unlike IPv4's Total Length or UDP's Length, the Ethernet II EtherType field identifies the protocol carried in the Ethernet payload. It does not declare that payload's length.
+
+### The next-hop distinction
+
+When Computer B is outside Computer A's local network, Computer A typically sends the first Ethernet frame to its gateway.
+
+Therefore:
+
+- The Ethernet destination MAC identifies the next-hop gateway.
+- The IPv4 destination address identifies Computer B.
+
+If the gateway's MAC address is not already known, the sender may use ARP to discover it.
+
+Ethernet MAC addressing and IP addressing answer different questions.
+
+---
+
+## 7. Ethernet minimum size and padding
+
+A conventional untagged Ethernet frame must be at least 64 bytes long, measured from the destination MAC address through the FCS.
+
+Its payload area must contain at least 46 bytes.
+
+Our IPv4 packet occupies only 30 bytes.
+
+Therefore:
+
+```text
+Minimum Ethernet payload:   46 bytes
+IPv4 packet:                30 bytes
+-----------------------------------
+Required padding:           16 bytes
+```
+
+The complete frame is:
+
+| Component | Bytes |
+|---|---:|
+| Ethernet header | 14 |
+| IPv4 header | 20 |
+| UDP header | 8 |
+| Application payload | 2 |
+| Ethernet padding | 16 |
+| Ethernet FCS | 4 |
+| **Total** | **64** |
+
+### Purpose of padding
+
+Padding satisfies Ethernet's minimum frame-size requirement.
+
+It is not application data and is not included in the IPv4 or UDP length fields.
+
+The historical reason relates to CSMA/CD, used in original shared-medium Ethernet.
+
+A transmitting station needed to remain transmitting long enough to detect collisions elsewhere on a network operating within Ethernet's timing and distance constraints.
+
+Modern switched full-duplex Ethernet ordinarily does not use collision detection, but the minimum frame-size requirement remains.
+
+For this constructed example, all 16 padding bytes are zero.
+
+### How padding is excluded at reception
+
+IPv4 declares that its packet is exactly 30 bytes long.
+
+UDP declares that its datagram is exactly 10 bytes long.
+
+The receiver therefore identifies exactly two application payload bytes and does not include the Ethernet padding.
+
+---
+
+## 8. The verified 64-byte hex dump
+
+The following frame was constructed for this investigation.
+
+It was **not captured from a live network**.
+
+The IPv4 header checksum, UDP checksum, and Ethernet CRC/FCS values were independently checked for consistency.
+
+```text
+0000  02 00 00 00 00 01 02 00 00 00 00 0A 08 00 45 00
+0010  00 1E 12 34 40 00 40 11 2A D4 C0 A8 01 0A CB 00
+0020  71 14 C0 00 13 88 00 0A E6 20 48 69 00 00 00 00
+0030  00 00 00 00 00 00 00 00 00 00 00 00 69 70 D2 94
+```
+
+Each pair of hexadecimal digits represents one byte.
+
+The value at the beginning of each row is an offset, not part of the frame.
+
+### Absolute byte offsets
+
+| Decimal offsets | Hex offsets | Contents |
+|---|---|---|
+| 0–13 | `00–0D` | Ethernet header |
+| 14–33 | `0E–21` | IPv4 header |
+| 34–41 | `22–29` | UDP header |
+| 42–43 | `2A–2B` | `48 69` |
+| 44–59 | `2C–3B` | Ethernet padding |
+| 60–63 | `3C–3F` | Ethernet FCS |
+
+### Parsing the frame without brackets
+
+**Step 1: Identify Ethernet.**
+
+The first 14 bytes are the Ethernet II header.
+
+At offsets `0C–0D`, the EtherType is:
+
+```text
+08 00 → IPv4
+```
+
+Therefore, the IPv4 header begins at decimal offset 14.
+
+**Step 2: Determine the IPv4 header length.**
+
+At offset `0E`, the first IPv4 byte is:
+
+```text
+45
+```
+
+Version = 4.
+
+IHL = 5.
+
+Therefore:
+
+```text
+IPv4 header length = 5 × 4 = 20 bytes
+```
+
+The next protocol structure begins at:
+
+```text
+14 + 20 = decimal offset 34 = hexadecimal 22
+```
+
+**Step 3: Determine the complete IP packet boundary.**
+
+At offsets `10–11`, the IPv4 Total Length is:
+
+```text
+00 1E → 30 bytes
+```
+
+Since IPv4 begins at offset 14:
+
+```text
+14 + 30 = 44
+```
+
+Offset 44 (`2C` hexadecimal) is the exclusive end of the IPv4 packet and the beginning of Ethernet padding.
+
+**Step 4: Identify the transport protocol.**
+
+At offset `17`, the IPv4 Protocol field is:
+
+```text
+11 (hex) = 17 (decimal) = UDP
+```
+
+**Step 5: Parse UDP.**
+
+The UDP header begins at hexadecimal offset `22`.
+
+Its length is:
+
+```text
+00 0A → 10 bytes
+```
+
+The UDP header itself occupies 8 bytes.
+
+Therefore:
+
+```text
+10 - 8 = 2 application payload bytes
+```
+
+These appear at offsets `2A–2B`:
+
+```text
+48 69 → Hi (UTF-8)
+```
+
+**Conclusion:** A protocol parser uses defined field positions, types, and lengths to discover boundaries. The byte stream does not require literal square brackets or special end-of-message markers for these structures.
+
+---
+
+## 9. Integrity mechanisms and their boundaries
+
+Three separate integrity checks appear in our example.
+
+| Mechanism | Protected information |
+|---|---|
+| IPv4 header checksum | IPv4 header only |
+| UDP checksum | UDP header and payload plus IP pseudo-header |
+| Ethernet FCS | Ethernet header, payload, and padding |
+
+### IPv4 checksum
+
+Our original IPv4 header checksum is:
+
+```text
+2A D4
+```
+
+It covers the IPv4 header, including the TTL.
+
+It does not cover the UDP datagram.
+
+### UDP checksum
+
+Our constructed UDP checksum is:
+
+```text
+E6 20
+```
+
+The IPv4 UDP pseudo-header includes the IP source and destination addresses but not the TTL.
+
+Consequently, a normal router's TTL update does not invalidate the UDP checksum.
+
+### Ethernet FCS
+
+Our original frame ends with:
+
+```text
+69 70 D2 94
+```
+
+These are the four transmitted FCS bytes.
+
+They represent the Ethernet CRC-32 value `0x94D27069` in Ethernet's FCS byte order.
+
+The FCS is calculated over the frame from the destination MAC address through the final padding byte.
+
+It detects transmission errors but does not guarantee delivery or repair damaged frames.
+
+---
+
+## 10. Router forwarding: what changes byte by byte?
+
+The router receives the frame, processes its incoming link-layer information, examines the destination IP address, and consults its forwarding table.
+
+It chooses the next hop and prepares a new outgoing frame.
+
+Our example assumes ordinary IPv4 forwarding without NAT or fragmentation.
+
+### IPv4 changes
+
+The incoming TTL is:
+
+```text
+40 (hex) = 64
+```
+
+After forwarding:
+
+```text
+3F (hex) = 63
+```
+
+This byte is at hexadecimal offset `16` in our Ethernet frame.
+
+The corresponding IPv4 header checksum changes:
+
+```text
+Incoming: 2A D4
+Outgoing: 2B D4
+```
+
+The checksum is at frame offsets `18–19`.
+
+The UDP datagram and application bytes remain unchanged.
+
+### A constructed outgoing frame
+
+For a concrete second Ethernet hop, suppose the router uses:
+
+```text
+Outgoing source MAC:      02:00:00:00:01:01
+Outgoing destination MAC: 02:00:00:00:02:01
+```
+
+The outgoing frame becomes:
+
+```text
+0000  02 00 00 00 02 01 02 00 00 00 01 01 08 00 45 00
+0010  00 1E 12 34 40 00 3F 11 2B D4 C0 A8 01 0A CB 00
+0020  71 14 C0 00 13 88 00 0A E6 20 48 69 00 00 00 00
+0030  00 00 00 00 00 00 00 00 00 00 00 00 F2 53 00 4A
+```
+
+The new FCS bytes are:
+
+```text
+F2 53 00 4A
+```
+
+They represent CRC-32 value `0x4A0053F2`.
+
+### What changed?
+
+- Ethernet source and destination MAC addresses.
+- IPv4 TTL.
+- IPv4 header checksum.
+- Ethernet FCS.
+
+### What stayed the same?
+
+- Source IP: `192.168.1.10`.
+- Destination IP: `203.0.113.20`.
+- IPv4 Total Length: 30 bytes.
+- UDP source port: 49152.
+- UDP destination port: 5000.
+- UDP Length: 10 bytes.
+- UDP checksum: `E6 20`.
+- Application payload: `48 69`.
+
+Both links in this example use basic Ethernet, so 16 padding bytes are still required.
+
+On a different link-layer technology, the outgoing framing could have a different format.
+
+**Governing rule:** Routers preserve information needed for the ongoing IP communication while changing the information required for the next forwarding operation.
+
+---
+
+## 11. Vertical processing and horizontal transmission
+
+The same packet journey can be understood using two architectural axes.
+
+### Vertical axis: processing within a device
+
+The vertical axis describes protocol responsibilities.
+
+Our sender's logical processing order is:
+
+```text
+Application          Create/encode "Hi"
+     |
+     v
+Transport (UDP)      Ports, length, checksum
+     |
+     v
+Internet (IPv4)      Addresses, TTL, routing
+     |
+     v
+Link (Ethernet)      MAC addresses, framing, FCS
+     |
+     v
+Physical             Encode and transmit signals
+```
+
+### Horizontal axis: transmission between devices
+
+The horizontal axis follows information across network links.
+
+```text
+Computer A             Router              Computer B
+    |                     |                     |
+    |--- physical signal ->|                     |
+    |                     |                     |
+    |                 IP forwarding              |
+    |                     |                     |
+    |                     |--- physical signal ->|
+    |                     |                     |
+    |                     |               Application
+    |                     |               receives Hi
+```
+
+The router joins these axes by interpreting the incoming transmission and preparing another outgoing transmission.
+
+### Processing paths
+
+**Computer A (sender):**
+
+```text
+Application → Transport → IP → Link → Physical
+```
+
+**Router (ordinary forwarding):**
+
+```text
+Physical → Link → IP → Link → Physical
+```
+
+**Computer B (receiver):**
+
+```text
+Physical → Link → IP → Transport → Application
+```
+
+The router's path is effectively U-shaped.
+
+It processes upward to IP, makes its forwarding decision, then prepares another link-layer and physical transmission.
+
+It does not ordinarily need to process the application's UDP data.
+
+---
+
+## 12. Mapping runtime responsibilities to OSI and TCP/IP
+
+| Responsibility | OSI model | TCP/IP model |
+|---|---|---|
+| Application behavior | Layer 7 — Application | Application |
+| Data representation | Layer 6 — Presentation | Generally within application-related functionality |
+| Session management | Layer 5 — Session | Generally within application-related functionality |
+| TCP or UDP | Layer 4 — Transport | Transport |
+| IPv4 addressing and routing | Layer 3 — Network | Internet |
+| Ethernet framing | Layer 2 — Data Link | Link |
+| Physical signals | Layer 1 — Physical | Link / network-access functionality |
+
+The TCP/IP model is commonly shown with four layers, although some presentations distinguish physical responsibilities as a fifth layer.
+
+OSI separates Presentation and Session responsibilities conceptually. TCP/IP applications do not necessarily execute distinct Layer 5 and Layer 6 processing stages.
+
+### Why the router stops at Layer 3
+
+For ordinary forwarding, the router needs:
+
+- The destination IP address.
+- Its forwarding information.
+- Relevant IP forwarding fields, including TTL.
+- Appropriate information to construct the next link-layer transmission.
+
+It does not ordinarily need to know the UDP destination port or application payload.
+
+Additional mechanisms, such as firewalls and NAT, may inspect or modify transport information.
+
+These are extra functions, not prerequisites for basic IP forwarding.
+
+---
+
+## 13. TCP versus UDP in the same architecture
+
+Our constructed example uses UDP to simplify the packet structure.
+
+TCP occupies the same transport-layer position but provides different services.
+
+| UDP | TCP |
+|---|---|
+| Connectionless datagrams | Connection-oriented byte stream |
+| Preserves datagram boundaries | Does not preserve application write boundaries |
+| No built-in delivery acknowledgments | Uses acknowledgments |
+| No automatic retransmission | Retransmits missing data |
+| Small, fixed 8-byte header | Larger, variable-length header |
+| Application controls reliability if needed | Implements ordered, reliable byte delivery |
+
+Choosing TCP instead of UDP changes the transport protocol and associated endpoint behavior.
+
+It does not fundamentally change the vertical/horizontal architecture.
+
+Packets still travel through IP and link-layer mechanisms, with routers making next-hop decisions.
+
+TCP reliability also does not guarantee that the destination application successfully processes or durably stores received information.
+
+---
+
+## 14. Runtime state, buffers, and congestion
+
+A successful application send operation does not necessarily mean physical transmission has completed or that the destination received the data.
+
+Information may wait in:
+
+- Operating-system networking buffers.
+- Driver or NIC transmit queues.
+- Router output queues.
+- Receiving-side buffers.
+
+Queued packets and frames are represented in device memory.
+
+Physical electromagnetic signals propagate through the medium; packets are not small physical objects waiting inside a cable.
+
+When packets arrive at a device's outgoing interface faster than that interface can transmit them, the queue can grow.
+
+Finite buffer capacity can produce delays, drops, or backpressure.
+
+State remains distributed.
+
+A sender does not automatically know the contents of a distant router's queue.
+
+UDP provides no built-in acknowledgment. TCP can use acknowledgments and timing information to infer aspects of network behavior without directly inspecting remote queue state.
+
+---
+
+## 15. Practical packet-analysis observations
+
+The hex dumps in this document are constructed, verified examples.
+
+No live network traffic was captured during this investigation.
+
+When inspecting real captures, several implementation details matter:
+
+**FCS visibility:** Many capture interfaces do not provide Ethernet FCS bytes to Wireshark because the NIC handles FCS verification and strips them before delivering captured data.
+
+**Checksum offloading:** Outgoing packets captured before NIC processing may appear to have incomplete or invalid checksums even though hardware later generates the correct transmitted values.
+
+**Padding:** Short Ethernet frames require padding, but whether padding is visible in a capture depends on the capture point, hardware, driver, and link-layer handling.
+
+**Packet boundaries:** UDP preserves datagram boundaries. TCP carries an ordered byte stream, so application writes do not necessarily correspond to individual TCP segments.
+
+**Link differences:** A packet routed onto a non-Ethernet link does not necessarily acquire another Ethernet header. The outgoing link-layer format depends on the next link.
+
+These distinctions matter when comparing a conceptual packet structure with actual captured evidence.
+
+---
+
+## 16. Independent reconstruction procedure
+
+When examining an unfamiliar Ethernet/IPv4/UDP hex dump, use this traversal:
+
+1. **Locate the Ethernet header.** Identify destination MAC, source MAC, and EtherType.
+2. **Identify the next protocol.** EtherType `0800` indicates IPv4.
+3. **Read IPv4 Version and IHL.** Determine the IPv4 header size.
+4. **Read IPv4 Total Length.** Establish the end of the IP packet.
+5. **Read the Protocol field.** Determine whether the payload is UDP, TCP, or another protocol.
+6. **Locate the transport header.** Use the IPv4 header length to calculate its starting offset.
+7. **Interpret transport fields.** For UDP, read ports, length, and checksum.
+8. **Locate the application payload.** Use the UDP length to determine its size.
+9. **Distinguish padding and FCS.** Do not treat Ethernet padding as application data.
+10. **For a forwarded packet, compare states.** Identify changes to link-layer information, TTL, IPv4 checksum, and outgoing FCS.
+
+This procedure turns a hex dump into a traversal problem: each field provides information needed to select the next interpretation.
+
+---
+
+## 17. Final synthesis
+
+A complete network communication is simultaneously:
+
+- A series of operations performed inside computers and network devices.
+- A collection of protocol-defined data structures.
+- A sequence of physical transmissions across links.
+- A distributed process involving local decisions and independently owned state.
+
+The vertical axis explains **which responsibilities are performed inside each device**.
+
+The horizontal axis explains **how information progresses from device to device**.
+
+Encapsulation explains **how the protocol information is represented in ordered bytes**.
+
+Physical signaling explains **how digital information crosses a physical boundary**.
+
+And forwarding explains **how routers connect one local transmission to the next**.
+
+**Final governing principle:**
+
+A participant does not need to understand the entire network communication. It needs sufficient information to perform its own responsibility, determine the next transition, and preserve or transform the information required by that transition.
+
+That is how many separate local operations form one functioning network.
+
+---
+
+## Investigation provenance
+
+**Constructed and verified:** Two 64-byte Ethernet frames, IPv4 and UDP checksums, Ethernet FCS values, header lengths, byte offsets, and TTL/checksum transformation.
+
+**Conceptually examined:** Sender runtime, router forwarding, receiver processing, ARP, buffering, protocol boundaries, and layered architecture.
+
+**Not experimentally observed:** Real NIC memory layout, actual packet-capture output, live traffic timing, physical waveforms, operating-system queue contents, or router hardware behavior.
+
+**Investigation status:** Complete.
